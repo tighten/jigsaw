@@ -57,7 +57,7 @@ class InitCommand extends Command
 <?php
 
 return [
-    'production' = false,
+    'production' => false,
 ];
 EOT
         );

@@ -13,6 +13,7 @@
         "classmap": ["src"]
     },
     "require": {
+        "illuminate/container": "~5.0",
         "illuminate/view": "~5.0",
         "symfony/console": "~2.5"
     },

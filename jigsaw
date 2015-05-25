@@ -1,6 +1,7 @@
 #!/usr/bin/env php
 <?php
 
+use Illuminate\Container\Container;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\View\Compilers\BladeCompiler;
@@ -12,6 +13,7 @@ use Jigsaw\Jigsaw\BladeHandler;
 use Jigsaw\Jigsaw\Console\BuildCommand;
 use Jigsaw\Jigsaw\DefaultHandler;
 use Jigsaw\Jigsaw\Jigsaw;
+use Jigsaw\Jigsaw\NullDispatcher;
 
 if (file_exists(__DIR__.'/vendor/autoload.php')) {
     require __DIR__.'/vendor/autoload.php';
@@ -19,38 +21,32 @@ if (file_exists(__DIR__.'/vendor/autoload.php')) {
     require __DIR__.'/../../autoload.php';
 }
 
-class NullDispatcher implements Dispatcher
-{
-    public function listen($events, $listener, $priority = 0) {}
-    public function hasListeners($eventName) {}
-    public function until($event, $payload = array()) {}
-    public function fire($event, $payload = array(), $halt = false) {}
-    public function firing() {}
-    public function forget($event) {}
-    public function forgetPushed() {}
-}
-
 // Config
 $cachePath = getcwd() . '/_tmp';
 $buildPath = getcwd() . '/build';
 $sourcePath = getcwd() . '/source';
 
-// Build up blade engine
-$resolver = new EngineResolver;
+$container = new Container;
 
-$resolver->register('blade', function () use ($cachePath) {
-    $compiler = new BladeCompiler(new Filesystem, $cachePath);
-    return new CompilerEngine($compiler, new Filesystem);
+$container->bind(BladeHandler::class, function ($c) use ($cachePath, $sourcePath) {
+    $resolver = new EngineResolver;
+
+    $resolver->register('blade', function () use ($cachePath) {
+        $compiler = new BladeCompiler(new Filesystem, $cachePath);
+        return new CompilerEngine($compiler, new Filesystem);
+    });
+
+    $finder = new FileViewFinder(new Filesystem, [$sourcePath]);
+    $factory = new Factory($resolver, $finder, new NullDispatcher);
+
+    return new BladeHandler($factory);
 });
-
-$finder = new FileViewFinder(new Filesystem, [$sourcePath]);
-$factory = new Factory($resolver, $finder, new NullDispatcher);
 
 
 $jigsaw = new Jigsaw(new Filesystem, $cachePath);
 
-$jigsaw->registerHandler(new BladeHandler($factory));
-$jigsaw->registerHandler(new DefaultHandler(new Filesystem));
+$jigsaw->registerHandler($container[BladeHandler::class]);
+$jigsaw->registerHandler($container[DefaultHandler::class]);
 
 $buildCommand = new BuildCommand($jigsaw, $sourcePath, $buildPath);
 

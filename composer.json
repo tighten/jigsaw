@@ -16,6 +16,7 @@
     },
     "require": {
         "illuminate/container": "~5.0",
+        "illuminate/support": "~5.0",
         "illuminate/view": "~5.0",
         "symfony/console": "~2.5"
     },

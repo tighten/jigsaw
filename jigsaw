@@ -9,9 +9,9 @@ use Illuminate\View\Engines\CompilerEngine;
 use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Factory;
 use Illuminate\View\FileViewFinder;
-use Jigsaw\Jigsaw\BladeHandler;
 use Jigsaw\Jigsaw\Console\BuildCommand;
-use Jigsaw\Jigsaw\DefaultHandler;
+use Jigsaw\Jigsaw\Handlers\BladeHandler;
+use Jigsaw\Jigsaw\Handlers\DefaultHandler;
 use Jigsaw\Jigsaw\Jigsaw;
 use Jigsaw\Jigsaw\NullDispatcher;
 

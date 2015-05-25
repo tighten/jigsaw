@@ -1,6 +1,7 @@
-<?php namespace Jigsaw\Jigsaw;
+<?php namespace Jigsaw\Jigsaw\Handlers;
 
 use Illuminate\Contracts\View\Factory;
+use Jigsaw\Jigsaw\ProcessedFile;
 
 class BladeHandler
 {

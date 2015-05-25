@@ -1,0 +1,22 @@
+{
+    "name": "jigsaw/jigsaw",
+    "description": "Simple static sites with Laravel's Blade.",
+    "keywords": ["blade", "laravel", "static", "site", "generator"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Adam Wathan",
+            "email": "adam.wathan@gmail.com"
+        }
+    ],
+    "autoload": {
+        "classmap": ["src"]
+    },
+    "require": {
+        "illuminate/view": "~5.0",
+        "symfony/console": "~2.5"
+    },
+    "bin": [
+        "jigsaw"
+    ]
+}

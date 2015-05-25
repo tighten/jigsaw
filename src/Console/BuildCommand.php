@@ -36,5 +36,21 @@ class BuildCommand extends \Symfony\Component\Console\Command\Command
     protected function fire()
     {
         $this->jigsaw->build($this->sourcePath, $this->buildPath);
+        $this->output->writeln('<info>Site built successfully!</info>');
+    }
+
+    private function info($string)
+    {
+        $this->output->writeln("<info>{$string}</info>");
+    }
+
+    private function error($string)
+    {
+        $this->output->writeln("<error>{$string}</error>");
+    }
+
+    private function comment($string)
+    {
+        $this->output->writeln("<comment>{$string}</comment>");
     }
 }

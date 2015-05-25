@@ -10,6 +10,7 @@ use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Factory;
 use Illuminate\View\FileViewFinder;
 use Jigsaw\Jigsaw\Console\BuildCommand;
+use Jigsaw\Jigsaw\Console\InitCommand;
 use Jigsaw\Jigsaw\Handlers\BladeHandler;
 use Jigsaw\Jigsaw\Handlers\DefaultHandler;
 use Jigsaw\Jigsaw\Jigsaw;
@@ -52,5 +53,5 @@ $buildCommand = new BuildCommand($jigsaw, $sourcePath, $buildPath);
 
 $app = new Symfony\Component\Console\Application('Jigsaw', '0.0.1');
 $app->add($buildCommand);
-$app->setDefaultCommand($buildCommand->getName());
+$app->add($container[InitCommand::class]);
 $app->run();

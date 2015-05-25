@@ -10,7 +10,9 @@
         }
     ],
     "autoload": {
-        "classmap": ["src"]
+        "psr-4": {
+            "Jigsaw\\Jigsaw\\": "src"
+        }
     },
     "require": {
         "illuminate/container": "~5.0",

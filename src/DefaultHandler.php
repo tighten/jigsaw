@@ -17,7 +17,7 @@ class DefaultHandler
         return true;
     }
 
-    public function handle($file)
+    public function handle($file, $data)
     {
         return new ProcessedFile($file->getRelativePathname(), $this->files->get($file->getRealPath()));
     }

@@ -20,10 +20,10 @@ class Jigsaw
         $this->handlers[] = $handler;
     }
 
-    public function build($source, $dest)
+    public function build($source, $dest, $config = [])
     {
         $this->prepareDirectories([$this->cachePath, $dest]);
-        $this->buildSite($source, $dest);
+        $this->buildSite($source, $dest, $config);
         $this->cleanup();
     }
 
@@ -45,12 +45,12 @@ class Jigsaw
         }
     }
 
-    private function buildSite($source, $dest)
+    private function buildSite($source, $dest, $config)
     {
         collect($this->files->allFiles($source))->filter(function ($file) {
             return ! $this->shouldIgnore($file);
-        })->each(function ($file) use ($dest) {
-            $this->buildFile($file, $dest);
+        })->each(function ($file) use ($dest, $config) {
+            $this->buildFile($file, $dest, $config);
         });
     }
 
@@ -64,16 +64,16 @@ class Jigsaw
         return preg_match('/(^_|\/_)/', $file->getRelativePathname()) === 1;
     }
 
-    private function buildFile($file, $dest)
+    private function buildFile($file, $dest, $config)
     {
         $this->prepareDirectory($dest . '/' . $file->getRelativePath());
-        $processedFile = $this->handle($file);
+        $processedFile = $this->handle($file, $config);
         $this->files->put("{$dest}/{$processedFile->relativePathname()}", $processedFile->contents());
     }
 
-    private function handle($file)
+    private function handle($file, $config)
     {
-        return $this->getHandler($file)->handle($file);
+        return $this->getHandler($file)->handle($file, $config);
     }
 
     private function getHandler($file)

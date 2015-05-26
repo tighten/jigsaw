@@ -26,8 +26,7 @@ Simply build out your site however you like in the `/source` directory. It might
 │  │  └─ master.blade.php
 │  ├─ img
 │  │  └─ logo.png
-│  ├─ about-us
-│  │  └─ index.blade.php
+│  ├─ about-us.blade.php
 │  └─ index.blade.php
 └─ config.php
 ```

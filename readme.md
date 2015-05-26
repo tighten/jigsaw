@@ -110,7 +110,7 @@ To build your site for a specific environment, use the `--env` option:
 
 #### Pretty URLs
 
-Jigsaw will automatically take any blade files _not_ name `index` and render them into a subfolder with the same name as the original file.
+Jigsaw will automatically take any Blade files _not_ named `index` and render them as `index.html` in a subfolder with the same name as the original file.
 
 For example, if you have a file named `about-us.blade.php` in your `source` directory:
 
@@ -121,7 +121,7 @@ For example, if you have a file named `about-us.blade.php` in your `source` dire
    └─ index.blade.php
 ```
 
-It will be rendered as `index.html` in the `build/about-us` directory:
+...it will be rendered as `index.html` in the `build/about-us` directory:
 
 ```
 ├─ build

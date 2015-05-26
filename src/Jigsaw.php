@@ -37,7 +37,7 @@ class Jigsaw
     private function prepareDirectory($directory, $clean = false)
     {
         if (! $this->files->isDirectory($directory)) {
-            $this->files->makeDirectory($directory);
+            $this->files->makeDirectory($directory, 0755, true);
         }
 
         if ($clean) {

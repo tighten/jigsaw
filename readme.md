@@ -108,3 +108,25 @@ To build your site for a specific environment, use the `--env` option:
 `$ jigsaw build --env=production`
 
 > Note: Environment-specific config files get _merged_ with the base config file, so you don't have to repeat values that don't need to change.
+
+#### Pretty URLs
+
+Jigsaw will automatically take any blade files _not_ name `index` and render them into a subfolder with the same name as the original file.
+
+For example, if you have a file named `about-us.blade.php` in your `source` directory:
+
+```
+├─ source
+   ├─ _layouts
+   ├─ about-us.blade.php
+   └─ index.blade.php
+```
+
+It will be rendered as `index.html` in the `build/about-us` directory:
+
+```
+├─ build
+   ├─ about-us
+   │  └─ index.html 
+   └─ index.html
+```

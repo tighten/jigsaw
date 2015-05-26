@@ -18,7 +18,7 @@ Simple static sites with Laravel's [Blade](http://laravel.com/docs/5.0/templates
 
 Building a Jigsaw site is exactly like building a static HTML site, except that files ending in `.blade.php` will be rendered using Laravel's [Blade Templating Language](http://laravel.com/docs/5.0/templates).
 
-Simply build out your site however you like in the `/source` directory. It might look something like this:
+Build out your site however you like in the `/source` directory. It might look something like this:
 
 ```
 ├─ source

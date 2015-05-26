@@ -74,7 +74,7 @@ To prevent a file or folder from being rendered, simply prefix it with an unders
 
 Anything you add to the array in `config.php` will be made available as a variable in your templates.
 
-For exampe, if your config looks like this...
+For example, if your config looks like this...
 
 ```php
 return [

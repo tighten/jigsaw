@@ -66,9 +66,9 @@ class Jigsaw
 
     private function buildFile($file, $dest, $config)
     {
-        $this->prepareDirectory($dest . '/' . $file->getRelativePath());
-        $processedFile = $this->handle($file, $config);
-        $this->files->put("{$dest}/{$processedFile->relativePathname()}", $processedFile->contents());
+        $file = $this->handle($file, $config);
+        $this->prepareDirectory("{$dest}/{$file->relativePath()}");
+        $this->files->put("{$dest}/{$file->relativePathname()}", $file->contents());
     }
 
     private function handle($file, $config)

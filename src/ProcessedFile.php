@@ -2,18 +2,25 @@
 
 class ProcessedFile
 {
-    private $relativePathname;
+    private $name;
+    private $relativePath;
     private $contents;
 
-    public function __construct($relativePathname, $contents)
+    public function __construct($name, $relativePath, $contents)
     {
-        $this->relativePathname = $relativePathname;
+        $this->name = $name;
+        $this->relativePath = $relativePath;
         $this->contents = $contents;
+    }
+
+    public function relativePath()
+    {
+        return $this->relativePath;
     }
 
     public function relativePathname()
     {
-        return $this->relativePathname;
+        return "{$this->relativePath}/{$this->name}";
     }
 
     public function contents()

@@ -13,6 +13,11 @@ class ProcessedFile
         $this->contents = $contents;
     }
 
+    public function name()
+    {
+        return $this->name;
+    }
+
     public function relativePath()
     {
         return $this->relativePath;

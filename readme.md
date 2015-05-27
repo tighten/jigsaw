@@ -52,7 +52,7 @@ Using the example structure above, you'd end up with something like this:
 
 To quickly preview it, start a local PHP server:
 
-`$ php -S localhost:8000/ -t build`
+`$ php -S localhost:8000/ -t build_local`
 
 #### Layouts
 
@@ -105,6 +105,8 @@ To create an environment-specific config file, just stick your environment name 
 To build your site for a specific environment, use the `--env` option:
 
 `$ jigsaw build --env=production`
+
+Each environment gets it's own `build_*` folder, so in this case your site will be placed in `build_production`.
 
 > Note: Environment-specific config files get _merged_ with the base config file, so you don't have to repeat values that don't need to change.
 

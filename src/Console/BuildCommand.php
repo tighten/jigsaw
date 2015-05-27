@@ -30,6 +30,7 @@ class BuildCommand extends Command
     protected function fire()
     {
         $config = $this->loadConfig();
+        $this->buildPath .= '_' . $this->input->getOption('env');
         $this->jigsaw->build($this->sourcePath, $this->buildPath, $config);
         $this->info('Site built successfully!');
     }

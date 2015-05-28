@@ -40,7 +40,7 @@ Your site will be built and placed in the `/build` directory.
 Using the example structure above, you'd end up with something like this:
 
 ```
-├─ build
+├─ build_local
 │  ├─ img
 │  │  └─ logo.png
 │  ├─ about-us
@@ -126,7 +126,7 @@ For example, if you have a file named `about-us.blade.php` in your `source` dire
 ...it will be rendered as `index.html` in the `build/about-us` directory:
 
 ```
-├─ build
+├─ build_local
    ├─ about-us
    │  └─ index.html 
    └─ index.html

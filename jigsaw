@@ -14,7 +14,6 @@ use Jigsaw\Jigsaw\Console\InitCommand;
 use Jigsaw\Jigsaw\Handlers\BladeHandler;
 use Jigsaw\Jigsaw\Handlers\DefaultHandler;
 use Jigsaw\Jigsaw\Jigsaw;
-use Jigsaw\Jigsaw\NullDispatcher;
 
 if (file_exists(__DIR__.'/vendor/autoload.php')) {
     require __DIR__.'/vendor/autoload.php';
@@ -38,7 +37,7 @@ $container->bind(BladeHandler::class, function ($c) use ($cachePath, $sourcePath
     });
 
     $finder = new FileViewFinder(new Filesystem, [$sourcePath]);
-    $factory = new Factory($resolver, $finder, new NullDispatcher);
+    $factory = new Factory($resolver, $finder, Mockery::mock(Dispatcher::class)->shouldIgnoreMissing());
 
     return new BladeHandler($factory);
 });

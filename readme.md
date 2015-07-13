@@ -131,3 +131,5 @@ For example, if you have a file named `about-us.blade.php` in your `source` dire
    │  └─ index.html 
    └─ index.html
 ```
+
+> If you need to disable this behavior, use the `--pretty=false` option when building your site.

@@ -18,6 +18,16 @@ class ProcessedFile
         return $this->name;
     }
 
+    public function basename()
+    {
+        return pathinfo($this->name, PATHINFO_FILENAME);
+    }
+
+    public function extension()
+    {
+        return pathinfo($this->name, PATHINFO_EXTENSION);
+    }
+
     public function relativePath()
     {
         return $this->relativePath;

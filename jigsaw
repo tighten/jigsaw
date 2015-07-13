@@ -26,6 +26,10 @@ $cachePath = getcwd() . '/_tmp';
 $buildPath = getcwd() . '/build';
 $sourcePath = getcwd() . '/source';
 
+function dd(...$args) {
+    var_dump(...$args); exit;
+}
+
 $container = new Container;
 
 $container->bind(BladeHandler::class, function ($c) use ($cachePath, $sourcePath) {

@@ -19,23 +19,13 @@ class BladeHandler
 
     public function handle($file, $data)
     {
-        return new ProcessedFile('index.html', $this->prettyPath($file), $this->render($file, $data));
+        $filename = $file->getBasename('.blade.php') . '.html';
+        return new ProcessedFile($filename, $file->getRelativePath(), $this->render($file, $data));
     }
 
     public function render($file, $data)
     {
         return $this->viewFactory->make($this->getViewName($file), $data)->render();
-    }
-
-    private function prettyPath($file)
-    {
-        $basename = $file->getBasename('.blade.php');
-
-        if ($basename !== 'index') {
-            return $file->getRelativePath() . '/' . $basename;
-        }
-
-        return $file->getRelativePath();
     }
 
     private function getViewName($file)

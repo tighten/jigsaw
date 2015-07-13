@@ -24,13 +24,19 @@ class BuildCommand extends Command
     {
         $this->setName('build')
             ->setDescription('Build your site.')
-            ->addOption('env', null, InputOption::VALUE_REQUIRED, "What environment should we use to build?", 'local');
+            ->addOption('env', null, InputOption::VALUE_REQUIRED, "What environment should we use to build?", 'local')
+            ->addOption('pretty', null, InputOption::VALUE_REQUIRED, "Should the site use pretty URLs?", 'true');
     }
 
     protected function fire()
     {
         $config = $this->loadConfig();
         $this->buildPath .= '_' . $this->input->getOption('env');
+
+        if ($this->input->getOption('pretty') === 'false') {
+            $this->jigsaw->setOption('pretty', false);
+        }
+
         $this->jigsaw->build($this->sourcePath, $this->buildPath, $config);
         $this->info('Site built successfully!');
     }

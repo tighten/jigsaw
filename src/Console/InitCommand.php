@@ -62,7 +62,7 @@ class InitCommand extends Command
      */
     private function createSourceFolder()
     {
-        if (! $this->files->isDirectory($this->base)) {
+        if (! $this->files->isDirectory($this->base . DIRECTORY_SEPARATOR . 'source')) {
             return $this->files->makeDirectory($this->base . DIRECTORY_SEPARATOR . 'source');
         }
 

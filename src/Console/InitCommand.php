@@ -40,36 +40,37 @@ class InitCommand extends Command
     {
         if ($base = $this->input->getArgument('name')) {
             $this->setBasePath( getcwd() . DIRECTORY_SEPARATOR . $base );
-            $this->createBaseDirectory();
+            // Create Base Directory
+            $this->createFolder( $this->base );
         }else{
             $this->setBasePath( getcwd(), true );
         }
 
-        $this->createSourceFolder();
+        // Create Source Folder
+        $this->createFolder( $this->base . DIRECTORY_SEPARATOR . 'source' );
         $this->createBaseConfig();
         $this->info('Site initialized successfully in ['. $this->base .']!');
     }
 
-    private function createBaseDirectory()
-    {
-        if (! $this->files->isDirectory($this->base)) {
-            $this->files->makeDirectory($this->base);
-        }
-    }
-
     /**
+     * Creates a folder at $path or exits with error code upon the folder existing
+     * @param string $path
      * @return bool
      */
-    private function createSourceFolder()
+    private function createFolder( $path )
     {
-        if (! $this->files->isDirectory($this->base . DIRECTORY_SEPARATOR . 'source')) {
-            return $this->files->makeDirectory($this->base . DIRECTORY_SEPARATOR . 'source');
+        if (! $this->files->isDirectory($path)) {
+            return $this->files->makeDirectory($path);
         }
 
-        $this->output->writeLn('<error>[!]</error> The path [<comment>'. $this->base . DIRECTORY_SEPARATOR . 'source' .'</comment>] already exists, doing nothing and exiting.');
+        $this->output->writeLn('<error>[!]</error> The path [<comment>'. $path .'</comment>] already exists, doing nothing and exiting.');
         exit(1);
     }
 
+    /**
+     * Create the initial config.php file
+     * @return void
+     */
     private function createBaseConfig()
     {
         $this->files->put($this->base . DIRECTORY_SEPARATOR . 'config.php', <<<EOT

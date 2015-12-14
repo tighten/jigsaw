@@ -2,15 +2,23 @@
 
 use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 
 class InitCommand extends Command
 {
+    /**
+     * @var Filesystem
+     */
     private $files;
+
+    /**
+     * @var string the current working directory
+     */
     private $base;
 
+    /**
+     * InitCommand constructor.
+     * @param Filesystem $files
+     */
     public function __construct(Filesystem $files)
     {
         $this->files = $files;
@@ -31,12 +39,15 @@ class InitCommand extends Command
     protected function fire()
     {
         if ($base = $this->input->getArgument('name')) {
-            $this->base = getcwd() . '/' . $base;
+            $this->setBasePath( getcwd() . DIRECTORY_SEPARATOR . $base );
             $this->createBaseDirectory();
+        }else{
+            $this->setBasePath( getcwd(), true );
         }
+
         $this->createSourceFolder();
         $this->createBaseConfig();
-        $this->info('Site initialized successfully!');
+        $this->info('Site initialized successfully in ['. $this->base .']!');
     }
 
     private function createBaseDirectory()
@@ -46,14 +57,22 @@ class InitCommand extends Command
         }
     }
 
+    /**
+     * @return bool
+     */
     private function createSourceFolder()
     {
-        $this->files->makeDirectory($this->base . '/source');
+        if (! $this->files->isDirectory($this->base)) {
+            return $this->files->makeDirectory($this->base . DIRECTORY_SEPARATOR . 'source');
+        }
+
+        $this->output->writeLn('<error>[!]</error> The path [<comment>'. $this->base . DIRECTORY_SEPARATOR . 'source' .'</comment>] already exists, doing nothing and exiting.');
+        exit(1);
     }
 
     private function createBaseConfig()
     {
-        $this->files->put($this->base . '/config.php', <<<EOT
+        $this->files->put($this->base . DIRECTORY_SEPARATOR . 'config.php', <<<EOT
 <?php
 
 return [
@@ -61,5 +80,22 @@ return [
 ];
 EOT
         );
+    }
+
+    /**
+     * Check that the $path does not already exist before setting base.
+     * @param string $path
+     * @param bool $force allow for the base to be current directory when name argument is not passed
+     * @return void
+     */
+    private function setBasePath( $path, $force = false )
+    {
+        if ( false === $force && $this->files->exists( $path ) )
+        {
+            $this->output->writeLn('<error>[!]</error> The path [<comment>'. $path .'</comment>] already exists, doing nothing and exiting.');
+            exit(1);
+        }
+
+        $this->base = $path;
     }
 }

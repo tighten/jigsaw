@@ -39,17 +39,19 @@ class InitCommand extends Command
     protected function fire()
     {
         if ($base = $this->input->getArgument('name')) {
-            $this->setBasePath( getcwd() . DIRECTORY_SEPARATOR . $base );
+            if ( ! $this->setBasePath( getcwd() . DIRECTORY_SEPARATOR . $base ) ){ return 1; }
             // Create Base Directory
-            $this->createFolder( $this->base );
+            if ( ! $this->createFolder( $this->base ) ){ return 1; }
         }else{
-            $this->setBasePath( getcwd(), true );
+            if ( ! $this->setBasePath( getcwd(), true ) ){ return 1; }
         }
 
         // Create Source Folder
-        $this->createFolder( $this->base . DIRECTORY_SEPARATOR . 'source' );
+        if ( ! $this->createFolder( $this->base . DIRECTORY_SEPARATOR . 'source' )){ return 1; }
         $this->createBaseConfig();
         $this->info('Site initialized successfully in ['. $this->base .']!');
+
+        return 0;
     }
 
     /**
@@ -63,8 +65,8 @@ class InitCommand extends Command
             return $this->files->makeDirectory($path);
         }
 
-        $this->output->writeLn('<error>[!]</error> The path [<comment>'. $path .'</comment>] already exists, doing nothing and exiting.');
-        exit(1);
+        $this->outputPathExistsError($path);
+        return false;
     }
 
     /**
@@ -87,16 +89,22 @@ EOT
      * Check that the $path does not already exist before setting base.
      * @param string $path
      * @param bool $force allow for the base to be current directory when name argument is not passed
-     * @return void
+     * @return bool
      */
     private function setBasePath( $path, $force = false )
     {
         if ( false === $force && $this->files->exists( $path ) )
         {
-            $this->output->writeLn('<error>[!]</error> The path [<comment>'. $path .'</comment>] already exists, doing nothing and exiting.');
-            exit(1);
+            $this->outputPathExistsError($path);
+            return false;
         }
 
         $this->base = $path;
+        return true;
+    }
+
+    private function outputPathExistsError( $path )
+    {
+        $this->output->writeLn('<error>[!]</error> The path [<comment>'. $path .'</comment>] already exists, doing nothing and exiting.');
     }
 }

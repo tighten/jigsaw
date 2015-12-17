@@ -13,24 +13,23 @@ abstract class CommandTestCase extends \PHPUnit_Framework_TestCase
      * @param array $arguments
      * @return CommandTester
      */
-    public function runCommand( $class, $command, array $arguments = [])
+    public function runCommand($class, $command, array $arguments = [])
     {
         $application = new Application();
         $application->setAutoExit(false);
 
-        if ( $class instanceof Command )
-        {
+        if ($class instanceof Command) {
             $application->add($class);
-        }else{
-            $container   = new Container();
+        } else {
+            $container = new Container();
             $application->add($container[$class]);
         }
 
         $command = $application->find($command);
         $commandTester = new CommandTester($command);
-        $arguments = array_merge([ 'command' => $command->getName() ], $arguments);
+        $arguments = array_merge(['command' => $command->getName()], $arguments);
 
-        $commandTester->execute( $arguments );
+        $commandTester->execute($arguments);
         return $commandTester;
     }
 }

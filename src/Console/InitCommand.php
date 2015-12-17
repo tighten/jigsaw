@@ -39,17 +39,25 @@ class InitCommand extends Command
     protected function fire()
     {
         if ($base = $this->input->getArgument('name')) {
-            if ( ! $this->setBasePath( getcwd() . DIRECTORY_SEPARATOR . $base ) ){ return 1; }
+            if (!$this->setBasePath(getcwd() . DIRECTORY_SEPARATOR . $base)) {
+                return 1;
+            }
             // Create Base Directory
-            if ( ! $this->createFolder( $this->base ) ){ return 1; }
-        }else{
-            if ( ! $this->setBasePath( getcwd(), true ) ){ return 1; }
+            if (!$this->createFolder($this->base)) {
+                return 1;
+            }
+        } else {
+            if (!$this->setBasePath(getcwd(), true)) {
+                return 1;
+            }
         }
 
         // Create Source Folder
-        if ( ! $this->createFolder( $this->base . DIRECTORY_SEPARATOR . 'source' )){ return 1; }
+        if (!$this->createFolder($this->base . DIRECTORY_SEPARATOR . 'source')) {
+            return 1;
+        }
         $this->createBaseConfig();
-        $this->info('Site initialized successfully in ['. $this->base .']!');
+        $this->info('Site initialized successfully in [' . $this->base . ']!');
 
         return 0;
     }
@@ -59,9 +67,9 @@ class InitCommand extends Command
      * @param string $path
      * @return bool
      */
-    private function createFolder( $path )
+    private function createFolder($path)
     {
-        if (! $this->files->isDirectory($path)) {
+        if (!$this->files->isDirectory($path)) {
             return $this->files->makeDirectory($path);
         }
 
@@ -91,10 +99,9 @@ EOT
      * @param bool $force allow for the base to be current directory when name argument is not passed
      * @return bool
      */
-    private function setBasePath( $path, $force = false )
+    private function setBasePath($path, $force = false)
     {
-        if ( false === $force && $this->files->exists( $path ) )
-        {
+        if (false === $force && $this->files->exists($path)) {
             $this->outputPathExistsError($path);
             return false;
         }
@@ -103,8 +110,8 @@ EOT
         return true;
     }
 
-    private function outputPathExistsError( $path )
+    private function outputPathExistsError($path)
     {
-        $this->output->writeLn('<error>[!]</error> The path [<comment>'. $path .'</comment>] already exists, doing nothing and exiting.');
+        $this->output->writeLn('<error>[!]</error> The path [<comment>' . $path . '</comment>] already exists, doing nothing and exiting.');
     }
 }

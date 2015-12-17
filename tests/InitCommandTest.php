@@ -24,7 +24,7 @@ class InitCommandTest extends CommandTestCase
     {
         self::$filesystem = new Filesystem();
         self::$tmpPath = __DIR__ . DIRECTORY_SEPARATOR . '_tmp';
-        self::$filesystem->makeDirectory( self::$tmpPath );
+        self::$filesystem->makeDirectory(self::$tmpPath);
         chdir('tests');
     }
 
@@ -33,7 +33,7 @@ class InitCommandTest extends CommandTestCase
      */
     protected function tearDown()
     {
-        self::$filesystem->cleanDirectory( self::$tmpPath );
+        self::$filesystem->cleanDirectory(self::$tmpPath);
     }
 
     /**
@@ -41,7 +41,7 @@ class InitCommandTest extends CommandTestCase
      */
     public static function tearDownAfterClass()
     {
-        self::$filesystem->deleteDirectory( self::$tmpPath );
+        self::$filesystem->deleteDirectory(self::$tmpPath);
     }
 
     /**
@@ -49,7 +49,7 @@ class InitCommandTest extends CommandTestCase
      */
     public function testCurrentWorkingDirectoryIsTestTemp()
     {
-        $this->assertEquals( __DIR__, getcwd() );
+        $this->assertEquals(__DIR__, getcwd());
     }
 
     /**
@@ -59,13 +59,13 @@ class InitCommandTest extends CommandTestCase
     {
         chdir(self::$tmpPath);
 
-        $output = $this->runCommand( InitCommand::class, 'init' );
+        $output = $this->runCommand(InitCommand::class, 'init');
 
         $this->assertRegExp("/Site initialized successfully in/", $output->getDisplay());
-        $this->assertTrue( ( strpos($output->getDisplay(), self::$tmpPath ) !== false ) );
-        $this->assertTrue( self::$filesystem->exists( self::$tmpPath . DIRECTORY_SEPARATOR . 'config.php' ) );
-        $this->assertTrue( self::$filesystem->exists( self::$tmpPath . DIRECTORY_SEPARATOR . 'source' ) );
-        $this->assertEquals( $output->getStatusCode(), 0 );
+        $this->assertTrue((strpos($output->getDisplay(), self::$tmpPath) !== false));
+        $this->assertTrue(self::$filesystem->exists(self::$tmpPath . DIRECTORY_SEPARATOR . 'config.php'));
+        $this->assertTrue(self::$filesystem->exists(self::$tmpPath . DIRECTORY_SEPARATOR . 'source'));
+        $this->assertEquals($output->getStatusCode(), 0);
     }
 
     /**
@@ -75,10 +75,10 @@ class InitCommandTest extends CommandTestCase
     {
         chdir(self::$tmpPath);
 
-        $this->runCommand( InitCommand::class, 'init' );
-        $output = $this->runCommand( InitCommand::class, 'init' );
+        $this->runCommand(InitCommand::class, 'init');
+        $output = $this->runCommand(InitCommand::class, 'init');
         $this->assertRegExp("/already exists, doing nothing and exiting./", $output->getDisplay());
-        $this->assertEquals( $output->getStatusCode(), 1 );
+        $this->assertEquals($output->getStatusCode(), 1);
     }
 
     /**
@@ -88,11 +88,9 @@ class InitCommandTest extends CommandTestCase
     {
         chdir(self::$tmpPath);
 
-        $output = $this->runCommand( InitCommand::class, 'init', [ 'name' => 'foo' ] );
-        $this->assertTrue( ( strpos($output->getDisplay(), self::$tmpPath . DIRECTORY_SEPARATOR . 'foo' ) !== false ) );
-        $this->assertTrue( self::$filesystem->exists( self::$tmpPath . DIRECTORY_SEPARATOR . 'foo' . DIRECTORY_SEPARATOR . 'config.php' ) );
-        $this->assertTrue( self::$filesystem->exists( self::$tmpPath . DIRECTORY_SEPARATOR . 'foo' . DIRECTORY_SEPARATOR . 'source' ) );
+        $output = $this->runCommand(InitCommand::class, 'init', ['name' => 'foo']);
+        $this->assertTrue((strpos($output->getDisplay(), self::$tmpPath . DIRECTORY_SEPARATOR . 'foo') !== false));
+        $this->assertTrue(self::$filesystem->exists(self::$tmpPath . DIRECTORY_SEPARATOR . 'foo' . DIRECTORY_SEPARATOR . 'config.php'));
+        $this->assertTrue(self::$filesystem->exists(self::$tmpPath . DIRECTORY_SEPARATOR . 'foo' . DIRECTORY_SEPARATOR . 'source'));
     }
-
-
 }

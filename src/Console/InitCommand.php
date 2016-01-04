@@ -2,15 +2,23 @@
 
 use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 
 class InitCommand extends Command
 {
+    /**
+     * @var Filesystem
+     */
     private $files;
+
+    /**
+     * @var string the current working directory
+     */
     private $base;
 
+    /**
+     * InitCommand constructor.
+     * @param Filesystem $files
+     */
     public function __construct(Filesystem $files)
     {
         $this->files = $files;
@@ -31,29 +39,51 @@ class InitCommand extends Command
     protected function fire()
     {
         if ($base = $this->input->getArgument('name')) {
-            $this->base = getcwd() . '/' . $base;
-            $this->createBaseDirectory();
+            if (!$this->setBasePath(getcwd() . DIRECTORY_SEPARATOR . $base)) {
+                return 1;
+            }
+            // Create Base Directory
+            if (!$this->createFolder($this->base)) {
+                return 1;
+            }
+        } else {
+            if (!$this->setBasePath(getcwd(), true)) {
+                return 1;
+            }
         }
-        $this->createSourceFolder();
+
+        // Create Source Folder
+        if (!$this->createFolder($this->base . DIRECTORY_SEPARATOR . 'source')) {
+            return 1;
+        }
         $this->createBaseConfig();
-        $this->info('Site initialized successfully!');
+        $this->info('Site initialized successfully in [' . $this->base . ']!');
+
+        return 0;
     }
 
-    private function createBaseDirectory()
+    /**
+     * Creates a folder at $path or exits with error code upon the folder existing
+     * @param string $path
+     * @return bool
+     */
+    private function createFolder($path)
     {
-        if (! $this->files->isDirectory($this->base)) {
-            $this->files->makeDirectory($this->base);
+        if (!$this->files->isDirectory($path)) {
+            return $this->files->makeDirectory($path);
         }
+
+        $this->outputPathExistsError($path);
+        return false;
     }
 
-    private function createSourceFolder()
-    {
-        $this->files->makeDirectory($this->base . '/source');
-    }
-
+    /**
+     * Create the initial config.php file
+     * @return void
+     */
     private function createBaseConfig()
     {
-        $this->files->put($this->base . '/config.php', <<<EOT
+        $this->files->put($this->base . DIRECTORY_SEPARATOR . 'config.php', <<<EOT
 <?php
 
 return [
@@ -61,5 +91,27 @@ return [
 ];
 EOT
         );
+    }
+
+    /**
+     * Check that the $path does not already exist before setting base.
+     * @param string $path
+     * @param bool $force allow for the base to be current directory when name argument is not passed
+     * @return bool
+     */
+    private function setBasePath($path, $force = false)
+    {
+        if (false === $force && $this->files->exists($path)) {
+            $this->outputPathExistsError($path);
+            return false;
+        }
+
+        $this->base = $path;
+        return true;
+    }
+
+    private function outputPathExistsError($path)
+    {
+        $this->output->writeLn('<error>[!]</error> The path [<comment>' . $path . '</comment>] already exists, doing nothing and exiting.');
     }
 }

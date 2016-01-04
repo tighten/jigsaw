@@ -14,6 +14,11 @@
             "Jigsaw\\Jigsaw\\": "src"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Jigsaw\\Tests\\": "tests"
+        }
+    },
     "require": {
         "illuminate/container": "~5.0",
         "illuminate/support": "~5.0",

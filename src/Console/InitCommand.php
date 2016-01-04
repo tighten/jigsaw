@@ -34,8 +34,16 @@ class InitCommand extends Command
             $this->base = getcwd() . '/' . $base;
             $this->createBaseDirectory();
         }
+
         $this->createSourceFolder();
         $this->createBaseConfig();
+        $this->createGitIgnore();
+        $this->createMasterLayout();
+        $this->createIndexTemplate();
+        $this->initializeElixir();
+        $this->createAssetsFolders();
+        $this->createStylesheets();
+
         $this->info('Site initialized successfully!');
     }
 
@@ -61,5 +69,99 @@ return [
 ];
 EOT
         );
+    }
+
+    private function initializeElixir()
+    {
+        $this->createPackageJson();
+        $this->createGulpFile();
+    }
+
+    private function createPackageJson()
+    {
+        $this->files->put($this->base . '/package.json', <<<EOT
+{
+  "private": true,
+  "devDependencies": {
+    "gulp": "^3.8.8"
+  },
+  "dependencies": {
+    "laravel-elixir": "^4.0.0",
+    "gulp-exec": "^2.1.2"
+  }
+}
+EOT
+        );
+    }
+
+    private function createGulpFile()
+    {
+        $this->files->put($this->base . '/gulpfile.js', <<<EOT
+var elixir = require('laravel-elixir');
+
+elixir.config.assetsPath = 'source/_assets';
+elixir.config.publicPath = 'source/assets';
+
+elixir(function(mix) {
+    mix.sass('main.scss');
+});
+EOT
+        );
+    }
+
+    private function createAssetsFolders()
+    {
+        $this->files->makeDirectory($this->base . '/source/_assets');
+        $this->files->makeDirectory($this->base . '/source/_assets/sass');
+        $this->files->makeDirectory($this->base . '/source/assets/');
+        $this->files->makeDirectory($this->base . '/source/assets/css');
+    }
+
+    private function createGitIgnore()
+    {
+        $this->files->put($this->base . '/.gitignore', <<<EOT
+/build_local/
+/node_modules/
+/vendor/
+EOT
+        );
+    }
+
+    private function createMasterLayout()
+    {
+        $this->files->makeDirectory($this->base . '/source/_layouts');
+        $this->files->put($this->base . '/source/_layouts/master.blade.php', <<<EOT
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <link rel="stylesheet" href="/assets/css/main.css">
+    </head>
+    <body>
+        @yield('body')
+    </body>
+</html>
+EOT
+        );
+    }
+
+    private function createIndexTemplate()
+    {
+        $this->files->put($this->base . '/source/index.blade.php', <<<EOT
+@extends('_layouts.master')
+
+@section('body')
+<h1>Hello world!</h1>
+@endsection
+EOT
+        );
+    }
+
+    private function createStylesheets()
+    {
+        $this->files->put($this->base . '/source/_assets/sass/main.scss', '');
+        $this->files->put($this->base . '/source/assets/css/main.css', '');
     }
 }

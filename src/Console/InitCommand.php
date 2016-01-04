@@ -87,7 +87,7 @@ EOT
   },
   "dependencies": {
     "laravel-elixir": "^4.0.0",
-    "gulp-exec": "^2.1.2"
+    "gulp-shell": "^0.5.1"
   }
 }
 EOT
@@ -97,14 +97,19 @@ EOT
     private function createGulpFile()
     {
         $this->files->put($this->base . '/gulpfile.js', <<<EOT
+var gulp = require('gulp');
 var elixir = require('laravel-elixir');
+var shell = require('gulp-shell');
 
 elixir.config.assetsPath = 'source/_assets';
 elixir.config.publicPath = 'source/assets';
 
+gulp.task('jigsaw-build', shell.task(['jigsaw build']));
+
 elixir(function(mix) {
-    mix.sass('main.scss');
+    mix.sass('main.scss').task('jigsaw-build', 'source/**/*');
 });
+
 EOT
         );
     }

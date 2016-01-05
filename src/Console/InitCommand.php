@@ -67,6 +67,7 @@ class InitCommand extends Command
 return [
     'production' => false,
 ];
+
 EOT
         );
     }
@@ -90,6 +91,7 @@ EOT
     "gulp-shell": "^0.5.1"
   }
 }
+
 EOT
         );
     }
@@ -128,6 +130,7 @@ EOT
 /build_local/
 /node_modules/
 /vendor/
+
 EOT
         );
     }
@@ -148,6 +151,7 @@ EOT
         @yield('body')
     </body>
 </html>
+
 EOT
         );
     }
@@ -160,6 +164,7 @@ EOT
 @section('body')
 <h1>Hello world!</h1>
 @endsection
+
 EOT
         );
     }

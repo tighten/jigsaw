@@ -72,58 +72,6 @@ EOT
         );
     }
 
-    private function initializeElixir()
-    {
-        $this->createPackageJson();
-        $this->createGulpFile();
-    }
-
-    private function createPackageJson()
-    {
-        $this->files->put($this->base . '/package.json', <<<EOT
-{
-  "private": true,
-  "devDependencies": {
-    "gulp": "^3.8.8"
-  },
-  "dependencies": {
-    "laravel-elixir": "^4.0.0",
-    "gulp-shell": "^0.5.1"
-  }
-}
-
-EOT
-        );
-    }
-
-    private function createGulpFile()
-    {
-        $this->files->put($this->base . '/gulpfile.js', <<<EOT
-var gulp = require('gulp');
-var elixir = require('laravel-elixir');
-var shell = require('gulp-shell');
-
-elixir.config.assetsPath = 'source/_assets';
-elixir.config.publicPath = 'source/assets';
-
-gulp.task('jigsaw-build', shell.task(['jigsaw build']));
-
-elixir(function(mix) {
-    mix.sass('main.scss').task('jigsaw-build', 'source/**/*');
-});
-
-EOT
-        );
-    }
-
-    private function createAssetsFolders()
-    {
-        $this->files->makeDirectory($this->base . '/source/_assets');
-        $this->files->makeDirectory($this->base . '/source/_assets/sass');
-        $this->files->makeDirectory($this->base . '/source/assets/');
-        $this->files->makeDirectory($this->base . '/source/assets/css');
-    }
-
     private function createGitIgnore()
     {
         $this->files->put($this->base . '/.gitignore', <<<EOT
@@ -167,6 +115,55 @@ EOT
 
 EOT
         );
+    }
+
+    private function initializeElixir()
+    {
+        $this->createPackageJson();
+        $this->createGulpFile();
+    }
+
+    private function createPackageJson()
+    {
+        $this->files->put($this->base . '/package.json', <<<EOT
+{
+  "private": true,
+  "devDependencies": {
+    "gulp": "^3.8.8"
+  },
+  "dependencies": {
+    "laravel-elixir": "^4.2.0"
+  }
+}
+
+EOT
+        );
+    }
+
+    private function createGulpFile()
+    {
+        $this->files->put($this->base . '/gulpfile.js', <<<EOT
+var gulp = require('gulp');
+var elixir = require('laravel-elixir');
+
+elixir.config.assetsPath = 'source/_assets';
+elixir.config.publicPath = 'source/assets';
+
+elixir(function(mix) {
+    mix.sass('main.scss')
+        .exec('jigsaw build', ['./source/**/*', '!./source/_assets/**/*']);
+});
+
+EOT
+        );
+    }
+
+    private function createAssetsFolders()
+    {
+        $this->files->makeDirectory($this->base . '/source/_assets');
+        $this->files->makeDirectory($this->base . '/source/_assets/sass');
+        $this->files->makeDirectory($this->base . '/source/assets/');
+        $this->files->makeDirectory($this->base . '/source/assets/css');
     }
 
     private function createStylesheets()

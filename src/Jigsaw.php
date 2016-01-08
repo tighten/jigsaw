@@ -55,12 +55,24 @@ class Jigsaw
     }
 
     private function buildSite($source, $dest, $config)
-    {
-        collect($this->files->allFiles($source))->filter(function ($file) {
-            return ! $this->shouldIgnore($file);
-        })->each(function ($file) use ($dest, $config) {
-            $this->buildFile($file, $dest, $config);
-        });
+    {   
+        // Get all files
+        $files = $this->files->allFiles($source);
+
+        // Make a new collection
+        $collection = new Collection($files);
+
+        // Filter the collection for ignored resources (ie directories, files, sensitivities)
+        foreach($files as $file){
+          
+          // Use collection class methods to filter the files
+          $collection->filter(function ($file) {
+              return ! $this->shouldIgnore($file);
+          })->each(function ($file) use ($dest, $config) {
+              $this->buildFile($file, $dest, $config);
+          });
+
+        }
     }
 
     private function cleanup()

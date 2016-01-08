@@ -4,7 +4,9 @@ Simple static sites with Laravel's [Blade](http://laravel.com/docs/5.0/templates
 
 ### Getting Started
 
-1. Install via Composer:
+#### Installing Globally
+
+1. Install Jigsaw globally via Composer:
   
     `$ composer global require jigsaw/jigsaw`
 
@@ -15,7 +17,22 @@ Simple static sites with Laravel's [Blade](http://laravel.com/docs/5.0/templates
 
     `$ jigsaw init my-site`
 
-> If you run into dependency conflicts trying to install Jigsaw globally, you can always create your project folder first and install Jigsaw locally using `composer require jigsaw/jigsaw`
+#### Installing Locally
+
+If you run into dependency conflicts when trying to install Jigsaw globally, you can always install it locally on a per site basis.
+
+1. Create a folder for your site:
+
+    `$ mkdir my-site && cd my-site`
+
+2. Install Jigsaw via Composer:
+  
+    `$ composer require jigsaw/jigsaw`
+
+3. Initialize a new project in the current folder:
+
+    `$ ./vendor/bin/jigsaw init`
+
 
 ### Building your first site
 
@@ -25,6 +42,7 @@ Build out your site however you like in the `/source` directory. It might look s
 
 ```
 ├─ source
+│  ├─ _assets
 │  ├─ _layouts
 │  │  └─ master.blade.php
 │  ├─ img
@@ -38,16 +56,16 @@ When you'd like to build it, run the `build` command from within your project ro
 
 `$ jigsaw build`
 
-Your site will be built and placed in the `/build` directory.
+Your site will be built and placed in the `/build_local` directory by default.
 
 Using the example structure above, you'd end up with something like this:
 
 ```
 ├─ build_local
-│  ├─ img
-│  │  └─ logo.png
 │  ├─ about-us
 │  │  └─ index.html
+│  ├─ img
+│  │  └─ logo.png
 │  └─ index.html
 ├─ source
 └─ config.php
@@ -56,6 +74,49 @@ Using the example structure above, you'd end up with something like this:
 To quickly preview it, start a local PHP server:
 
 `$ php -S localhost:8000/ -t build_local`
+
+#### Compiling Assets with Elixir
+
+Jigsaw sites are configured with support for [Laravel Elixir](http://laravel.com/docs/elixir) out of the box.
+
+By default, any assets you want to process with Elixir should live in `source/_assets`:
+
+```
+├─ source
+│  ├─ _assets
+│  │  └─ sass
+│  │     └─ main.scss
+│  ├─ _layouts
+│  ├─ about-us.blade.php
+│  └─ index.blade.php
+└─ config.php
+```
+
+To compile your assets, run:
+
+`$ gulp`
+
+The assets will be compiled and the site will automatically rebuild, leaving you with a `build_local` folder that looks like this:
+
+```
+├─ build_local
+│  ├─ about-us
+│  │  └─ index.html
+│  ├─ css
+│  │  └─ main.css
+│  └─ index.html
+├─ source
+└─ config.php
+```
+
+Elixir is only configured to compile Sass out of the box, but follow the [Elixir documentation](http://laravel.com/docs/elixir) for instructions on tweaking `gulpfile.js` to compile other asset types.
+
+If you'd like to change the source and destination folders for your assets, edit the following lines from `gulpfile.js`:
+
+```
+elixir.config.assetsPath = 'source/_assets';
+elixir.config.publicPath = 'source';
+```
 
 #### Layouts
 
@@ -73,7 +134,7 @@ To prevent a file or folder from being rendered, simply prefix it with an unders
 └─ config.php
 ```
 
-#### Config Variables
+#### Config variables
 
 Anything you add to the array in `config.php` will be made available as a variable in your templates.
 

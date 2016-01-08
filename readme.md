@@ -2,18 +2,27 @@
 
 Simple static sites with Laravel's [Blade](http://laravel.com/docs/5.0/templates).
 
-### Getting Started
+ ### Getting Started
+ 
+1. Global install via Composer:
+ 
+     `$ composer global require jigsaw/jigsaw:dev-master`
+ 
+     > Make sure `~/.composer/vendor/bin` is in your `$PATH`
+ 
+2. Local install via composer:
+ 
+    `composer require jigsaw/jigsaw:dev-master`
 
-1. Install via Composer:
-  
-    `$ composer global require jigsaw/jigsaw`
-
-    > Make sure `~/.composer/vendor/bin` is in your `$PATH`.
-
-
-2. Initialize a new project:
-
+    > No need to set PATH variable
+    
+3. Initialize a new project:
+ 
     `$ jigsaw init my-site`
+    
+    or locally
+    
+    `vendor/bin/jigsaw init my-site`
 
 > If you run into dependency conflicts trying to install Jigsaw globally, you can always create your project folder first and install Jigsaw locally using `composer require jigsaw/jigsaw`
 
@@ -37,6 +46,10 @@ Build out your site however you like in the `/source` directory. It might look s
 When you'd like to build it, run the `build` command from within your project root:
 
 `$ jigsaw build`
+
+or locally
+
+> cd to directory and execute `../vendor/bin/jigsaw build`
 
 Your site will be built and placed in the `/build` directory.
 

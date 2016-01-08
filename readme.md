@@ -75,7 +75,7 @@ To quickly preview it, start a local PHP server:
 
 `$ php -S localhost:8000/ -t build_local`
 
-#### Compiling Assets with Elixir
+#### Compiling assets with Laravel Elixir
 
 Jigsaw sites are configured with support for [Laravel Elixir](http://laravel.com/docs/elixir) out of the box.
 

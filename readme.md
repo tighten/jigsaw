@@ -1,6 +1,6 @@
 # Jigsaw
 
-Simple static sites with Laravel's [Blade](http://laravel.com/docs/5.0/templates).
+Simple static sites with Laravel's [Blade](http://laravel.com/docs/5.0/templates), brought to you by the fine folks at [Tighten Co](http://tighten.co).
 
 ### Getting Started
 

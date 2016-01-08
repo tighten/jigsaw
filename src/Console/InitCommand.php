@@ -14,6 +14,7 @@ class InitCommand extends Command
     public function __construct(Filesystem $files)
     {
         $this->files = $files;
+        $this->base = getcwd();
         parent::__construct();
     }
 
@@ -31,35 +32,16 @@ class InitCommand extends Command
     protected function fire()
     {
         if ($base = $this->input->getArgument('name')) {
-            $this->base = getcwd() . '/' . $base;
-            $this->createBaseDirectory();
+            $this->base .= '/' . $base;
         }
-        $this->createSourceFolder();
-        $this->createBaseConfig();
+
+        $this->scaffoldSite();
+
         $this->info('Site initialized successfully!');
     }
 
-    private function createBaseDirectory()
+    private function scaffoldSite()
     {
-        if (! $this->files->isDirectory($this->base)) {
-            $this->files->makeDirectory($this->base);
-        }
-    }
-
-    private function createSourceFolder()
-    {
-        $this->files->makeDirectory($this->base . '/source');
-    }
-
-    private function createBaseConfig()
-    {
-        $this->files->put($this->base . '/config.php', <<<EOT
-<?php
-
-return [
-    'production' => false,
-];
-EOT
-        );
+        $this->files->copyDirectory(__DIR__ . '/../../site', $this->base);
     }
 }

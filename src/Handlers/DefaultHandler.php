@@ -1,8 +1,8 @@
-<?php namespace Jigsaw\Jigsaw\Handlers;
+<?php namespace Cambri\Jigsaw\Handlers;
 
-use Illuminate\Contracts\View\Factory;
+use Illuminate\View\Factory;
 use Illuminate\Filesystem\Filesystem;
-use Jigsaw\Jigsaw\ProcessedFile;
+use Cambri\Jigsaw\ProcessedFile;
 
 class DefaultHandler
 {

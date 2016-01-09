@@ -50,7 +50,7 @@ $jigsaw->registerHandler($container[DefaultHandler::class]);
 
 $buildCommand = new BuildCommand($jigsaw, $sourcePath, $buildPath);
 
-$app = new Symfony\Component\Console\Application('Jigsaw', '0.3.1');
+$app = new Symfony\Component\Console\Application('Jigsaw', '0.4.0');
 $app->add($buildCommand);
 $app->add($container[InitCommand::class]);
 $app->run();

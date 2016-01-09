@@ -1,4 +1,4 @@
-<?php namespace Jigsaw\Jigsaw\Console;
+<?php namespace Cambri\Jigsaw\Console;
 
 use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Console\Input\InputArgument;

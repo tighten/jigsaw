@@ -1,24 +1,25 @@
 {
-    "name": "jigsaw/jigsaw",
+    "name": "cambri/jigsaw",
     "description": "Simple static sites with Laravel's Blade.",
-    "keywords": ["blade", "laravel", "static", "site", "generator"],
+    "keywords": ["blade", "laravel 4", "static", "site", "generator"],
     "license": "MIT",
     "authors": [
         {
             "name": "Adam Wathan",
             "email": "adam.wathan@gmail.com"
+        },
+        {
+            "name": "Carl Price",
+            "email": "cambricorp@gmail.com"
         }
     ],
     "autoload": {
         "psr-4": {
-            "Jigsaw\\Jigsaw\\": "src"
+            "Cambri\\Jigsaw\\": "src"
         }
     },
     "require": {
-        "illuminate/container": "~5.0",
-        "illuminate/support": "~5.0",
-        "illuminate/view": "~5.0",
-        "symfony/console": "~2.5",
+        "php": ">=5.4.0",
         "mockery/mockery": "^0.9.4"
     },
     "bin": [

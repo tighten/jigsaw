@@ -1,4 +1,4 @@
-<?php namespace Jigsaw\Jigsaw;
+<?php namespace Cambri\Jigsaw;
 
 class ProcessedFile
 {

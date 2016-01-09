@@ -1,6 +1,6 @@
-<?php namespace Jigsaw\Jigsaw;
+<?php namespace Cambri\Jigsaw;
 
-use Illuminate\Contracts\View\Factory;
+use Illuminate\View\Factory;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 

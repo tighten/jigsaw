@@ -1,7 +1,7 @@
-<?php namespace Jigsaw\Jigsaw\Console;
+<?php namespace Cambri\Jigsaw\Console;
 
 use Illuminate\Filesystem\Filesystem;
-use Jigsaw\Jigsaw\Jigsaw;
+use Cambri\Jigsaw\Jigsaw;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;

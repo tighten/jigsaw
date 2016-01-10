@@ -25,11 +25,6 @@ class BladeHandler
 
     public function render($file, $data)
     {
-        return $this->viewFactory->make($this->getViewName($file), $data)->render();
-    }
-
-    private function getViewName($file)
-    {
-        return str_replace('/', '.', $file->getRelativePath()) . '.' . $file->getBasename('.blade.php');
+        return $this->viewFactory->file($file->getRealPath(), $data)->render();
     }
 }

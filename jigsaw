@@ -13,6 +13,7 @@ use Jigsaw\Jigsaw\Console\InitCommand;
 use Jigsaw\Jigsaw\Filesystem;
 use Jigsaw\Jigsaw\Handlers\BladeHandler;
 use Jigsaw\Jigsaw\Handlers\DefaultHandler;
+use Jigsaw\Jigsaw\Handlers\MarkdownHandler;
 use Jigsaw\Jigsaw\Jigsaw;
 
 if (file_exists(__DIR__.'/vendor/autoload.php')) {
@@ -28,7 +29,7 @@ $sourcePath = getcwd() . '/source';
 
 $container = new Container;
 
-$container->bind(BladeHandler::class, function ($c) use ($cachePath, $sourcePath) {
+$container->bind(Factory::class, function ($c) use ($cachePath, $sourcePath) {
     $resolver = new EngineResolver;
 
     $resolver->register('blade', function () use ($cachePath) {
@@ -37,14 +38,20 @@ $container->bind(BladeHandler::class, function ($c) use ($cachePath, $sourcePath
     });
 
     $finder = new FileViewFinder(new Filesystem, [$sourcePath]);
-    $factory = new Factory($resolver, $finder, Mockery::mock(Dispatcher::class)->shouldIgnoreMissing());
-
-    return new BladeHandler($factory);
+    return new Factory($resolver, $finder, Mockery::mock(Dispatcher::class)->shouldIgnoreMissing());
 });
 
+$container->bind(BladeHandler::class, function ($c) {
+    return new BladeHandler($c[Factory::class]);
+});
+
+$container->bind(MarkdownHandler::class, function ($c) use ($cachePath) {
+    return new MarkdownHandler($cachePath, $c[Factory::class]);
+});
 
 $jigsaw = new Jigsaw(new Filesystem, $cachePath);
 
+$jigsaw->registerHandler($container[MarkdownHandler::class]);
 $jigsaw->registerHandler($container[BladeHandler::class]);
 $jigsaw->registerHandler($container[DefaultHandler::class]);
 

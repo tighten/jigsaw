@@ -6,13 +6,13 @@ use Mni\FrontYAML\Parser;
 
 class MarkdownHandler
 {
-    private $tempPath;
+    private $temporaryFilesystem;
     private $viewFactory;
     private $parser;
 
-    public function __construct($tempPath, Factory $viewFactory, $parser = null)
+    public function __construct($temporaryFilesystem, Factory $viewFactory, $parser = null)
     {
-        $this->tempPath = $tempPath;
+        $this->temporaryFilesystem = $temporaryFilesystem;
         $this->viewFactory = $viewFactory;
         $this->parser = $parser ?: new Parser;
     }
@@ -35,24 +35,21 @@ class MarkdownHandler
 
     public function render($file, $data)
     {
-        $str = $file->getContents();
-        $document = $this->parser->parse($str);
+        return $this->temporaryFilesystem->put($this->compileToBlade($file), function ($path) use ($data) {
+            return $this->viewFactory->file($path, $data)->render();
+        }, '.blade.php');
+    }
+
+    private function compileToBlade($file)
+    {
+        $document = $this->parser->parse($file->getContents());
         $yaml = $document->getYAML();
 
-        $bladeContents = collect([
+        return collect([
             sprintf("@extends('%s')", $yaml['layout']),
             sprintf("@section('%s')", $yaml['section']),
             $document->getContent(),
             '@endsection',
         ])->implode("\n");
-
-        $path = $this->tempPath . '/' . sha1($file->getRealPath()) . '.blade.php';
-        file_put_contents($path, $bladeContents);
-
-        $renderedContents = $this->viewFactory->file($path, $data)->render();
-
-        unlink($path);
-
-        return $renderedContents;
     }
 }

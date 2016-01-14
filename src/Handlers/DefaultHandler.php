@@ -1,7 +1,7 @@
 <?php namespace Jigsaw\Jigsaw\Handlers;
 
 use Illuminate\Contracts\View\Factory;
-use Illuminate\Filesystem\Filesystem;
+use Jigsaw\Jigsaw\Filesystem;
 use Jigsaw\Jigsaw\ProcessedFile;
 
 class DefaultHandler

@@ -1,6 +1,5 @@
 <?php namespace Jigsaw\Jigsaw\Console;
 
-use Illuminate\Filesystem\Filesystem;
 use Jigsaw\Jigsaw\Jigsaw;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;

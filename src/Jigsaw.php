@@ -1,8 +1,8 @@
 <?php namespace Jigsaw\Jigsaw;
 
 use Illuminate\Contracts\View\Factory;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
+use Jigsaw\Jigsaw\Filesystem;
 
 class Jigsaw
 {

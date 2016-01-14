@@ -3,7 +3,6 @@
 
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Events\Dispatcher;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\View\Compilers\BladeCompiler;
 use Illuminate\View\Engines\CompilerEngine;
 use Illuminate\View\Engines\EngineResolver;
@@ -11,6 +10,7 @@ use Illuminate\View\Factory;
 use Illuminate\View\FileViewFinder;
 use Jigsaw\Jigsaw\Console\BuildCommand;
 use Jigsaw\Jigsaw\Console\InitCommand;
+use Jigsaw\Jigsaw\Filesystem;
 use Jigsaw\Jigsaw\Handlers\BladeHandler;
 use Jigsaw\Jigsaw\Handlers\DefaultHandler;
 use Jigsaw\Jigsaw\Jigsaw;

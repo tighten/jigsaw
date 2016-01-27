@@ -1,3 +1,5 @@
+![](https://cloud.githubusercontent.com/assets/4323180/12616690/66db7b16-c4da-11e5-9769-2a71e7ed0d46.png)
+
 # Jigsaw
 
 Simple static sites with Laravel's [Blade](http://laravel.com/docs/5.0/templates), brought to you by the fine folks at [Tighten Co](http://tighten.co).

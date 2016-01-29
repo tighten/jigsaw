@@ -15,13 +15,17 @@
         }
     },
     "require": {
-        "illuminate/container": "~5.0",
-        "illuminate/support": "~5.0",
-        "illuminate/view": "~5.0",
-        "symfony/console": "~2.5",
-        "mockery/mockery": "^0.9.4"
+        "illuminate/container": "^5.2",
+        "illuminate/support": "^5.2",
+        "illuminate/view": "^5.2",
+        "symfony/console": "^2.5",
+        "mockery/mockery": "^0.9.4",
+        "mnapoli/front-yaml": "^1.5"
     },
     "bin": [
         "jigsaw"
-    ]
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^5.1"
+    }
 }

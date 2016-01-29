@@ -35,11 +35,11 @@ class MarkdownHandler
 
     public function render($file, $data)
     {
-        list($frontmatter, $content) = $this->parseFile($file);
+        $document = $this->parseFile($file);
 
-        $bladeContent = $this->compileToBlade($frontmatter, $content);
+        $bladeContent = $this->compileToBlade($document);
 
-        $data = array_merge($data, $frontmatter);
+        $data = array_merge($data, $document->getYAML());
 
         return $this->temporaryFilesystem->put($bladeContent, function ($path) use ($data) {
             return $this->viewFactory->file($path, $data)->render();
@@ -48,17 +48,17 @@ class MarkdownHandler
 
     private function parseFile($file)
     {
-        $document = $this->parser->parse($file->getContents());
-
-        return [$document->getYAML(), $document->getContent()];
+        return $this->parser->parse($file->getContents());
     }
 
-    private function compileToBlade($frontmatter, $content)
+    private function compileToBlade($document)
     {
+        $frontmatter = $document->getYAML();
+
         return collect([
             sprintf("@extends('%s')", $frontmatter['extends']),
             sprintf("@section('%s')", $frontmatter['section']),
-            $content,
+            $document->getContent(),
             '@endsection',
         ])->implode("\n");
     }

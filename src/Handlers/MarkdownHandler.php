@@ -46,7 +46,7 @@ class MarkdownHandler
         $yaml = $document->getYAML();
 
         return collect([
-            sprintf("@extends('%s')", $yaml['layout']),
+            sprintf("@extends('%s')", $yaml['extends']),
             sprintf("@section('%s')", $yaml['section']),
             $document->getContent(),
             '@endsection',

@@ -1,6 +1,5 @@
 <?php namespace Jigsaw\Jigsaw;
 
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
 class TemporaryFilesystem

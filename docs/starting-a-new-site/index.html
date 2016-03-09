@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Jigsaw – Static Sites for Laravel Developers</title>
+
+        <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="60x60" href="/apple-touch-icon-60x60.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/apple-touch-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="/apple-touch-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="/apple-touch-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-180x180.png">
+        <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+        <link rel="icon" type="image/png" href="/android-chrome-192x192.png" sizes="192x192">
+        <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
+        <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+        <link rel="manifest" href="/manifest.json">
+        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#309e74">
+        <meta name="msapplication-TileColor" content="#da532c">
+        <meta name="msapplication-TileImage" content="/mstile-144x144.png">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="stylesheet" href="/css/main.css">
+        <link href='https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,500,500italic,700,700italic' rel='stylesheet' type='text/css'>
+    </head>
+    <body class="border-t-3 border-primary full-height flex-col">
+        <div class="flex-fit">
+            <nav class="navbar navbar-brand">
+    <div class="container">
+        <div class="navbar-content">
+            <div>
+                <a class="link-plain text-xxl flex-y-center" href="/">
+                    <strong><em>Jigsaw</em></strong>
+                </a>
+            </div>
+            <div>
+                <a href="/docs/installation/" class="link-brand wt-medium">
+                    Docs
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <nav class="nav-list">
+                <a class="nav-list-item" href="/docs/installation/">Installation</a>
+                <a class="nav-list-item" href="/docs/starting-a-new-site/">Starting a new site</a>
+                <a class="nav-list-item" href="/docs/layouts/">Layouts</a>
+                <a class="nav-list-item" href="/docs/markdown/">Markdown</a>
+                <a class="nav-list-item" href="/docs/partials/">Partials</a>
+                <a class="nav-list-item" href="/docs/configuration-variables/">Configuration variables</a>
+                <a class="nav-list-item" href="/docs/compiling-assets/">Compiling assets</a>
+                <a class="nav-list-item" href="/docs/pretty-urls/">Pretty URLs</a>
+            </nav>
+        </div>
+        <div class="col-md-9 documentation-page">
+            <h2>Starting a new site</h2>
+<p>Building a Jigsaw site is exactly like building a static HTML site, except that files ending in <code>.blade.php</code> will be rendered using Laravel's <a href="http://laravel.com/docs/5.0/templates">Blade Templating Language</a>.</p>
+<p>Build out your site however you like in the <code>/source</code> directory. It might look something like this:</p>
+<pre><code>├─ source
+│  ├─ _assets
+│  ├─ _layouts
+│  │  └─ master.blade.php
+│  ├─ img
+│  │  └─ logo.png
+│  ├─ about-us.blade.php
+│  └─ index.blade.php
+└─ config.php</code></pre>
+<p>When you'd like to build it, run the <code>build</code> command from within your project root:</p>
+<p><code>$ jigsaw build</code></p>
+<p>Your site will be built and placed in the <code>/build_local</code> directory by default.</p>
+<p>Using the example structure above, you'd end up with something like this:</p>
+<pre><code>├─ build_local
+│  ├─ about-us
+│  │  └─ index.html
+│  ├─ img
+│  │  └─ logo.png
+│  └─ index.html
+├─ source
+└─ config.php</code></pre>
+<p>To quickly preview it, start a local PHP server:</p>
+<p><code>$ php -S localhost:8000/ -t build_local</code></p>
+        </div>
+    </div>
+</div>
+        </div>
+        <footer class="bg-dark text-center p-xs-y-6 p-xs-x-4 text-light-muted text-sm">
+            <p>&copy; 2016 Tighten Co</p>
+        </footer>
+    </body>
+</html>

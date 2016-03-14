@@ -53,7 +53,6 @@
                 <a class="nav-list-item" href="/jigsaw/docs/installation/">Installation</a>
                 <a class="nav-list-item" href="/jigsaw/docs/starting-a-new-site/">Starting a new site</a>
                 <a class="nav-list-item" href="/jigsaw/docs/blade-templating/">Blade templating</a>
-                <a class="nav-list-item" href="/jigsaw/docs/layouts/">Layouts</a>
                 <a class="nav-list-item" href="/jigsaw/docs/markdown/">Markdown</a>
                 <a class="nav-list-item" href="/jigsaw/docs/partials/">Partials</a>
                 <a class="nav-list-item" href="/jigsaw/docs/configuration-variables/">Configuration variables</a>
@@ -65,7 +64,64 @@
             </p>
         </div>
         <div class="col-md-9 documentation-page">
-            <p>Coming soon!</p>
+            <h2>Markdown</h2>
+<p>Have some pages you'd rather write in Markdown than Blade? <a href="https://github.com/tightenco/jigsaw-site/tree/master/source/docs">We know the feeling</a>.</p>
+<p>Using Markdown in Jigsaw is as simple as using a <code>.markdown</code> or <code>.md</code> extension, and specifying a few details in YAML front matter.</p>
+<p>For example, say you have this layout and you'd like to populate the <code>content</code> section using Markdown:</p>
+<pre><code class="language-html">&lt;html&gt;
+    &lt;head&gt;...&lt;/head&gt;
+    &lt;body&gt;
+        @yield('content')
+    &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p>If that layout was named <code>master</code> in the <code>_layouts</code> folder, you could create a Markdown page that used this layout like so:</p>
+<pre><code class="language-markdown">---
+extends: _layouts.master
+section: content
+---
+
+# My awesome heading!
+
+My awesome content!</code></pre>
+<p>The end result would be a generated page that looked like this:</p>
+<pre><code class="language-html">&lt;html&gt;
+    &lt;head&gt;...&lt;/head&gt;
+    &lt;body&gt;
+        &lt;h1&gt;My awesome heading!&lt;/h1&gt;
+        &lt;p&gt;My awesome content!&lt;/p&gt;
+    &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<h3>Custom front matter variables</h3>
+<p>Imagine you have a layout named <code>post.blade.php</code> in your <code>_layouts</code> folder that looks like this:</p>
+<pre><code class="language-html">@extends('_layouts.master')
+
+@section('content')
+    &lt;h1&gt;{{ $title }}&lt;/h1&gt;
+    &lt;h2&gt;by {{ $author }}&lt;/h2&gt;
+
+    @yield('postContent')
+@endsection</code></pre>
+<p>You can populate the <code>$title</code> and <code>$author</code> variables by adding custom keys to the YAML front matter:</p>
+<pre><code class="language-markdown">---
+extends: _layouts.post
+section: postContent
+title: "Jigsaw is awesome!"
+author: "Adam Wathan"
+---
+
+Jigsaw is one of the greatest static site generators of all time.</code></pre>
+<p>...which would generate this:</p>
+<pre><code class="language-html">&lt;html&gt;
+    &lt;head&gt;...&lt;/head&gt;
+    &lt;body&gt;
+        &lt;h1&gt;Jigsaw is awesome!&lt;/h1&gt;
+        &lt;h2&gt;by Adam Wathan&lt;/h2&gt;
+
+        &lt;p&gt;
+            Jigsaw is one of the greatest static site generators of all time.
+        &lt;/p&gt;
+    &lt;/body&gt;
+&lt;/html&gt;</code></pre>
         </div>
     </div>
 </div>

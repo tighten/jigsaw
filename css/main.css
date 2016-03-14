@@ -1934,6 +1934,13 @@ a.list-group-item:hover,
 .documentation-page p {
   margin-bottom: 1rem;
 }
+.documentation-page a {
+  color: #ba43ae;
+}
+.documentation-page a:hover,
+.documentation-page a:focus {
+  color: #822f7a;
+}
 .documentation-page blockquote {
   margin-bottom: 1rem;
   padding: 0.25rem 1rem;

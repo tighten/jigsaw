@@ -500,6 +500,13 @@ a:focus {
 .link-brand:focus {
   color: #822f7a;
 }
+.link-tighten {
+  color: #ffaa30;
+}
+.link-tighten:hover,
+.link-tighten:focus {
+  color: #e38500;
+}
 .link-plain:hover,
 .link-plain:focus {
   text-decoration: none;

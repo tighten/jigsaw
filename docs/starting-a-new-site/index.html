@@ -52,6 +52,7 @@
             <nav class="nav-list">
                 <a class="nav-list-item" href="/jigsaw/docs/installation/">Installation</a>
                 <a class="nav-list-item" href="/jigsaw/docs/starting-a-new-site/">Starting a new site</a>
+                <a class="nav-list-item" href="/jigsaw/docs/blade-templating/">Blade templating</a>
                 <a class="nav-list-item" href="/jigsaw/docs/layouts/">Layouts</a>
                 <a class="nav-list-item" href="/jigsaw/docs/markdown/">Markdown</a>
                 <a class="nav-list-item" href="/jigsaw/docs/partials/">Partials</a>
@@ -59,34 +60,34 @@
                 <a class="nav-list-item" href="/jigsaw/docs/compiling-assets/">Compiling assets</a>
                 <a class="nav-list-item" href="/jigsaw/docs/pretty-urls/">Pretty URLs</a>
             </nav>
+            <p class="p-xs-x-1 p-xs-y-4 text-dark-soft">
+                <small>Brought to you by <a href="http://tighten.co" class="link-tighten">Tighten Co.</a></small>
+            </p>
         </div>
         <div class="col-md-9 documentation-page">
             <h2>Starting a new site</h2>
-<p>Building a Jigsaw site is exactly like building a static HTML site, except that files ending in <code>.blade.php</code> will be rendered using Laravel's <a href="http://laravel.com/docs/5.0/templates">Blade Templating Language</a>.</p>
-<p>Build out your site however you like in the <code>/source</code> directory. It might look something like this:</p>
-<pre><code>├─ source
-│  ├─ _assets
-│  ├─ _layouts
-│  │  └─ master.blade.php
-│  ├─ img
-│  │  └─ logo.png
-│  ├─ about-us.blade.php
-│  └─ index.blade.php
-└─ config.php</code></pre>
-<p>When you'd like to build it, run the <code>build</code> command from within your project root:</p>
+<p>The fastest way to start a new Jigsaw site is to use the built-in <code>init</code> command to scaffold the default directory structure.</p>
+<p>If you have Jigsaw installed globally, simply run:</p>
+<pre><code>$ jigsaw init my-site</code></pre>
+<p>This will scaffold a new Jigsaw site in a new folder called <code>my-site</code> in the current directory.</p>
+<p>If you've already created a folder for your site and installed Jigsaw local to that folder with Composer, run:</p>
+<pre><code>$ jigsaw init</code></pre>
+<p>This will scaffold a new Jigsaw site in the current directory.</p>
+<h3>Directory structure</h3>
+<p>By default, Jigsaw gives you the following directory structure:</p>
+<p><img src="../../img/directory-structure.png" alt="Default Directory Structure" /></p>
+<p>The <code>source</code> directory contains the actual contents of your site. This is where all of your sites pages, CSS, Javascript, images, etc. will be kept.</p>
+<p>At the root of the directory, Jigsaw provides <code>gulpfile.js</code> and <code>package.json</code> for compiling your assets, and a <code>config.php</code> file where you can specify variables to be made available in your templates.</p>
+<h3>Generating your site</h3>
+<p>When you'd like to generate your site, run the <code>build</code> command from within your project root:</p>
 <p><code>$ jigsaw build</code></p>
-<p>Your site will be built and placed in the <code>/build_local</code> directory by default.</p>
-<p>Using the example structure above, you'd end up with something like this:</p>
-<pre><code>├─ build_local
-│  ├─ about-us
-│  │  └─ index.html
-│  ├─ img
-│  │  └─ logo.png
-│  └─ index.html
-├─ source
-└─ config.php</code></pre>
-<p>To quickly preview it, start a local PHP server:</p>
+<p>Jigsaw will generate your static HTML and place it in the <code>./build_local</code> directory by default.</p>
+<p>Using the default site structure, <code>./build_local</code> will look like this:</p>
+<p><img src="../../img/build-folder.png" alt="Default Directory Structure" /></p>
+<h3>Previewing your site</h3>
+<p>To quickly preview your site, first build it using <code>jigsaw build</code>, then start a local PHP server:</p>
 <p><code>$ php -S localhost:8000/ -t build_local</code></p>
+<p>You can now view your site at <code>http://localhost:8000</code> in your browser.</p>
         </div>
     </div>
 </div>

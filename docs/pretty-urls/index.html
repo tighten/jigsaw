@@ -52,12 +52,13 @@
             <nav class="nav-list">
                 <a class="nav-list-item" href="/jigsaw/docs/installation/">Installation</a>
                 <a class="nav-list-item" href="/jigsaw/docs/starting-a-new-site/">Starting a new site</a>
+                <a class="nav-list-item" href="/jigsaw/docs/site-variables/">Site variables</a>
                 <a class="nav-list-item" href="/jigsaw/docs/blade-templating/">Blade templating</a>
-                <a class="nav-list-item" href="/jigsaw/docs/markdown/">Markdown</a>
                 <a class="nav-list-item" href="/jigsaw/docs/partials/">Partials</a>
-                <a class="nav-list-item" href="/jigsaw/docs/configuration-variables/">Configuration variables</a>
+                <a class="nav-list-item" href="/jigsaw/docs/markdown/">Markdown</a>
                 <a class="nav-list-item" href="/jigsaw/docs/compiling-assets/">Compiling assets</a>
                 <a class="nav-list-item" href="/jigsaw/docs/pretty-urls/">Pretty URLs</a>
+                <a class="nav-list-item" href="/jigsaw/docs/deploying-your-site/">Deploying your site</a>
             </nav>
             <p class="p-xs-x-1 p-xs-y-4 text-dark-soft">
                 <small>Brought to you by <a href="http://tighten.co" class="link-tighten">Tighten Co.</a></small>
@@ -65,17 +66,18 @@
         </div>
         <div class="col-md-9 documentation-page">
             <h2>Pretty URLs</h2>
-<p>Jigsaw will automatically take any Blade files <em>not</em> named <code>index</code> and render them as <code>index.html</code> in a subfolder with the same name as the original file.</p>
+<p>By default, any Blade files <em>not</em> named <code>index.blade.php</code> are rendered as <code>index.html</code> in a subfolder named after the original file.</p>
 <p>For example, if you have a file named <code>about-us.blade.php</code> in your <code>source</code> directory:</p>
-<pre><code>├─ source
+<pre><code>└─ source
    ├─ _layouts
    ├─ about-us.blade.php
    └─ index.blade.php</code></pre>
 <p>...it will be rendered as <code>index.html</code> in the <code>build/about-us</code> directory:</p>
-<pre><code>├─ build_local
+<pre><code>└─ build_local
    ├─ about-us
    │  └─ index.html
    └─ index.html</code></pre>
+<p>This means your &quot;About us&quot; page will be available at <code>http://example.com/about-us/</code> instead of <code>http://example.com/about-us.html</code>.</p>
 <blockquote>
 <p>If you need to disable this behavior, use the <code>--pretty=false</code> option when building your site.</p>
 </blockquote>

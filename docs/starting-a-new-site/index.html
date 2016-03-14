@@ -52,12 +52,13 @@
             <nav class="nav-list">
                 <a class="nav-list-item" href="/jigsaw/docs/installation/">Installation</a>
                 <a class="nav-list-item" href="/jigsaw/docs/starting-a-new-site/">Starting a new site</a>
+                <a class="nav-list-item" href="/jigsaw/docs/site-variables/">Site variables</a>
                 <a class="nav-list-item" href="/jigsaw/docs/blade-templating/">Blade templating</a>
-                <a class="nav-list-item" href="/jigsaw/docs/markdown/">Markdown</a>
                 <a class="nav-list-item" href="/jigsaw/docs/partials/">Partials</a>
-                <a class="nav-list-item" href="/jigsaw/docs/configuration-variables/">Configuration variables</a>
+                <a class="nav-list-item" href="/jigsaw/docs/markdown/">Markdown</a>
                 <a class="nav-list-item" href="/jigsaw/docs/compiling-assets/">Compiling assets</a>
                 <a class="nav-list-item" href="/jigsaw/docs/pretty-urls/">Pretty URLs</a>
+                <a class="nav-list-item" href="/jigsaw/docs/deploying-your-site/">Deploying your site</a>
             </nav>
             <p class="p-xs-x-1 p-xs-y-4 text-dark-soft">
                 <small>Brought to you by <a href="http://tighten.co" class="link-tighten">Tighten Co.</a></small>
@@ -74,7 +75,7 @@
 <p>This will scaffold a new Jigsaw site in the current directory.</p>
 <h3>Directory structure</h3>
 <p>By default, Jigsaw gives you the following directory structure:</p>
-<p><img src="../../img/directory-structure.png" alt="Default Directory Structure" /></p>
+<p><img src="../../img/directory-structure.png" alt="Default directory structure" /></p>
 <p>The <code>source</code> directory contains the actual contents of your site. This is where all of your sites pages, CSS, Javascript, images, etc. will be kept.</p>
 <p>At the root of the directory, Jigsaw provides <code>gulpfile.js</code> and <code>package.json</code> for compiling your assets, and a <code>config.php</code> file where you can specify variables to be made available in your templates.</p>
 <h3>Generating your site</h3>
@@ -82,7 +83,7 @@
 <p><code>$ jigsaw build</code></p>
 <p>Jigsaw will generate your static HTML and place it in the <code>./build_local</code> directory by default.</p>
 <p>Using the default site structure, <code>./build_local</code> will look like this:</p>
-<p><img src="../../img/build-folder.png" alt="Default Directory Structure" /></p>
+<p><img src="../../img/build-folder.png" alt="Default build directory" /></p>
 <h3>Previewing your site</h3>
 <p>To quickly preview your site, first build it using <code>jigsaw build</code>, then start a local PHP server:</p>
 <p><code>$ php -S localhost:8000/ -t build_local</code></p>

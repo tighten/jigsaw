@@ -1804,7 +1804,6 @@ a.list-group-item:hover,
 .btn-primary {
   color: #ffffff;
   background-color: #ba43ae;
-  background-image: linear-gradient(172deg, rgba(255, 255, 255, 0.15), transparent 75%);
   border: 1px solid #ba43ae;
 }
 .btn-primary:active,

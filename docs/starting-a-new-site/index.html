@@ -51,21 +51,23 @@
         <div class="col-md-3 m-xs-b-6">
             <nav class="nav-list">
                 <a class="nav-list-item" href="/jigsaw/docs/installation/">Installation</a>
-                <a class="nav-list-item" href="/jigsaw/docs/starting-a-new-site/">Starting a new site</a>
-                <a class="nav-list-item" href="/jigsaw/docs/site-variables/">Site variables</a>
-                <a class="nav-list-item" href="/jigsaw/docs/blade-templating/">Blade templating</a>
-                <a class="nav-list-item" href="/jigsaw/docs/partials/">Partials</a>
+                <a class="nav-list-item" href="/jigsaw/docs/starting-a-new-site/">Starting a New Site</a>
+                <a class="nav-list-item" href="/jigsaw/docs/building-and-previewing/">Building &amp; Previewing</a>
+                <a class="nav-list-item" href="/jigsaw/docs/site-variables/">Site Variables</a>
+                <a class="nav-list-item" href="/jigsaw/docs/environments/">Environments</a>
+                <a class="nav-list-item" href="/jigsaw/docs/blade-templating/">Blade Templating</a>
+                <a class="nav-list-item" href="/jigsaw/docs/layouts-and-partials/">Layouts &amp; Partials</a>
                 <a class="nav-list-item" href="/jigsaw/docs/markdown/">Markdown</a>
-                <a class="nav-list-item" href="/jigsaw/docs/compiling-assets/">Compiling assets</a>
+                <a class="nav-list-item" href="/jigsaw/docs/compiling-assets/">Compiling Assets</a>
                 <a class="nav-list-item" href="/jigsaw/docs/pretty-urls/">Pretty URLs</a>
-                <a class="nav-list-item" href="/jigsaw/docs/deploying-your-site/">Deploying your site</a>
+                <a class="nav-list-item" href="/jigsaw/docs/deploying-your-site/">Deploying Your Site</a>
             </nav>
             <p class="p-xs-x-1 p-xs-y-4 text-dark-soft">
                 <small>Brought to you by <a href="http://tighten.co" class="link-tighten">Tighten Co.</a></small>
             </p>
         </div>
         <div class="col-md-9 documentation-page">
-            <h2>Starting a new site</h2>
+            <h2>Starting a New Site</h2>
 <p>The fastest way to start a new Jigsaw site is to use the built-in <code>init</code> command to scaffold the default directory structure.</p>
 <p>If you have Jigsaw installed globally, simply run:</p>
 <pre><code>$ jigsaw init my-site</code></pre>
@@ -78,16 +80,7 @@
 <p><img src="../../img/directory-structure.png" alt="Default directory structure" /></p>
 <p>The <code>source</code> directory contains the actual contents of your site. This is where all of your sites pages, CSS, Javascript, images, etc. will be kept.</p>
 <p>At the root of the directory, Jigsaw provides <code>gulpfile.js</code> and <code>package.json</code> for compiling your assets, and a <code>config.php</code> file where you can specify variables to be made available in your templates.</p>
-<h3>Generating your site</h3>
-<p>When you'd like to generate your site, run the <code>build</code> command from within your project root:</p>
-<p><code>$ jigsaw build</code></p>
-<p>Jigsaw will generate your static HTML and place it in the <code>./build_local</code> directory by default.</p>
-<p>Using the default site structure, <code>./build_local</code> will look like this:</p>
-<p><img src="../../img/build-folder.png" alt="Default build directory" /></p>
-<h3>Previewing your site</h3>
-<p>To quickly preview your site, first build it using <code>jigsaw build</code>, then start a local PHP server:</p>
-<p><code>$ php -S localhost:8000/ -t build_local</code></p>
-<p>You can now view your site at <code>http://localhost:8000</code> in your browser.</p>
+<p>Next, learn about <a href="../building-and-previewing">building and previewing your site</a>.</p>
         </div>
     </div>
 </div>

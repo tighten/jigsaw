@@ -51,14 +51,16 @@
         <div class="col-md-3 m-xs-b-6">
             <nav class="nav-list">
                 <a class="nav-list-item" href="/jigsaw/docs/installation/">Installation</a>
-                <a class="nav-list-item" href="/jigsaw/docs/starting-a-new-site/">Starting a new site</a>
-                <a class="nav-list-item" href="/jigsaw/docs/site-variables/">Site variables</a>
-                <a class="nav-list-item" href="/jigsaw/docs/blade-templating/">Blade templating</a>
-                <a class="nav-list-item" href="/jigsaw/docs/partials/">Partials</a>
+                <a class="nav-list-item" href="/jigsaw/docs/starting-a-new-site/">Starting a New Site</a>
+                <a class="nav-list-item" href="/jigsaw/docs/building-and-previewing/">Building &amp; Previewing</a>
+                <a class="nav-list-item" href="/jigsaw/docs/site-variables/">Site Variables</a>
+                <a class="nav-list-item" href="/jigsaw/docs/environments/">Environments</a>
+                <a class="nav-list-item" href="/jigsaw/docs/blade-templating/">Blade Templating</a>
+                <a class="nav-list-item" href="/jigsaw/docs/layouts-and-partials/">Layouts &amp; Partials</a>
                 <a class="nav-list-item" href="/jigsaw/docs/markdown/">Markdown</a>
-                <a class="nav-list-item" href="/jigsaw/docs/compiling-assets/">Compiling assets</a>
+                <a class="nav-list-item" href="/jigsaw/docs/compiling-assets/">Compiling Assets</a>
                 <a class="nav-list-item" href="/jigsaw/docs/pretty-urls/">Pretty URLs</a>
-                <a class="nav-list-item" href="/jigsaw/docs/deploying-your-site/">Deploying your site</a>
+                <a class="nav-list-item" href="/jigsaw/docs/deploying-your-site/">Deploying Your Site</a>
             </nav>
             <p class="p-xs-x-1 p-xs-y-4 text-dark-soft">
                 <small>Brought to you by <a href="http://tighten.co" class="link-tighten">Tighten Co.</a></small>
@@ -69,35 +71,19 @@
 <h3>System Requirements</h3>
 <p>To use Jigsaw, you need to have PHP 5.5+ installed on your machine. You'll also optionally need Node.js and NPM installed if you want to use <a href="https://laravel.com/docs/5.2/elixir">Elixir</a> to compile your CSS and Javascript.</p>
 <h3>Installing Globally</h3>
-<ol>
-<li>
 <p>Install Jigsaw globally via Composer:</p>
 <pre><code>$ composer global require jigsaw/jigsaw</code></pre>
 <blockquote>
 <p>Make sure <code>~/.composer/vendor/bin</code> is in your <code>$PATH</code>.</p>
 </blockquote>
-</li>
-<li>
-<p>Initialize a new project:</p>
-<pre><code>$ jigsaw init my-site</code></pre>
-</li>
-</ol>
 <h3>Installing Locally</h3>
 <p>If you run into dependency conflicts when trying to install Jigsaw globally, you can always install it locally on a per site basis.</p>
-<ol>
-<li>
 <p>Create a folder for your site:</p>
 <pre><code>$ mkdir my-site &amp;&amp; cd my-site</code></pre>
-</li>
-<li>
 <p>Install Jigsaw via Composer:</p>
 <pre><code>$ composer require jigsaw/jigsaw</code></pre>
-</li>
-<li>
 <p>Initialize a new project in the current folder:</p>
 <pre><code>$ ./vendor/bin/jigsaw init</code></pre>
-</li>
-</ol>
         </div>
     </div>
 </div>

@@ -67,21 +67,16 @@
             </p>
         </div>
         <div class="col-md-9 documentation-page">
-            <h2>Site Variables</h2>
-<p>Anything you add to the array in <code>config.php</code> will be made available as a variable in your templates.</p>
-<p>For example, if your config looks like this:</p>
-<pre><code class="language-php">&lt;?php
-
-return [
-    'contact_email' =&gt; 'support@example.com',
-];</code></pre>
-<p>...you can use that variable in your templates like so:</p>
-<pre><code>@extends('_layouts.master')
-
-@section('content')
-    &lt;p&gt;Contact us at {{ $contact_email }}&lt;/p&gt;
-@stop</code></pre>
-<p>Jigsaw also supports environment-specific site variables, which you can learn more about <a href="../environments/">here</a>.</p>
+            <h2>Layouts &amp; Partials</h2>
+<p>One of the biggest benefits of a templating language is the ability to create reusable layouts and partials.</p>
+<h3>Preventing Layouts &amp; Partials from Rendering</h3>
+<p>Since it's important that layouts and partials are never rendered on their own, you need to be able to tell Jigsaw when a file shouldn't be rendered.</p>
+<p>To prevent a file or folder from being rendered, simply prefix it with an underscore:</p>
+<p><img src="../../img/layouts-directory.png" alt="Layouts folder" /></p>
+<p>Jigsaw gives you a <code>_layouts</code> folder by default, but as long as you prefix with an underscore, you can create any files or folders you need.</p>
+<p>For example, if you wanted a place to store all of your partials, you could create a directory called <code>_partials</code>:</p>
+<p><img src="../../img/partials-directory.png" alt="Partials folder" /></p>
+<p>Since the <code>_partials</code> folder starts with an underscore, those files won't be rendered when you generate your site, but will still be available to <code>@include</code> in your other templates.</p>
         </div>
     </div>
 </div>

@@ -67,21 +67,27 @@
             </p>
         </div>
         <div class="col-md-9 documentation-page">
-            <h2>Site Variables</h2>
-<p>Anything you add to the array in <code>config.php</code> will be made available as a variable in your templates.</p>
-<p>For example, if your config looks like this:</p>
+            <h2>Environments</h2>
+<p>Often you might want to use different site variables in your development and production environments. For example, in production you might want to render your Google Analytics tracking snippet, but not include it in development so you don't skew your results.</p>
+<p>Jigsaw makes this simple by allowing you to create additional <code>config.php</code> files for your different environments.</p>
+<p>Say your base <code>config.php</code> file looks like this:</p>
 <pre><code class="language-php">&lt;?php
 
 return [
-    'contact_email' =&gt; 'support@example.com',
+    'staging' =&gt; true,
+    'company' =&gt; 'Tighten Co',
 ];</code></pre>
-<p>...you can use that variable in your templates like so:</p>
-<pre><code>@extends('_layouts.master')
+<p>You can override the <code>staging</code> variable in your production environment by creating a new file called <code>config.production.php</code>:</p>
+<pre><code class="language-php">&lt;?php
 
-@section('content')
-    &lt;p&gt;Contact us at {{ $contact_email }}&lt;/p&gt;
-@stop</code></pre>
-<p>Jigsaw also supports environment-specific site variables, which you can learn more about <a href="../environments/">here</a>.</p>
+return [
+    'staging' =&gt; false,
+];</code></pre>
+<p>This file is <em>merged</em> on top of <code>config.php</code>, so you only need to specify the variables that you are changing.</p>
+<h3>Building a specific environment</h3>
+<p>To build a specific environment, just include the <code>--env={environment}</code> flag when running <code>jigsaw build</code>:</p>
+<pre><code>$ jigsaw build --env=production</code></pre>
+<p>This will generate your site into a new folder called <code>build_production</code>, leaving your <code>build_local</code> folder untouched.</p>
         </div>
     </div>
 </div>

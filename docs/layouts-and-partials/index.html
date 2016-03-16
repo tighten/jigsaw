@@ -69,6 +69,74 @@
         <div class="col-md-9 documentation-page">
             <h2>Layouts &amp; Partials</h2>
 <p>One of the biggest benefits of a templating language is the ability to create reusable layouts and partials.</p>
+<h3>Defining a Layout</h3>
+<p>Layouts themselves are just basic Blade templates that have one or more <code>@yield</code> calls where child templates can render their contents.</p>
+<p>A basic master layout could look like this:</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;The Amazing Web&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;header&gt;
+            My Amazing Site
+        &lt;/header&gt;
+
+        @yield('contents')
+
+        &lt;footer&gt;
+            &lt;p&gt;©2016 Awesome Co&lt;/p&gt;
+        &lt;/footer&gt;
+    &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p>Jigsaw provides a <code>source/_layouts</code> directory out of the box with a basic master layout.</p>
+<h3>Extending a Layout</h3>
+<p>To extend a layout, create a template that specifies which layout to extend in an <code>@extends</code> directive, and which section(s) to populate using the <code>@section</code> directive:</p>
+<pre><code>@extends('_layouts.master')
+
+@section('contents')
+
+&lt;div&gt;
+    &lt;p&gt;The contents of my amazing homepage.&lt;/p&gt;
+&lt;/div&gt;
+
+@endsection</code></pre>
+<p>Layouts and partials are referenced relative to the <code>source</code> directory using <em>dot notation</em>, where each dot represents a directory separator in the file name and the <code>.blade.php</code> extension omitted.</p>
+<p>Learn more about Blade layouts in the <a href="https://laravel.com/docs/5.2/blade#template-inheritance">official Blade documentation</a>.</p>
+<h3>Partials</h3>
+<p>To include a template inside of another template, use the <code>@include</code> directive:</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;The Amazing Web&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        @include('_partials.header')
+
+        @yield('contents')
+
+        @include('_partials.footer')
+    &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p>You can pass data to a partial by passing an associative array as a second parameter:</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;The Amazing Web&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        @include('_partials.header', ['page_title' =&gt; 'My Amazing Site'])
+
+        @yield('contents')
+
+        @include('_partials.footer')
+    &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p>That data is then available in your partial as a normal variable:</p>
+<pre><code>&lt;!-- _partials/header.blade.php --&gt;
+&lt;header&gt;
+    {{ $page_title }}
+&lt;/header&gt;</code></pre>
 <h3>Preventing Layouts &amp; Partials from Rendering</h3>
 <p>Since it's important that layouts and partials are never rendered on their own, you need to be able to tell Jigsaw when a file shouldn't be rendered.</p>
 <p>To prevent a file or folder from being rendered, simply prefix it with an underscore:</p>

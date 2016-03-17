@@ -525,6 +525,13 @@ a:focus {
 .link-muted:focus {
   color: #484748;
 }
+.link-light-muted {
+  color: rgba(255, 255, 255, 0.6);
+}
+.link-light-muted:hover,
+.link-light-muted:focus {
+  color: rgba(255, 255, 255, 0.9);
+}
 .text-xjumbo {
   font-size: 2.625rem !important;
 }

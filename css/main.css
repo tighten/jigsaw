@@ -589,6 +589,9 @@ a:focus {
 .text-em {
   font-style: italic;
 }
+.wt-xlight {
+  font-weight: 100 !important;
+}
 .wt-light {
   font-weight: 300 !important;
 }
@@ -1987,7 +1990,7 @@ a.list-group-item:hover,
 }
 .code-editor {
   text-align: left;
-  font-size: 10px;
+  font-size: 0.625rem;
   overflow: hidden;
 }
 .code-editor-top {
@@ -2017,13 +2020,22 @@ a.list-group-item:hover,
   background-color: #29ca41;
 }
 .code-editor-body {
-  padding: 2em;
-  font-size: 14px;
+  padding: 1em;
+  font-size: 0.78571429rem;
   line-height: 2.2;
   color: #cdd3de;
   background-color: #253238;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
+}
+@media (min-width: 544px) {
+  .code-editor-body {
+    padding: 2em;
+    font-size: 0.875rem;
+  }
+}
+.code-editor-body .code-muted {
+  color: #506e79;
 }
 .code-editor-body .code-red {
   color: #ff5370;
@@ -2076,6 +2088,9 @@ a.list-group-item:hover,
 }
 .constrain-sm {
   max-width: 26rem;
+}
+.constrain-lg {
+  max-width: 40rem;
 }
 .m-xs-t-0 {
   margin-top: 0;

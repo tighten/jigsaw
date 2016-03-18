@@ -1974,6 +1974,17 @@ a.list-group-item:hover,
   padding: 0;
   background: none;
 }
+.documentation-page ol,
+.documentation-page ul {
+  margin-bottom: 1rem;
+  padding-left: 2rem;
+}
+.documentation-page ol {
+  list-style-type: decimal;
+}
+.documentation-page ul {
+  list-style-type: disc;
+}
 .code-editor {
   font-size: 10px;
   overflow: hidden;

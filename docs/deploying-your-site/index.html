@@ -68,7 +68,36 @@
         </div>
         <div class="col-md-9 documentation-page">
             <h2>Deploying Your Site</h2>
-<p>Coming soon!</p>
+<p>Since Jigsaw sites are just static HTML and Javascript, they are simple and cheap to deploy and host.</p>
+<h3>Using GitHub Pages</h3>
+<p><a href="https://pages.github.com/">GitHub Pages</a> is a free service for hosting static sites offered by GitHub. To get started, first read through <a href="https://help.github.com/categories/github-pages-basics/">the documentation</a> to get an understanding of how the service works.</p>
+<p>The approach we use at Tighten Co. for deploying Jigsaw sites to GitHub pages looks like this:</p>
+<ol>
+<li>
+<p>Build your site for production</p>
+<pre><code>$ gulp &amp;&amp; jigsaw build --env=production</code></pre>
+</li>
+<li>
+<p>Commit the <code>build_production</code> folder to your repository</p>
+<pre><code>$ git add build_production &amp;&amp; git commit -m "Build for deploy"</code></pre>
+</li>
+<li>
+<p>Use <code>git subtree push</code> to push <em>just</em> the <code>build_production</code> folder to your <code>gh-pages</code> branch</p>
+<pre><code>$ git subtree push --prefix build_production origin gh-pages</code></pre>
+</li>
+</ol>
+<blockquote>
+<p>Check out the NPM script we use to deploy this site <a href="https://github.com/tightenco/jigsaw-site/blob/master/package.json#L12">here</a>.</p>
+</blockquote>
+<h3>Using Amazon S3</h3>
+<p><a href="https://aws.amazon.com/s3/">Amazon S3</a> is a very affordable service for hosting static assets. You might have used it in the past for hosting things like images, user uploads, or PDFs in your web applications.</p>
+<p>What you might not have known is that Amazon S3 also has first class support for hosting static sites, like your Jigsaw projects.</p>
+<p>To deploy a site to S3, first build your site for production:</p>
+<pre><code>$ jigsaw build --env=production</code></pre>
+<p>Then simply follow the steps in <a href="http://docs.aws.amazon.com/gettingstarted/latest/swh/website-hosting-intro.html">Amazon's static site documentation</a> to deploy your <code>build_production</code> folder to your S3 bucket.</p>
+<h3>Manually</h3>
+<p>If you have an existing server that you'd like to use to host your Jigsaw site, all you need to do is get the contents <code>build_production</code> into a public folder that's pointed at by the URL you'd like to use.</p>
+<p>We plan to add specific documentation for manually serving a Jigsaw site with nginx soon!</p>
         </div>
     </div>
 </div>

@@ -1,4 +1,4 @@
-![](https://cloud.githubusercontent.com/assets/4323180/12616690/66db7b16-c4da-11e5-9769-2a71e7ed0d46.png)
+![](https://raw.githubusercontent.com/tightenco/jigsaw/master/logo.png)
 
 # Jigsaw
 

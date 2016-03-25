@@ -1,6 +1,6 @@
-<?php namespace Jigsaw\Jigsaw\Console;
+<?php namespace TightenCo\Jigsaw\Console;
 
-use Jigsaw\Jigsaw\Jigsaw;
+use TightenCo\Jigsaw\Jigsaw;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;

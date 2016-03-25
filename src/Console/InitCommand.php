@@ -1,6 +1,6 @@
-<?php namespace Jigsaw\Jigsaw\Console;
+<?php namespace TightenCo\Jigsaw\Console;
 
-use Jigsaw\Jigsaw\Filesystem;
+use TightenCo\Jigsaw\Filesystem;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;

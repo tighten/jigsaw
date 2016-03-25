@@ -1,4 +1,4 @@
-<?php namespace Jigsaw\Jigsaw;
+<?php namespace TightenCo\Jigsaw;
 
 use Illuminate\Support\Str;
 

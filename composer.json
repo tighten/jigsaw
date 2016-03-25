@@ -1,5 +1,5 @@
 {
-    "name": "jigsaw/jigsaw",
+    "name": "tightenco/jigsaw",
     "description": "Simple static sites with Laravel's Blade.",
     "keywords": ["blade", "laravel", "static", "site", "generator"],
     "license": "MIT",
@@ -11,7 +11,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "Jigsaw\\Jigsaw\\": "src"
+            "TightenCo\\Jigsaw\\": "src"
         }
     },
     "require": {

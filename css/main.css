@@ -1988,6 +1988,9 @@ a.list-group-item:hover,
 .documentation-page ul {
   list-style-type: disc;
 }
+.documentation-page img {
+  max-width: 100%;
+}
 .code-editor {
   text-align: left;
   font-size: 0.625rem;

@@ -1,8 +1,8 @@
-<?php namespace Jigsaw\Jigsaw\Handlers;
+<?php namespace TightenCo\Jigsaw\Handlers;
 
 use Illuminate\Contracts\View\Factory;
-use Jigsaw\Jigsaw\Filesystem;
-use Jigsaw\Jigsaw\ProcessedFile;
+use TightenCo\Jigsaw\Filesystem;
+use TightenCo\Jigsaw\ProcessedFile;
 
 class DefaultHandler
 {

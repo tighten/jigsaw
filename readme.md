@@ -1,4 +1,4 @@
-![](https://cloud.githubusercontent.com/assets/4323180/12616690/66db7b16-c4da-11e5-9769-2a71e7ed0d46.png)
+![](https://raw.githubusercontent.com/tightenco/jigsaw/master/logo.png)
 
 # Jigsaw
 
@@ -10,7 +10,7 @@ Simple static sites with Laravel's [Blade](http://laravel.com/docs/5.0/templates
 
 1. Install Jigsaw globally via Composer:
   
-    `$ composer global require jigsaw/jigsaw`
+    `$ composer global require tightenco/jigsaw`
 
     > Make sure `~/.composer/vendor/bin` is in your `$PATH`.
 
@@ -29,7 +29,7 @@ If you run into dependency conflicts when trying to install Jigsaw globally, you
 
 2. Install Jigsaw via Composer:
   
-    `$ composer require jigsaw/jigsaw`
+    `$ composer require tightenco/jigsaw`
 
 3. Initialize a new project in the current folder:
 

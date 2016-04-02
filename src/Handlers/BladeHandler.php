@@ -1,7 +1,7 @@
-<?php namespace Jigsaw\Jigsaw\Handlers;
+<?php namespace TightenCo\Jigsaw\Handlers;
 
 use Illuminate\Contracts\View\Factory;
-use Jigsaw\Jigsaw\ProcessedFile;
+use TightenCo\Jigsaw\ProcessedFile;
 
 class BladeHandler
 {

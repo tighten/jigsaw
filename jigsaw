@@ -8,14 +8,14 @@ use Illuminate\View\Engines\CompilerEngine;
 use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Factory;
 use Illuminate\View\FileViewFinder;
-use Jigsaw\Jigsaw\Console\BuildCommand;
-use Jigsaw\Jigsaw\Console\InitCommand;
-use Jigsaw\Jigsaw\Filesystem;
-use Jigsaw\Jigsaw\Handlers\BladeHandler;
-use Jigsaw\Jigsaw\Handlers\DefaultHandler;
-use Jigsaw\Jigsaw\Handlers\MarkdownHandler;
-use Jigsaw\Jigsaw\Jigsaw;
-use Jigsaw\Jigsaw\TemporaryFilesystem;
+use TightenCo\Jigsaw\Console\BuildCommand;
+use TightenCo\Jigsaw\Console\InitCommand;
+use TightenCo\Jigsaw\Filesystem;
+use TightenCo\Jigsaw\Handlers\BladeHandler;
+use TightenCo\Jigsaw\Handlers\DefaultHandler;
+use TightenCo\Jigsaw\Handlers\MarkdownHandler;
+use TightenCo\Jigsaw\Jigsaw;
+use TightenCo\Jigsaw\TemporaryFilesystem;
 
 if (file_exists(__DIR__.'/vendor/autoload.php')) {
     require __DIR__.'/vendor/autoload.php';

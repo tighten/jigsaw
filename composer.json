@@ -1,0 +1,31 @@
+{
+    "name": "tightenco/jigsaw",
+    "description": "Simple static sites with Laravel's Blade.",
+    "keywords": ["blade", "laravel", "static", "site", "generator"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Adam Wathan",
+            "email": "adam.wathan@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "TightenCo\\Jigsaw\\": "src"
+        }
+    },
+    "require": {
+        "illuminate/container": "^5.2",
+        "illuminate/support": "^5.2",
+        "illuminate/view": "^5.2",
+        "symfony/console": "^2.5",
+        "mockery/mockery": "^0.9.4",
+        "mnapoli/front-yaml": "^1.5"
+    },
+    "bin": [
+        "jigsaw"
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^5.1"
+    }
+}

@@ -1,0 +1,69 @@
+#!/usr/bin/env php
+<?php
+
+use Illuminate\Container\Container;
+use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\View\Compilers\BladeCompiler;
+use Illuminate\View\Engines\CompilerEngine;
+use Illuminate\View\Engines\EngineResolver;
+use Illuminate\View\Factory;
+use Illuminate\View\FileViewFinder;
+use TightenCo\Jigsaw\Console\BuildCommand;
+use TightenCo\Jigsaw\Console\InitCommand;
+use TightenCo\Jigsaw\Filesystem;
+use TightenCo\Jigsaw\Handlers\BladeHandler;
+use TightenCo\Jigsaw\Handlers\DefaultHandler;
+use TightenCo\Jigsaw\Handlers\MarkdownHandler;
+use TightenCo\Jigsaw\Jigsaw;
+use TightenCo\Jigsaw\TemporaryFilesystem;
+
+if (file_exists(__DIR__.'/vendor/autoload.php')) {
+    require __DIR__.'/vendor/autoload.php';
+} else {
+    require __DIR__.'/../../autoload.php';
+}
+
+// Config
+$cachePath = getcwd().'/_tmp';
+$buildPath = getcwd().'/build';
+$sourcePath = getcwd().'/source';
+
+$container = new Container();
+
+$container->bind(Factory::class, function ($c) use ($cachePath, $sourcePath) {
+    $resolver = new EngineResolver();
+
+    $resolver->register('blade', function () use ($cachePath) {
+        $compiler = new BladeCompiler(new Filesystem(), $cachePath);
+
+        return new CompilerEngine($compiler, new Filesystem());
+    });
+
+    $finder = new FileViewFinder(new Filesystem(), [$sourcePath]);
+
+    return new Factory($resolver, $finder, Mockery::mock(Dispatcher::class)->shouldIgnoreMissing());
+});
+
+$container->bind(BladeHandler::class, function ($c) {
+    return new BladeHandler($c[Factory::class]);
+});
+
+$container->bind(MarkdownHandler::class, function ($c) use ($cachePath) {
+    $tempFilesystem = new TemporaryFilesystem($cachePath);
+
+    return new MarkdownHandler($tempFilesystem, $c[Factory::class]);
+
+});
+
+$jigsaw = new Jigsaw(new Filesystem(), $cachePath);
+
+$jigsaw->registerHandler($container[MarkdownHandler::class]);
+$jigsaw->registerHandler($container[BladeHandler::class]);
+$jigsaw->registerHandler($container[DefaultHandler::class]);
+
+$buildCommand = new BuildCommand($jigsaw, $sourcePath, $buildPath);
+
+$app = new Symfony\Component\Console\Application('Jigsaw', '0.4.0');
+$app->add($buildCommand);
+$app->add($container[InitCommand::class]);
+$app->run();

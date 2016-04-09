@@ -1,6 +1,8 @@
-<?php
+<?php namespace TightenCo\Jigsaw;
 
-namespace TightenCo\Jigsaw;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Support\Str;
+use TightenCo\Jigsaw\Filesystem;
 
 class Jigsaw
 {
@@ -8,7 +10,7 @@ class Jigsaw
     private $cachePath;
     private $handlers = [];
     private $options = [
-        'pretty' => true,
+        'pretty' => true
     ];
 
     public function __construct(Filesystem $files, $cachePath)
@@ -43,7 +45,7 @@ class Jigsaw
 
     private function prepareDirectory($directory, $clean = false)
     {
-        if (!$this->files->isDirectory($directory)) {
+        if (! $this->files->isDirectory($directory)) {
             $this->files->makeDirectory($directory, 0755, true);
         }
 
@@ -55,7 +57,7 @@ class Jigsaw
     private function buildSite($source, $dest, $config)
     {
         collect($this->files->allFiles($source))->filter(function ($file) {
-            return !$this->shouldIgnore($file);
+            return ! $this->shouldIgnore($file);
         })->each(function ($file) use ($dest, $config) {
             $this->buildFile($file, $dest, $config);
         });
@@ -114,7 +116,7 @@ class Jigsaw
     private function getPrettyRelativePathname($file)
     {
         if ($file->extension() === 'html' && $file->name() !== 'index.html') {
-            return $this->getPrettyDirectory($file).'/index.html';
+            return $this->getPrettyDirectory($file) . '/index.html';
         }
 
         return $file->relativePathname();

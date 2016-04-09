@@ -24,23 +24,21 @@ if (file_exists(__DIR__.'/vendor/autoload.php')) {
 }
 
 // Config
-$cachePath = getcwd().'/_tmp';
-$buildPath = getcwd().'/build';
-$sourcePath = getcwd().'/source';
+$cachePath = getcwd() . '/_tmp';
+$buildPath = getcwd() . '/build';
+$sourcePath = getcwd() . '/source';
 
-$container = new Container();
+$container = new Container;
 
 $container->bind(Factory::class, function ($c) use ($cachePath, $sourcePath) {
-    $resolver = new EngineResolver();
+    $resolver = new EngineResolver;
 
     $resolver->register('blade', function () use ($cachePath) {
-        $compiler = new BladeCompiler(new Filesystem(), $cachePath);
-
-        return new CompilerEngine($compiler, new Filesystem());
+        $compiler = new BladeCompiler(new Filesystem, $cachePath);
+        return new CompilerEngine($compiler, new Filesystem);
     });
 
-    $finder = new FileViewFinder(new Filesystem(), [$sourcePath]);
-
+    $finder = new FileViewFinder(new Filesystem, [$sourcePath]);
     return new Factory($resolver, $finder, Mockery::mock(Dispatcher::class)->shouldIgnoreMissing());
 });
 
@@ -50,12 +48,10 @@ $container->bind(BladeHandler::class, function ($c) {
 
 $container->bind(MarkdownHandler::class, function ($c) use ($cachePath) {
     $tempFilesystem = new TemporaryFilesystem($cachePath);
-
     return new MarkdownHandler($tempFilesystem, $c[Factory::class]);
-
 });
 
-$jigsaw = new Jigsaw(new Filesystem(), $cachePath);
+$jigsaw = new Jigsaw(new Filesystem, $cachePath);
 
 $jigsaw->registerHandler($container[MarkdownHandler::class]);
 $jigsaw->registerHandler($container[BladeHandler::class]);

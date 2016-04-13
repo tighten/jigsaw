@@ -75,7 +75,9 @@ Using the example structure above, you'd end up with something like this:
 
 To quickly preview it, start a local PHP server:
 
-`$ php -S localhost:8000/ -t build_local`
+`$ jigsaw serve`
+
+Your site will be served on `http://localhost:8000`
 
 #### Compiling assets with Laravel Elixir
 
@@ -199,3 +201,13 @@ For example, if you have a file named `about-us.blade.php` in your `source` dire
 ```
 
 > If you need to disable this behavior, use the `--pretty=false` option when building your site.
+
+#### Server
+
+The Jigsaw `serve` command is a wrapper for the build in php server. It will use serve your local environment on port 8000 by default. 
+
+There are 2 options you can pass to the `serve` command, environment and port. 
+
+For example, if you want to serve your production environment on port 8080: 
+
+`$ jigsaw serve production 8080`

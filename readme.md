@@ -206,8 +206,8 @@ For example, if you have a file named `about-us.blade.php` in your `source` dire
 
 The Jigsaw `serve` command is a wrapper for the build in php server. It will use serve your local environment on port 8000 by default. 
 
-There are 2 options you can pass to the `serve` command, environment and port. 
+The `serve` command takes an optional argument environment, and an option port. 
 
 For example, if you want to serve your production environment on port 8080: 
 
-`$ jigsaw serve production 8080`
+`$ jigsaw serve production port=8080`

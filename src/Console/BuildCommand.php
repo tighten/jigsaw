@@ -1,6 +1,7 @@
 <?php namespace TightenCo\Jigsaw\Console;
 
 use TightenCo\Jigsaw\Jigsaw;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -23,14 +24,16 @@ class BuildCommand extends Command
     {
         $this->setName('build')
             ->setDescription('Build your site.')
-            ->addOption('env', null, InputOption::VALUE_REQUIRED, "What environment should we use to build?", 'local')
+            ->addArgument('env', InputArgument::OPTIONAL, "What environment should we use to build?", 'local')
             ->addOption('pretty', null, InputOption::VALUE_REQUIRED, "Should the site use pretty URLs?", 'true');
     }
 
     protected function fire()
     {
+        $env = $this->input->getArgument('env');
+
         $config = $this->loadConfig();
-        $this->buildPath .= '_' . $this->input->getOption('env');
+        $this->buildPath .= '_' . $env;
 
         if ($this->input->getOption('pretty') === 'false') {
             $this->jigsaw->setOption('pretty', false);
@@ -42,7 +45,7 @@ class BuildCommand extends Command
 
     private function loadConfig()
     {
-        $env = $this->input->getOption('env');
+        $env = $this->input->getArgument('env');
 
         if ($env !== null && file_exists(getcwd() . "/config.{$env}.php")) {
             $environmentConfig = include getcwd() . "/config.{$env}.php";

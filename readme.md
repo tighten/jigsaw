@@ -170,9 +170,9 @@ To create an environment-specific config file, just stick your environment name 
 
 `config.production.php`
 
-To build your site for a specific environment, use the `--env` option:
+To build your site for a specific environment, pass the environment name as the first option:
 
-`$ jigsaw build --env=production`
+`$ jigsaw build production`
 
 Each environment gets it's own `build_*` folder, so in this case your site will be placed in `build_production`.
 

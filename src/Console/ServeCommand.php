@@ -19,20 +19,22 @@ class ServeCommand extends Command
             ->addArgument(
                 'environment',
                 InputArgument::OPTIONAL,
-                'What environment should we serve?'
+                'What environment should we serve?',
+                'local'
             )
             ->addOption(
                 'port',
                 'p',
                 InputOption::VALUE_REQUIRED,
-                'What port should we use?'
+                'What port should we use?',
+                8000
             );
     }
 
     protected function fire()
     {
-        $environment = $this->input->getArgument('environment') ?: 'local';
-        $port = $this->input->getOption('port') ?: '8000';
+        $environment = $this->input->getArgument('environment');
+        $port = $this->input->getOption('port');
 
         $this->info("Server started on http://localhost:{$port}");
 

@@ -210,4 +210,4 @@ The `serve` command takes an optional argument environment, and an option port.
 
 For example, if you want to serve your production environment on port 8080: 
 
-`$ jigsaw serve production port=8080`
+`$ jigsaw serve production --port=8080`

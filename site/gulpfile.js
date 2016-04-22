@@ -6,7 +6,7 @@ elixir.config.assetsPath = 'source/_assets';
 elixir.config.publicPath = 'source';
 
 elixir(function(mix) {
-    var env = argv.e || 'local';
+    var env = argv.e || argv.env || 'local';
 
     mix.sass('main.scss')
         .exec('jigsaw build ' + env, ['./source/*', './source/**/*', '!./source/_assets/**/*'])

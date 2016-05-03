@@ -38,14 +38,14 @@
                     <strong>Jigsaw</strong>
                 </a>
             </div>
-            <div>
-                <a href="/docs/installation/" class="btn btn-primary-outline">
-                    Docs
-                </a>
+            <div class="docsearch navbar-buttons">
+                <input id="docsearch" class="docsearch__input" type="text" name="docsearch" value=""/>
+                <span class="docsearch__icon"></span>
             </div>
         </div>
     </div>
 </nav>
+
 <div class="container m-xs-b-6">
     <div class="row">
         <div class="col-md-3 m-xs-b-6">
@@ -74,9 +74,12 @@
 <p>Using the default site structure, <code>./build_local</code> will look like this:</p>
 <p><img src="../../img/build-folder.png" alt="Default build directory" /></p>
 <h3>Previewing with PHP</h3>
-<p>To quickly preview your site, start a local PHP server pointed at your <code>build_local</code> directory:</p>
-<p><code>$ php -S localhost:8000/ -t build_local</code></p>
+<p>To quickly preview your site, use the <code>jigsaw serve</code> command:</p>
+<p><code>$ jigsaw serve</code></p>
 <p>You can now view your site at <code>http://localhost:8000</code> in your browser.</p>
+<p>You can also optionally specify the environment and port to serve like so:</p>
+<p><code>$ jigsaw serve production --port=8080</code></p>
+<p>This will serve your <code>build_production</code> folder at <code>http://localhost:8080</code>.</p>
 <h3>Previewing with Browsersync</h3>
 <p>If you are <a href="../compiling-assets">using Elixir to compile your assets</a>, you can preview your site with Browsersync by simply running:</p>
 <pre><code>$ gulp watch</code></pre>
@@ -88,5 +91,15 @@
         <footer class="bg-dark text-center p-xs-y-6 p-xs-x-4 text-light-muted text-sm">
             <p>&copy; 2016 <a href="http://tighten.co" class="link-light-muted">Tighten Co.</a></p>
         </footer>
+
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script>
+        <script type="text/javascript">
+            docsearch({
+                apiKey: '57a7f5b1e4e0a44c7e2f8e96abcbf674',
+                indexName: 'jigsaw',
+                inputSelector: '#docsearch'
+            });
+        </script>
+
     </body>
 </html>

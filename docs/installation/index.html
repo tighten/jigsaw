@@ -38,14 +38,14 @@
                     <strong>Jigsaw</strong>
                 </a>
             </div>
-            <div>
-                <a href="/docs/installation/" class="btn btn-primary-outline">
-                    Docs
-                </a>
+            <div class="docsearch navbar-buttons">
+                <input id="docsearch" class="docsearch__input" type="text" name="docsearch" value=""/>
+                <span class="docsearch__icon"></span>
             </div>
         </div>
     </div>
 </nav>
+
 <div class="container m-xs-b-6">
     <div class="row">
         <div class="col-md-3 m-xs-b-6">
@@ -91,5 +91,15 @@
         <footer class="bg-dark text-center p-xs-y-6 p-xs-x-4 text-light-muted text-sm">
             <p>&copy; 2016 <a href="http://tighten.co" class="link-light-muted">Tighten Co.</a></p>
         </footer>
+
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script>
+        <script type="text/javascript">
+            docsearch({
+                apiKey: '57a7f5b1e4e0a44c7e2f8e96abcbf674',
+                indexName: 'jigsaw',
+                inputSelector: '#docsearch'
+            });
+        </script>
+
     </body>
 </html>

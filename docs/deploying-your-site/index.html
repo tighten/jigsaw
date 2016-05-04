@@ -75,7 +75,7 @@
 <ol>
 <li>
 <p>Build your site for production</p>
-<pre><code>$ gulp &amp;&amp; jigsaw build --env=production</code></pre>
+<pre><code>$ gulp &amp;&amp; jigsaw build production</code></pre>
 </li>
 <li>
 <p>Commit the <code>build_production</code> folder to your repository</p>
@@ -93,7 +93,7 @@
 <p><a href="https://aws.amazon.com/s3/">Amazon S3</a> is a very affordable service for hosting static assets. You might have used it in the past for hosting things like images, user uploads, or PDFs in your web applications.</p>
 <p>What you might not have known is that Amazon S3 also has first class support for hosting static sites, like your Jigsaw projects.</p>
 <p>To deploy a site to S3, first build your site for production:</p>
-<pre><code>$ jigsaw build --env=production</code></pre>
+<pre><code>$ jigsaw build production</code></pre>
 <p>Then simply follow the steps in <a href="http://docs.aws.amazon.com/gettingstarted/latest/swh/website-hosting-intro.html">Amazon's static site documentation</a> to deploy your <code>build_production</code> folder to your S3 bucket.</p>
 <h3>Manually</h3>
 <p>If you have an existing server that you'd like to use to host your Jigsaw site, all you need to do is get the contents <code>build_production</code> into a public folder that's pointed at by the URL you'd like to use.</p>

@@ -85,8 +85,8 @@ return [
 ];</code></pre>
 <p>This file is <em>merged</em> on top of <code>config.php</code>, so you only need to specify the variables that you are changing.</p>
 <h3>Building a specific environment</h3>
-<p>To build a specific environment, just include the <code>--env={environment}</code> flag when running <code>jigsaw build</code>:</p>
-<pre><code>$ jigsaw build --env=production</code></pre>
+<p>To build a specific environment, just pass the environment name as an argument when running <code>jigsaw build</code>:</p>
+<pre><code>$ jigsaw build production</code></pre>
 <p>This will generate your site into a new folder called <code>build_production</code>, leaving your <code>build_local</code> folder untouched.</p>
         </div>
     </div>

@@ -35,11 +35,7 @@ if (! function_exists('elixir')) {
         }
 
         if (isset($manifest[$file])) {
-            if ($buildDirectory === '') {
-                return '/'.$manifest[$file];
-            }
-
-            return '/'.$buildDirectory.'/'.$manifest[$file];
+            return '/'.trim($buildDirectory.'/'.$manifest[$file], '/');
         }
 
         return $file;

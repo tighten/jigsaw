@@ -12,7 +12,10 @@
     "autoload": {
         "psr-4": {
             "TightenCo\\Jigsaw\\": "src"
-        }
+        },
+        "files": [
+            "src/Support/helpers.php"
+        ]
     },
     "require": {
         "illuminate/container": "^5.2",

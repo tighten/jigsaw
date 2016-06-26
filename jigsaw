@@ -60,7 +60,7 @@ $jigsaw->registerHandler($container[DefaultHandler::class]);
 
 $buildCommand = new BuildCommand($jigsaw, $sourcePath, $buildPath);
 
-$app = new Symfony\Component\Console\Application('Jigsaw', '0.6.0');
+$app = new Symfony\Component\Console\Application('Jigsaw', '0.6.3');
 $app->add($buildCommand);
 $app->add($container[InitCommand::class]);
 $app->add($container[ServeCommand::class]);

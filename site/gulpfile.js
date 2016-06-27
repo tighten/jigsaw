@@ -4,7 +4,6 @@ var argv = require('yargs').argv;
 
 elixir.config.assetsPath = 'source/_assets';
 elixir.config.publicPath = 'source';
-elixir.config.versioning.buildFolder = '/';
 
 elixir(function(mix) {
     var env = argv.e || argv.env || 'local';

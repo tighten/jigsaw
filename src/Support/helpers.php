@@ -38,8 +38,6 @@ if (! function_exists('elixir')) {
             return '/'.trim($buildDirectory.'/'.$manifest[$file], '/');
         }
 
-        return $file;
-
         throw new InvalidArgumentException("File {$file} not defined in asset manifest.");
     }
 }

@@ -23,7 +23,7 @@ if (! function_exists('elixir')) {
      *
      * @throws \InvalidArgumentException
      */
-    function elixir($file, $buildDirectory = '/')
+    function elixir($file, $buildDirectory = 'build')
     {
         static $manifest;
         static $manifestPath;

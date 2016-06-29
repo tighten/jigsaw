@@ -66,17 +66,10 @@ class Jigsaw
 
     private function buildCollections()
     {
-        foreach ($this->collections as $name => $settings) {
-            $this->buildCollection($name, $settings);
-        }
-    }
-
-    private function buildCollection($name, $settings)
-    {
-        $path = "{$this->source}/_{$name}";
-
-        collect($this->files->allFiles($path))->map(function ($file) use ($settings) {
-            return new ProcessedCollectionFile($this->handle($file), $settings);
+        collect($this->collections)->flatMap(function ($settings, $name) {
+            return collect($this->files->allFiles("{$this->source}/_{$name}"))->map(function ($file) use ($settings) {
+                return new ProcessedCollectionFile($this->handle($file), $settings);
+            });
         })->each(function ($file) {
             $this->buildFile($file);
         });

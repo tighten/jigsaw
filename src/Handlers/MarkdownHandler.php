@@ -25,7 +25,12 @@ class MarkdownHandler
     public function handle($file, $data)
     {
         $filename = $file->getBasename($this->getFileExtension($file)) . '.html';
-        return new ProcessedFile($filename, $file->getRelativePath(), $this->render($file, $data));
+
+        $document = $this->parseFile($file);
+
+        $data = array_merge($data, $document->getYAML());
+
+        return new ProcessedFile($filename, $file->getRelativePath(), $this->render($document, $data), $data);
     }
 
     private function getFileExtension($file)
@@ -33,11 +38,9 @@ class MarkdownHandler
         return '.' . $file->getExtension();
     }
 
-    public function render($file, $data)
+    private function render($document, $data)
     {
-        $document = $this->parseFile($file);
-
-        $data = array_merge($data, $document->getYAML(), [
+        $data = array_merge($data, [
             '__jigsawMarkdownContent' => $document->getContent()
         ]);
 

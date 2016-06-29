@@ -33,13 +33,15 @@ class BuildCommand extends Command
         $env = $this->input->getArgument('env');
 
         $config = $this->loadConfig();
+        $collections = $this->loadCollections();
+
         $this->buildPath .= '_' . $env;
 
         if ($this->input->getOption('pretty') === 'false') {
             $this->jigsaw->setOption('pretty', false);
         }
 
-        $this->jigsaw->build($this->sourcePath, $this->buildPath, $config);
+        $this->jigsaw->build($this->sourcePath, $this->buildPath, $config, $collections);
         $this->info('Site built successfully!');
     }
 
@@ -54,5 +56,14 @@ class BuildCommand extends Command
         }
 
         return array_merge(include getcwd() . '/config.php', $environmentConfig);
+    }
+
+    private function loadCollections()
+    {
+        if (! file_exists(getcwd() . '/collections.php')) {
+            return [];
+        }
+
+        return include getcwd() . '/collections.php';
     }
 }

@@ -24,10 +24,11 @@ class Jigsaw
         $this->handlers[] = $handler;
     }
 
-    public function build($source, $dest, $config = [])
+    public function build($source, $dest, $config = [], $collections = [])
     {
         $this->prepareDirectories([$this->cachePath, $dest]);
         $this->buildSite($source, $dest, $config);
+        $this->buildCollections($source, $dest, $collections, $config);
         $this->cleanup();
     }
 
@@ -60,6 +61,26 @@ class Jigsaw
             return ! $this->shouldIgnore($file);
         })->each(function ($file) use ($dest, $config) {
             $this->buildFile($file, $dest, $config);
+        });
+    }
+
+    private function buildCollections($source, $dest, $collections, $config)
+    {
+        foreach ($collections as $name => $settings) {
+            $this->buildCollection($source, $dest, $name, $settings, $config);
+        }
+    }
+
+    private function buildCollection($source, $dest, $name, $collectionSettings, $siteConfig)
+    {
+        $path = "{$source}/_{$name}";
+
+        collect($this->files->allFiles($path))->map(function ($file) use ($collectionSettings, $siteConfig) {
+            return new ProcessedCollectionFile($this->handle($file, $siteConfig), $collectionSettings);
+        })->each(function ($file) use ($dest) {
+            $directory = $this->getDirectory($file);
+            $this->prepareDirectory("{$dest}/{$directory}");
+            $this->files->put("{$dest}/{$this->getRelativePathname($file)}", $file->contents());
         });
     }
 

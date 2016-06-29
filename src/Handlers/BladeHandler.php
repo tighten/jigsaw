@@ -20,10 +20,10 @@ class BladeHandler
     public function handle($file, $data)
     {
         $filename = $file->getBasename('.blade.php') . '.html';
-        return new ProcessedFile($filename, $file->getRelativePath(), $this->render($file, $data));
+        return new ProcessedFile($filename, $file->getRelativePath(), $this->render($file, $data), $data);
     }
 
-    public function render($file, $data)
+    private function render($file, $data)
     {
         return $this->viewFactory->file($file->getRealPath(), $data)->render();
     }

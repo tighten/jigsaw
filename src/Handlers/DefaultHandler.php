@@ -20,6 +20,6 @@ class DefaultHandler
 
     public function handle($file, $data)
     {
-        return new ProcessedFile($file->getFilename(), $file->getRelativePath(), $this->files->get($file->getRealPath()));
+        return new ProcessedFile($file->getFilename(), $file->getRelativePath(), $this->files->get($file->getRealPath()), $data);
     }
 }

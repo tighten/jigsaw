@@ -5,17 +5,24 @@ class ProcessedFile
     private $name;
     private $relativePath;
     private $contents;
+    private $data;
 
-    public function __construct($name, $relativePath, $contents)
+    public function __construct($name, $relativePath, $contents, $data)
     {
         $this->name = $name;
         $this->relativePath = $relativePath;
         $this->contents = $contents;
+        $this->data = $data;
     }
 
     public function name()
     {
         return $this->name;
+    }
+
+    public function data()
+    {
+        return $this->data;
     }
 
     public function basename()

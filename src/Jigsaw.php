@@ -59,8 +59,10 @@ class Jigsaw
     {
         collect($this->files->allFiles($source))->filter(function ($file) {
             return ! $this->shouldIgnore($file);
-        })->each(function ($file) use ($dest, $config) {
-            $this->buildFile($file, $dest, $config);
+        })->map(function ($file) use ($config) {
+            return $this->handle($file, $config);
+        })->each(function ($file) use ($dest) {
+            $this->buildFile($file, $dest);
         });
     }
 
@@ -78,9 +80,7 @@ class Jigsaw
         collect($this->files->allFiles($path))->map(function ($file) use ($collectionSettings, $siteConfig) {
             return new ProcessedCollectionFile($this->handle($file, $siteConfig), $collectionSettings);
         })->each(function ($file) use ($dest) {
-            $directory = $this->getDirectory($file);
-            $this->prepareDirectory("{$dest}/{$directory}");
-            $this->files->put("{$dest}/{$this->getRelativePathname($file)}", $file->contents());
+            $this->buildFile($file, $dest);
         });
     }
 
@@ -94,9 +94,8 @@ class Jigsaw
         return preg_match('/(^_|\/_)/', $file->getRelativePathname()) === 1;
     }
 
-    private function buildFile($file, $dest, $config)
+    private function buildFile($file, $dest)
     {
-        $file = $this->handle($file, $config);
         $directory = $this->getDirectory($file);
         $this->prepareDirectory("{$dest}/{$directory}");
         $this->files->put("{$dest}/{$this->getRelativePathname($file)}", $file->contents());

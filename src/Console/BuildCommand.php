@@ -37,11 +37,15 @@ class BuildCommand extends Command
 
         $this->buildPath .= '_' . $env;
 
+
+        $jigsaw = $this->jigsaw->__invoke($this->sourcePath, $this->buildPath, $config, $collections);
+
         if ($this->input->getOption('pretty') === 'false') {
-            $this->jigsaw->setOption('pretty', false);
+            $jigsaw->setOption('pretty', false);
         }
 
-        $this->jigsaw->build($this->sourcePath, $this->buildPath, $config, $collections);
+        $jigsaw->build();
+
         $this->info('Site built successfully!');
     }
 

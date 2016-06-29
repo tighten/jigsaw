@@ -6,17 +6,26 @@ use TightenCo\Jigsaw\Filesystem;
 
 class Jigsaw
 {
+    private $source;
+    private $dest;
+    private $config;
+    private $collections;
     private $files;
     private $cachePath;
-    private $handlers = [];
+    private $handlers;
     private $options = [
         'pretty' => true
     ];
 
-    public function __construct(Filesystem $files, $cachePath)
+    public function __construct($source, $dest, $config, $collections, Filesystem $files, $cachePath, $handlers = [])
     {
+        $this->source = $source;
+        $this->dest = $dest;
+        $this->config = $config;
+        $this->collections = $collections;
         $this->files = $files;
         $this->cachePath = $cachePath;
+        $this->handlers = $handlers;
     }
 
     public function registerHandler($handler)
@@ -24,11 +33,11 @@ class Jigsaw
         $this->handlers[] = $handler;
     }
 
-    public function build($source, $dest, $config = [], $collections = [])
+    public function build()
     {
-        $this->prepareDirectories([$this->cachePath, $dest]);
-        $this->buildSite($source, $dest, $config);
-        $this->buildCollections($source, $dest, $collections, $config);
+        $this->prepareDirectories([$this->cachePath, $this->dest]);
+        $this->buildCollections();
+        $this->buildSite();
         $this->cleanup();
     }
 
@@ -55,32 +64,32 @@ class Jigsaw
         }
     }
 
-    private function buildSite($source, $dest, $config)
+    private function buildCollections()
     {
-        collect($this->files->allFiles($source))->filter(function ($file) {
-            return ! $this->shouldIgnore($file);
-        })->map(function ($file) use ($config) {
-            return $this->handle($file, $config);
-        })->each(function ($file) use ($dest) {
-            $this->buildFile($file, $dest);
-        });
-    }
-
-    private function buildCollections($source, $dest, $collections, $config)
-    {
-        foreach ($collections as $name => $settings) {
-            $this->buildCollection($source, $dest, $name, $settings, $config);
+        foreach ($this->collections as $name => $settings) {
+            $this->buildCollection($name, $settings);
         }
     }
 
-    private function buildCollection($source, $dest, $name, $collectionSettings, $siteConfig)
+    private function buildCollection($name, $settings)
     {
-        $path = "{$source}/_{$name}";
+        $path = "{$this->source}/_{$name}";
 
-        collect($this->files->allFiles($path))->map(function ($file) use ($collectionSettings, $siteConfig) {
-            return new ProcessedCollectionFile($this->handle($file, $siteConfig), $collectionSettings);
-        })->each(function ($file) use ($dest) {
-            $this->buildFile($file, $dest);
+        collect($this->files->allFiles($path))->map(function ($file) use ($settings) {
+            return new ProcessedCollectionFile($this->handle($file), $settings);
+        })->each(function ($file) {
+            $this->buildFile($file);
+        });
+    }
+
+    private function buildSite()
+    {
+        collect($this->files->allFiles($this->source))->filter(function ($file) {
+            return ! $this->shouldIgnore($file);
+        })->map(function ($file) {
+            return $this->handle($file);
+        })->each(function ($file) {
+            $this->buildFile($file);
         });
     }
 
@@ -94,16 +103,16 @@ class Jigsaw
         return preg_match('/(^_|\/_)/', $file->getRelativePathname()) === 1;
     }
 
-    private function buildFile($file, $dest)
+    private function buildFile($file)
     {
         $directory = $this->getDirectory($file);
-        $this->prepareDirectory("{$dest}/{$directory}");
-        $this->files->put("{$dest}/{$this->getRelativePathname($file)}", $file->contents());
+        $this->prepareDirectory("{$this->dest}/{$directory}");
+        $this->files->put("{$this->dest}/{$this->getRelativePathname($file)}", $file->contents());
     }
 
-    private function handle($file, $config)
+    private function handle($file)
     {
-        return $this->getHandler($file)->handle($file, $config);
+        return $this->getHandler($file)->handle($file, $this->config);
     }
 
     private function getDirectory($file)
@@ -144,10 +153,8 @@ class Jigsaw
 
     private function getHandler($file)
     {
-        foreach ($this->handlers as $handler) {
-            if ($handler->canHandle($file)) {
-                return $handler;
-            }
-        }
+        return collect($this->handlers)->first(function ($_, $handler) use ($file) {
+            return $handler->canHandle($file);
+        });
     }
 }

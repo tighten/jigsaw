@@ -52,11 +52,15 @@ $container->bind(MarkdownHandler::class, function ($c) use ($cachePath) {
     return new MarkdownHandler($tempFilesystem, $c[Factory::class]);
 });
 
-$jigsaw = new Jigsaw(new Filesystem, $cachePath);
+$handlers = [
+    $container[MarkdownHandler::class],
+    $container[BladeHandler::class],
+    $container[DefaultHandler::class],
+];
 
-$jigsaw->registerHandler($container[MarkdownHandler::class]);
-$jigsaw->registerHandler($container[BladeHandler::class]);
-$jigsaw->registerHandler($container[DefaultHandler::class]);
+$jigsaw = function ($source, $dest, $config, $collections) use ($cachePath, $handlers) {
+    return new Jigsaw($source, $dest, $config, $collections, new Filesystem, $cachePath, $handlers);
+};
 
 $buildCommand = new BuildCommand($jigsaw, $sourcePath, $buildPath);
 

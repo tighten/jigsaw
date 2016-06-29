@@ -28,7 +28,7 @@ class MarkdownHandler
 
         $document = $this->parseFile($file);
 
-        $data = array_merge($data, $document->getYAML());
+        $data = array_merge($data, ['section' => 'markdown'], $document->getYAML());
 
         return new ProcessedFile($filename, $file->getRelativePath(), $this->render($document, $data), $data);
     }
@@ -44,7 +44,7 @@ class MarkdownHandler
             '__jigsawMarkdownContent' => $document->getContent()
         ]);
 
-        $bladeContent = $this->compileToBlade($document->getYAML()['extends'], $document->getYAML()['section']);
+        $bladeContent = $this->compileToBlade($data['extends'], $data['section']);
 
         return $this->temporaryFilesystem->put($bladeContent, function ($path) use ($data) {
             return $this->viewFactory->file($path, $data)->render();

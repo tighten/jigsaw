@@ -81,15 +81,8 @@ $handlers = [
     $container[DefaultHandler::class],
 ];
 
-
-
-$container->bind('siteBuilderGenerator', function () use ($cachePath, $handlers) {
-    return function ($source, $dest, $siteData, $options) use ($cachePath, $handlers) {
-        return new SiteBuilder($source, $dest, $siteData, $options, new Filesystem, $cachePath, $handlers);
-    };
-});
-
-$jigsaw = new Jigsaw($dataLoader, $container['siteBuilderGenerator']);
+$siteBuilder = new SiteBuilder(new Filesystem, $cachePath, $handlers);
+$jigsaw = new Jigsaw($dataLoader, $siteBuilder);
 
 $buildCommand = new BuildCommand($jigsaw, $sourcePath, $buildPath);
 

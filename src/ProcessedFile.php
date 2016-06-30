@@ -58,4 +58,13 @@ class ProcessedFile
 
         return $this->relativePath();
     }
+
+    public function prettyRelativePathname()
+    {
+        if ($this->extension() === 'html' && $this->name() !== 'index.html') {
+            return $this->prettyDirectory() . '/index.html';
+        }
+
+        return $this->relativePathname();
+    }
 }

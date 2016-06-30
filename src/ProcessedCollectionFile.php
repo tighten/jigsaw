@@ -35,6 +35,15 @@ class ProcessedCollectionFile
         return $this->relativePath();
     }
 
+    public function prettyRelativePathname()
+    {
+        if ($this->extension() === 'html' && $this->name() !== 'index.html') {
+            return $this->prettyDirectory() . '/index.html';
+        }
+
+        return $this->relativePathname();
+    }
+
     public function __call($method, $args)
     {
         return $this->processedFile->{$method}(...$args);

@@ -7,17 +7,17 @@ use TightenCo\Jigsaw\Filesystem;
 class Jigsaw
 {
     private $dataLoader;
-    private $siteBuilderGenerator;
+    private $siteBuilder;
 
-    public function __construct($dataLoader, $siteBuilderGenerator)
+    public function __construct($dataLoader, $siteBuilder)
     {
         $this->dataLoader = $dataLoader;
-        $this->siteBuilderGenerator = $siteBuilderGenerator;
+        $this->siteBuilder = $siteBuilder;
     }
 
     public function build($source, $dest, $env, $options = [])
     {
         $siteData = $this->dataLoader->load($source, $env, $options);
-        $this->siteBuilderGenerator->__invoke($source, $dest, $siteData, $options)->build();
+        $this->siteBuilder->build($source, $dest, $siteData, $options);
     }
 }

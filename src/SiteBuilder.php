@@ -2,9 +2,6 @@
 
 class SiteBuilder
 {
-    private $source;
-    private $dest;
-    private $config;
     private $files;
     private $cachePath;
     private $handlers;
@@ -12,15 +9,17 @@ class SiteBuilder
         'pretty' => true
     ];
 
-    public function __construct($source, $dest, $data, $options, Filesystem $files, $cachePath, $handlers = [])
+    public function __construct(Filesystem $files, $cachePath, $handlers = [], $options = [])
     {
-        $this->source = $source;
-        $this->dest = $dest;
-        $this->config = $data;
-        $this->options = array_merge($this->options, $options);
         $this->files = $files;
         $this->cachePath = $cachePath;
         $this->handlers = $handlers;
+        $this->options = array_merge($this->options, $options);
+    }
+
+    public function setOption($option, $value)
+    {
+        $this->options[$option] = $value;
     }
 
     public function registerHandler($handler)
@@ -28,10 +27,11 @@ class SiteBuilder
         $this->handlers[] = $handler;
     }
 
-    public function build()
+    public function build($source, $dest, $data, $options = [])
     {
-        $this->prepareDirectories([$this->cachePath, $this->dest]);
-        $this->buildSite();
+        $this->options = array_merge($this->options, $options);
+        $this->prepareDirectories([$this->cachePath, $dest]);
+        $this->buildSite($source, $dest, $data);
         $this->cleanup();
     }
 
@@ -58,27 +58,27 @@ class SiteBuilder
         $this->files->deleteDirectory($this->cachePath);
     }
 
-    private function buildSite()
+    private function buildSite($source, $dest, $data)
     {
-        $result = collect($this->files->allFiles($this->source))->map(function ($file) {
-            return new InputFile($file, $this->source);
-        })->flatMap(function ($file) {
-            return $this->handle($file);
-        })->each(function ($file) {
-            $this->buildFile($file);
+        $result = collect($this->files->allFiles($source))->map(function ($file) use ($source) {
+            return new InputFile($file, $source);
+        })->flatMap(function ($file) use ($data) {
+            return $this->handle($file, $data);
+        })->each(function ($file) use ($dest) {
+            $this->buildFile($file, $dest);
         });
     }
 
-    private function handle($file)
+    private function handle($file, $data)
     {
-        return $this->getHandler($file)->handle($file, $this->config);
+        return $this->getHandler($file)->handle($file, $data);
     }
 
-    private function buildFile($file)
+    private function buildFile($file, $dest)
     {
         $directory = $this->getDirectory($file);
-        $this->prepareDirectory("{$this->dest}/{$directory}");
-        $this->files->put("{$this->dest}/{$this->getRelativePathname($file)}", $file->contents());
+        $this->prepareDirectory("{$dest}/{$directory}");
+        $this->files->put("{$dest}/{$this->getRelativePathname($file)}", $file->contents());
     }
 
     private function getHandler($file)
@@ -91,7 +91,7 @@ class SiteBuilder
     private function getDirectory($file)
     {
         if ($this->options['pretty']) {
-            return $this->getPrettyDirectory($file);
+            return $file->prettyDirectory();
         }
 
         return $file->relativePath();
@@ -105,16 +105,7 @@ class SiteBuilder
     private function getRelativePathname($file)
     {
         if ($this->options['pretty']) {
-            return $this->getPrettyRelativePathname($file);
-        }
-
-        return $file->relativePathname();
-    }
-
-    private function getPrettyRelativePathname($file)
-    {
-        if ($file->extension() === 'html' && $file->name() !== 'index.html') {
-            return $this->getPrettyDirectory($file) . '/index.html';
+            return $file->prettyRelativePathname();
         }
 
         return $file->relativePathname();

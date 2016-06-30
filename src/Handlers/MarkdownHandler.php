@@ -17,7 +17,7 @@ class MarkdownHandler
         $this->parser = $parser ?: new Parser;
     }
 
-    public function canHandle($file)
+    public function shouldHandle($file)
     {
         return in_array($file->getExtension(), ['markdown', 'md']);
     }
@@ -30,7 +30,7 @@ class MarkdownHandler
 
         $data = array_merge($data, ['section' => 'markdown'], $document->getYAML());
 
-        return new ProcessedFile($filename, $file->getRelativePath(), $this->render($document, $data), $data);
+        return [new ProcessedFile($filename, $file->getRelativePath(), $this->render($document, $data), $data)];
     }
 
     private function getFileExtension($file)

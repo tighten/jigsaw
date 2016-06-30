@@ -1,22 +1,26 @@
 #!/usr/bin/env php
 <?php
 
+use Illuminate\View\Factory;
+use TightenCo\Jigsaw\Jigsaw;
+use TightenCo\Jigsaw\DataLoader;
+use TightenCo\Jigsaw\Filesystem;
+use TightenCo\Jigsaw\SiteBuilder;
 use Illuminate\Container\Container;
+use Illuminate\View\FileViewFinder;
+use TightenCo\Jigsaw\Console\InitCommand;
+use TightenCo\Jigsaw\TemporaryFilesystem;
+use TightenCo\Jigsaw\Console\BuildCommand;
+use TightenCo\Jigsaw\Console\ServeCommand;
 use Illuminate\Contracts\Events\Dispatcher;
-use Illuminate\View\Compilers\BladeCompiler;
 use Illuminate\View\Engines\CompilerEngine;
 use Illuminate\View\Engines\EngineResolver;
-use Illuminate\View\Factory;
-use Illuminate\View\FileViewFinder;
-use TightenCo\Jigsaw\Console\BuildCommand;
-use TightenCo\Jigsaw\Console\InitCommand;
-use TightenCo\Jigsaw\Console\ServeCommand;
-use TightenCo\Jigsaw\Filesystem;
 use TightenCo\Jigsaw\Handlers\BladeHandler;
+use Illuminate\View\Compilers\BladeCompiler;
 use TightenCo\Jigsaw\Handlers\DefaultHandler;
+use TightenCo\Jigsaw\Handlers\IgnoredHandler;
 use TightenCo\Jigsaw\Handlers\MarkdownHandler;
-use TightenCo\Jigsaw\Jigsaw;
-use TightenCo\Jigsaw\TemporaryFilesystem;
+use TightenCo\Jigsaw\Handlers\CollectionItemHandler;
 
 if (file_exists(__DIR__.'/vendor/autoload.php')) {
     require __DIR__.'/vendor/autoload.php';
@@ -52,15 +56,35 @@ $container->bind(MarkdownHandler::class, function ($c) use ($cachePath) {
     return new MarkdownHandler($tempFilesystem, $c[Factory::class]);
 });
 
+// Bootstrap Handlers
+if (! file_exists(getcwd() . '/collections.php')) {
+    $collectionSettings = [];
+} else {
+    $collectionSettings = include getcwd() . '/collections.php';
+}
+
+// Only supports Markdown right this second...
+$collectionItemHandler = new CollectionItemHandler($collectionSettings, [$container[MarkdownHandler::class]]);
+
 $handlers = [
+    $collectionItemHandler,
+    new IgnoredHandler,
+    $container[MarkdownHandler::class],
     $container[MarkdownHandler::class],
     $container[BladeHandler::class],
     $container[DefaultHandler::class],
 ];
 
-$jigsaw = function ($source, $dest, $config, $collections) use ($cachePath, $handlers) {
-    return new Jigsaw($source, $dest, $config, $collections, new Filesystem, $cachePath, $handlers);
-};
+
+$dataLoader = new DataLoader(getcwd());
+
+$container->bind('siteBuilderGenerator', function () use ($cachePath, $handlers) {
+    return function ($source, $dest, $siteData, $options) use ($cachePath, $handlers) {
+        return new SiteBuilder($source, $dest, $siteData, $options, new Filesystem, $cachePath, $handlers);
+    };
+});
+
+$jigsaw = new Jigsaw($dataLoader, $container['siteBuilderGenerator']);
 
 $buildCommand = new BuildCommand($jigsaw, $sourcePath, $buildPath);
 

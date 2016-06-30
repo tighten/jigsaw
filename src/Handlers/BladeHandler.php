@@ -12,7 +12,7 @@ class BladeHandler
         $this->viewFactory = $viewFactory;
     }
 
-    public function canHandle($file)
+    public function shouldHandle($file)
     {
         return ends_with($file->getFilename(), '.blade.php');
     }
@@ -20,7 +20,7 @@ class BladeHandler
     public function handle($file, $data)
     {
         $filename = $file->getBasename('.blade.php') . '.html';
-        return new ProcessedFile($filename, $file->getRelativePath(), $this->render($file, $data), $data);
+        return [new ProcessedFile($filename, $file->getRelativePath(), $this->render($file, $data), $data)];
     }
 
     private function render($file, $data)

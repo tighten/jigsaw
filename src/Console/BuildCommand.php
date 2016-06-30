@@ -8,14 +8,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class BuildCommand extends Command
 {
-    private $sourcePath;
-    private $buildPath;
+    private $source;
+    private $dest;
     private $jigsaw;
 
-    public function __construct($jigsaw, $sourcePath, $buildPath)
+    public function __construct($jigsaw, $source, $dest)
     {
-        $this->sourcePath = $sourcePath;
-        $this->buildPath = $buildPath;
+        $this->source = $source;
+        $this->dest = $dest;
         $this->jigsaw = $jigsaw;
         parent::__construct();
     }
@@ -32,42 +32,12 @@ class BuildCommand extends Command
     {
         $env = $this->input->getArgument('env');
 
-        $config = $this->loadConfig();
-        $collections = $this->loadCollections();
+        $this->dest .= '_' . $env;
 
-        $this->buildPath .= '_' . $env;
-
-
-        $jigsaw = $this->jigsaw->__invoke($this->sourcePath, $this->buildPath, $config, $collections);
-
-        if ($this->input->getOption('pretty') === 'false') {
-            $jigsaw->setOption('pretty', false);
-        }
-
-        $jigsaw->build();
+        $this->jigsaw->build($this->source, $this->dest, $env, [
+            'pretty' => $this->input->getOption('pretty') !== 'false'
+        ]);
 
         $this->info('Site built successfully!');
-    }
-
-    private function loadConfig()
-    {
-        $env = $this->input->getArgument('env');
-
-        if ($env !== null && file_exists(getcwd() . "/config.{$env}.php")) {
-            $environmentConfig = include getcwd() . "/config.{$env}.php";
-        } else {
-            $environmentConfig = [];
-        }
-
-        return array_merge(include getcwd() . '/config.php', $environmentConfig);
-    }
-
-    private function loadCollections()
-    {
-        if (! file_exists(getcwd() . '/collections.php')) {
-            return [];
-        }
-
-        return include getcwd() . '/collections.php';
     }
 }

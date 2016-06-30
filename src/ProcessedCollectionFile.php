@@ -26,6 +26,15 @@ class ProcessedCollectionFile
         return collect(explode('/', $this->relativePathname()))->slice(0, -1)->implode('/');
     }
 
+    public function prettyDirectory()
+    {
+        if ($this->extension() === 'html' && $this->name() !== 'index.html') {
+            return "{$this->relativePath()}/{$this->basename()}";
+        }
+
+        return $this->relativePath();
+    }
+
     public function __call($method, $args)
     {
         return $this->processedFile->{$method}(...$args);

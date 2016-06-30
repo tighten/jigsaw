@@ -17,10 +17,10 @@ class MarkdownCollectionItemHandler
         return in_array($file->getExtension(), ['markdown', 'md']);
     }
 
-    public function buildCollectionItem($file, $helpers)
+    public function getData($file)
     {
         $document = $this->parser->parse($file->getContents());
 
-        return new CollectionItem(array_merge($document->getYAML(), ['content' => $document->getContent()]), $helpers);
+        return array_merge($document->getYAML(), ['content' => $document->getContent()]);
     }
 }

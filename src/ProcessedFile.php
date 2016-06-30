@@ -49,4 +49,13 @@ class ProcessedFile
     {
         return $this->contents;
     }
+
+    public function prettyDirectory()
+    {
+        if ($this->extension() === 'html' && $this->name() !== 'index.html') {
+            return "{$this->relativePath()}/{$this->basename()}";
+        }
+
+        return $this->relativePath();
+    }
 }

@@ -13,26 +13,42 @@ class CollectionDataLoader
         $this->handlers = collect($handlers);
     }
 
-    public function load($source)
+    public function load($source, $siteOptions)
     {
-        return $this->settings->map(function ($settings, $name) use ($source) {
-            return $this->loadSingleCollectionData($source, $name, $settings);
+        return $this->settings->map(function ($collectionSettings, $name) use ($source, $siteOptions) {
+            return $this->loadSingleCollectionData($source, $name, $collectionSettings, $siteOptions);
         })->all();
     }
 
-    private function loadSingleCollectionData($source, $collectionName, $settings)
+    private function loadSingleCollectionData($source, $collectionName, $settings, $siteOptions)
     {
-        return collect($this->filesystem->allFiles("{$source}/_{$collectionName}"))->map(function ($file) use ($settings) {
-            return $this->buildCollectionItem($file, $settings);
+        return collect($this->filesystem->allFiles("{$source}/_{$collectionName}"))->map(function ($file) use ($settings, $siteOptions) {
+            return $this->buildCollectionItem($file, $settings, $siteOptions);
         })->all();
     }
 
-    private function buildCollectionItem($file, $settings)
+    private function buildCollectionItem($file, $settings, $siteOptions)
     {
         $handler = $this->handlers->first(function ($_, $handler) use ($file) {
             return $handler->shouldHandle($file);
         }, function () { throw new Exception('No matching collection item handler'); });
 
-        return $handler->buildCollectionItem($file, array_get($settings, 'helpers', []));
+        $data = $handler->getData($file);
+        $link = $this->getCollectionItemLink($data, $settings, $siteOptions);
+
+        return new CollectionItem(array_merge($data, ['link' => $link]), $settings['helpers']);
+    }
+
+    private function getCollectionItemLink($data, $settings, $siteOptions)
+    {
+        $link = $settings['permalink']->__invoke($data);
+
+        if ($siteOptions['pretty']) {
+            $link = rtrim($link, '/') . '/';
+        } else {
+            $link .= '.html';
+        }
+
+        return '/' . ltrim($link, '/');
     }
 }

@@ -17,7 +17,7 @@ class Jigsaw
 
     public function build($source, $dest, $env, $options = [])
     {
-        $siteData = $this->dataLoader->load($source, $env);
+        $siteData = $this->dataLoader->load($source, $env, $options);
         $this->siteBuilderGenerator->__invoke($source, $dest, $siteData, $options)->build();
     }
 }

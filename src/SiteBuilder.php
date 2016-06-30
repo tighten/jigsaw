@@ -99,11 +99,7 @@ class SiteBuilder
 
     private function getPrettyDirectory($file)
     {
-        if ($file->extension() === 'html' && $file->name() !== 'index.html') {
-            return "{$file->relativePath()}/{$file->basename()}";
-        }
-
-        return $file->relativePath();
+        return $file->prettyDirectory();
     }
 
     private function getRelativePathname($file)

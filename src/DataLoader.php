@@ -11,10 +11,10 @@ class DataLoader
         $this->collectionDataLoader = $collectionDataLoader;
     }
 
-    public function load($source, $env)
+    public function load($source, $env, $options)
     {
         return [
-            'site' => array_merge($this->loadConfigData($env), $this->loadCollectionData($source)),
+            'site' => array_merge($this->loadConfigData($env), $this->loadCollectionData($source, $options)),
         ];
     }
 
@@ -29,8 +29,8 @@ class DataLoader
         return array_merge(include $this->basePath . '/config.php', $environmentConfig);
     }
 
-    private function loadCollectionData($source)
+    private function loadCollectionData($source, $options)
     {
-        return $this->collectionDataLoader->load($source);
+        return $this->collectionDataLoader->load($source, $options);
     }
 }

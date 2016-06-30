@@ -10,6 +10,7 @@ use Illuminate\Container\Container;
 use Illuminate\View\FileViewFinder;
 use TightenCo\Jigsaw\Console\InitCommand;
 use TightenCo\Jigsaw\TemporaryFilesystem;
+use TightenCo\Jigsaw\CollectionDataLoader;
 use TightenCo\Jigsaw\Console\BuildCommand;
 use TightenCo\Jigsaw\Console\ServeCommand;
 use Illuminate\Contracts\Events\Dispatcher;
@@ -21,6 +22,7 @@ use TightenCo\Jigsaw\Handlers\DefaultHandler;
 use TightenCo\Jigsaw\Handlers\IgnoredHandler;
 use TightenCo\Jigsaw\Handlers\MarkdownHandler;
 use TightenCo\Jigsaw\Handlers\CollectionItemHandler;
+use TightenCo\Jigsaw\CollectionHandlers\MarkdownCollectionItemHandler;
 
 if (file_exists(__DIR__.'/vendor/autoload.php')) {
     require __DIR__.'/vendor/autoload.php';
@@ -56,13 +58,17 @@ $container->bind(MarkdownHandler::class, function ($c) use ($cachePath) {
     return new MarkdownHandler($tempFilesystem, $c[Factory::class]);
 });
 
-// Bootstrap Handlers
 if (! file_exists(getcwd() . '/collections.php')) {
     $collectionSettings = [];
 } else {
     $collectionSettings = include getcwd() . '/collections.php';
 }
 
+$collectionDataLoader = new CollectionDataLoader($collectionSettings, new Filesystem, [new MarkdownCollectionItemHandler]);
+
+$dataLoader = new DataLoader(getcwd(), $collectionDataLoader);
+
+// Bootstrap Handlers
 // Only supports Markdown right this second...
 $collectionItemHandler = new CollectionItemHandler($collectionSettings, [$container[MarkdownHandler::class]]);
 
@@ -76,7 +82,6 @@ $handlers = [
 ];
 
 
-$dataLoader = new DataLoader(getcwd());
 
 $container->bind('siteBuilderGenerator', function () use ($cachePath, $handlers) {
     return function ($source, $dest, $siteData, $options) use ($cachePath, $handlers) {

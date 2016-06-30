@@ -3,23 +3,22 @@
 class DataLoader
 {
     private $basePath;
+    private $collectionDataLoader;
 
-    // Needs ContentCollectionLoader which needs Collection Handlers
-    public function __construct($basePath /* $configLoader, $collectionLoader */)
+    public function __construct($basePath, $collectionDataLoader)
     {
         $this->basePath = $basePath;
+        $this->collectionDataLoader = $collectionDataLoader;
     }
 
     public function load($source, $env)
     {
-        return $this->loadConfig($env);
-        // return array_merge(
-        //     $this->configLoader->load($env),
-        //     $this->collectionLoader->load($source)
-        // );
+        return [
+            'site' => array_merge($this->loadConfigData($env), $this->loadCollectionData($source)),
+        ];
     }
 
-    private function loadConfig($env)
+    private function loadConfigData($env)
     {
         if (file_exists($this->basePath . "/config.{$env}.php")) {
             $environmentConfig = include $this->basePath . "/config.{$env}.php";
@@ -28,5 +27,10 @@ class DataLoader
         }
 
         return array_merge(include $this->basePath . '/config.php', $environmentConfig);
+    }
+
+    private function loadCollectionData($source)
+    {
+        return $this->collectionDataLoader->load($source);
     }
 }

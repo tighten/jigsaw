@@ -11,37 +11,34 @@ class ProcessedCollectionFile
         $this->settings = $settings;
     }
 
-    public function relativePathname()
+    private function permalinkPath()
     {
         return $this->settings['permalink']->__invoke($this->processedFile->data());
     }
 
+    public function relativePathname()
+    {
+        return $this->permalinkPath() . '.' . $this->extension();
+    }
+
     public function basename()
     {
-        return collect(explode('/', $this->relativePathname()))->last();
+        return collect(explode('/', $this->permalinkPath()))->last();
     }
 
     public function relativePath()
     {
-        return collect(explode('/', $this->relativePathname()))->slice(0, -1)->implode('/');
+        return collect(explode('/', $this->permalinkPath()))->slice(0, -1)->implode('/');
     }
 
     public function prettyDirectory()
     {
-        if ($this->extension() === 'html' && $this->name() !== 'index.html') {
-            return "{$this->relativePath()}/{$this->basename()}";
-        }
-
-        return $this->relativePath();
+        return "{$this->relativePath()}/{$this->basename()}";
     }
 
     public function prettyRelativePathname()
     {
-        if ($this->extension() === 'html' && $this->name() !== 'index.html') {
-            return $this->prettyDirectory() . '/index.html';
-        }
-
-        return $this->relativePathname();
+        return $this->prettyDirectory() . '/index.html';
     }
 
     public function __call($method, $args)

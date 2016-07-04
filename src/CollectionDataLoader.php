@@ -4,51 +4,56 @@ class CollectionDataLoader
 {
     private $settings;
     private $filesystem;
+    private $outputPathResolver;
     private $handlers;
 
-    public function __construct($settings, $filesystem, $handlers)
+    public function __construct($settings, $filesystem, $outputPathResolver, $handlers = [])
     {
         $this->settings = collect($settings);
         $this->filesystem = $filesystem;
+        $this->outputPathResolver = $outputPathResolver;
         $this->handlers = collect($handlers);
     }
 
-    public function load($source, $siteOptions)
+    public function load($source)
     {
-        return $this->settings->map(function ($collectionSettings, $name) use ($source, $siteOptions) {
-            return $this->loadSingleCollectionData($source, $name, $collectionSettings, $siteOptions);
+        return $this->settings->map(function ($collectionSettings, $name) use ($source) {
+            // Merge in any default collection settings
+            $collectionSettings = array_merge([
+                'helpers' => []
+            ], $collectionSettings);
+
+            return $this->loadSingleCollectionData($source, $name, $collectionSettings);
         })->all();
     }
 
-    private function loadSingleCollectionData($source, $collectionName, $settings, $siteOptions)
+    private function loadSingleCollectionData($source, $collectionName, $settings)
     {
-        return collect($this->filesystem->allFiles("{$source}/_{$collectionName}"))->map(function ($file) use ($settings, $siteOptions) {
-            return $this->buildCollectionItem($file, $settings, $siteOptions);
+        return collect($this->filesystem->allFiles("{$source}/_{$collectionName}"))->map(function ($file) use ($settings) {
+            return $this->buildCollectionItem($file, $settings);
         })->all();
     }
 
-    private function buildCollectionItem($file, $settings, $siteOptions)
+    private function buildCollectionItem($file, $settings)
     {
         $handler = $this->handlers->first(function ($_, $handler) use ($file) {
             return $handler->shouldHandle($file);
         }, function () { throw new Exception('No matching collection item handler'); });
 
         $data = $handler->getData($file);
-        $link = $this->getCollectionItemLink($data, $settings, $siteOptions);
+        $link = $this->getCollectionItemLink($data, $settings);
 
         return new CollectionItem(array_merge($data, ['link' => $link]), $settings['helpers']);
     }
 
-    private function getCollectionItemLink($data, $settings, $siteOptions)
+    private function getCollectionItemLink($data, $settings)
     {
-        $link = $settings['permalink']->__invoke($data);
+        $permalink = $settings['permalink']->__invoke($data);
 
-        if ($siteOptions['pretty']) {
-            $link = rtrim($link, '/') . '/';
-        } else {
-            $link .= '.html';
-        }
+        $path = implode(DIRECTORY_SEPARATOR, array_slice(explode(DIRECTORY_SEPARATOR, $permalink), 0, -1));
+        $name = array_last(explode(DIRECTORY_SEPARATOR, $permalink));
+        $type = 'html';
 
-        return '/' . ltrim($link, '/');
+        return $this->outputPathResolver->link($path, $name, $type);
     }
 }

@@ -18,6 +18,7 @@ use Illuminate\View\Engines\CompilerEngine;
 use Illuminate\View\Engines\EngineResolver;
 use TightenCo\Jigsaw\Handlers\BladeHandler;
 use Illuminate\View\Compilers\BladeCompiler;
+use TightenCo\Jigsaw\BasicOutputPathResolver;
 use TightenCo\Jigsaw\Handlers\DefaultHandler;
 use TightenCo\Jigsaw\Handlers\IgnoredHandler;
 use TightenCo\Jigsaw\Handlers\MarkdownHandler;
@@ -64,27 +65,41 @@ if (! file_exists(getcwd() . '/collections.php')) {
     $collectionSettings = include getcwd() . '/collections.php';
 }
 
-$collectionDataLoader = new CollectionDataLoader($collectionSettings, new Filesystem, [new MarkdownCollectionItemHandler]);
+$container->instance('cwd', getcwd());
+$container->instance('collectionSettings', $collectionSettings);
 
-$dataLoader = new DataLoader(getcwd(), $collectionDataLoader);
+$container->bind('outputPathResolver', function ($c ) {
+    return new BasicOutputPathResolver;
+});
+
+$container->bind(CollectionDataLoader::class, function ($c) {
+    return new CollectionDataLoader($c['collectionSettings'], new Filesystem, $c['outputPathResolver'], [new MarkdownCollectionItemHandler]);
+});
+
+$container->bind(DataLoader::class, function ($c) {
+    return new DataLoader($c['cwd'], $c[CollectionDataLoader::class]);
+});
 
 // Bootstrap Handlers
-// Only supports Markdown right this second...
-$collectionItemHandler = new CollectionItemHandler($collectionSettings, [$container[MarkdownHandler::class]]);
+$container->bind(CollectionItemHandler::class, function ($c) {
+    return new CollectionItemHandler($c['collectionSettings'], $c['outputPathResolver'], [$c[MarkdownHandler::class]]);
+});
 
-$handlers = [
-    $collectionItemHandler,
-    new IgnoredHandler,
-    $container[MarkdownHandler::class],
-    $container[MarkdownHandler::class],
-    $container[BladeHandler::class],
-    $container[DefaultHandler::class],
-];
+$container->bind(SiteBuilder::class, function ($c) use ($cachePath) {
+    return new SiteBuilder(new Filesystem, $cachePath, $c['outputPathResolver'], [
+        $c[CollectionItemHandler::class],
+        new IgnoredHandler,
+        $c[MarkdownHandler::class],
+        $c[BladeHandler::class],
+        $c[DefaultHandler::class],
+    ]);
+});
 
-$siteBuilder = new SiteBuilder(new Filesystem, $cachePath, $handlers);
-$jigsaw = new Jigsaw($dataLoader, $siteBuilder);
+$container->bind(Jigsaw::class, function ($c) {
+    return new Jigsaw($c[DataLoader::class], $c[SiteBuilder::class]);
+});
 
-$buildCommand = new BuildCommand($jigsaw, $sourcePath, $buildPath);
+$buildCommand = new BuildCommand($container, $sourcePath, $buildPath);
 
 $app = new Symfony\Component\Console\Application('Jigsaw', '0.6.4');
 $app->add($buildCommand);

@@ -1,15 +1,17 @@
 <?php namespace TightenCo\Jigsaw\Handlers;
 
-use TightenCo\Jigsaw\ProcessedCollectionFile;
+use TightenCo\Jigsaw\OutputFile;
 
 class CollectionItemHandler
 {
     private $collectionSettings;
+    private $outputPathResolver;
     private $handlers;
 
-    public function __construct($collectionSettings, $handlers)
+    public function __construct($collectionSettings, $outputPathResolver, $handlers)
     {
         $this->collectionSettings = collect($collectionSettings);
+        $this->outputPathResolver = $outputPathResolver;
         $this->handlers = collect($handlers);
     }
 
@@ -44,7 +46,12 @@ class CollectionItemHandler
         $settings = $this->collectionSettings[$this->getCollectionName($file)];
 
         return collect($processedFiles)->map(function ($file) use ($settings) {
-            return new ProcessedCollectionFile($file, $settings);
+            $permalink = $settings['permalink']->__invoke($file->data());
+
+            $path = implode(DIRECTORY_SEPARATOR, array_slice(explode(DIRECTORY_SEPARATOR, $permalink), 0, -1));
+            $name = array_last(explode(DIRECTORY_SEPARATOR, $permalink));
+
+            return new OutputFile($path, $name, $file->extension(), $file->contents(), $file->data());
         })->all();
     }
 }

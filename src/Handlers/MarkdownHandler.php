@@ -1,8 +1,8 @@
 <?php namespace TightenCo\Jigsaw\Handlers;
 
-use Illuminate\Contracts\View\Factory;
-use TightenCo\Jigsaw\ProcessedFile;
 use Mni\FrontYAML\Parser;
+use TightenCo\Jigsaw\OutputFile;
+use Illuminate\Contracts\View\Factory;
 
 class MarkdownHandler
 {
@@ -24,13 +24,19 @@ class MarkdownHandler
 
     public function handle($file, $data)
     {
-        $filename = $file->getBasename($this->getFileExtension($file)) . '.html';
-
         $document = $this->parseFile($file);
 
         $data = array_merge($data, ['section' => 'markdown'], $document->getYAML());
 
-        return [new ProcessedFile($filename, $file->getRelativePath(), $this->render($document, $data), $data)];
+        return [
+            new OutputFile(
+                $file->getRelativePath(),
+                $file->getBasename($this->getFileExtension($file)),
+                'html',
+                $this->render($document, $data),
+                $data
+            )
+        ];
     }
 
     private function getFileExtension($file)

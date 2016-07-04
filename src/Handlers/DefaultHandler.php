@@ -1,8 +1,8 @@
 <?php namespace TightenCo\Jigsaw\Handlers;
 
-use Illuminate\Contracts\View\Factory;
 use TightenCo\Jigsaw\Filesystem;
-use TightenCo\Jigsaw\ProcessedFile;
+use TightenCo\Jigsaw\OutputFile;
+use Illuminate\Contracts\View\Factory;
 
 class DefaultHandler
 {
@@ -20,6 +20,14 @@ class DefaultHandler
 
     public function handle($file, $data)
     {
-        return [new ProcessedFile($file->getFilename(), $file->getRelativePath(), $this->files->get($file->getRealPath()), $data)];
+        return [
+            new OutputFile(
+                $file->getRelativePath(),
+                $file->getBasename('.'.$file->getExtension()),
+                $file->getExtension(),
+                $this->files->get($file->getRealPath()),
+                $data
+            )
+        ];
     }
 }

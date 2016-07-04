@@ -4,22 +4,15 @@ class SiteBuilder
 {
     private $files;
     private $cachePath;
+    private $outputPathResolver;
     private $handlers;
-    private $options = [
-        'pretty' => true
-    ];
 
-    public function __construct(Filesystem $files, $cachePath, $handlers = [], $options = [])
+    public function __construct(Filesystem $files, $cachePath, $outputPathResolver, $handlers = [])
     {
         $this->files = $files;
         $this->cachePath = $cachePath;
+        $this->outputPathResolver = $outputPathResolver;
         $this->handlers = $handlers;
-        $this->options = array_merge($this->options, $options);
-    }
-
-    public function setOption($option, $value)
-    {
-        $this->options[$option] = $value;
     }
 
     public function registerHandler($handler)
@@ -27,9 +20,8 @@ class SiteBuilder
         $this->handlers[] = $handler;
     }
 
-    public function build($source, $dest, $data, $options = [])
+    public function build($source, $dest, $data)
     {
-        $this->options = array_merge($this->options, $options);
         $this->prepareDirectories([$this->cachePath, $dest]);
         $this->buildSite($source, $dest, $data);
         $this->cleanup();
@@ -76,9 +68,9 @@ class SiteBuilder
 
     private function buildFile($file, $dest)
     {
-        $directory = $this->getDirectory($file);
+        $directory = $this->getOutputDirectory($file);
         $this->prepareDirectory("{$dest}/{$directory}");
-        $this->files->put("{$dest}/{$this->getRelativePathname($file)}", $file->contents());
+        $this->files->put("{$dest}/{$this->getOutputPath($file)}", $file->contents());
     }
 
     private function getHandler($file)
@@ -88,13 +80,9 @@ class SiteBuilder
         });
     }
 
-    private function getDirectory($file)
+    private function getOutputDirectory($file)
     {
-        if ($this->options['pretty']) {
-            return $file->prettyDirectory();
-        }
-
-        return $file->relativePath();
+        return $this->outputPathResolver->directory($file->path(), $file->name(), $file->extension());
     }
 
     private function getPrettyDirectory($file)
@@ -102,12 +90,8 @@ class SiteBuilder
         return $file->prettyDirectory();
     }
 
-    private function getRelativePathname($file)
+    private function getOutputPath($file)
     {
-        if ($this->options['pretty']) {
-            return $file->prettyRelativePathname();
-        }
-
-        return $file->relativePathname();
+        return $this->outputPathResolver->path($file->path(), $file->name(), $file->extension());
     }
 }

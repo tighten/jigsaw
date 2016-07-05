@@ -31,17 +31,12 @@ class MarkdownHandler
         return [
             new OutputFile(
                 $file->getRelativePath(),
-                $file->getBasename($this->getFileExtension($file)),
+                $file->getBasename('.'.$file->getExtension()),
                 'html',
                 $this->render($document, $data),
                 $data
             )
         ];
-    }
-
-    private function getFileExtension($file)
-    {
-        return '.' . $file->getExtension();
     }
 
     private function render($document, $data)

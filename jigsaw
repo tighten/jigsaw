@@ -22,6 +22,7 @@ use TightenCo\Jigsaw\BasicOutputPathResolver;
 use TightenCo\Jigsaw\Handlers\DefaultHandler;
 use TightenCo\Jigsaw\Handlers\IgnoredHandler;
 use TightenCo\Jigsaw\Handlers\MarkdownHandler;
+use TightenCo\Jigsaw\Handlers\PaginatedPageHandler;
 use TightenCo\Jigsaw\Handlers\CollectionItemHandler;
 use TightenCo\Jigsaw\CollectionHandlers\MarkdownCollectionItemHandler;
 
@@ -80,13 +81,14 @@ $container->bind(DataLoader::class, function ($c) {
     return new DataLoader($c['cwd'], $c[CollectionDataLoader::class]);
 });
 
-// Bootstrap Handlers
 $container->bind(CollectionItemHandler::class, function ($c) {
     return new CollectionItemHandler($c['collectionSettings'], $c['outputPathResolver'], [$c[MarkdownHandler::class]]);
 });
 
 $container->bind(SiteBuilder::class, function ($c) use ($cachePath) {
     return new SiteBuilder(new Filesystem, $cachePath, $c['outputPathResolver'], [
+        // @todo: Write and stick a pagination handler at the top of this stack
+        $c[PaginatedPageHandler::class],
         $c[CollectionItemHandler::class],
         new IgnoredHandler,
         $c[MarkdownHandler::class],

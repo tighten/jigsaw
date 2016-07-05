@@ -2,19 +2,22 @@
 
 use Illuminate\View\Factory;
 use TightenCo\Jigsaw\OutputFile;
+use TightenCo\Jigsaw\FrontMatterParser;
 
-class BladeHandler
+class PaginatedPageHandler
 {
     private $viewFactory;
 
-    public function __construct(Factory $viewFactory)
+    public function __construct(Factory $viewFactory, FrontMatterParser $parser)
     {
         $this->viewFactory = $viewFactory;
+        $this->parser = $parser;
     }
 
     public function shouldHandle($file)
     {
-        return ends_with($file->getFilename(), '.blade.php');
+        list($frontMatter, $content) = $this->parser->parse($file->getContents(), false);
+        return isset($frontMatter['pagination']);
     }
 
     public function handle($file, $data)

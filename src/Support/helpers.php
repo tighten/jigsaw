@@ -9,7 +9,7 @@ if (! function_exists('public_path')) {
      */
     function public_path($path = '')
     {
-        return 'source'.($path ? DIRECTORY_SEPARATOR.$path : $path);
+        return 'source'.($path ? '/'.$path : $path);
     }
 }
 

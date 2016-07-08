@@ -13,7 +13,7 @@ class InputFile
 
     public function topLevelDirectory()
     {
-        $parts = explode(DIRECTORY_SEPARATOR, $this->relativePath());
+        $parts = explode('/', $this->relativePath());
 
         if (count($parts) == 1) {
             return '';
@@ -24,7 +24,7 @@ class InputFile
 
     public function relativePath()
     {
-        return str_replace($this->basePath . DIRECTORY_SEPARATOR, '', $this->file->getPathname());
+        return str_replace($this->basePath . '/', '', $this->file->getPathname());
     }
 
     public function __call($method, $args)

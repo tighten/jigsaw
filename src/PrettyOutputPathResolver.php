@@ -6,48 +6,48 @@ class PrettyOutputPathResolver
     {
         if ($type === 'html' && $name === 'index') {
             if ($page > 1) {
-                return DIRECTORY_SEPARATOR . ltrim($this->trimPath($path) . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR) . $page . DIRECTORY_SEPARATOR;
+                return '/' . ltrim($this->trimPath($path) . '/', '/') . $page . '/';
             }
-            return  ltrim( DIRECTORY_SEPARATOR . $this->trimPath($path) . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+            return  ltrim( '/' . $this->trimPath($path) . '/', '/') . '/';
         }
 
         if ($type === 'html' && $name !== 'index') {
             if ($page > 1) {
-                return DIRECTORY_SEPARATOR . ltrim($this->trimPath($path) . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR) . $name . DIRECTORY_SEPARATOR . $page . DIRECTORY_SEPARATOR;
+                return '/' . ltrim($this->trimPath($path) . '/', '/') . $name . '/' . $page . '/';
             }
-            return DIRECTORY_SEPARATOR . ltrim($this->trimPath($path) . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR) . $name . DIRECTORY_SEPARATOR;
+            return '/' . ltrim($this->trimPath($path) . '/', '/') . $name . '/';
         }
 
-        return sprintf('%s%s%s.%s', DIRECTORY_SEPARATOR, ltrim($this->trimPath($path) . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR), $name, $type);
+        return sprintf('%s%s%s.%s', '/', ltrim($this->trimPath($path) . '/', '/'), $name, $type);
     }
 
     public function path($path, $name, $type, $page = 1)
     {
         if ($type === 'html' && $name === 'index' && $page > 1) {
-            return ltrim($this->trimPath($path) . DIRECTORY_SEPARATOR . $page . DIRECTORY_SEPARATOR . 'index.html', DIRECTORY_SEPARATOR);
+            return ltrim($this->trimPath($path) . '/' . $page . '/' . 'index.html', '/');
         }
 
         if ($type === 'html' && $name !== 'index') {
             if ($page > 1) {
-                return  $this->trimPath($path) . DIRECTORY_SEPARATOR . $name . DIRECTORY_SEPARATOR . $page . DIRECTORY_SEPARATOR . 'index.html';
+                return  $this->trimPath($path) . '/' . $name . '/' . $page . '/' . 'index.html';
             }
-            return $this->trimPath($path) . DIRECTORY_SEPARATOR . $name . DIRECTORY_SEPARATOR . 'index.html';
+            return $this->trimPath($path) . '/' . $name . '/' . 'index.html';
         }
 
-        return sprintf('%s%s%s.%s', $this->trimPath($path), DIRECTORY_SEPARATOR, $name, $type);
+        return sprintf('%s%s%s.%s', $this->trimPath($path), '/', $name, $type);
     }
 
     public function directory($path, $name, $type, $page = 1)
     {
         if ($type === 'html' && $name === 'index' && $page > 1) {
-            return ltrim($this->trimPath($path) . DIRECTORY_SEPARATOR . $page, DIRECTORY_SEPARATOR);
+            return ltrim($this->trimPath($path) . '/' . $page, '/');
         }
 
         if ($type === 'html' && $name !== 'index') {
             if ($page > 1) {
-                return  $this->trimPath($path) . DIRECTORY_SEPARATOR . $name . DIRECTORY_SEPARATOR . $page;
+                return  $this->trimPath($path) . '/' . $name . '/' . $page;
             }
-            return $this->trimPath($path) . DIRECTORY_SEPARATOR . $name;
+            return $this->trimPath($path) . '/' . $name;
         }
 
         return $this->trimPath($path);
@@ -55,6 +55,6 @@ class PrettyOutputPathResolver
 
     private function trimPath($path)
     {
-        return rtrim(ltrim($path, DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
+        return rtrim(ltrim($path, '/'), '/');
     }
 }

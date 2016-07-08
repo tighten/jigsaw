@@ -16,7 +16,7 @@ class CollectionPaginator
         return $chunked->map(function ($items, $i) use ($file, $numPages) {
             $pageNum = $i + 1;
             return [
-                'number' => $pageNum,
+                'page' => $pageNum,
                 'items' => $items,
                 'next' => $pageNum < $numPages ? $this->getPageLink($file, $pageNum + 1) : null,
                 'prev' => $pageNum > 1 ? $this->getPageLink($file, $pageNum - 1) : null,

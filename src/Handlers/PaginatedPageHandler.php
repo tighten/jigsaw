@@ -40,9 +40,9 @@ class PaginatedPageHandler
                 $file->getRelativePath(),
                 $file->getBasename('.blade.php'),
                 'html',
-                $this->render($content, array_merge($data, ['pagination' => $page])), // <- need to pass paginated items here
+                $this->render($content, array_merge($data, ['pagination' => $page])),
                 $data,
-                $page['number']
+                $page['page']
             );
         })->all();
     }

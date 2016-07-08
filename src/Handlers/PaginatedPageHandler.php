@@ -22,6 +22,10 @@ class PaginatedPageHandler
 
     public function shouldHandle($file)
     {
+        if (! ends_with($file->getFilename(), '.blade.php')) {
+            return false;
+        }
+
         list($frontMatter, $content) = $this->parser->parse($file->getContents());
         return isset($frontMatter['pagination']);
     }

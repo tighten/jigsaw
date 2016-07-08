@@ -5,9 +5,9 @@ class BasicOutputPathResolver
     public function link($path, $name, $type, $page = 1)
     {
         if ($page > 1) {
-            return sprintf('%s%s%s%s%s.%s', $this->trimPath($path), '/', $page, '/', $name, $type);
+            return $this->clean('/' . $path . '/' . $page . '/' . $name . '.' . $type);
         }
-        return sprintf('%s%s%s.%s', $this->trimPath($path), '/', $name, $type);
+        return $this->clean('/' . $path . '/' . $name . '.' . $type);
     }
 
     public function path($path, $name, $type, $page = 1)
@@ -18,13 +18,13 @@ class BasicOutputPathResolver
     public function directory($path, $name, $type, $page = 1)
     {
         if ($page > 1) {
-            return $this->trimPath($path) . '/' . $page;
+            return $this->clean($path . '/' . $page);
         }
-        return $this->trimPath($path);
+        return $this->clean($path);
     }
 
-    private function trimPath($path)
+    private function clean($path)
     {
-        return rtrim(ltrim($path, '/'), '/');
+        return str_replace('//', '/', $path);
     }
 }

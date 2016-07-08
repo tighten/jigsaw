@@ -82,16 +82,11 @@ class SiteBuilder
 
     private function getOutputDirectory($file)
     {
-        return $this->outputPathResolver->directory($file->path(), $file->name(), $file->extension());
-    }
-
-    private function getPrettyDirectory($file)
-    {
-        return $file->prettyDirectory();
+        return $this->outputPathResolver->directory($file->path(), $file->name(), $file->extension(), $file->page());
     }
 
     private function getOutputPath($file)
     {
-        return $this->outputPathResolver->path($file->path(), $file->name(), $file->extension());
+        return $this->outputPathResolver->path($file->path(), $file->name(), $file->extension(), $file->page());
     }
 }

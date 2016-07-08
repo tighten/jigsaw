@@ -50,10 +50,6 @@ class CollectionDataLoader
     {
         $permalink = $settings['permalink']->__invoke($data);
 
-        $path = implode(DIRECTORY_SEPARATOR, array_slice(explode(DIRECTORY_SEPARATOR, $permalink), 0, -1));
-        $name = array_last(explode(DIRECTORY_SEPARATOR, $permalink));
-        $type = 'html';
-
-        return $this->outputPathResolver->link($path, $name, $type);
+        return $this->outputPathResolver->link(dirname($permalink), basename($permalink), 'html');
     }
 }

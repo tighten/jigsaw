@@ -7,14 +7,16 @@ class OutputFile
     private $extension;
     private $contents;
     private $data;
+    private $page;
 
-    public function __construct($path, $name, $extension, $contents, $data)
+    public function __construct($path, $name, $extension, $contents, $data, $page = 1)
     {
         $this->path = $path;
         $this->name = $name;
         $this->extension = $extension;
         $this->contents = $contents;
         $this->data = $data;
+        $this->page = $page;
     }
 
     public function path()
@@ -40,5 +42,10 @@ class OutputFile
     public function data()
     {
         return $this->data;
+    }
+
+    public function page()
+    {
+        return $this->page;
     }
 }

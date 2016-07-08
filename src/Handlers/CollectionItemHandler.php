@@ -48,10 +48,7 @@ class CollectionItemHandler
         return collect($processedFiles)->map(function ($file) use ($settings) {
             $permalink = $settings['permalink']->__invoke($file->data());
 
-            $path = implode(DIRECTORY_SEPARATOR, array_slice(explode(DIRECTORY_SEPARATOR, $permalink), 0, -1));
-            $name = array_last(explode(DIRECTORY_SEPARATOR, $permalink));
-
-            return new OutputFile($path, $name, $file->extension(), $file->contents(), $file->data());
+            return new OutputFile(dirname($permalink), basename($permalink), $file->extension(), $file->contents(), $file->data());
         })->all();
     }
 }

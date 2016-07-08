@@ -7,12 +7,17 @@ use TightenCo\Jigsaw\CollectionPaginator;
 
 class PaginatedPageHandler
 {
+    private $paginator;
     private $viewFactory;
+    private $parser;
+    private $temporaryFilesystem;
 
-    public function __construct(Factory $viewFactory, FrontMatterParser $parser)
+    public function __construct($paginator, Factory $viewFactory, FrontMatterParser $parser, $temporaryFilesystem)
     {
+        $this->paginator = $paginator;
         $this->viewFactory = $viewFactory;
         $this->parser = $parser;
+        $this->temporaryFilesystem = $temporaryFilesystem;
     }
 
     public function shouldHandle($file)
@@ -28,22 +33,24 @@ class PaginatedPageHandler
         $items = $data['site'][$frontMatter['pagination']['for']];
         $perPage = array_get($frontMatter, 'pagination.perPage', 10);
 
-        $paginator = new CollectionPaginator($items, $perPage);
+        $pages = $this->paginator->paginate($file, $items, $perPage);
 
-        return $paginator->pages()->map(function ($page) use ($file, $data) {
+        return $pages->map(function ($page) use ($file, $data, $content) {
             return new OutputFile(
                 $file->getRelativePath(),
                 $file->getBasename('.blade.php'),
                 'html',
-                $this->render($file, array_merge($data, ['pagination' => $page])), // <- need to pass paginated items here
+                $this->render($content, array_merge($data, ['pagination' => $page])), // <- need to pass paginated items here
                 $data,
                 $page['number']
             );
         })->all();
     }
 
-    private function render($file, $data)
+    private function render($bladeContent, $data)
     {
-        return $this->viewFactory->file($file->getRealPath(), $data)->render();
+        return $this->temporaryFilesystem->put($bladeContent, function ($path) use ($data) {
+            return $this->viewFactory->file($path, $data)->render();
+        }, '.blade.php');
     }
 }

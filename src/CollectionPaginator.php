@@ -2,22 +2,35 @@
 
 class CollectionPaginator
 {
-    private $items;
-    private $perPage;
+    private $outputPathResolver;
 
-    public function __construct($items, $perPage)
+    public function __construct($outputPathResolver)
     {
-        $this->items = collect($items);
-        $this->perPage = $perPage;
+        $this->outputPathResolver = $outputPathResolver;
     }
 
-    public function pages()
+    public function paginate($file, $items, $perPage)
     {
-        return $this->items->chunk($this->perPage)->map(function ($items, $i) {
+        $chunked = collect($items)->chunk($perPage);
+        $numPages = $chunked->count();
+        return $chunked->map(function ($items, $i) use ($file, $numPages) {
+            $pageNum = $i + 1;
             return [
-                'number' => $i + 1,
+                'number' => $pageNum,
                 'items' => $items,
+                'next' => $pageNum < $numPages ? $this->getPageLink($file, $pageNum + 1) : null,
+                'prev' => $pageNum > 1 ? $this->getPageLink($file, $pageNum - 1) : null,
             ];
         });
+    }
+
+    private function getPageLink($file, $pageNum)
+    {
+        return $this->outputPathResolver->link(
+            $file->getRelativePath(),
+            $file->getBasename('.blade.php'),
+            'html',
+            $pageNum
+        );
     }
 }

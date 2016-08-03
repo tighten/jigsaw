@@ -42,10 +42,10 @@ class CollectionItemHandler
             return $handler->shouldHandle($file);
         });
 
-        $processedFiles = $handler->handle($file, $data);
+        $handledFiles = $handler->handle($file, $data);
         $settings = $this->collectionSettings[$this->getCollectionName($file)];
 
-        return collect($processedFiles)->map(function ($file) use ($settings) {
+        return collect($handledFiles)->map(function ($file) use ($settings) {
             $permalink = $settings['permalink']->__invoke($file->data());
 
             return new OutputFile(dirname($permalink), basename($permalink), $file->extension(), $file->contents(), $file->data());

@@ -21,7 +21,7 @@ class CollectionDataLoader
             $settings = array_merge([
                 'helpers' => [],
                 'permalink' => function($data) {
-                    return $data['filename'];
+                    return slugify($data['filename']);
                 },
             ], $settings);
             $data = $this->loadSingleCollectionData($source, $collectionName, $settings);
@@ -80,7 +80,7 @@ class CollectionDataLoader
 
     private function getCollectionItemLink($data, $settings)
     {
-        $permalink = slugify($settings['permalink']->__invoke($data));
+        $permalink = $settings['permalink']->__invoke($data);
 
         return $this->outputPathResolver->link(dirname($permalink), basename($permalink), 'html');
     }

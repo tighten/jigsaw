@@ -1,5 +1,25 @@
 <?php
 
+if (! function_exists('slugify')) {
+    /**
+     * Convert a filename into a URL slug.
+     *
+     * @param  string  $filename
+     * @param  string  $delimiter
+     * @return string
+     */
+    function slugify($filename, $delimiter = '-')
+    {
+        setlocale(LC_ALL, 'en_US.UTF8');
+        $convertSpecialCharacters = iconv('UTF-8', 'ASCII//TRANSLIT', trim($filename));
+        $removePunctuation = preg_replace("/[^a-zA-Z0-9\/_|+ -]/", '', $convertSpecialCharacters);
+        $lowerCase = strtolower($removePunctuation);
+        $delimitedSlug = preg_replace("/[_|+ -]+/", $delimiter, $lowerCase);
+
+        return $delimitedSlug;
+    }
+}
+
 if (! function_exists('public_path')) {
     /**
      * Get the path to the public folder.

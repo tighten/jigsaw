@@ -17,23 +17,44 @@ class CollectionDataLoader
 
     public function load($source)
     {
-        return $this->settings->map(function ($collectionSettings, $name) use ($source) {
-            $collectionSettings = array_merge([
+        return $this->settings->map(function ($settings, $collectionName) use ($source) {
+            $settings = array_merge([
                 'helpers' => [],
                 'permalink' => function($data) {
                     return $data['filename'];
                 },
-            ], $collectionSettings);
+            ], $settings);
+            $data = $this->loadSingleCollectionData($source, $collectionName, $settings);
 
-            return $this->loadSingleCollectionData($source, $name, $collectionSettings);
+            return $this->sortSingleCollectionData($data, $settings);
         })->all();
     }
 
     private function loadSingleCollectionData($source, $collectionName, $settings)
     {
-        return collect($this->filesystem->allFiles("{$source}/_{$collectionName}"))->map(function ($file) use ($settings) {
-            return $this->buildCollectionItem($file, $settings);
-        })->all();
+        return collect($this->filesystem->allFiles("{$source}/_{$collectionName}"))
+            ->map(function ($file) use ($settings) {
+                return $this->buildCollectionItem($file, $settings);
+            });
+    }
+
+    private function sortSingleCollectionData($data, $settings)
+    {
+        return collect(array_get($settings, 'sort'))
+            ->reverse()
+            ->reduce(function ($sortedData, $sortSetting) {
+                return $this->sortCollectionUsingSetting($sortedData, $sortSetting);
+            }, $data);
+    }
+
+    private function sortCollectionUsingSetting($data, $sortSetting)
+    {
+        $sortKey = trim($sortSetting, '-+');
+        $sortFunction = $sortSetting[0] === '-' ? 'sortByDesc' : 'sortBy';
+
+        return $data->{$sortFunction}(function ($item, $_) use ($sortKey) {
+            return $item->{$sortKey};
+        });
     }
 
     private function buildCollectionItem($file, $settings)

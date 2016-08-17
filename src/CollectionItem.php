@@ -18,6 +18,6 @@ class CollectionItem
 
     public function __call($method, $args)
     {
-        return $this->helpers[$method]->__invoke($this->data);
+        return $this->helpers[$method]->__invoke($this->data, ...$args);
     }
 }

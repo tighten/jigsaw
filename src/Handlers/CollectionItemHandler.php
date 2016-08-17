@@ -49,7 +49,8 @@ class CollectionItemHandler
             return $handler->shouldHandle($file);
         });
         $collectionName = $this->getCollectionName($file);
-        $handledFiles = $handler->handle($file, $data);
+        $defaultVariables = array_get($this->collectionSettings[$collectionName], 'variables', []);
+        $handledFiles = $handler->handle($file, array_merge($defaultVariables, $data));
 
         return collect($handledFiles)->map(function ($file) use ($collectionName) {
             $link = $this->getCollectionData($file, $collectionName)->getLink();

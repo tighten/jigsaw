@@ -25,7 +25,6 @@ class MarkdownHandler
     public function handle($file, $data)
     {
         $document = $this->parseFile($file);
-
         $data = array_merge($data, ['section' => 'markdown'], $document->getYAML());
 
         return [

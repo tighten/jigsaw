@@ -44,9 +44,9 @@ class CollectionDataLoader
 
         $data = array_merge(
             ['filename' => $this->getFilenameWithoutExtension($file)],
+            array_get($settings, 'variables', []),
             $handler->getData($file)
         );
-
         $link = $this->getCollectionItemLink($data, $settings);
 
         return new CollectionItem(array_merge($data, ['link' => $link]), $settings['helpers']);

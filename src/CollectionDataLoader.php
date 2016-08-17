@@ -48,7 +48,7 @@ class CollectionDataLoader
 
     private function getCollectionItemLink($data, $settings)
     {
-        $permalink = $settings['permalink']->__invoke($data);
+        $permalink = slugify($settings['permalink']->__invoke($data));
 
         return $this->outputPathResolver->link(dirname($permalink), basename($permalink), 'html');
     }

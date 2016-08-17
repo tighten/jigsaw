@@ -48,4 +48,9 @@ class OutputFile
     {
         return $this->page;
     }
+
+    public function getCollectionData($collectionName)
+    {
+        return $this->data['site'][$collectionName];
+    }
 }

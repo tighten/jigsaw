@@ -36,19 +36,25 @@ class CollectionItemHandler
         return substr($file->topLevelDirectory(), 1);
     }
 
+    private function getCollectionData($file, $collectionName)
+    {
+        return collect($file->getCollectionData($collectionName))->first(function($_, $item) use ($file) {
+            return $item->getFilename() === $file->name();
+        });
+    }
+
     public function handle($file, $data)
     {
         $handler = $this->handlers->first(function ($_, $handler) use ($file) {
             return $handler->shouldHandle($file);
         });
-
+        $collectionName = $this->getCollectionName($file);
         $handledFiles = $handler->handle($file, $data);
-        $settings = $this->collectionSettings[$this->getCollectionName($file)];
 
-        return collect($handledFiles)->map(function ($file) use ($settings) {
-            $permalink = $settings['permalink']->__invoke($file->data());
+        return collect($handledFiles)->map(function ($file) use ($collectionName) {
+            $link = $this->getCollectionData($file, $collectionName)->getLink();
 
-            return new OutputFile(dirname($permalink), basename($permalink), $file->extension(), $file->contents(), $file->data());
+            return new OutputFile(dirname($link), basename($link), $file->extension(), $file->contents(), $file->data());
         })->all();
     }
 }

@@ -11,6 +11,16 @@ class CollectionItem
         $this->helpers = $helpers;
     }
 
+    public function getFilename()
+    {
+        return $this->data['filename'];
+    }
+
+    public function getLink()
+    {
+        return $this->data['link'];
+    }
+
     public function __get($key)
     {
         return $this->data[$key];

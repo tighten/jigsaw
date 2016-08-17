@@ -40,10 +40,19 @@ class CollectionDataLoader
             return $handler->shouldHandle($file);
         }, function () { throw new Exception('No matching collection item handler'); });
 
-        $data = $handler->getData($file);
+        $data = array_merge(
+            ['filename' => $this->getFilenameWithoutExtension($file)],
+            $handler->getData($file)
+        );
+
         $link = $this->getCollectionItemLink($data, $settings);
 
         return new CollectionItem(array_merge($data, ['link' => $link]), $settings['helpers']);
+    }
+
+    private function getFilenameWithoutExtension($file)
+    {
+        return $file->getBasename('.' . $file->getExtension());
     }
 
     private function getCollectionItemLink($data, $settings)

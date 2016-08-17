@@ -18,9 +18,11 @@ class CollectionDataLoader
     public function load($source)
     {
         return $this->settings->map(function ($collectionSettings, $name) use ($source) {
-            // Merge in any default collection settings
             $collectionSettings = array_merge([
-                'helpers' => []
+                'helpers' => [],
+                'permalink' => function($data) {
+                    return $data['filename'];
+                },
             ], $collectionSettings);
 
             return $this->loadSingleCollectionData($source, $name, $collectionSettings);

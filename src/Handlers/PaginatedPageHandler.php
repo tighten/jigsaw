@@ -40,11 +40,14 @@ class PaginatedPageHandler
         return $pages->map(function ($page) use ($file, $data, $content) {
             return new OutputFile(
                 $file->getRelativePath(),
-                $file->getBasename('.blade.php'),
+                $file->getFilenameWithoutExtension(),
                 'html',
                 $this->render(
                     $content->content,
-                    new ViewData($data->put('pagination', $page))
+                    new ViewData(
+                        $data->put('pagination', $page)
+                        ->put('link', $page['pages'][$page['currentPage']])
+                    )
                 ),
                 $data,
                 $page['currentPage']

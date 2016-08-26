@@ -13,9 +13,9 @@ class DataLoader
 
     public function load($source, $env)
     {
-        return [
-            'site' => array_merge($this->loadConfigData($env), $this->loadCollectionData($source)),
-        ];
+        return $this->makeIterableObject(
+            array_merge($this->loadConfigData($env), $this->loadCollectionData($source))
+        );
     }
 
     private function loadConfigData($env)
@@ -27,6 +27,12 @@ class DataLoader
         }
 
         return array_merge(include $this->basePath . '/config.php', $environmentConfig);
+
+    private function makeIterableObject($array)
+    {
+        return collect($array)->map(function ($item, $_) {
+            return is_array($item) ? new IterableObject($this->makeIterableObject($item)) : $item;
+        });
     }
 
     private function loadCollectionData($source)

@@ -47,7 +47,7 @@ class PaginatedPageHandler
                     new ViewData($data->put('pagination', $page))
                 ),
                 $data,
-                $page['page']
+                $page['currentPage']
             );
         })->all();
     }

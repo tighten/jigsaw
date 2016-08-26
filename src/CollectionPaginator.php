@@ -12,25 +12,34 @@ class CollectionPaginator
     public function paginate($file, $items, $perPage)
     {
         $chunked = collect($items)->chunk($perPage);
-        $numPages = $chunked->count();
-        return $chunked->map(function ($items, $i) use ($file, $numPages) {
-            $pageNum = $i + 1;
+        $totalPages = $chunked->count();
+        $numberedPageLinks = $chunked->map(function ($_, $i) use ($file) {
+            $page = $i + 1;
+            return ['number' => $page, 'link' => $this->getPageLink($file, $page)];
+        })->pluck('link', 'number');
+
+        return $chunked->map(function ($items, $i) use ($file, $totalPages, $numberedPageLinks) {
+            $currentPage = $i + 1;
             return [
-                'page' => $pageNum,
                 'items' => $items,
-                'next' => $pageNum < $numPages ? $this->getPageLink($file, $pageNum + 1) : null,
-                'prev' => $pageNum > 1 ? $this->getPageLink($file, $pageNum - 1) : null,
+                'next' => $currentPage < $totalPages ? $this->getPageLink($file, $currentPage + 1) : null,
+                'previous' => $currentPage > 1 ? $this->getPageLink($file, $currentPage - 1) : null,
+                'first' => $this->getPageLink($file, 1),
+                'last' => $this->getPageLink($file, $totalPages),
+                'currentPage' => $currentPage,
+                'totalPages' => $totalPages,
+                'pages' => $numberedPageLinks,
             ];
         });
     }
 
-    private function getPageLink($file, $pageNum)
+    private function getPageLink($file, $pageNumber)
     {
         return $this->outputPathResolver->link(
             $file->getRelativePath(),
             $file->getBasename('.blade.php'),
             'html',
-            $pageNum
+            $pageNumber
         );
     }
 }

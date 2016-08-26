@@ -2,6 +2,7 @@
 
 use Illuminate\View\Factory;
 use TightenCo\Jigsaw\OutputFile;
+use TightenCo\Jigsaw\ViewData;
 
 class BladeHandler
 {
@@ -24,7 +25,7 @@ class BladeHandler
                 $file->getRelativePath(),
                 $file->getBasename('.blade.php'),
                 'html',
-                $this->render($file, $data),
+                $this->render($file, new ViewData($data)),
                 $data
             )
         ];

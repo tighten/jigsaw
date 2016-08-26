@@ -35,11 +35,11 @@ class CollectionPaginator
 
     private function getPageLink($file, $pageNumber)
     {
-        return $this->outputPathResolver->link(
+        return rtrim($this->outputPathResolver->link(
             $file->getRelativePath(),
             $file->getBasename('.blade.php'),
             'html',
             $pageNumber
-        );
+        ), '/');
     }
 }

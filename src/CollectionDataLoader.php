@@ -63,6 +63,6 @@ class CollectionDataLoader
     {
         $permalink = $collection->getPermalink()->__invoke($data);
 
-        return $this->outputPathResolver->link(dirname($permalink), basename($permalink), 'html');
+        return rtrim($this->outputPathResolver->link(dirname($permalink), basename($permalink), 'html'), '/');
     }
 }

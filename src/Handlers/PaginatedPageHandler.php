@@ -55,7 +55,7 @@ class PaginatedPageHandler
     private function render($bladeContent, $data)
     {
         return $this->temporaryFilesystem->put($bladeContent, function ($path) use ($data) {
-            return $this->viewFactory->file($path, $data)->render();
+            return $this->viewFactory->file($path, ['jigsaw' => $data])->render();
         }, '.blade.php');
     }
 }

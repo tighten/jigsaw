@@ -33,6 +33,6 @@ class BladeHandler
 
     private function render($file, $data)
     {
-        return $this->viewFactory->file($file->getRealPath(), $data)->render();
+        return $this->viewFactory->file($file->getRealPath(), ['jigsaw' => $data])->render();
     }
 }

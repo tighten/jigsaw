@@ -1,9 +1,9 @@
 <?php namespace TightenCo\Jigsaw\Handlers;
 
 use Illuminate\View\Factory;
-use TightenCo\Jigsaw\OutputFile;
 use TightenCo\Jigsaw\FrontMatterParser;
-use TightenCo\Jigsaw\CollectionPaginator;
+use TightenCo\Jigsaw\OutputFile;
+use TightenCo\Jigsaw\ViewData;
 
 class PaginatedPageHandler
 {
@@ -25,18 +25,16 @@ class PaginatedPageHandler
         if (! ends_with($file->getFilename(), '.blade.php')) {
             return false;
         }
+        $content = $this->parser->parse($file->getContents());
 
-        list($frontMatter, $content) = $this->parser->parse($file->getContents());
-        return isset($frontMatter['pagination']);
+        return isset($content->frontMatter['pagination']);
     }
 
     public function handle($file, $data)
     {
-        list($frontMatter, $content) = $this->parser->parse($file->getContents());
-
-        $items = $data['site'][$frontMatter['pagination']['for']];
-        $perPage = array_get($frontMatter, 'pagination.perPage', 10);
-
+        $content = $this->parser->parse($file->getContents());
+        $items = $data[array_get($content->frontMatter, 'pagination.collection')];
+        $perPage = array_get($content->frontMatter, 'pagination.perPage', 10);
         $pages = $this->paginator->paginate($file, $items, $perPage);
 
         return $pages->map(function ($page) use ($file, $data, $content) {
@@ -44,7 +42,10 @@ class PaginatedPageHandler
                 $file->getRelativePath(),
                 $file->getBasename('.blade.php'),
                 'html',
-                $this->render($content, array_merge($data, ['pagination' => $page])),
+                $this->render(
+                    $content->content,
+                    new ViewData($data->put('pagination', $page))
+                ),
                 $data,
                 $page['page']
             );

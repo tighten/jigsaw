@@ -90,7 +90,7 @@ $container->bind(DataLoader::class, function ($c) {
 });
 
 $container->bind(CollectionItemHandler::class, function ($c) {
-    return new CollectionItemHandler($c['collectionSettings'], $c['outputPathResolver'], [$c[MarkdownHandler::class]]);
+    return new CollectionItemHandler($c['collectionSettings'], [$c[MarkdownHandler::class]]);
 });
 
 $container->bind(CollectionPaginator::class, function ($c) {

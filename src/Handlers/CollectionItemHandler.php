@@ -7,13 +7,11 @@ use TightenCo\Jigsaw\ViewData;
 class CollectionItemHandler
 {
     private $collectionSettings;
-    private $outputPathResolver;
     private $handlers;
 
-    public function __construct($collectionSettings, $outputPathResolver, $handlers)
+    public function __construct($collectionSettings, $handlers)
     {
         $this->collectionSettings = collect($collectionSettings);
-        $this->outputPathResolver = $outputPathResolver;
         $this->handlers = collect($handlers);
     }
 

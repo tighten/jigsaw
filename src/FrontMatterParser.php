@@ -5,6 +5,8 @@ use Mni\FrontYAML\Parser;
 class FrontMatterParser
 {
     private $parser;
+    public $frontMatter = [];
+    public $content;
 
     public function __construct($parser = null)
     {
@@ -14,8 +16,9 @@ class FrontMatterParser
     public function parse($content)
     {
         $document = $this->parser->parse($content, false);
-        $frontMatter = $document->getYAML() !== null ? $document->getYAML() : [];
-        $documentContent = $document->getContent();
-        return [$frontMatter, $documentContent];
+        $this->frontMatter = $document->getYAML() !== null ? $document->getYAML() : [];
+        $this->content = $document->getContent();
+
+        return $this;
     }
 }

@@ -63,7 +63,7 @@ class SiteBuilder
 
     private function handle($file, $data)
     {
-        return $this->getHandler($file)->handle($file, $data);
+        return $this->getHandler($file)->handle($file, $data->merge($this->getMeta($file)));
     }
 
     private function buildFile($file, $dest)
@@ -78,6 +78,14 @@ class SiteBuilder
         return collect($this->handlers)->first(function ($_, $handler) use ($file) {
             return $handler->shouldHandle($file);
         });
+    }
+
+    private function getMeta($file)
+    {
+        $meta['filename'] = $file->getFilenameWithoutExtension();
+        $meta['link'] = rtrim($this->outputPathResolver->link($file->getRelativePath(), $meta['filename'], 'html'), '/');
+
+        return $meta;
     }
 
     private function getOutputDirectory($file)

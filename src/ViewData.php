@@ -1,5 +1,6 @@
 <?php namespace TightenCo\Jigsaw;
 
+use Exception;
 use TightenCo\Jigsaw\IterableObject;
 
 class ViewData extends IterableObject
@@ -26,7 +27,7 @@ class ViewData extends IterableObject
         $helper = $this->has('helpers') ? $this->helpers->{$name} : null;
 
         return $helper ?: function() use ($name) {
-            throw new \Exception("No helper function named '$name' in 'config.php'.");
+            throw new Exception("No helper function named '$name' in 'config.php'.");
         };
     }
 

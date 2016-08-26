@@ -1,5 +1,7 @@
 <?php namespace TightenCo\Jigsaw;
 
+use Exception;
+
 class CollectionDataLoader
 {
     private $settings;
@@ -18,69 +20,48 @@ class CollectionDataLoader
     public function load($source)
     {
         return $this->settings->map(function ($settings, $collectionName) use ($source) {
-            $settings = array_merge([
-                'helpers' => [],
-                'permalink' => function($data) {
-                    return slugify($data['filename']);
-                },
-            ], $settings);
-            $data = $this->loadSingleCollectionData($source, $collectionName, $settings);
+            $collection = Collection::withSettings($settings, $collectionName);
 
-            return $this->sortSingleCollectionData($data, $settings);
+            return $collection->loadItems($this->buildCollection($source, $collection));
         })->all();
     }
 
-    private function loadSingleCollectionData($source, $collectionName, $settings)
+    private function buildCollection($source, $collection)
     {
-        return collect($this->filesystem->allFiles("{$source}/_{$collectionName}"))
-            ->map(function ($file) use ($settings) {
-                return $this->buildCollectionItem($file, $settings);
+        return collect($this->filesystem->allFiles("{$source}/_{$collection->name}"))
+            ->map(function ($file) use ($source, $collection) {
+                return $this->buildCollectionItem(new InputFile($file, $source), $collection);
             });
     }
 
-    private function sortSingleCollectionData($data, $settings)
-    {
-        return collect(array_get($settings, 'sort'))
-            ->reverse()
-            ->reduce(function ($sortedData, $sortSetting) {
-                return $this->sortCollectionUsingSetting($sortedData, $sortSetting);
-            }, $data);
-    }
-
-    private function sortCollectionUsingSetting($data, $sortSetting)
-    {
-        $sortKey = trim($sortSetting, '-+');
-        $sortFunction = $sortSetting[0] === '-' ? 'sortByDesc' : 'sortBy';
-
-        return $data->{$sortFunction}(function ($item, $_) use ($sortKey) {
-            return $item->{$sortKey};
-        });
-    }
-
-    private function buildCollectionItem($file, $settings)
+    private function buildCollectionItem($file, $collection)
     {
         $handler = $this->handlers->first(function ($_, $handler) use ($file) {
             return $handler->shouldHandle($file);
-        }, function () { throw new Exception('No matching collection item handler'); });
+        });
 
-        $data = array_merge(
-            ['filename' => $this->getFilenameWithoutExtension($file)],
-            array_get($settings, 'variables', []),
-            $handler->getData($file)
+        if (! $handler) {
+            throw new Exception('No matching collection item handler');
+        }
+
+        $data = array_merge($collection->getDefaultVariables(), $handler->getData($file), $this->getMeta($file));
+
+        return new CollectionItem(
+            array_merge($data, ['link' => $this->getPermalink($collection, $data)]),
+            $collection->getHelpers()
         );
-        $link = $this->getCollectionItemLink($data, $settings);
-
-        return new CollectionItem(array_merge($data, ['link' => $link]), $settings['helpers']);
     }
 
-    private function getFilenameWithoutExtension($file)
+    private function getMeta($file)
     {
-        return $file->getBasename('.' . $file->getExtension());
+        $meta['filename'] = $file->getFilenameWithoutExtension();
+
+        return $meta;
     }
 
-    private function getCollectionItemLink($data, $settings)
+    private function getPermalink($collection, $data)
     {
-        $permalink = $settings['permalink']->__invoke($data);
+        $permalink = $collection->getPermalink()->__invoke($data);
 
         return $this->outputPathResolver->link(dirname($permalink), basename($permalink), 'html');
     }

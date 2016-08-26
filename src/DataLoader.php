@@ -2,11 +2,13 @@
 
 class DataLoader
 {
+    private $config;
     private $basePath;
     private $collectionDataLoader;
 
-    public function __construct($basePath, $collectionDataLoader)
+    public function __construct($config, $basePath, $collectionDataLoader)
     {
+        $this->config = $config;
         $this->basePath = $basePath;
         $this->collectionDataLoader = $collectionDataLoader;
     }
@@ -26,7 +28,8 @@ class DataLoader
             $environmentConfig = [];
         }
 
-        return array_merge(include $this->basePath . '/config.php', $environmentConfig);
+        return array_merge($this->config, $environmentConfig);
+    }
 
     private function makeIterableObject($array)
     {

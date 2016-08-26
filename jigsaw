@@ -42,7 +42,19 @@ $sourcePath = getcwd() . '/source';
 $container = new Container;
 $config = include getcwd() . '/config.php';
 
+if (! file_exists(getcwd() . '/collections.php')) {
+    $collectionSettings = [];
+} else {
+    $collectionSettings = include getcwd() . '/collections.php';
+}
+
+$container->instance('cwd', getcwd());
 $container->instance('config', $config);
+$container->instance('collectionSettings', $collectionSettings);
+
+$container->bind('outputPathResolver', function ($c ) {
+    return new BasicOutputPathResolver;
+});
 $container->bind(Factory::class, function ($c) use ($cachePath, $sourcePath) {
     $resolver = new EngineResolver;
 
@@ -64,24 +76,13 @@ $container->bind(TemporaryFilesystem::class, function ($c) use ($cachePath) {
 });
 
 $container->bind(MarkdownHandler::class, function ($c) {
-    return new MarkdownHandler($c[TemporaryFilesystem::class], $c[Factory::class]);
-});
-
-if (! file_exists(getcwd() . '/collections.php')) {
-    $collectionSettings = [];
-} else {
-    $collectionSettings = include getcwd() . '/collections.php';
-}
-
-$container->instance('cwd', getcwd());
-$container->instance('collectionSettings', $collectionSettings);
-
-$container->bind('outputPathResolver', function ($c ) {
-    return new BasicOutputPathResolver;
+    return new MarkdownHandler($c[TemporaryFilesystem::class], $c[Factory::class], $c[FrontMatterParser::class]);
 });
 
 $container->bind(CollectionDataLoader::class, function ($c) {
-    return new CollectionDataLoader($c['collectionSettings'], new Filesystem, $c['outputPathResolver'], [new MarkdownCollectionItemHandler]);
+    return new CollectionDataLoader($c['collectionSettings'], new Filesystem, $c['outputPathResolver'], [
+        $c[MarkdownCollectionItemHandler::class],
+    ]);
 });
 
 $container->bind(DataLoader::class, function ($c) {
@@ -102,7 +103,6 @@ $container->bind(PaginatedPageHandler::class, function ($c) {
 
 $container->bind(SiteBuilder::class, function ($c) use ($cachePath) {
     return new SiteBuilder(new Filesystem, $cachePath, $c['outputPathResolver'], [
-        // @todo: Write and stick a pagination handler at the top of this stack
         $c[PaginatedPageHandler::class],
         $c[CollectionItemHandler::class],
         new IgnoredHandler,

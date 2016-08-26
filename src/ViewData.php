@@ -1,46 +1,47 @@
 <?php namespace TightenCo\Jigsaw;
 
-// This is sort of hard because people might actually want arrays for some
-// things and not objects, since they might need things to be iterable.
-//
-// Need to think on this.
-class ViewData implements \ArrayAccess
+use TightenCo\Jigsaw\IterableObject;
+
+class ViewData extends IterableObject
 {
     private $data;
+    private $globals = ['extends', 'section', 'content', 'link'];
+    public $item;
 
-    public function __construct($data)
+    public static function withCollectionItem($data, $collectionName, $itemName)
     {
-        $this->data = $data;
+        $viewData = new static($data);
+        $viewData->setCollectionItem($collectionName, $itemName);
+
+        return $viewData;
     }
 
-    public function __get($key)
+    public function __call($method, $args)
     {
-        if (! isset($this->data[$key])) {
-            return null;
+        return $this->getHelper($method)->__invoke($this, ...$args);
+    }
+
+    private function getHelper($name)
+    {
+        $helper = $this->has('helpers') ? $this->helpers->{$name} : null;
+
+        return $helper ?: function() use ($name) {
+            throw new \Exception("No helper function named '$name' in 'config.php'.");
+        };
+    }
+
+    private function setCollectionItem($collection, $item)
+    {
+        if ($this->has($collection)) {
+            $this->item = $this->get($collection)->get($item);
+            $this->setGloballyAvailableItemVariables();
         }
-
-        if (is_array($this->data[$key])) {
-            return new self($this->data[$key]);
-        }
     }
 
-    public function offsetExists($offset)
+    private function setGloballyAvailableItemVariables()
     {
-        return array_key_exists($offset, $this->data);
-    }
-
-    public function offsetGet($offset)
-    {
-        return $this->data[$offset];
-    }
-
-    public function offsetSet($offset, $value)
-    {
-        $this->data[$offset] = $value;
-    }
-
-    public function offsetUnset($offset)
-    {
-        unset($this->data[$offset]);
+        collect($this->globals)->each(function ($variable) {
+            $this[$variable] = $this->item->{$variable};
+        });
     }
 }

@@ -5,18 +5,18 @@ if (! function_exists('slugify')) {
      * Convert a filename into a URL slug.
      *
      * @param  string  $filename
-     * @param  string  $delimiter
+     * @param  string  $separator
      * @return string
      */
-    function slugify($filename, $delimiter = '-')
+    function slugify($filename, $separator = '-')
     {
         setlocale(LC_ALL, 'en_US.UTF8');
         $convertSpecialCharacters = iconv('UTF-8', 'ASCII//TRANSLIT', trim($filename));
         $removePunctuation = preg_replace("/[^a-zA-Z0-9\/_|+ -]/", '', $convertSpecialCharacters);
         $lowerCase = strtolower($removePunctuation);
-        $delimitedSlug = preg_replace("/[_|+ -]+/", $delimiter, $lowerCase);
+        $slug = preg_replace("/[_|+ -]+/", $separator, $lowerCase);
 
-        return $delimitedSlug;
+        return $slug;
     }
 }
 

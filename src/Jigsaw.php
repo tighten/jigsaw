@@ -1,9 +1,5 @@
 <?php namespace TightenCo\Jigsaw;
 
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Support\Str;
-use TightenCo\Jigsaw\Filesystem;
-
 class Jigsaw
 {
     private $dataLoader;

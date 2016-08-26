@@ -19,6 +19,7 @@ class TemporaryFilesystem
         $this->filesystem->put($path, $contents);
         $result = $callback($path);
         $this->filesystem->delete($path);
+
         return $result;
     }
 }

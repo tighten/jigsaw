@@ -2,7 +2,6 @@
 
 use TightenCo\Jigsaw\Filesystem;
 use TightenCo\Jigsaw\OutputFile;
-use Illuminate\Contracts\View\Factory;
 
 class DefaultHandler
 {

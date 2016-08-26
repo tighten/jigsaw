@@ -4,10 +4,12 @@ class BasicOutputPathResolver
 {
     public function link($path, $name, $type, $page = 1)
     {
-        if ($page > 1) {
-            return $this->clean('/' . $path . '/' . $page . '/' . $name . '.' . $type);
-        }
-        return $this->clean('/' . $path . '/' . $name . '.' . $type);
+        $extension = $type ? '.' . $type : '';
+        $name = basename($name, $extension);
+
+        return $page > 1 ?
+            $this->clean('/' . $path . '/' . $page . '/' . $name . $extension) :
+            $this->clean('/' . $path . '/' . $name . $extension);
     }
 
     public function path($path, $name, $type, $page = 1)
@@ -17,10 +19,9 @@ class BasicOutputPathResolver
 
     public function directory($path, $name, $type, $page = 1)
     {
-        if ($page > 1) {
-            return $this->clean($path . '/' . $page);
-        }
-        return $this->clean($path);
+        return $page > 1 ?
+            $this->clean($path . '/' . $page) :
+            $this->clean($path);
     }
 
     private function clean($path)

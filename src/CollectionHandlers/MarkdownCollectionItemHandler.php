@@ -1,15 +1,14 @@
 <?php namespace TightenCo\Jigsaw\CollectionHandlers;
 
-use Mni\FrontYAML\Parser;
-use TightenCo\Jigsaw\CollectionItem;
+use TightenCo\Jigsaw\FrontMatterParser;
 
 class MarkdownCollectionItemHandler
 {
     private $parser;
 
-    public function __construct($parser = null)
+    public function __construct(FrontMatterParser $parser)
     {
-        $this->parser = $parser ?: new Parser;
+        $this->parser = $parser;
     }
 
     public function shouldHandle($file)
@@ -21,6 +20,6 @@ class MarkdownCollectionItemHandler
     {
         $document = $this->parser->parse($file->getContents());
 
-        return array_merge($document->getYAML(), ['content' => $document->getContent()]);
+        return array_merge(['section' => 'content'], $document->frontMatter, ['content' => $document->content]);
     }
 }

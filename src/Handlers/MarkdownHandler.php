@@ -1,7 +1,7 @@
 <?php namespace TightenCo\Jigsaw\Handlers;
 
-use Mni\FrontYAML\Parser;
 use Illuminate\Contracts\View\Factory;
+use TightenCo\Jigsaw\FrontMatterParser;
 use TightenCo\Jigsaw\OutputFile;
 use TightenCo\Jigsaw\ViewData;
 
@@ -11,11 +11,11 @@ class MarkdownHandler
     private $viewFactory;
     private $parser;
 
-    public function __construct($temporaryFilesystem, Factory $viewFactory, $parser = null)
+    public function __construct($temporaryFilesystem, Factory $viewFactory, FrontMatterParser $parser)
     {
         $this->temporaryFilesystem = $temporaryFilesystem;
         $this->viewFactory = $viewFactory;
-        $this->parser = $parser ?: new Parser;
+        $this->parser = $parser;
     }
 
     public function shouldHandle($file)
@@ -26,7 +26,7 @@ class MarkdownHandler
     public function handle($file, $data)
     {
         if (! $file->hasBeenParsed()) {
-        $document = $this->parseFile($file);
+            $document = $this->parseFile($file);
             $data = new ViewData(
                 $data->put('section', 'content')
                 ->merge($document->frontMatter)

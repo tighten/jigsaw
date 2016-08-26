@@ -2,8 +2,8 @@
 
 class InputFile
 {
-    private $file;
-    private $basePath;
+    protected $file;
+    protected $basePath;
 
     public function __construct($file, $basePath)
     {
@@ -15,16 +15,22 @@ class InputFile
     {
         $parts = explode('/', $this->relativePath());
 
-        if (count($parts) == 1) {
-            return '';
-        }
-
-        return $parts[0];
+        return count($parts) == 1 ? '' : $parts[0];
     }
 
     public function relativePath()
     {
         return str_replace($this->basePath . '/', '', $this->file->getPathname());
+    }
+
+    public function getFilenameWithoutExtension()
+    {
+        return $this->getBasename('.' . $this->getExtension());
+    }
+
+    public function hasBeenParsed()
+    {
+        return false;
     }
 
     public function __call($method, $args)

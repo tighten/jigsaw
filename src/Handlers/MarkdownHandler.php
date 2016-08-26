@@ -1,8 +1,9 @@
 <?php namespace TightenCo\Jigsaw\Handlers;
 
 use Mni\FrontYAML\Parser;
-use TightenCo\Jigsaw\OutputFile;
 use Illuminate\Contracts\View\Factory;
+use TightenCo\Jigsaw\OutputFile;
+use TightenCo\Jigsaw\ViewData;
 
 class MarkdownHandler
 {
@@ -24,30 +25,30 @@ class MarkdownHandler
 
     public function handle($file, $data)
     {
+        if (! $file->hasBeenParsed()) {
         $document = $this->parseFile($file);
-        $data = array_merge($data, ['section' => 'markdown'], $document->getYAML());
+            $data = new ViewData(
+                $data->put('section', 'content')
+                ->merge($document->frontMatter)
+                ->put('content', $document->content)
+            );
+        }
 
         return [
             new OutputFile(
                 $file->getRelativePath(),
-                $file->getBasename('.'.$file->getExtension()),
+                $file->getFilenameWithoutExtension(),
                 'html',
-                $this->render($document, $data),
+                $this->render($data),
                 $data
             )
         ];
     }
 
-    private function render($document, $data)
+    private function render($viewData)
     {
-        $data = array_merge($data, [
-            '__jigsawMarkdownContent' => $document->getContent()
-        ]);
-
-        $bladeContent = $this->compileToBlade($data['extends'], $data['section']);
-
-        return $this->temporaryFilesystem->put($bladeContent, function ($path) use ($data) {
-            return $this->viewFactory->file($path, $data)->render();
+        return $this->temporaryFilesystem->put($this->compileToBlade($viewData), function ($path) use ($viewData) {
+            return $this->viewFactory->file($path, ['jigsaw' => $viewData])->render();
         }, '.blade.php');
     }
 
@@ -56,12 +57,12 @@ class MarkdownHandler
         return $this->parser->parse($file->getContents());
     }
 
-    private function compileToBlade($extends, $section)
+    private function compileToBlade($data)
     {
         return collect([
-            sprintf("@extends('%s')", $extends),
-            sprintf("@section('%s')", $section),
-            '{!! $__jigsawMarkdownContent !!}',
+            sprintf("@extends('%s')", $data->extends),
+            sprintf("@section('%s')", $data->section),
+            '{!! $jigsaw->content !!}',
             '@endsection',
         ])->implode("\n");
     }

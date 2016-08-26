@@ -34,6 +34,10 @@ class MarkdownHandler
             );
         }
 
+        if (! $data->extends) {
+            return;
+        }
+
         return [
             new OutputFile(
                 $file->getRelativePath(),

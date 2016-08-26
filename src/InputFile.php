@@ -25,7 +25,14 @@ class InputFile
 
     public function getFilenameWithoutExtension()
     {
-        return $this->getBasename('.' . $this->getExtension());
+        return $this->getBasename('.' . $this->getFullExtension());
+    }
+
+    public function getFullExtension()
+    {
+        $extension = $this->getExtension();
+
+        return strpos($this->getBasename(), '.blade.' . $extension) > 0 ? 'blade.' . $extension : $extension;
     }
 
     public function hasBeenParsed()

@@ -37,7 +37,7 @@ class CollectionPaginator
     {
         return rtrim($this->outputPathResolver->link(
             $file->getRelativePath(),
-            $file->getBasename('.blade.php'),
+            $file->getFilenameWithoutExtension(),
             'html',
             $pageNumber
         ), '/');

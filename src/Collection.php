@@ -47,7 +47,7 @@ class Collection extends BaseCollection
 
     public function getPermalink()
     {
-        return array_get($this->settings, 'permalink') ?: function($data) {
+        return array_get($this->settings, 'path') ?: function($data) {
             return slugify($data['filename']);
         };
     }

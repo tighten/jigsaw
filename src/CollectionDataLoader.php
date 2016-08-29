@@ -8,6 +8,8 @@ class CollectionDataLoader
     private $filesystem;
     private $outputPathResolver;
     private $handlers;
+    private $source;
+    private $globalSettings;
 
     public function __construct($settings, $filesystem, $outputPathResolver, $handlers = [])
     {
@@ -17,20 +19,23 @@ class CollectionDataLoader
         $this->handlers = collect($handlers);
     }
 
-    public function load($source)
+    public function load($source, $globalSettings)
     {
-        return $this->settings->map(function ($settings, $collectionName) use ($source) {
+        $this->source = $source;
+        $this->globalSettings = $globalSettings;
+
+        return $this->settings->map(function ($settings, $collectionName) {
             $collection = Collection::withSettings($settings, $collectionName);
 
-            return $collection->loadItems($this->buildCollection($source, $collection));
+            return $collection->loadItems($this->buildCollection($collection));
         })->all();
     }
 
-    private function buildCollection($source, $collection)
+    private function buildCollection($collection)
     {
-        return collect($this->filesystem->allFiles("{$source}/_{$collection->name}"))
-            ->map(function ($file) use ($source, $collection) {
-                return $this->buildCollectionItem(new InputFile($file, $source), $collection);
+        return collect($this->filesystem->allFiles("{$this->source}/_{$collection->name}"))
+            ->map(function ($file) use ($collection) {
+                return $this->buildCollectionItem(new InputFile($file, $this->source), $collection);
             });
     }
 
@@ -44,25 +49,28 @@ class CollectionDataLoader
             throw new Exception('No matching collection item handler');
         }
 
-        $data = array_merge($collection->getDefaultVariables(), $handler->getData($file), $this->getMeta($file));
+        $data = array_merge($collection->getDefaultVariables(), $handler->getData($file));
 
-        return CollectionItem::build(
-            $collection,
-            array_merge($data, ['link' => $this->getPermalink($collection, $data)]),
-            $collection->getHelpers()
-        );
+        return CollectionItem::build($collection, $this->addMeta($data, $collection, $file), $collection->getHelpers());
     }
 
-    private function getMeta($file)
+    private function addMeta($data, $collection, $file)
     {
-        $meta['filename'] = $file->getFilenameWithoutExtension();
-        $meta['extension'] = $file->getFullExtension();
+        $data['filename'] = $file->getFilenameWithoutExtension();
+        $data['extension'] = $file->getFullExtension();
+        $data['link'] = $this->getPermalink($collection, $data);
+        $data['path'] = trim($data['link'], '/');
+        $data['url'] = rtrim(array_get($this->globalSettings, 'baseUrl'), '/') . '/' . trim($data['link'], '/');
 
-        return $meta;
+        return $data;
     }
 
     private function getPermalink($collection, $data)
     {
+        if (! array_get($data, 'extends')) {
+            return;
+        }
+
         $permalink = $collection->getPermalink()->__invoke($data);
 
         return rtrim($this->outputPathResolver->link(dirname($permalink), basename($permalink), 'html'), '/');

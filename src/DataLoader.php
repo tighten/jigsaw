@@ -15,9 +15,10 @@ class DataLoader
 
     public function load($source, $env)
     {
-        return $this->makeIterableObject(
-            array_merge($this->loadConfigData($env), $this->loadCollectionData($source))
-        );
+        $globalSettings = $this->loadConfigData($env);
+        $collectionData = $this->loadCollectionData($source, $globalSettings);
+
+        return $this->makeIterableObject(array_merge($globalSettings, $collectionData));
     }
 
     private function loadConfigData($env)
@@ -38,8 +39,8 @@ class DataLoader
         });
     }
 
-    private function loadCollectionData($source)
+    private function loadCollectionData($source, $globalSettings)
     {
-        return $this->collectionDataLoader->load($source);
+        return $this->collectionDataLoader->load($source, $globalSettings);
     }
 }

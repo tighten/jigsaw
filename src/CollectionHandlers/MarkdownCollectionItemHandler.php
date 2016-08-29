@@ -18,7 +18,7 @@ class MarkdownCollectionItemHandler
 
     public function getData($file)
     {
-        $document = $this->parser->parse($file->getContents());
+        $document = $this->parser->parseMarkdown($file->getContents());
 
         return array_merge(['section' => 'content'], $document->frontMatter, ['content' => $document->content]);
     }

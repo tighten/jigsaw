@@ -13,9 +13,14 @@ class FrontMatterParser
         $this->parser = $parser ?: new Parser;
     }
 
-    public function parse($content)
+    public function parseMarkdown($content)
     {
-        $document = $this->parser->parse($content, false);
+        return $this->parse($content, true);
+    }
+
+    public function parse($content, $parseMarkdown = false)
+    {
+        $document = $this->parser->parse($content, $parseMarkdown);
         $this->frontMatter = $document->getYAML() !== null ? $document->getYAML() : [];
         $this->content = $document->getContent();
 

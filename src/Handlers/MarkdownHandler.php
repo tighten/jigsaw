@@ -58,7 +58,7 @@ class MarkdownHandler
 
     private function parseFile($file)
     {
-        return $this->parser->parse($file->getContents());
+        return $this->parser->parseMarkdown($file->getContents());
     }
 
     private function compileToBlade($data)

@@ -1,22 +1,29 @@
 <?php namespace TightenCo\Jigsaw;
 
-use ArrayAccess;
 use Exception;
+use TightenCo\Jigsaw\IterableObject;
 
-class CollectionItem implements ArrayAccess
+class CollectionItem extends IterableObject
 {
-    private $data = [];
     private $helpers = [];
+    private $collection;
 
-    public function __construct($data, $helpers)
+    public static function build($collection, $data, $helpers)
     {
-        $this->data = $data;
-        $this->helpers = $helpers;
+        $item = new static($data);
+        $item->collection = $collection;
+        $item->helpers = $helpers;
+        return $item;
     }
 
-    public function __get($key)
+    public function next()
     {
-        return $this->offsetExists($key) ? $this->offsetGet($key) : null;
+        return $this->_nextItem ? $this->collection->get($this->_nextItem) : null;
+    }
+
+    public function previous()
+    {
+        return $this->_previousItem ? $this->collection->get($this->_previousItem) : null;
     }
 
     public function __call($method, $args)
@@ -24,34 +31,11 @@ class CollectionItem implements ArrayAccess
         return $this->getHelper($method)->__invoke($this, ...$args);
     }
 
-    public function offsetSet($offset, $value)
-    {
-        if (is_null($offset)) {
-            $this->data[] = $value;
-        } else {
-            $this->data[$offset] = $value;
-        }
-    }
-
-    public function offsetExists($offset)
-    {
-        return isset($this->data[$offset]);
-    }
-
-    public function offsetUnset($offset)
-    {
-        unset($this->data[$offset]);
-    }
-
-    public function offsetGet($offset)
-    {
-        return $this->data[$offset];
-    }
-
     private function getHelper($name)
     {
         return array_get($this->helpers, $name) ?: function() use ($name) {
-            throw new Exception("No helper function named '$name' in the collection '$this->name'.");
+            $collection = $this->collection->name;
+            throw new Exception("No helper function named '$name' in the collection '$collection'.");
         };
     }
 }

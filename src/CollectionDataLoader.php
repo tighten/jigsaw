@@ -46,7 +46,8 @@ class CollectionDataLoader
 
         $data = array_merge($collection->getDefaultVariables(), $handler->getData($file), $this->getMeta($file));
 
-        return new CollectionItem(
+        return CollectionItem::build(
+            $collection,
             array_merge($data, ['link' => $this->getPermalink($collection, $data)]),
             $collection->getHelpers()
         );

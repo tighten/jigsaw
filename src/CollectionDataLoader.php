@@ -56,6 +56,7 @@ class CollectionDataLoader
     private function getMeta($file)
     {
         $meta['filename'] = $file->getFilenameWithoutExtension();
+        $meta['extension'] = $file->getFullExtension();
 
         return $meta;
     }

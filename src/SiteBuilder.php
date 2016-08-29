@@ -83,6 +83,7 @@ class SiteBuilder
     private function getMeta($file)
     {
         $meta['filename'] = $file->getFilenameWithoutExtension();
+        $meta['extension'] = $file->getFullExtension();
         $meta['link'] = rtrim($this->outputPathResolver->link($file->getRelativePath(), $meta['filename'], 'html'), '/');
 
         return $meta;

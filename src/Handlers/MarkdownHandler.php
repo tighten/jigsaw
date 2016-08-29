@@ -1,21 +1,21 @@
 <?php namespace TightenCo\Jigsaw\Handlers;
 
-use Illuminate\Contracts\View\Factory;
 use TightenCo\Jigsaw\FrontMatterParser;
 use TightenCo\Jigsaw\OutputFile;
 use TightenCo\Jigsaw\ViewData;
+use TightenCo\Jigsaw\ViewRenderer;
 
 class MarkdownHandler
 {
     private $temporaryFilesystem;
-    private $viewFactory;
     private $parser;
+    private $view;
 
-    public function __construct($temporaryFilesystem, Factory $viewFactory, FrontMatterParser $parser)
+    public function __construct($temporaryFilesystem, FrontMatterParser $parser, ViewRenderer $viewRenderer)
     {
         $this->temporaryFilesystem = $temporaryFilesystem;
-        $this->viewFactory = $viewFactory;
         $this->parser = $parser;
+        $this->view = $viewRenderer;
     }
 
     public function shouldHandle($file)
@@ -52,7 +52,7 @@ class MarkdownHandler
     private function render($viewData)
     {
         return $this->temporaryFilesystem->put($this->compileToBlade($viewData), function ($path) use ($viewData) {
-            return $this->viewFactory->file($path, ['jigsaw' => $viewData])->render();
+            return $this->view->render($path, $viewData);
         }, '.blade.php');
     }
 

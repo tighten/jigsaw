@@ -1,32 +1,33 @@
 #!/usr/bin/env php
 <?php
 
-use Illuminate\View\Factory;
-use TightenCo\Jigsaw\Jigsaw;
-use TightenCo\Jigsaw\DataLoader;
-use TightenCo\Jigsaw\Filesystem;
-use TightenCo\Jigsaw\SiteBuilder;
 use Illuminate\Container\Container;
-use Illuminate\View\FileViewFinder;
-use TightenCo\Jigsaw\FrontMatterParser;
-use TightenCo\Jigsaw\CollectionPaginator;
-use TightenCo\Jigsaw\Console\InitCommand;
-use TightenCo\Jigsaw\TemporaryFilesystem;
-use TightenCo\Jigsaw\CollectionDataLoader;
-use TightenCo\Jigsaw\Console\BuildCommand;
-use TightenCo\Jigsaw\Console\ServeCommand;
 use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\View\Compilers\BladeCompiler;
 use Illuminate\View\Engines\CompilerEngine;
 use Illuminate\View\Engines\EngineResolver;
-use TightenCo\Jigsaw\Handlers\BladeHandler;
-use Illuminate\View\Compilers\BladeCompiler;
+use Illuminate\View\Factory;
+use Illuminate\View\FileViewFinder;
 use TightenCo\Jigsaw\BasicOutputPathResolver;
+use TightenCo\Jigsaw\CollectionDataLoader;
+use TightenCo\Jigsaw\CollectionHandlers\MarkdownCollectionItemHandler;
+use TightenCo\Jigsaw\CollectionPaginator;
+use TightenCo\Jigsaw\Console\BuildCommand;
+use TightenCo\Jigsaw\Console\InitCommand;
+use TightenCo\Jigsaw\Console\ServeCommand;
+use TightenCo\Jigsaw\DataLoader;
+use TightenCo\Jigsaw\Filesystem;
+use TightenCo\Jigsaw\FrontMatterParser;
+use TightenCo\Jigsaw\Handlers\BladeHandler;
+use TightenCo\Jigsaw\Handlers\CollectionItemHandler;
 use TightenCo\Jigsaw\Handlers\DefaultHandler;
 use TightenCo\Jigsaw\Handlers\IgnoredHandler;
 use TightenCo\Jigsaw\Handlers\MarkdownHandler;
 use TightenCo\Jigsaw\Handlers\PaginatedPageHandler;
-use TightenCo\Jigsaw\Handlers\CollectionItemHandler;
-use TightenCo\Jigsaw\CollectionHandlers\MarkdownCollectionItemHandler;
+use TightenCo\Jigsaw\Jigsaw;
+use TightenCo\Jigsaw\SiteBuilder;
+use TightenCo\Jigsaw\TemporaryFilesystem;
+use TightenCo\Jigsaw\ViewRenderer;
 
 if (file_exists(__DIR__.'/vendor/autoload.php')) {
     require __DIR__.'/vendor/autoload.php';
@@ -67,8 +68,12 @@ $container->bind(Factory::class, function ($c) use ($cachePath, $sourcePath) {
     return new Factory($resolver, $finder, Mockery::mock(Dispatcher::class)->shouldIgnoreMissing());
 });
 
+$container->bind(ViewRenderer::class, function ($c) {
+    return new ViewRenderer($c[Factory::class]);
+});
+
 $container->bind(BladeHandler::class, function ($c) {
-    return new BladeHandler($c[Factory::class]);
+    return new BladeHandler($c[ViewRenderer::class]);
 });
 
 $container->bind(TemporaryFilesystem::class, function ($c) use ($cachePath) {
@@ -76,7 +81,7 @@ $container->bind(TemporaryFilesystem::class, function ($c) use ($cachePath) {
 });
 
 $container->bind(MarkdownHandler::class, function ($c) {
-    return new MarkdownHandler($c[TemporaryFilesystem::class], $c[Factory::class], $c[FrontMatterParser::class]);
+    return new MarkdownHandler($c[TemporaryFilesystem::class], $c[FrontMatterParser::class], $c[ViewRenderer::class]);
 });
 
 $container->bind(CollectionDataLoader::class, function ($c) {
@@ -98,7 +103,7 @@ $container->bind(CollectionPaginator::class, function ($c) {
 });
 
 $container->bind(PaginatedPageHandler::class, function ($c) {
-    return new PaginatedPageHandler($c[CollectionPaginator::class], $c[Factory::class], $c[FrontMatterParser::class], $c[TemporaryFilesystem::class]);
+    return new PaginatedPageHandler($c[CollectionPaginator::class], $c[FrontMatterParser::class], $c[TemporaryFilesystem::class], $c[ViewRenderer::class]);
 });
 
 $container->bind(SiteBuilder::class, function ($c) use ($cachePath) {

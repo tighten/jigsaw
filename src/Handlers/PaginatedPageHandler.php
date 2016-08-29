@@ -1,23 +1,23 @@
 <?php namespace TightenCo\Jigsaw\Handlers;
 
-use Illuminate\View\Factory;
 use TightenCo\Jigsaw\FrontMatterParser;
 use TightenCo\Jigsaw\OutputFile;
 use TightenCo\Jigsaw\ViewData;
+use TightenCo\Jigsaw\ViewRenderer;
 
 class PaginatedPageHandler
 {
     private $paginator;
-    private $viewFactory;
     private $parser;
     private $temporaryFilesystem;
+    private $viewFactory;
 
-    public function __construct($paginator, Factory $viewFactory, FrontMatterParser $parser, $temporaryFilesystem)
+    public function __construct($paginator, FrontMatterParser $parser, $temporaryFilesystem, ViewRenderer $viewRenderer)
     {
         $this->paginator = $paginator;
-        $this->viewFactory = $viewFactory;
         $this->parser = $parser;
         $this->temporaryFilesystem = $temporaryFilesystem;
+        $this->view = $viewRenderer;
     }
 
     public function shouldHandle($file)
@@ -58,7 +58,7 @@ class PaginatedPageHandler
     private function render($bladeContent, $data)
     {
         return $this->temporaryFilesystem->put($bladeContent, function ($path) use ($data) {
-            return $this->viewFactory->file($path, ['jigsaw' => $data])->render();
+            return $this->view->render($path, $data);
         }, '.blade.php');
     }
 }

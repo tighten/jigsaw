@@ -1,16 +1,16 @@
 <?php namespace TightenCo\Jigsaw\Handlers;
 
-use Illuminate\View\Factory;
 use TightenCo\Jigsaw\OutputFile;
 use TightenCo\Jigsaw\ViewData;
+use TightenCo\Jigsaw\ViewRenderer;
 
 class BladeHandler
 {
-    private $viewFactory;
+    private $view;
 
-    public function __construct(Factory $viewFactory)
+    public function __construct(ViewRenderer $viewRenderer)
     {
-        $this->viewFactory = $viewFactory;
+        $this->view = $viewRenderer;
     }
 
     public function shouldHandle($file)
@@ -33,6 +33,6 @@ class BladeHandler
 
     private function render($file, $data)
     {
-        return $this->viewFactory->file($file->getRealPath(), ['jigsaw' => $data])->render();
+        return $this->view->render($file->getRealPath(), $data);
     }
 }

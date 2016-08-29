@@ -13,6 +13,8 @@ class CollectionItem extends IterableObject
         $item = new static($data);
         $item->collection = $collection;
         $item->helpers = $helpers;
+        $item->put('collection', $collection->name);
+
         return $item;
     }
 
@@ -34,8 +36,8 @@ class CollectionItem extends IterableObject
     private function getHelper($name)
     {
         return array_get($this->helpers, $name) ?: function() use ($name) {
-            $collection = $this->collection->name;
-            throw new Exception("No helper function named '$name' in the collection '$collection'.");
+            $collection = $this->get('collection');
+            throw new Exception('No helper function named "' . $name. '" for the collection "' . $this->get('collection') . '" was found in the file "collections.php".');
         };
     }
 }

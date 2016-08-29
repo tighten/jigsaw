@@ -18,13 +18,26 @@ class Collection extends BaseCollection
 
     public function loadItems($items)
     {
-        parent::__construct(
-            $this->defaultSort($items->keyBy(function($item) {
-                return $item->filename;
-            }))
-        );
+        $sortedItems = $this->defaultSort($items)->keyBy(function($item) {
+            return $item->filename;
+        });
+        parent::__construct($this->addAdjacentItems($sortedItems));
 
         return $this;
+    }
+
+    public function addAdjacentItems($items)
+    {
+        $count = $items->count();
+        $adjacentItems = $items->map(function($item) {
+            return $item->filename;
+        });
+        $previousItems = $adjacentItems->prepend(null)->take($count);
+        $nextItems = $adjacentItems->push(null)->take(-$count);
+
+        return $items->map(function($item) use ($previousItems, $nextItems) {
+            return $item->put('_previousItem', $previousItems->shift())->put('_nextItem', $nextItems->shift());
+        });
     }
 
     public function getDefaultVariables()

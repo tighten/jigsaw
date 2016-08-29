@@ -13,7 +13,7 @@ class ViewRenderer
 
     public function render($path, $data)
     {
-        $data = $this->addMeta($data);
+        $data = $this->updateMetaForCollectionItem($data);
 
         return $this->viewFactory->file(
             $path,
@@ -21,10 +21,13 @@ class ViewRenderer
         )->render();
     }
 
-    private function addMeta($data)
+    private function updateMetaForCollectionItem($data)
     {
-        $data['path'] = trim(array_get($data, 'link'), '/');
-        $data['url'] = rtrim(array_get($data, 'url'), '/') . '/' . trim(array_get($data, 'link'), '/');
+        if ($data->item) {
+            $data->link = $data->item->link;
+            $data->path = $data->item->path;
+            $data->url = $data->item->url;
+        }
 
         return $data;
     }

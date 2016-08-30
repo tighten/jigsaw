@@ -75,7 +75,7 @@ $container->bind(ViewRenderer::class, function ($c) {
 });
 
 $container->bind(BladeHandler::class, function ($c) {
-    return new BladeHandler($c[ViewRenderer::class]);
+    return new BladeHandler($c[TemporaryFilesystem::class], $c[ViewRenderer::class]);
 });
 
 $container->bind(TemporaryFilesystem::class, function ($c) use ($cachePath) {

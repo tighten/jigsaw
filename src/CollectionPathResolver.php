@@ -29,7 +29,7 @@ class CollectionPathResolver
 
     private function getDefaultPermalink($data)
     {
-        return slugify($data['filename']);
+        return str_slug($data['filename']);
     }
 
     private function parseShorthand($path, $data)
@@ -64,7 +64,7 @@ class CollectionPathResolver
 
         $value = $dateFormat ? $this->formatDate($data[$param], $dateFormat) : $data[$param];
 
-        return $slugSeparator ? slugify($value, $slugSeparator) : $value;
+        return $slugSeparator ? str_slug($value, $slugSeparator) : $value;
     }
 
     private function formatDate($date, $format)

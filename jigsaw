@@ -12,6 +12,7 @@ use TightenCo\Jigsaw\BasicOutputPathResolver;
 use TightenCo\Jigsaw\CollectionDataLoader;
 use TightenCo\Jigsaw\CollectionHandlers\MarkdownCollectionItemHandler;
 use TightenCo\Jigsaw\CollectionPaginator;
+use TightenCo\Jigsaw\CollectionPathResolver;
 use TightenCo\Jigsaw\Console\BuildCommand;
 use TightenCo\Jigsaw\Console\InitCommand;
 use TightenCo\Jigsaw\Console\ServeCommand;
@@ -56,6 +57,7 @@ $container->instance('collectionSettings', $collectionSettings);
 $container->bind('outputPathResolver', function ($c ) {
     return new BasicOutputPathResolver;
 });
+
 $container->bind(Factory::class, function ($c) use ($cachePath, $sourcePath) {
     $resolver = new EngineResolver;
 
@@ -84,8 +86,12 @@ $container->bind(MarkdownHandler::class, function ($c) {
     return new MarkdownHandler($c[TemporaryFilesystem::class], $c[FrontMatterParser::class], $c[ViewRenderer::class]);
 });
 
+$container->bind(CollectionPathResolver::class, function ($c ) {
+    return new CollectionPathResolver($c['outputPathResolver']);
+});
+
 $container->bind(CollectionDataLoader::class, function ($c) {
-    return new CollectionDataLoader($c['collectionSettings'], new Filesystem, $c['outputPathResolver'], [
+    return new CollectionDataLoader($c['collectionSettings'], new Filesystem, $c[CollectionPathResolver::class], [
         $c[MarkdownCollectionItemHandler::class],
     ]);
 });

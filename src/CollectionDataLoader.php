@@ -6,16 +6,16 @@ class CollectionDataLoader
 {
     private $settings;
     private $filesystem;
-    private $outputPathResolver;
+    private $pathResolver;
     private $handlers;
     private $source;
     private $globalSettings;
 
-    public function __construct($settings, $filesystem, $outputPathResolver, $handlers = [])
+    public function __construct($settings, $filesystem, $pathResolver, $handlers = [])
     {
         $this->settings = collect($settings);
         $this->filesystem = $filesystem;
-        $this->outputPathResolver = $outputPathResolver;
+        $this->pathResolver = $pathResolver;
         $this->handlers = collect($handlers);
     }
 
@@ -72,8 +72,6 @@ class CollectionDataLoader
             return;
         }
 
-        $permalink = $collection->getPermalink()->__invoke($data);
-
-        return rtrim($this->outputPathResolver->link(dirname($permalink), basename($permalink), 'html'), '/');
+        return $this->pathResolver->link($collection->getPermalink(), $data);
     }
 }

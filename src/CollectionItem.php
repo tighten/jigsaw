@@ -13,7 +13,6 @@ class CollectionItem extends IterableObject
         $item = new static($data);
         $item->collection = $collection;
         $item->helpers = $helpers;
-        $item->put('collection', $collection->name);
 
         return $item;
     }

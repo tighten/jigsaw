@@ -56,6 +56,7 @@ class CollectionDataLoader
 
     private function addMeta($data, $collection, $file)
     {
+        $data['collection'] = $collection->name;
         $data['filename'] = $file->getFilenameWithoutExtension();
         $data['extension'] = $file->getFullExtension();
         $data['link'] = $this->getPermalink($collection, $data);

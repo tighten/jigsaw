@@ -11,20 +11,37 @@ class CollectionPathResolver
 
     public function link($permalink, $data)
     {
-        return $this->cleanOutputPath($this->getPath($permalink, $data));
+        return collect($data->extends)->map(function($_, $templateKey) use ($permalink, $data) {
+            return $this->cleanOutputPath($this->getPath($permalink, $data, $templateKey));
+        });
     }
 
-    private function getPath($permalink, $data)
+    private function getPath($permalink, $data, $templateKey = null)
     {
+        $templateKeySuffix = $templateKey ? '/' . $templateKey : '';
+
+        if ($templateKey && is_array($permalink)) {
+            $permalink = array_get($permalink, $templateKey);
+            $templateKeySuffix = '';
+
+            if (! $permalink) {
+                return;
+            }
+        }
+
         if (is_callable($permalink)) {
-            return $this->resolve($this->cleanInputPath($permalink->__invoke($data)));
+            $link = $this->cleanInputPath($permalink->__invoke($data));
+
+            return $link ? $this->resolve($link . $templateKeySuffix) : '';
         }
 
         if (is_string($permalink) && $permalink) {
-            return $this->parseShorthand($this->cleanInputPath($permalink), $data);
+            $link =$this->parseShorthand($this->cleanInputPath($permalink), $data);
+
+            return $link ? $this->resolve($link . $templateKeySuffix) : '';
         }
 
-        return $this->getDefaultPermalink($data);
+        return $this->getDefaultPermalink($data, $templateKey) . $templateKeySuffix;
     }
 
     private function getDefaultPermalink($data)
@@ -47,7 +64,7 @@ class CollectionPathResolver
                 return str_replace($param['token'], $param['value'], $carry);
             }, $path);
 
-        return $this->resolve($bracketedParametersReplaced);
+        return $bracketedParametersReplaced;
     }
 
     private function getParameterValue($param, $data) {

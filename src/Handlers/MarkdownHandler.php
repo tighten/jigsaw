@@ -27,31 +27,28 @@ class MarkdownHandler
     {
         if (! $file->hasBeenParsed()) {
             $document = $this->parseFile($file);
-            $data = new ViewData(
-                $data->put('section', 'content')
+            $data = new ViewData($data
+                ->put('section', 'content')
                 ->merge($document->frontMatter)
                 ->put('content', $document->content)
             );
         }
 
-        if (! $data->extends) {
-            return;
-        }
+        return collect($data->extends)->map(function($layout) use ($file, $data) {
 
-        return [
-            new OutputFile(
+            return new OutputFile(
                 $file->getRelativePath(),
                 $file->getFilenameWithoutExtension(),
                 'html',
-                $this->render($data),
+                $this->render($data, $layout),
                 $data
-            )
-        ];
+            );
+        });
     }
 
-    private function render($viewData)
+    private function render($viewData, $layout)
     {
-        return $this->temporaryFilesystem->put($this->compileToBlade($viewData), function ($path) use ($viewData) {
+        return $this->temporaryFilesystem->put($this->compileToBlade($viewData, $layout), function ($path) use ($viewData) {
             return $this->view->render($path, $viewData);
         }, '.blade.php');
     }
@@ -61,10 +58,10 @@ class MarkdownHandler
         return $this->parser->parseMarkdown($file->getContents());
     }
 
-    private function compileToBlade($data)
+    private function compileToBlade($data, $layout)
     {
         return collect([
-            sprintf("@extends('%s')", $data->extends),
+            sprintf("@extends('%s')", $layout),
             sprintf("@section('%s')", $data->section),
             '{!! $jigsaw->content !!}',
             '@endsection',

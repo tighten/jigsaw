@@ -45,13 +45,15 @@ class CollectionItemHandler
         $viewData = ViewData::withCollectionItem($data, $this->getCollectionName($file), $file->getFilenameWithoutExtension());
         $handledFiles = $handler->handle(new ParsedInputFile($file), $viewData);
 
-        return collect($handledFiles)->map(function ($file) {
+        return $handledFiles->map(function ($file, $templateKey) {
+            $link = $templateKey ? $file->data()->link->get($templateKey) : (string) $file->data()->link;
+
             return new OutputFile(
-                dirname($file->data()->link),
-                basename($file->data()->link),
+                dirname($link),
+                basename($link),
                 $file->extension(),
                 $file->contents(),
                 $file->data());
-        })->all();
+        })->values();
     }
 }

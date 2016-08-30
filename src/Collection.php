@@ -67,10 +67,24 @@ class Collection extends BaseCollection
     private function sortItems($items, $sortSetting)
     {
         $sortKey = ltrim($sortSetting, '-+');
-        $sortFunction = $sortSetting[0] === '-' ? 'sortByDesc' : 'sortBy';
+        $sortType = $sortSetting[0] === '-' ? 'sortByDesc' : 'sortBy';
+        $sortKeyFunction = $this->checkIfSortKeyIsFunction($sortKey);
 
-        return $items->{$sortFunction}(function ($item, $_) use ($sortKey) {
-            return $item->{$sortKey};
+        return $items->{$sortType}(function ($item, $_) use ($sortKey, $sortKeyFunction) {
+            return $sortKeyFunction ?
+                call_user_func_array([$item, $sortKeyFunction[0]], $sortKeyFunction[1]) :
+                $item->$sortKey;
         });
+    }
+
+    private function checkIfSortKeyIsFunction($sortKey)
+    {
+        $sortKeyFunction = explode('(', str_replace(' ', '', $sortKey), 2);
+
+        if (isset($sortKeyFunction[1])) {
+            $parameterss = explode(',', trim($sortKeyFunction[1], ')'));
+
+            return [$sortKeyFunction[0], $parameterss];
+        }
     }
 }

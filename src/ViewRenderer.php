@@ -5,10 +5,22 @@ use Illuminate\View\Factory;
 class ViewRenderer
 {
     private $viewFactory;
+    private $allowedBladeExtensions = [
+        'js', 'json', 'xml', 'rss', 'txt', 'text', 'html'
+    ];
 
     public function __construct(Factory $viewFactory)
     {
         $this->viewFactory = $viewFactory;
+        $this->finder = $this->viewFactory->getFinder();
+        $this->addBladeExtensions();
+    }
+
+    private function addBladeExtensions()
+    {
+        collect($this->allowedBladeExtensions)->each(function ($extension) {
+            $this->viewFactory->addExtension('blade.' . $extension, 'blade');
+        });
     }
 
     public function render($path, $data)
@@ -19,6 +31,11 @@ class ViewRenderer
             $path,
             array_merge(['jigsaw' => $data], $data->all())
         )->render();
+    }
+
+    public function getExtension($bladeViewPath)
+    {
+        return strtolower(pathinfo($this->finder->find($bladeViewPath), PATHINFO_EXTENSION));
     }
 
     private function updateMetaForCollectionItem($data)

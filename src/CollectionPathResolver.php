@@ -3,20 +3,31 @@
 class CollectionPathResolver
 {
     private $outputPathResolver;
+    private $viewRenderer;
 
-    public function __construct($outputPathResolver)
+    public function __construct($outputPathResolver, $viewRenderer)
     {
         $this->outputPathResolver = $outputPathResolver;
+        $this->view = $viewRenderer;
     }
 
     public function link($permalink, $data)
     {
-        return collect($data->extends)->map(function($_, $templateKey) use ($permalink, $data) {
-            return $this->cleanOutputPath($this->getPath($permalink, $data, $templateKey));
+        return collect($data->extends)->map(function($bladeViewPath, $templateKey) use ($permalink, $data) {
+            return $this->cleanOutputPath(
+                $this->getPath($permalink, $data, $this->getExtension($bladeViewPath), $templateKey)
+            );
         });
     }
 
-    private function getPath($permalink, $data, $templateKey = null)
+    public function getExtension($bladeViewPath)
+    {
+        $extension = $this->view->getExtension($bladeViewPath);
+
+        return collect(['php', 'html'])->contains($extension) ? '' : '.' . $extension;
+    }
+
+    private function getPath($permalink, $data, $extension, $templateKey = null)
     {
         $templateKeySuffix = $templateKey ? '/' . $templateKey : '';
 
@@ -32,16 +43,16 @@ class CollectionPathResolver
         if (is_callable($permalink)) {
             $link = $this->cleanInputPath($permalink->__invoke($data));
 
-            return $link ? $this->resolve($link . $templateKeySuffix) : '';
+            return $link ? $this->resolve($link . $templateKeySuffix . $extension) : '';
         }
 
         if (is_string($permalink) && $permalink) {
             $link =$this->parseShorthand($this->cleanInputPath($permalink), $data);
 
-            return $link ? $this->resolve($link . $templateKeySuffix) : '';
+            return $link ? $this->resolve($link . $templateKeySuffix . $extension) : '';
         }
 
-        return $this->getDefaultPermalink($data, $templateKey) . $templateKeySuffix;
+        return $this->getDefaultPermalink($data, $templateKey) . $templateKeySuffix . $extension;
     }
 
     private function getDefaultPermalink($data)

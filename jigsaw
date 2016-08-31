@@ -87,7 +87,7 @@ $container->bind(MarkdownHandler::class, function ($c) {
 });
 
 $container->bind(CollectionPathResolver::class, function ($c ) {
-    return new CollectionPathResolver($c['outputPathResolver']);
+    return new CollectionPathResolver($c['outputPathResolver'], $c[ViewRenderer::class]);
 });
 
 $container->bind(CollectionDataLoader::class, function ($c) {

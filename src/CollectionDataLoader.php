@@ -88,8 +88,8 @@ class CollectionDataLoader
 
     private function getPermalink($collection, $data)
     {
-        $link = $this->pathResolver->link($collection->getPermalink(), new IterableObject($data));
+        $links = $this->pathResolver->link($collection->getPermalink(), new IterableObject($data));
 
-        return $link->count() ? new IterableObjectWithDefault($link) : null;
+        return $links->count() ? new IterableObjectWithDefault($links) : null;
     }
 }

@@ -50,7 +50,7 @@ class CollectionItemHandler
 
             return new OutputFile(
                 dirname($link),
-                basename($link),
+                basename($link, '.' . $file->extension()),
                 $file->extension(),
                 $file->contents(),
                 $file->data());

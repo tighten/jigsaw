@@ -6,9 +6,11 @@ use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\View\Compilers\BladeCompiler;
 use Illuminate\View\Engines\CompilerEngine;
 use Illuminate\View\Engines\EngineResolver;
+use Illuminate\View\Engines\PhpEngine;
 use Illuminate\View\Factory;
 use Illuminate\View\FileViewFinder;
 use TightenCo\Jigsaw\BasicOutputPathResolver;
+use TightenCo\Jigsaw\BladeMarkdownEngine;
 use TightenCo\Jigsaw\CollectionDataLoader;
 use TightenCo\Jigsaw\CollectionHandlers\MarkdownCollectionItemHandler;
 use TightenCo\Jigsaw\CollectionPaginator;
@@ -26,6 +28,7 @@ use TightenCo\Jigsaw\Handlers\IgnoredHandler;
 use TightenCo\Jigsaw\Handlers\MarkdownHandler;
 use TightenCo\Jigsaw\Handlers\PaginatedPageHandler;
 use TightenCo\Jigsaw\Jigsaw;
+use TightenCo\Jigsaw\MarkdownEngine;
 use TightenCo\Jigsaw\SiteBuilder;
 use TightenCo\Jigsaw\TemporaryFilesystem;
 use TightenCo\Jigsaw\ViewRenderer;
@@ -54,19 +57,34 @@ $container->instance('cwd', getcwd());
 $container->instance('config', $config);
 $container->instance('collectionSettings', $collectionSettings);
 
-$container->bind('outputPathResolver', function ($c ) {
+$container->bind('outputPathResolver', function ($c) {
     return new BasicOutputPathResolver;
 });
 
 $container->bind(Factory::class, function ($c) use ($cachePath, $sourcePath) {
     $resolver = new EngineResolver;
 
-    $resolver->register('blade', function () use ($cachePath) {
-        $compiler = new BladeCompiler(new Filesystem, $cachePath);
-        return new CompilerEngine($compiler, new Filesystem);
+    $bladeCompiler = new BladeCompiler(new Filesystem, $cachePath);
+    $compilerEngine = new CompilerEngine($bladeCompiler, new Filesystem);
+
+    $resolver->register('blade', function () use ($compilerEngine) {
+        return $compilerEngine;
+    });
+
+    $resolver->register('php', function () {
+        return new PhpEngine();
+    });
+
+    $resolver->register('markdown', function () use ($c, $sourcePath) {
+        return new MarkdownEngine($c[FrontMatterParser::class], new Filesystem, $sourcePath);
+    });
+
+    $resolver->register('blade-markdown', function () use ($c, $compilerEngine) {
+        return new BladeMarkdownEngine($compilerEngine, $c[FrontMatterParser::class]);
     });
 
     $finder = new FileViewFinder(new Filesystem, [$sourcePath]);
+
     return new Factory($resolver, $finder, Mockery::mock(Dispatcher::class)->shouldIgnoreMissing());
 });
 

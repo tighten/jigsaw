@@ -18,7 +18,13 @@ class ViewRenderer
 
     private function addBladeExtensions()
     {
+        $this->viewFactory->addExtension('md', 'markdown');
+        $this->viewFactory->addExtension('markdown', 'markdown');
+        $this->viewFactory->addExtension('blade.md', 'blade-markdown');
+        $this->viewFactory->addExtension('blade.markdown', 'blade-markdown');
+
         collect($this->allowedBladeExtensions)->each(function ($extension) {
+            $this->viewFactory->addExtension($extension, 'php');
             $this->viewFactory->addExtension('blade.' . $extension, 'blade');
         });
     }

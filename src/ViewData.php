@@ -35,8 +35,16 @@ class ViewData extends IterableObject
     {
         if ($this->has($collection)) {
             $this->item = $this->get($collection)->get($item);
+            $this->addSingularCollectionReference($collection);
             $this->setGloballyAvailableItemVariables();
         }
+    }
+
+    private function addSingularCollectionReference($collection)
+    {
+        if (str_singular($collection) != $collection) {
+            $this->{str_singular($collection)} = $this->item;
+        };
     }
 
     private function setGloballyAvailableItemVariables()

@@ -22,32 +22,17 @@ class BladeHandler
 
     public function handle($file, $data)
     {
-        if (strtolower($file->getExtension()) === 'php') {
-            $extension = 'html';
-            $sourceExtension = '.blade.php';
-            $contents = $this->render($file->getRealPath(), new ViewData($data));
-        } else {
-            $extension = $file->getExtension();
-            $sourceExtension = '.blade.' . $extension;
-            $contents = $this->renderCopy($file->getRealPath(), new ViewData($data));
-        }
+        $extension = strtolower($file->getExtension());
 
         return [
             new OutputFile(
                 $file->getRelativePath(),
-                $file->getBasename($sourceExtension),
-                $extension,
-                $contents,
+                $file->getFilenameWithoutExtension(),
+                $extension == 'php' | $extension == 'html' ? 'html' : $extension,
+                $this->render($file->getRealPath(), new ViewData($data)),
                 $data
             )
         ];
-    }
-
-    private function renderCopy($path, $data)
-    {
-        return $this->temporaryFilesystem->copy($path, function ($copy) use ($data) {
-            return $this->render($copy, $data);
-        }, '.blade.php');
     }
 
     private function render($path, $data)

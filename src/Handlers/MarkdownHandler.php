@@ -35,11 +35,12 @@ class MarkdownHandler
         }
 
         return collect($data->extends)->map(function($layout) use ($file, $data) {
+            $extension = $this->view->getExtension($layout);
 
             return new OutputFile(
                 $file->getRelativePath(),
                 $file->getFilenameWithoutExtension(),
-                'html',
+                $extension == 'php' | $extension == 'html' ? 'html' : $extension,
                 $this->render($data, $layout),
                 $data
             );

@@ -21,7 +21,7 @@ class Collection extends BaseCollection
         $sortedItems = $this->defaultSort($items)->keyBy(function($item) {
             return $item->filename;
         });
-        parent::__construct($this->addAdjacentItems($sortedItems));
+        $this->items = $this->getArrayableItems($this->addAdjacentItems($sortedItems));
 
         return $this;
     }

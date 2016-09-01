@@ -29,19 +29,39 @@ class CollectionDataLoader
         return $this->settings->map(function ($settings, $collectionName) {
             $collection = Collection::withSettings($settings, $collectionName);
 
-            return $collection->loadItems($this->buildCollection($collection));
+            $collection->loadItems($this->buildCollection($collection));
+
+            return $collection->map(function($item) {
+                return $this->addCollectionItemContent($item);
+            });
         })->all();
     }
 
     private function buildCollection($collection)
     {
         return collect($this->filesystem->allFiles("{$this->source}/_{$collection->name}"))
-            ->map(function ($file) use ($collection) {
-                return $this->buildCollectionItem(new InputFile($file, $this->source), $collection);
+            ->map(function ($file) {
+                return new InputFile($file, $this->source);
+            })->map(function ($inputFile) use ($collection) {
+                return $this->buildCollectionItem($inputFile, $collection);
             });
     }
 
     private function buildCollectionItem($file, $collection)
+    {
+        $data = array_merge($collection->getDefaultVariables(), $this->getHandler($file)->getItemVariables($file));
+
+        return CollectionItem::build($collection, $this->addMeta($data, $collection, $file), $collection->getHelpers());
+    }
+
+    private function addCollectionItemContent($item)
+    {
+        $file = collect($this->filesystem->getFile($item->source, $item->filename, $item->extension))->first();
+
+        return $file ? $item->put('content', $this->getHandler($file)->getItemContent($file)) : $item;
+    }
+
+    private function getHandler($file)
     {
         $handler = $this->handlers->first(function ($_, $handler) use ($file) {
             return $handler->shouldHandle($file);
@@ -51,9 +71,7 @@ class CollectionDataLoader
             throw new Exception('No matching collection item handler');
         }
 
-        $data = array_merge($collection->getDefaultVariables(), $handler->getData($file));
-
-        return CollectionItem::build($collection, $this->addMeta($data, $collection, $file), $collection->getHelpers());
+        return $handler;
     }
 
     private function addMeta($data, $collection, $file)
@@ -61,6 +79,9 @@ class CollectionDataLoader
         $data['collection'] = $collection->name;
         $data['filename'] = $file->getFilenameWithoutExtension();
         $data['extension'] = $file->getFullExtension();
+        // use _source, and then remove?
+        $data['source'] = $file->getPath();
+        // use _link, and then remove? Same with _nextItem and _previousItem?
         $data['link'] = $this->getPermalink($collection, $data);
         $data['path'] = $this->buildPaths($data['link']);
         $data['url'] = $this->buildUrls($data['path']);

@@ -16,10 +16,15 @@ class MarkdownCollectionItemHandler
         return in_array($file->getExtension(), ['markdown', 'md']);
     }
 
-    public function getData($file)
+    public function getItemVariables($file)
     {
-        $document = $this->parser->parseMarkdown($file->getContents());
+        $document = $this->parser->parse($file->getContents());
 
-        return array_merge(['section' => 'content'], $document->frontMatter, ['content' => $document->content]);
+        return array_merge(['section' => 'content'], $document->frontMatter);
+    }
+
+    public function getItemContent($file)
+    {
+        return $this->parser->parseMarkdown($file->getContents())->content;
     }
 }

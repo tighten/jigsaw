@@ -57,7 +57,7 @@ class CollectionPathResolver
 
     private function getDefaultPermalink($data)
     {
-        return str_slug($data['filename']);
+        return str_slug($data['collection']) . '/' . str_slug($data['filename']);
     }
 
     private function parseShorthand($path, $data)
@@ -65,7 +65,7 @@ class CollectionPathResolver
         preg_match_all('/\{(.*?)\}/', $path, $bracketedParameters);
 
         if (count($bracketedParameters[0]) == 0) {
-            return $path . '/' . $this->getDefaultPermalink($data);
+            return $path . '/' . str_slug($data['filename']);
         }
 
         $bracketedParametersReplaced =

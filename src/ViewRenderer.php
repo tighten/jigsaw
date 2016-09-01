@@ -35,7 +35,7 @@ class ViewRenderer
 
         return $this->viewFactory->file(
             $path,
-            array_merge(['jigsaw' => $data], $data->all())
+            array_merge(['jigsaw' => $data], $data->toArray())
         )->render();
     }
 

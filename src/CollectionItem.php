@@ -27,6 +27,16 @@ class CollectionItem extends IterableObject
         return $this->_previousItem ? $this->collection->get($this->_previousItem) : null;
     }
 
+    public function setContent($content)
+    {
+        $this->_content = $content;
+    }
+
+    public function getContent()
+    {
+        return $this->_content;
+    }
+
     public function __call($method, $args)
     {
         return $this->getHelper($method)->__invoke($this, ...$args);

@@ -6,7 +6,7 @@ use TightenCo\Jigsaw\IterableObject;
 class ViewData extends IterableObject
 {
     private $data;
-    private $globals = ['extends', 'section', 'content', 'link'];
+    private $globals = ['extends', 'section', 'link'];
     public $item;
 
     public static function withCollectionItem($data, $collectionName, $itemName)

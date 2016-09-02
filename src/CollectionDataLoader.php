@@ -58,7 +58,11 @@ class CollectionDataLoader
     {
         $file = collect($this->filesystem->getFile($item->source, $item->filename, $item->extension))->first();
 
-        return $file ? $item->put('content', $this->getHandler($file)->getItemContent($file)) : $item;
+        if ($file) {
+            $item->setContent($this->getHandler($file)->getItemContent($file));
+        }
+
+        return $item;
     }
 
     private function getHandler($file)

@@ -17,14 +17,24 @@ class CollectionItem extends IterableObject
         return $item;
     }
 
-    public function next()
+    public function getNext()
     {
         return $this->_nextItem ? $this->collection->get($this->_nextItem) : null;
     }
 
-    public function previous()
+    public function getPrevious()
     {
         return $this->_previousItem ? $this->collection->get($this->_previousItem) : null;
+    }
+
+    public function getFirst()
+    {
+        return $this->collection->first();
+    }
+
+    public function getLast()
+    {
+        return $this->collection->last();
     }
 
     public function setContent($content)

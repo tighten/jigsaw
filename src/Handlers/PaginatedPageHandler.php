@@ -32,27 +32,39 @@ class PaginatedPageHandler
 
     public function handle($file, $data)
     {
-        $content = $this->parser->parse($file->getContents());
-        $items = $data[array_get($content->frontMatter, 'pagination.collection')];
-        $perPage = array_get($content->frontMatter, 'pagination.perPage', 10);
-        $pages = $this->paginator->paginate($file, $items, $perPage);
+        $fileContent = $file->getContents();
+        $bladeContent = $this->parser->getBladeContent($fileContent);
+        $viewData = $this->addFrontMatterToViewData($fileContent, new ViewData($data));
 
-        return $pages->map(function ($page) use ($file, $data, $content) {
+        $collection = $viewData->pagination->collection;
+        $perPage = $viewData->pagination->perPage ?: 10;
+        $pages = $this->paginator->paginate($file, $viewData->get($collection), $perPage);
+
+        return $pages->map(function ($page) use ($file, $viewData, $bladeContent) {
+            $extension = strtolower($file->getExtension());
+            $currentPage = $page['currentPage'];
+
             return new OutputFile(
                 $file->getRelativePath(),
                 $file->getFilenameWithoutExtension(),
-                'html',
+                $extension == 'php' | $extension == 'html' ? 'html' : $extension,
                 $this->render(
-                    $content->content,
-                    new ViewData(
-                        $data->put('pagination', $page)
-                        ->put('path', $page['pages'][$page['currentPage']])
-                    )
+                    $bladeContent,
+                    $viewData->put('pagination', $page)->put('path', $page['pages'][$currentPage])
                 ),
-                $data,
-                $page['currentPage']
+                $viewData,
+                $currentPage
             );
         })->all();
+    }
+
+    private function addFrontMatterToViewData($fileContent, $viewData)
+    {
+        collect($this->parser->getFrontMatter($fileContent))->each(function($value, $key) use ($viewData) {
+            $viewData = $viewData->put($key, $value);
+        });
+
+        return $viewData;
     }
 
     private function render($bladeContent, $data)

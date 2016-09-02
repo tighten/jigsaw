@@ -56,7 +56,7 @@ class CollectionDataLoader
 
     private function addCollectionItemContent($item)
     {
-        $file = collect($this->filesystem->getFile($item->source, $item->filename, $item->extension))->first();
+        $file = collect($this->filesystem->getFile($item->_source, $item->filename, $item->extension))->first();
 
         if ($file) {
             $item->setContent($this->getHandler($file)->getItemContent($file));
@@ -80,11 +80,10 @@ class CollectionDataLoader
 
     private function addMeta($data, $collection, $file)
     {
+        $data['_source'] = $file->getPath();
         $data['collection'] = $collection->name;
         $data['filename'] = $file->getFilenameWithoutExtension();
         $data['extension'] = $file->getFullExtension();
-        // use _source, and then remove?
-        $data['source'] = $file->getPath();
         // use _link, and then remove? Same with _nextItem and _previousItem?
         $data['link'] = $this->getPermalink($collection, $data);
         $data['path'] = $this->buildPaths($data['link']);

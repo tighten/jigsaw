@@ -18,17 +18,14 @@ class BladeCollectionItemHandler
 
     public function getItemVariables($file)
     {
-        $contents = $file->getContents();
-        $frontMatter = collect($this->parser->getFrontMatter($contents));
-
-        if (! $frontMatter->has('extends')) {
-            $bladeExtends = $this->extractExtendsFromBlade($contents);
-        }
+        $content = $file->getContents();
+        $frontMatter = collect($this->parser->getFrontMatter($content));
+        $extendsFromBladeContent = $this->parser->getExtendsFromBladeContent($content);
 
         return array_merge(
             ['section' => 'content'],
             $frontMatter->all(),
-            isset($bladeExtends) ? ['extends' => $bladeExtends] : []
+            ['extends' => $extendsFromBladeContent ?: $frontMatter->get('extends')]
         );
     }
 
@@ -40,12 +37,5 @@ class BladeCollectionItemHandler
     private function getCollectionName($file)
     {
         return substr($file->topLevelDirectory(), 1);
-    }
-
-    private function extractExtendsFromBlade($contents)
-    {
-        preg_match('/@extends\s*\(\s*[\"|\']\s*(.+?)\s*[\"|\']\s*\)/', $contents, $matches);
-
-        return isset($matches[1]) ? $matches[1] : null;
     }
 }

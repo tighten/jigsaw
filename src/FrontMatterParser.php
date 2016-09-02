@@ -36,4 +36,26 @@ class FrontMatterParser
     {
         return $this->parse($content, false)->content;
     }
+
+    public function getBladeContent($content)
+    {
+        $parsed = $this->parse($content);
+        $extendsFromFrontMatter = array_get($parsed->frontMatter, 'extends');
+
+        return (! $this->getExtendsFromBladeContent($parsed->content) && $extendsFromFrontMatter) ?
+            $this->addExtendsToBladeContent($extendsFromFrontMatter, $parsed->content):
+            $parsed->content;
+    }
+
+    public function getExtendsFromBladeContent($content)
+    {
+        preg_match('/@extends\s*\(\s*[\"|\']\s*(.+?)\s*[\"|\']\s*\)/', $content, $matches);
+
+        return isset($matches[1]) ? $matches[1] : null;
+    }
+
+    private function addExtendsToBladeContent($extends, $bladeContent)
+    {
+        return "@extends('$extends')\n" . $bladeContent;
+    }
 }

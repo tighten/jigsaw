@@ -21,14 +21,6 @@ class TemporaryFilesystem
         return $this->cleanup($path, $callback);
     }
 
-    public function copy($source, $callback, $extension = '')
-    {
-        $path = $this->buildTempPath($extension);
-        $this->filesystem->copy($source, $path);
-
-        return $this->cleanup($path, $callback);
-    }
-
     private function buildTempPath($extension)
     {
         return $this->tempPath . '/' . Str::quickRandom(32) . $extension;

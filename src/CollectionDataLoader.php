@@ -28,7 +28,6 @@ class CollectionDataLoader
 
         return $this->settings->map(function ($settings, $collectionName) {
             $collection = Collection::withSettings($settings, $collectionName);
-
             $collection->loadItems($this->buildCollection($collection));
 
             return $collection->map(function($item) {
@@ -40,7 +39,9 @@ class CollectionDataLoader
     private function buildCollection($collection)
     {
         return collect($this->filesystem->allFiles("{$this->source}/_{$collection->name}"))
-            ->map(function ($file) {
+            ->reject(function ($file) {
+                return starts_with($file->getFilename(), '_');
+            })->map(function ($file) {
                 return new InputFile($file, $this->source);
             })->map(function ($inputFile) use ($collection) {
                 return $this->buildCollectionItem($inputFile, $collection);

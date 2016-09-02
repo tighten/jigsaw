@@ -23,6 +23,11 @@ class InputFile
         return str_replace($this->basePath . '/', '', $this->file->getPathname());
     }
 
+    public function bladeViewPath()
+    {
+        return $this->getRelativePath() . '/' . $this->getFilenameWithoutExtension();
+    }
+
     public function getFilenameWithoutExtension()
     {
         return $this->getBasename('.' . $this->getFullExtension());
@@ -33,11 +38,6 @@ class InputFile
         $extension = $this->getExtension();
 
         return strpos($this->getBasename(), '.blade.' . $extension) > 0 ? 'blade.' . $extension : $extension;
-    }
-
-    public function hasBeenParsed()
-    {
-        return false;
     }
 
     public function __call($method, $args)

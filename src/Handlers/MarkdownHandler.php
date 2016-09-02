@@ -23,48 +23,52 @@ class MarkdownHandler
         return in_array($file->getExtension(), ['markdown', 'md']);
     }
 
+    public function handleCollectionItem($file, ViewData $viewData)
+    {
+        return $this->buildOutput($file, $viewData);
+    }
+
     public function handle($file, $data)
     {
-        if (! $file->hasBeenParsed()) {
-            $document = $this->parseFile($file);
-            $data = new ViewData($data
-                ->put('section', 'content')
-                ->merge($document->frontMatter)
-                ->put('content', $document->content)
-            );
-        }
+        return $this->buildOutput(
+            $file,
+            new ViewData($data->put('section', 'content')->merge($this->parseFrontMatter($file))
+        ));
+    }
 
-        return collect($data->extends)->map(function($layout) use ($file, $data) {
+    public function buildOutput($file, ViewData $viewData)
+    {
+        return collect($viewData->extends)->map(function($layout) use ($file, $viewData) {
             $extension = $this->view->getExtension($layout);
 
             return new OutputFile(
                 $file->getRelativePath(),
                 $file->getFilenameWithoutExtension(),
                 $extension == 'php' | $extension == 'html' ? 'html' : $extension,
-                $this->render($data, $layout),
-                $data
+                $this->render($file->bladeViewPath(), $viewData, $layout),
+                $viewData
             );
         });
     }
 
-    private function render($viewData, $layout)
+    private function render($includePath, $viewData, $layout)
     {
-        return $this->temporaryFilesystem->put($this->compileToBlade($viewData, $layout), function ($path) use ($viewData) {
+        return $this->temporaryFilesystem->put($this->compileToBlade($includePath, $viewData, $layout), function ($path) use ($viewData) {
             return $this->view->render($path, $viewData);
         }, '.blade.php');
     }
 
-    private function parseFile($file)
+    private function parseFrontMatter($file)
     {
-        return $this->parser->parseMarkdown($file->getContents());
+        return $this->parser->getFrontMatter($file->getContents());
     }
 
-    private function compileToBlade($data, $layout)
+    private function compileToBlade($includePath, $data, $layout)
     {
         return collect([
             sprintf("@extends('%s')", $layout),
             sprintf("@section('%s')", $data->section),
-            '{!! $jigsaw->content !!}',
+            sprintf("@include('%s')", $includePath),
             '@endsection',
         ])->implode("\n");
     }

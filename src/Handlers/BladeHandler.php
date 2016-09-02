@@ -20,19 +20,31 @@ class BladeHandler
         return str_contains($file->getFilename(), '.blade.');
     }
 
+    public function handleCollectionItem($file, ViewData $viewData)
+    {
+        return $this->buildOutput($file, $viewData);
+    }
+
     public function handle($file, $data)
+    {
+        return $this->buildOutput(
+            $file, new ViewData($data)
+        );
+    }
+
+    public function buildOutput($file, ViewData $viewData)
     {
         $extension = strtolower($file->getExtension());
 
-        return [
+        return collect([
             new OutputFile(
                 $file->getRelativePath(),
                 $file->getFilenameWithoutExtension(),
                 $extension == 'php' | $extension == 'html' ? 'html' : $extension,
-                $this->render($file->getRealPath(), new ViewData($data)),
-                $data
+                $this->render($file->getRealPath(), $viewData),
+                $viewData
             )
-        ];
+        ]);
     }
 
     private function render($path, $data)

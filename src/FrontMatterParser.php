@@ -26,4 +26,9 @@ class FrontMatterParser
 
         return $this;
     }
+
+    public function getFrontMatter($content)
+    {
+        return $this->parse($content)->frontMatter;
+    }
 }

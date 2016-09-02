@@ -1,7 +1,6 @@
 <?php namespace TightenCo\Jigsaw\Handlers;
 
 use TightenCo\Jigsaw\OutputFile;
-use TightenCo\Jigsaw\ParsedInputFile;
 use TightenCo\Jigsaw\ViewData;
 
 class CollectionItemHandler
@@ -43,7 +42,7 @@ class CollectionItemHandler
         });
 
         $viewData = ViewData::withCollectionItem($data, $this->getCollectionName($file), $file->getFilenameWithoutExtension());
-        $handledFiles = $handler->handle(new ParsedInputFile($file), $viewData);
+        $handledFiles = $handler->handleCollectionItem($file, $viewData);
 
         return $handledFiles->map(function ($file, $templateKey) {
             $link = $templateKey ? $file->data()->link->get($templateKey) : (string) $file->data()->link;

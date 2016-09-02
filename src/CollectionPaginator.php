@@ -15,8 +15,8 @@ class CollectionPaginator
         $totalPages = $chunked->count();
         $numberedPageLinks = $chunked->map(function ($_, $i) use ($file) {
             $page = $i + 1;
-            return ['number' => $page, 'link' => $this->getPageLink($file, $page)];
-        })->pluck('link', 'number');
+            return ['number' => $page, 'path' => $this->getPageLink($file, $page)];
+        })->pluck('path', 'number');
 
         return $chunked->map(function ($items, $i) use ($file, $totalPages, $numberedPageLinks) {
             $currentPage = $i + 1;

@@ -84,9 +84,8 @@ class SiteBuilder
     {
         $meta['filename'] = $file->getFilenameWithoutExtension();
         $meta['extension'] = $file->getFullExtension();
-        $meta['link'] = rtrim($this->outputPathResolver->link($file->getRelativePath(), $meta['filename'], 'html'), '/');
-        $meta['path'] = trim($meta['link'], '/');
-        $meta['url'] = rtrim(array_get($data, 'baseUrl'), '/') . '/' . trim($meta['link'], '/');
+        $meta['path'] = rtrim($this->outputPathResolver->link($file->getRelativePath(), $meta['filename'], 'html'), '/');
+        $meta['url'] = rtrim(array_get($data, 'baseUrl'), '/') . '/' . trim($meta['path'], '/');
 
         return $meta;
     }

@@ -45,11 +45,11 @@ class CollectionItemHandler
         $handledFiles = $handler->handleCollectionItem($file, $viewData);
 
         return $handledFiles->map(function ($file, $templateKey) {
-            $link = $templateKey ? $file->data()->link->get($templateKey) : (string) $file->data()->link;
+            $path = $templateKey ? $file->data()->path->get($templateKey) : (string) $file->data()->path;
 
             return new OutputFile(
-                dirname($link),
-                basename($link, '.' . $file->extension()),
+                dirname($path),
+                basename($path, '.' . $file->extension()),
                 $file->extension(),
                 $file->contents(),
                 $file->data()

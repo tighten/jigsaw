@@ -84,27 +84,16 @@ class CollectionDataLoader
         $data['collection'] = $collection->name;
         $data['filename'] = $file->getFilenameWithoutExtension();
         $data['extension'] = $file->getFullExtension();
-        // use _link, and then remove? Same with _nextItem and _previousItem?
-        $data['link'] = $this->getPermalink($collection, $data);
-        $data['path'] = $this->buildPaths($data['link']);
+        $data['path'] = $this->getPermalink($collection, $data);
         $data['url'] = $this->buildUrls($data['path']);
 
         return $data;
     }
 
-    private function buildPaths($links)
-    {
-        $paths = collect($links)->map(function($link) {
-            return trim($link, '/');
-        });
-
-        return $paths->count() ? new IterableObjectWithDefault($paths) : null;
-    }
-
     private function buildUrls($paths)
     {
         $urls = collect($paths)->map(function($path) {
-            return rtrim(array_get($this->globalSettings, 'baseUrl'), '/') . '/' . $path;
+            return rtrim(array_get($this->globalSettings, 'baseUrl'), '/') . $path;
         });
 
         return $urls->count() ? new IterableObjectWithDefault($urls) : null;

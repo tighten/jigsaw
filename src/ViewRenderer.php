@@ -47,7 +47,6 @@ class ViewRenderer
     private function updateMetaForCollectionItem($data)
     {
         if ($data->item) {
-            $data->link = $data->item->link;
             $data->path = $data->item->path;
             $data->url = $data->item->url;
         }

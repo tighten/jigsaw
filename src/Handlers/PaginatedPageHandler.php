@@ -46,7 +46,7 @@ class PaginatedPageHandler
                     $content->content,
                     new ViewData(
                         $data->put('pagination', $page)
-                        ->put('link', $page['pages'][$page['currentPage']])
+                        ->put('path', $page['pages'][$page['currentPage']])
                     )
                 ),
                 $data,

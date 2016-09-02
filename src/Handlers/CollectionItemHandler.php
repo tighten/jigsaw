@@ -52,7 +52,8 @@ class CollectionItemHandler
                 basename($link, '.' . $file->extension()),
                 $file->extension(),
                 $file->contents(),
-                $file->data());
+                $file->data()
+            );
         })->values();
     }
 }

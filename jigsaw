@@ -12,6 +12,7 @@ use Illuminate\View\FileViewFinder;
 use TightenCo\Jigsaw\BasicOutputPathResolver;
 use TightenCo\Jigsaw\BladeMarkdownEngine;
 use TightenCo\Jigsaw\CollectionDataLoader;
+use TightenCo\Jigsaw\CollectionHandlers\BladeCollectionItemHandler;
 use TightenCo\Jigsaw\CollectionHandlers\MarkdownCollectionItemHandler;
 use TightenCo\Jigsaw\CollectionPaginator;
 use TightenCo\Jigsaw\CollectionPathResolver;
@@ -111,6 +112,7 @@ $container->bind(CollectionPathResolver::class, function ($c ) {
 $container->bind(CollectionDataLoader::class, function ($c) {
     return new CollectionDataLoader($c['collectionSettings'], new Filesystem, $c[CollectionPathResolver::class], [
         $c[MarkdownCollectionItemHandler::class],
+        $c[BladeCollectionItemHandler::class],
     ]);
 });
 
@@ -119,7 +121,10 @@ $container->bind(DataLoader::class, function ($c) {
 });
 
 $container->bind(CollectionItemHandler::class, function ($c) {
-    return new CollectionItemHandler($c['collectionSettings'], [$c[MarkdownHandler::class]]);
+    return new CollectionItemHandler($c['collectionSettings'], [
+        $c[MarkdownHandler::class],
+        $c[BladeHandler::class],
+    ]);
 });
 
 $container->bind(CollectionPaginator::class, function ($c) {

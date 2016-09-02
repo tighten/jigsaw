@@ -10,7 +10,7 @@ class CollectionItemHandler
 
     public function __construct($collectionSettings, $handlers)
     {
-        $this->collectionSettings = collect($collectionSettings);
+        $this->collectionSettings = $collectionSettings;
         $this->handlers = collect($handlers);
     }
 

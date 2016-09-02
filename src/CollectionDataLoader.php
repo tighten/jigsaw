@@ -15,7 +15,7 @@ class CollectionDataLoader
 
     public function __construct($settings, $filesystem, $pathResolver, $handlers = [])
     {
-        $this->settings = collect($settings);
+        $this->settings = $settings;
         $this->filesystem = $filesystem;
         $this->pathResolver = $pathResolver;
         $this->handlers = collect($handlers);

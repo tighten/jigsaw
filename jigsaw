@@ -56,7 +56,11 @@ if (! file_exists(getcwd() . '/collections.php')) {
 
 $container->instance('cwd', getcwd());
 $container->instance('config', $config);
-$container->instance('collectionSettings', $collectionSettings);
+$container->instance('collectionSettings',
+    collect($collectionSettings)->flatMap(function ($value, $key) {
+        return is_array($value) ? [$key => $value] : [$value => []];
+    })
+);
 
 $container->bind('outputPathResolver', function ($c) {
     return new BasicOutputPathResolver;

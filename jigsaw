@@ -31,6 +31,7 @@ if (file_exists(__DIR__.'/vendor/autoload.php')) {
 $cachePath = getcwd() . '/_tmp';
 $buildPath = getcwd() . '/build';
 $sourcePath = getcwd() . '/source';
+$bootstrapFile = getcwd() . '/bootstrap.php';
 
 $container = new Container;
 
@@ -62,6 +63,10 @@ $container->bind(MarkdownHandler::class, function ($c) use ($cachePath) {
 });
 
 $jigsaw = new Jigsaw(new Filesystem, $cachePath);
+
+if (file_exists($bootstrapFile)) {
+    require $bootstrapFile;
+}
 
 $jigsaw->registerHandler($container[MarkdownHandler::class]);
 $jigsaw->registerHandler($container[BladeHandler::class]);

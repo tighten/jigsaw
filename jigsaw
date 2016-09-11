@@ -8,6 +8,8 @@ use Illuminate\View\Engines\CompilerEngine;
 use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Factory;
 use Illuminate\View\FileViewFinder;
+use Mni\FrontYAML\Bridge\Parsedown\ParsedownParser;
+use Mni\FrontYAML\Bridge\Symfony\SymfonyYAMLParser;
 use Mni\FrontYAML\Markdown\MarkdownParser;
 use Mni\FrontYAML\Parser;
 use Mni\FrontYAML\YAML\YAMLParser;
@@ -51,10 +53,10 @@ $container->bind(BladeHandler::class, function ($c) {
     return new BladeHandler($c[Factory::class]);
 });
 
-$container->bind(MarkdownParser::class, \Mni\FrontYAML\Bridge\Parsedown\ParsedownParser::class);
-$container->bind(YAMLParser::class, \Mni\FrontYAML\Bridge\Symfony\SymfonyYAMLParser::class);
+$container->bind(MarkdownParser::class, ParsedownParser::class);
+$container->bind(YAMLParser::class, SymfonyYAMLParser::class);
 $container->bind(Parser::class, function ($c) {
-    return new Parser($c[YAMLParser::class], $c[MarkdownParser::class], '---', '---');
+    return new Parser($c[YAMLParser::class], $c[MarkdownParser::class]);
 });
 
 $container->bind(MarkdownHandler::class, function ($c) use ($cachePath) {

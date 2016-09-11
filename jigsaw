@@ -45,7 +45,9 @@ $container->bind(Factory::class, function ($c) use ($cachePath, $sourcePath, $bl
                 return ends_with($file->getFilename(), '.php') && !ends_with($file->getFilename(), '.raw.php');
             })->each(function ($file) use ($compiler) {
                 $compiler->directive($file->getBasename('.php'), function ($expression) use ($file) {
-                    return "<?php \$input = with(" . $expression . "); require '" . $file->getRealPath() . "'; ?>";
+                    return "<?php execute_custom_blade_directive('" . $file->getRealPath() . "'" .
+                    ((trim($expression) != '') ? ", " . $expression : '') .
+                    "); ?>";
                 });
             });
 

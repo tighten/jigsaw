@@ -76,6 +76,8 @@ $container->bind(MarkdownHandler::class, function ($c) use ($cachePath) {
     return new MarkdownHandler($tempFilesystem, $c[Factory::class]);
 });
 
+Container::setInstance($container);
+
 $jigsaw = new Jigsaw(new Filesystem, $cachePath);
 
 $jigsaw->registerHandler($container[MarkdownHandler::class]);

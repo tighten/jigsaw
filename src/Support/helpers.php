@@ -41,3 +41,17 @@ if (! function_exists('elixir')) {
         throw new InvalidArgumentException("File {$file} not defined in asset manifest.");
     }
 }
+
+if (! function_exists('execute_custom_blade_directive')) {
+    /**
+     * Execute custom blade directive in view file
+     *
+     * @param string $blade_file Directive file path
+     * @param array $parameters View variables
+     * @param null|string $input Input parameters
+     */
+    function execute_custom_blade_directive($blade_file, $parameters, $input = null)
+    {
+        require $blade_file;
+    }
+}

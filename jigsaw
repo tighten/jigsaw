@@ -28,14 +28,38 @@ if (file_exists(__DIR__.'/vendor/autoload.php')) {
 $cachePath = getcwd() . '/_tmp';
 $buildPath = getcwd() . '/build';
 $sourcePath = getcwd() . '/source';
+$bladePath = getcwd() . '/blade';
 
 $container = new Container;
 
-$container->bind(Factory::class, function ($c) use ($cachePath, $sourcePath) {
+$container->bind(Factory::class, function ($c) use ($cachePath, $sourcePath, $bladePath) {
     $resolver = new EngineResolver;
 
-    $resolver->register('blade', function () use ($cachePath) {
+    $resolver->register('blade', function () use ($cachePath, $bladePath) {
         $compiler = new BladeCompiler(new Filesystem, $cachePath);
+
+        if (is_dir($bladePath)) {
+            $directives = collect((new Filesystem())->allFiles($bladePath));
+
+            $directives->filter(function ($file) {
+                return ends_with($file->getFilename(), '.php') && !ends_with($file->getFilename(), '.raw.php');
+            })->each(function ($file) use ($compiler) {
+                $compiler->directive($file->getBasename('.php'), function ($expression) use ($file) {
+                    return "<?php execute_custom_blade_directive('" . $file->getRealPath() . "', get_defined_vars()" .
+                    ((trim($expression) != '') ? ", " . $expression : '') .
+                    "); ?>";
+                });
+            });
+
+            $directives->filter(function ($file) {
+                return ends_with($file->getFilename(), '.raw.php');
+            })->each(function ($file) use ($compiler) {
+                $compiler->directive($file->getBasename('.raw.php'), function ($expression) use ($file) {
+                    return require $file->getRealPath();
+                });
+            });
+        }
+
         return new CompilerEngine($compiler, new Filesystem);
     });
 
@@ -51,6 +75,8 @@ $container->bind(MarkdownHandler::class, function ($c) use ($cachePath) {
     $tempFilesystem = new TemporaryFilesystem($cachePath);
     return new MarkdownHandler($tempFilesystem, $c[Factory::class]);
 });
+
+Container::setInstance($container);
 
 $jigsaw = new Jigsaw(new Filesystem, $cachePath);
 

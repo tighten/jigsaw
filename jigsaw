@@ -8,6 +8,11 @@ use Illuminate\View\Engines\CompilerEngine;
 use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Factory;
 use Illuminate\View\FileViewFinder;
+use Mni\FrontYAML\Bridge\Parsedown\ParsedownParser;
+use Mni\FrontYAML\Bridge\Symfony\SymfonyYAMLParser;
+use Mni\FrontYAML\Markdown\MarkdownParser;
+use Mni\FrontYAML\Parser;
+use Mni\FrontYAML\YAML\YAMLParser;
 use TightenCo\Jigsaw\Console\BuildCommand;
 use TightenCo\Jigsaw\Console\InitCommand;
 use TightenCo\Jigsaw\Console\ServeCommand;
@@ -28,6 +33,7 @@ if (file_exists(__DIR__.'/vendor/autoload.php')) {
 $cachePath = getcwd() . '/_tmp';
 $buildPath = getcwd() . '/build';
 $sourcePath = getcwd() . '/source';
+$bootstrapFile = getcwd() . '/bootstrap.php';
 
 $container = new Container;
 
@@ -47,12 +53,22 @@ $container->bind(BladeHandler::class, function ($c) {
     return new BladeHandler($c[Factory::class]);
 });
 
+$container->bind(MarkdownParser::class, ParsedownParser::class);
+$container->bind(YAMLParser::class, SymfonyYAMLParser::class);
+$container->bind(Parser::class, function ($c) {
+    return new Parser($c[YAMLParser::class], $c[MarkdownParser::class]);
+});
+
 $container->bind(MarkdownHandler::class, function ($c) use ($cachePath) {
     $tempFilesystem = new TemporaryFilesystem($cachePath);
-    return new MarkdownHandler($tempFilesystem, $c[Factory::class]);
+    return new MarkdownHandler($tempFilesystem, $c[Factory::class], $c[Parser::class]);
 });
 
 $jigsaw = new Jigsaw(new Filesystem, $cachePath);
+
+if (file_exists($bootstrapFile)) {
+    require $bootstrapFile;
+}
 
 $jigsaw->registerHandler($container[MarkdownHandler::class]);
 $jigsaw->registerHandler($container[BladeHandler::class]);

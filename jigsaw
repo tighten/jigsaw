@@ -22,11 +22,12 @@ use TightenCo\Jigsaw\Handlers\DefaultHandler;
 use TightenCo\Jigsaw\Handlers\MarkdownHandler;
 use TightenCo\Jigsaw\Jigsaw;
 use TightenCo\Jigsaw\TemporaryFilesystem;
+use TightenCo\Jigsaw\ViewFactory;
 
-if (file_exists(__DIR__.'/vendor/autoload.php')) {
-    require __DIR__.'/vendor/autoload.php';
+if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+    require __DIR__ . '/vendor/autoload.php';
 } else {
-    require __DIR__.'/../../autoload.php';
+    require __DIR__ . '/../../autoload.php';
 }
 
 // Config
@@ -46,7 +47,7 @@ $container->bind(Factory::class, function ($c) use ($cachePath, $sourcePath) {
     });
 
     $finder = new FileViewFinder(new Filesystem, [$sourcePath]);
-    return new Factory($resolver, $finder, Mockery::mock(Dispatcher::class)->shouldIgnoreMissing());
+    return new ViewFactory($resolver, $finder, Mockery::mock(Dispatcher::class)->shouldIgnoreMissing());
 });
 
 $container->bind(BladeHandler::class, function ($c) {

@@ -4,7 +4,6 @@ use Exception;
 use Illuminate\View\Engines\EngineInterface;
 use Symfony\Component\Debug\Exception\FatalThrowableError;
 use Throwable;
-use TightenCo\Jigsaw\Filesystem;
 
 class MarkdownEngine implements EngineInterface
 {

@@ -1,6 +1,5 @@
 <?php namespace TightenCo\Jigsaw;
 
-use Exception;
 use TightenCo\Jigsaw\IterableObject;
 use TightenCo\Jigsaw\HelperFunctionTrait;
 

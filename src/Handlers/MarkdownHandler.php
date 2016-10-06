@@ -30,10 +30,16 @@ class MarkdownHandler
 
     public function handle($file, $data)
     {
+        $localVariables = $this->parseFrontMatter($file);
+
         return $this->buildOutput(
-            $file,
-            new ViewData($data->put('section', 'content')->merge($this->parseFrontMatter($file))
-        ));
+            $file, new ViewData($this->addLocalVariablesToPageData($localVariables, $data))
+        );
+    }
+
+    private function addLocalVariablesToPageData($localVariables, $data)
+    {
+        return $data->put('section', 'content')->put('config', $data->get('config')->merge($localVariables))->merge($localVariables);
     }
 
     public function buildOutput($file, ViewData $viewData)

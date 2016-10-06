@@ -15,10 +15,13 @@ class DataLoader
 
     public function load($source, $env)
     {
-        $globalSettings = $this->loadConfigData($env);
-        $collectionData = $this->loadCollectionData($source, $globalSettings);
+        $configSettings = ConfigSettings::build($this->loadConfigData($env));
+        $collectionData = $this->loadCollectionData($source, $configSettings);
 
-        return $this->makeIterableObject(array_merge($globalSettings, $collectionData));
+        return $this->makeIterableObject(array_merge(
+            ['config' => $configSettings],
+            $collectionData
+        ));
     }
 
     private function loadConfigData($env)
@@ -29,7 +32,7 @@ class DataLoader
             $environmentConfig = [];
         }
 
-        return array_merge($this->config, $environmentConfig);
+        return $this->makeIterableObject(array_merge($this->config, $environmentConfig));
     }
 
     private function makeIterableObject($array)
@@ -39,8 +42,8 @@ class DataLoader
         });
     }
 
-    private function loadCollectionData($source, $globalSettings)
+    private function loadCollectionData($source, $configSettings)
     {
-        return $this->collectionDataLoader->load($source, $globalSettings);
+        return $this->collectionDataLoader->load($source, $configSettings);
     }
 }

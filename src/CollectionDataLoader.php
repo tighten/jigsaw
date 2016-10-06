@@ -6,28 +6,28 @@ use TightenCo\Jigsaw\IterableObjectWithDefault;
 
 class CollectionDataLoader
 {
-    private $settings;
+    private $collectionSettings;
     private $filesystem;
     private $pathResolver;
     private $handlers;
     private $source;
-    private $globalSettings;
+    private $configSettings;
 
-    public function __construct($settings, $filesystem, $pathResolver, $handlers = [])
+    public function __construct($collectionSettings, $filesystem, $pathResolver, $handlers = [])
     {
-        $this->settings = $settings;
+        $this->collectionSettings = $collectionSettings;
         $this->filesystem = $filesystem;
         $this->pathResolver = $pathResolver;
         $this->handlers = collect($handlers);
     }
 
-    public function load($source, $globalSettings)
+    public function load($source, $configSettings)
     {
         $this->source = $source;
-        $this->globalSettings = $globalSettings;
+        $this->configSettings = $configSettings;
 
-        return $this->settings->map(function ($settings, $collectionName) {
-            $collection = Collection::withSettings($settings, $collectionName);
+        return $this->collectionSettings->map(function ($collectionSettings, $collectionName) {
+            $collection = Collection::withSettings($collectionSettings, $collectionName);
             $collection->loadItems($this->buildCollection($collection));
 
             return $collection->map(function($item) {
@@ -94,7 +94,7 @@ class CollectionDataLoader
     private function buildUrls($paths)
     {
         $urls = collect($paths)->map(function($path) {
-            return rtrim(array_get($this->globalSettings, 'baseUrl'), '/') . $path;
+            return rtrim(array_get($this->configSettings, 'baseUrl'), '/') . $path;
         });
 
         return $urls->count() ? new IterableObjectWithDefault($urls) : null;

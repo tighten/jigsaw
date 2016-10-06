@@ -30,9 +30,9 @@ class CollectionDataLoader
             $collection = Collection::withSettings($collectionSettings, $collectionName);
             $collection->loadItems($this->buildCollection($collection));
 
-            return $collection->map(function($item) {
+            return $collection->updateItems($collection->map(function($item) {
                 return $this->addCollectionItemContent($item);
-            });
+            }));
         })->all();
     }
 

@@ -37,10 +37,9 @@ class CollectionItemHandler
 
     public function handle($file, $data)
     {
-        $handler = $this->handlers->first(function ($_, $handler) use ($file) {
+        $handler = $this->handlers->first(function ($handler) use ($file) {
             return $handler->shouldHandle($file);
         });
-
         $viewData = ViewData::withCollectionItem($data, $this->getCollectionName($file), $file->getFilenameWithoutExtension());
         $handledFiles = $handler->handleCollectionItem($file, $viewData);
 

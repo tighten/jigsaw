@@ -77,7 +77,7 @@ class SiteBuilder
 
     private function getHandler($file)
     {
-        return collect($this->handlers)->first(function ($_, $handler) use ($file) {
+        return collect($this->handlers)->first(function ($handler) use ($file) {
             return $handler->shouldHandle($file);
         });
     }

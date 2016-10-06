@@ -1,6 +1,7 @@
 <?php namespace TightenCo\Jigsaw\Handlers;
 
 use TightenCo\Jigsaw\FrontMatterParser;
+use TightenCo\Jigsaw\IterableObject;
 use TightenCo\Jigsaw\OutputFile;
 use TightenCo\Jigsaw\ViewData;
 use TightenCo\Jigsaw\ViewRenderer;
@@ -41,6 +42,7 @@ class PaginatedPageHandler
         $pages = $this->paginator->paginate($file, $viewData->get($collection), $perPage);
 
         return $pages->map(function ($page) use ($file, $viewData, $bladeContent) {
+            $page = new IterableObject($page);
             $extension = strtolower($file->getExtension());
             $currentPage = $page['currentPage'];
 

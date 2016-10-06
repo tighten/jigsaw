@@ -63,7 +63,9 @@ class SiteBuilder
 
     private function handle($file, $data)
     {
-        return $this->getHandler($file)->handle($file, $data->merge($this->getMeta($file, $data)));
+        $meta = $this->getMetaData($file, $data);
+
+        return $this->getHandler($file)->handle($file, $this->addMetaToPageData($meta, $data));
     }
 
     private function buildFile($file, $dest)
@@ -85,9 +87,14 @@ class SiteBuilder
         $meta['filename'] = $file->getFilenameWithoutExtension();
         $meta['extension'] = $file->getFullExtension();
         $meta['path'] = rtrim($this->outputPathResolver->link($file->getRelativePath(), $meta['filename'], 'html'), '/');
-        $meta['url'] = rtrim(array_get($data, 'baseUrl'), '/') . '/' . trim($meta['path'], '/');
+        $meta['url'] = rtrim(array_get($data, 'config.baseUrl'), '/') . '/' . trim($meta['path'], '/');
 
         return $meta;
+    }
+
+    private function addMetaToPageData($meta, $data)
+    {
+        return $data->put('config', $data->get('config')->merge($meta))->merge($meta);
     }
 
     private function getOutputDirectory($file)

@@ -31,10 +31,7 @@ class ViewRenderer
     {
         $data = $this->updateMetaForCollectionItem($data);
 
-        return $this->viewFactory->file(
-            $path,
-            array_merge(['jigsaw' => $data], $data->toArray())
-        )->render();
+        return $this->viewFactory->file($path, $data->all())->render();
     }
 
     private function addExtensions()

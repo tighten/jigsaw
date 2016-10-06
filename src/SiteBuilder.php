@@ -82,7 +82,7 @@ class SiteBuilder
         });
     }
 
-    private function getMeta($file, $data)
+    private function getMetaData($file, $data)
     {
         $meta['filename'] = $file->getFilenameWithoutExtension();
         $meta['extension'] = $file->getFullExtension();

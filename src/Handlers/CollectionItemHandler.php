@@ -44,8 +44,8 @@ class CollectionItemHandler
         $viewData = ViewData::withCollectionItem($data, $this->getCollectionName($file), $file->getFilenameWithoutExtension());
         $handledFiles = $handler->handleCollectionItem($file, $viewData);
 
-        return $handledFiles->map(function ($file, $templateKey) {
-            $path = $templateKey ? $file->data()->path->get($templateKey) : (string) $file->data()->path;
+        return $handledFiles->map(function ($file, $templateToExtend) {
+            $path = $templateToExtend ? $file->data()->path->get($templateToExtend) : (string) $file->data()->path;
 
             return new OutputFile(
                 dirname($path),

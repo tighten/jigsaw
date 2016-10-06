@@ -1,15 +1,13 @@
 <?php namespace TightenCo\Jigsaw;
 
-use Exception;
 use TightenCo\Jigsaw\HelperFunctionTrait;
 use TightenCo\Jigsaw\IterableObject;
 
 class ViewData extends IterableObject
 {
-    private $data;
-    private $globals = ['extends', 'section', 'path'];
-    public $item;
     use HelperFunctionTrait;
+
+    private $item_settings = ['extends', 'section', 'path'];
 
     public static function withCollectionItem($data, $collectionName, $itemName)
     {

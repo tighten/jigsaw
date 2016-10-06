@@ -10,7 +10,7 @@ class PaginatedPageHandler
     private $paginator;
     private $parser;
     private $temporaryFilesystem;
-    private $viewFactory;
+    private $view;
 
     public function __construct($paginator, FrontMatterParser $parser, $temporaryFilesystem, ViewRenderer $viewRenderer)
     {

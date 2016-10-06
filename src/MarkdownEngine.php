@@ -21,10 +21,10 @@ class MarkdownEngine implements EngineInterface
 
     public function get($path, array $data = [])
     {
-        return $this->evaluatePath($path);
+        return $this->evaluateMarkdown($path);
     }
 
-    protected function evaluatePath($path)
+    protected function evaluateMarkdown($path)
     {
         try {
             $file = $this->file->get($path);

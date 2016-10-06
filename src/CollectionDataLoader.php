@@ -52,7 +52,7 @@ class CollectionDataLoader
     {
         $data = array_merge($collection->getDefaultVariables(), $this->getHandler($file)->getItemVariables($file));
 
-        return CollectionItem::build($collection, $this->addMeta($data, $collection, $file), $collection->getHelpers());
+        return CollectionItem::build($collection, $this->addMeta($data, $collection, $file));
     }
 
     private function addCollectionItemContent($item)

@@ -1,6 +1,7 @@
 <?php namespace TightenCo\Jigsaw;
 
 use Exception;
+use TightenCo\Jigsaw\HelperFunctionTrait;
 use TightenCo\Jigsaw\IterableObject;
 
 class ViewData extends IterableObject
@@ -8,6 +9,7 @@ class ViewData extends IterableObject
     private $data;
     private $globals = ['extends', 'section', 'path'];
     public $item;
+    use HelperFunctionTrait;
 
     public static function withCollectionItem($data, $collectionName, $itemName)
     {
@@ -17,40 +19,38 @@ class ViewData extends IterableObject
         return $viewData;
     }
 
-    public function __call($method, $args)
+    public function getHelper($name)
     {
-        return $this->getHelper($method)->__invoke($this, ...$args);
+        return $this->config->getHelper($name);
     }
 
-    private function getHelper($name)
+    private function missingHelperError($function_name)
     {
-        $helper = $this->has('helpers') ? $this->helpers->{$name} : null;
-
-        return $helper ?: function() use ($name) {
-            throw new Exception("No helper function named '$name' in 'config.php'.");
-        };
+        return 'No helper function named "' . $function_name. '" was found in the file "config.php".';
     }
 
     private function setCollectionItem($collection, $item)
     {
         if ($this->has($collection)) {
-            $this->item = $this->get($collection)->get($item);
+            $this->put('item', $this->get($collection)->get($item));
             $this->addSingularCollectionReference($collection);
-            $this->setGloballyAvailableItemVariables();
+            $this->useItemSettings();
         }
     }
 
-    private function addSingularCollectionReference($collection)
+    private function addSingularCollectionReference($collectionName)
     {
-        if (str_singular($collection) != $collection) {
-            $this->{str_singular($collection)} = $this->item;
+        $singularCollectionName = str_singular($collectionName);
+
+        if ($singularCollectionName != $collectionName) {
+            $this->put($singularCollectionName, $this->get('item'));
         };
     }
 
-    private function setGloballyAvailableItemVariables()
+    private function useItemSettings()
     {
-        collect($this->globals)->each(function ($variable) {
-            $this[$variable] = $this->item->{$variable};
+        collect($this->item_settings)->each(function ($variable) {
+            $this[$variable] = $this->get('item')->{$variable};
         });
     }
 }

@@ -2,19 +2,25 @@
 
 use Exception;
 use TightenCo\Jigsaw\IterableObject;
+use TightenCo\Jigsaw\HelperFunctionTrait;
 
 class CollectionItem extends IterableObject
 {
-    private $helpers = [];
+    use HelperFunctionTrait;
+
     private $collection;
 
-    public static function build($collection, $data, $helpers)
+    public static function build($collection, $data)
     {
         $item = new static($data);
         $item->collection = $collection;
-        $item->helpers = $helpers;
 
         return $item;
+    }
+
+    public function getHelper($name)
+    {
+        return $this->collection->getHelper($name);
     }
 
     public function getNext()
@@ -47,16 +53,8 @@ class CollectionItem extends IterableObject
         return $this->_content;
     }
 
-    public function __call($method, $args)
+    private function missingHelperError($function_name)
     {
-        return $this->getHelper($method)->__invoke($this, ...$args);
-    }
-
-    private function getHelper($name)
-    {
-        return array_get($this->helpers, $name) ?: function() use ($name) {
-            $collection = $this->get('collection');
-            throw new Exception('No helper function named "' . $name. '" for the collection "' . $this->get('collection') . '" was found in the file "collections.php".');
-        };
+        return 'No helper function named "' . $function_name. '" for the collection "' . $this->get('collection') . '" was found in the file "collections.php".';
     }
 }

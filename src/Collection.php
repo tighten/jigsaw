@@ -1,9 +1,12 @@
 <?php namespace TightenCo\Jigsaw;
 
 use Illuminate\Support\Collection as BaseCollection;
+use TightenCo\Jigsaw\HelperFunctionTrait;
 
 class Collection extends BaseCollection
 {
+    use HelperFunctionTrait;
+
     private $settings;
     public $name;
 
@@ -50,9 +53,9 @@ class Collection extends BaseCollection
         return array_get($this->settings, 'path');
     }
 
-    public function getHelpers()
+    public function getHelper($functionName)
     {
-        return array_get($this->settings, 'helpers', []);
+        return array_get($this->settings, 'helpers.' . $functionName, []);
     }
 
     private function defaultSort($items)
@@ -86,5 +89,10 @@ class Collection extends BaseCollection
 
             return [$sortKeyFunction[0], $parameterss];
         }
+    }
+
+    private function missingHelperError($function_name)
+    {
+        return 'No helper function named "' . $function_name. '" for the collection "' . $this->name . '" was found in the file "collections.php".';
     }
 }

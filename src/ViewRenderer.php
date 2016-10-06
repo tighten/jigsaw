@@ -5,7 +5,13 @@ use Illuminate\View\Factory;
 class ViewRenderer
 {
     private $viewFactory;
-    private $allowedBladeExtensions = [
+    private $extensionEngines = [
+        'md' => 'markdown',
+        'markdown' => 'markdown',
+        'blade.md' => 'blade-markdown',
+        'blade.markdown' => 'blade-markdown',
+    ];
+    private $bladeExtensions = [
         'js', 'json', 'xml', 'rss', 'txt', 'text', 'html'
     ];
 
@@ -13,20 +19,12 @@ class ViewRenderer
     {
         $this->viewFactory = $viewFactory;
         $this->finder = $this->viewFactory->getFinder();
-        $this->addBladeExtensions();
+        $this->addExtensions();
     }
 
-    private function addBladeExtensions()
+    public function getExtension($bladeViewPath)
     {
-        $this->viewFactory->addExtension('md', 'markdown');
-        $this->viewFactory->addExtension('markdown', 'markdown');
-        $this->viewFactory->addExtension('blade.md', 'blade-markdown');
-        $this->viewFactory->addExtension('blade.markdown', 'blade-markdown');
-
-        collect($this->allowedBladeExtensions)->each(function ($extension) {
-            $this->viewFactory->addExtension($extension, 'php');
-            $this->viewFactory->addExtension('blade.' . $extension, 'blade');
-        });
+        return strtolower(pathinfo($this->finder->find($bladeViewPath), PATHINFO_EXTENSION));
     }
 
     public function render($path, $data)
@@ -39,9 +37,16 @@ class ViewRenderer
         )->render();
     }
 
-    public function getExtension($bladeViewPath)
+    private function addExtensions()
     {
-        return strtolower(pathinfo($this->finder->find($bladeViewPath), PATHINFO_EXTENSION));
+        collect($this->extensionEngines)->each(function ($engine, $extension) {
+            $this->viewFactory->addExtension($extension, $engine);
+        });
+
+        collect($this->bladeExtensions)->each(function ($extension) {
+            $this->viewFactory->addExtension($extension, 'php');
+            $this->viewFactory->addExtension('blade.' . $extension, 'blade');
+        });
     }
 
     private function updateMetaForCollectionItem($data)

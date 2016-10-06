@@ -50,7 +50,7 @@ class MarkdownHandler
             return new OutputFile(
                 $file->getRelativePath(),
                 $file->getFilenameWithoutExtension(),
-                $extension == 'php' | $extension == 'html' ? 'html' : $extension,
+                $extension == 'php' ? 'html' : $extension,
                 $this->render($file->bladeViewPath(), $viewData, $layout),
                 $viewData
             );

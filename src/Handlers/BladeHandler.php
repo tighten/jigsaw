@@ -47,7 +47,7 @@ class BladeHandler
             new OutputFile(
                 $path,
                 $filename,
-                $extension == 'php' | $extension == 'html' ? 'html' : $extension,
+                $extension == 'php' ? 'html' : $extension,
                 $renderedBladeWithFrontMatter ?: $this->render($fullPathName, $viewData),
                 $viewData
             )

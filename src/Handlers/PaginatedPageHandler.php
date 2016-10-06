@@ -49,7 +49,7 @@ class PaginatedPageHandler
             return new OutputFile(
                 $file->getRelativePath(),
                 $file->getFilenameWithoutExtension(),
-                $extension == 'php' | $extension == 'html' ? 'html' : $extension,
+                $extension == 'php' ? 'html' : $extension,
                 $this->render(
                     $bladeContent,
                     $viewData->put('pagination', $page)->put('path', $page['pages'][$currentPage])

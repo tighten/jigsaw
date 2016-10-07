@@ -8,9 +8,9 @@ class FrontMatterParser
     public $frontMatter = [];
     public $content;
 
-    public function __construct($parser = null)
+    public function __construct(Parser $parser)
     {
-        $this->parser = $parser ?: new Parser;
+        $this->parser = $parser;
     }
 
     public function parseMarkdown($content)

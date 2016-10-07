@@ -1,32 +1,37 @@
 #!/usr/bin/env php
 <?php
 
-use Illuminate\View\Factory;
-use TightenCo\Jigsaw\Jigsaw;
-use TightenCo\Jigsaw\DataLoader;
-use TightenCo\Jigsaw\Filesystem;
-use TightenCo\Jigsaw\SiteBuilder;
 use Illuminate\Container\Container;
-use Illuminate\View\FileViewFinder;
-use TightenCo\Jigsaw\FrontMatterParser;
-use TightenCo\Jigsaw\CollectionPaginator;
-use TightenCo\Jigsaw\Console\InitCommand;
-use TightenCo\Jigsaw\TemporaryFilesystem;
-use TightenCo\Jigsaw\CollectionDataLoader;
-use TightenCo\Jigsaw\Console\BuildCommand;
-use TightenCo\Jigsaw\Console\ServeCommand;
 use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\View\Compilers\BladeCompiler;
 use Illuminate\View\Engines\CompilerEngine;
 use Illuminate\View\Engines\EngineResolver;
-use TightenCo\Jigsaw\Handlers\BladeHandler;
-use Illuminate\View\Compilers\BladeCompiler;
+use Illuminate\View\Factory;
+use Illuminate\View\FileViewFinder;
+use Mni\FrontYAML\Bridge\Parsedown\ParsedownParser;
+use Mni\FrontYAML\Bridge\Symfony\SymfonyYAMLParser;
+use Mni\FrontYAML\Markdown\MarkdownParser;
+use Mni\FrontYAML\Parser;
+use Mni\FrontYAML\YAML\YAMLParser;
 use TightenCo\Jigsaw\BasicOutputPathResolver;
+use TightenCo\Jigsaw\CollectionDataLoader;
+use TightenCo\Jigsaw\CollectionHandlers\MarkdownCollectionItemHandler;
+use TightenCo\Jigsaw\CollectionPaginator;
+use TightenCo\Jigsaw\Console\BuildCommand;
+use TightenCo\Jigsaw\Console\InitCommand;
+use TightenCo\Jigsaw\Console\ServeCommand;
+use TightenCo\Jigsaw\DataLoader;
+use TightenCo\Jigsaw\Filesystem;
+use TightenCo\Jigsaw\FrontMatterParser;
+use TightenCo\Jigsaw\Handlers\BladeHandler;
+use TightenCo\Jigsaw\Handlers\CollectionItemHandler;
 use TightenCo\Jigsaw\Handlers\DefaultHandler;
 use TightenCo\Jigsaw\Handlers\IgnoredHandler;
 use TightenCo\Jigsaw\Handlers\MarkdownHandler;
 use TightenCo\Jigsaw\Handlers\PaginatedPageHandler;
-use TightenCo\Jigsaw\Handlers\CollectionItemHandler;
-use TightenCo\Jigsaw\CollectionHandlers\MarkdownCollectionItemHandler;
+use TightenCo\Jigsaw\Jigsaw;
+use TightenCo\Jigsaw\SiteBuilder;
+use TightenCo\Jigsaw\TemporaryFilesystem;
 
 if (file_exists(__DIR__.'/vendor/autoload.php')) {
     require __DIR__.'/vendor/autoload.php';
@@ -34,10 +39,14 @@ if (file_exists(__DIR__.'/vendor/autoload.php')) {
     require __DIR__.'/../../autoload.php';
 }
 
-// Config
 $cachePath = getcwd() . '/_tmp';
 $buildPath = getcwd() . '/build';
 $sourcePath = getcwd() . '/source';
+$bootstrapFile = getcwd() . '/bootstrap.php';
+
+if (file_exists($bootstrapFile)) {
+    require $bootstrapFile;
+}
 
 $container = new Container;
 
@@ -61,8 +70,14 @@ $container->bind(TemporaryFilesystem::class, function ($c) use ($cachePath) {
     return new TemporaryFilesystem($cachePath);
 });
 
+$container->bind(MarkdownParser::class, ParsedownParser::class);
+$container->bind(YAMLParser::class, SymfonyYAMLParser::class);
+$container->bind(Parser::class, function ($c) {
+    return new Parser($c[YAMLParser::class], $c[MarkdownParser::class]);
+});
+
 $container->bind(MarkdownHandler::class, function ($c) {
-    return new MarkdownHandler($c[TemporaryFilesystem::class], $c[Factory::class]);
+    return new MarkdownHandler($c[TemporaryFilesystem::class], $c[Factory::class], $c[Parser::class]);
 });
 
 if (! file_exists(getcwd() . '/collections.php')) {
@@ -100,7 +115,6 @@ $container->bind(PaginatedPageHandler::class, function ($c) {
 
 $container->bind(SiteBuilder::class, function ($c) use ($cachePath) {
     return new SiteBuilder(new Filesystem, $cachePath, $c['outputPathResolver'], [
-        // @todo: Write and stick a pagination handler at the top of this stack
         $c[PaginatedPageHandler::class],
         $c[CollectionItemHandler::class],
         new IgnoredHandler,

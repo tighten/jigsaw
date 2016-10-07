@@ -1,22 +1,23 @@
 <?php namespace TightenCo\Jigsaw\Console;
 
 use TightenCo\Jigsaw\Jigsaw;
+use TightenCo\Jigsaw\PrettyOutputPathResolver;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class BuildCommand extends Command
 {
-    private $sourcePath;
-    private $buildPath;
-    private $jigsaw;
+    private $app;
+    private $source;
+    private $dest;
 
-    public function __construct($jigsaw, $sourcePath, $buildPath)
+    public function __construct($app, $source, $dest)
     {
-        $this->sourcePath = $sourcePath;
-        $this->buildPath = $buildPath;
-        $this->jigsaw = $jigsaw;
+        $this->app = $app;
+        $this->source = $source;
+        $this->dest = $dest;
         parent::__construct();
     }
 
@@ -32,27 +33,14 @@ class BuildCommand extends Command
     {
         $env = $this->input->getArgument('env');
 
-        $config = $this->loadConfig();
-        $this->buildPath .= '_' . $env;
+        $this->dest .= '_' . $env;
 
-        if ($this->input->getOption('pretty') === 'false') {
-            $this->jigsaw->setOption('pretty', false);
+        if ($this->input->getOption('pretty') === 'true') {
+            $this->app->instance('outputPathResolver', new PrettyOutputPathResolver);
         }
 
-        $this->jigsaw->build($this->sourcePath, $this->buildPath, $config);
+        $this->app->make(Jigsaw::class)->build($this->source, $this->dest, $env);
+
         $this->info('Site built successfully!');
-    }
-
-    private function loadConfig()
-    {
-        $env = $this->input->getArgument('env');
-
-        if ($env !== null && file_exists(getcwd() . "/config.{$env}.php")) {
-            $environmentConfig = include getcwd() . "/config.{$env}.php";
-        } else {
-            $environmentConfig = [];
-        }
-
-        return array_merge(include getcwd() . '/config.php', $environmentConfig);
     }
 }

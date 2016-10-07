@@ -1,8 +1,8 @@
 <?php namespace TightenCo\Jigsaw\Handlers;
 
-use Illuminate\Contracts\View\Factory;
-use TightenCo\Jigsaw\ProcessedFile;
 use Mni\FrontYAML\Parser;
+use TightenCo\Jigsaw\OutputFile;
+use Illuminate\Contracts\View\Factory;
 
 class MarkdownHandler
 {
@@ -17,31 +17,35 @@ class MarkdownHandler
         $this->parser = $parser ?: new Parser;
     }
 
-    public function canHandle($file)
+    public function shouldHandle($file)
     {
         return in_array($file->getExtension(), ['markdown', 'md']);
     }
 
     public function handle($file, $data)
     {
-        $filename = $file->getBasename($this->getFileExtension($file)) . '.html';
-        return new ProcessedFile($filename, $file->getRelativePath(), $this->render($file, $data));
-    }
-
-    private function getFileExtension($file)
-    {
-        return '.' . $file->getExtension();
-    }
-
-    public function render($file, $data)
-    {
         $document = $this->parseFile($file);
 
-        $data = array_merge($data, $document->getYAML(), [
+        $data = array_merge($data, ['section' => 'markdown'], $document->getYAML());
+
+        return [
+            new OutputFile(
+                $file->getRelativePath(),
+                $file->getBasename('.'.$file->getExtension()),
+                'html',
+                $this->render($document, $data),
+                $data
+            )
+        ];
+    }
+
+    private function render($document, $data)
+    {
+        $data = array_merge($data, [
             '__jigsawMarkdownContent' => $document->getContent()
         ]);
 
-        $bladeContent = $this->compileToBlade($document->getYAML()['extends'], $document->getYAML()['section']);
+        $bladeContent = $this->compileToBlade($data['extends'], $data['section']);
 
         return $this->temporaryFilesystem->put($bladeContent, function ($path) use ($data) {
             return $this->viewFactory->file($path, $data)->render();

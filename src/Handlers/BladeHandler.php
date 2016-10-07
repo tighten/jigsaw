@@ -1,7 +1,7 @@
 <?php namespace TightenCo\Jigsaw\Handlers;
 
-use Illuminate\Contracts\View\Factory;
-use TightenCo\Jigsaw\ProcessedFile;
+use Illuminate\View\Factory;
+use TightenCo\Jigsaw\OutputFile;
 
 class BladeHandler
 {
@@ -12,18 +12,25 @@ class BladeHandler
         $this->viewFactory = $viewFactory;
     }
 
-    public function canHandle($file)
+    public function shouldHandle($file)
     {
         return ends_with($file->getFilename(), '.blade.php');
     }
 
     public function handle($file, $data)
     {
-        $filename = $file->getBasename('.blade.php') . '.html';
-        return new ProcessedFile($filename, $file->getRelativePath(), $this->render($file, $data));
+        return [
+            new OutputFile(
+                $file->getRelativePath(),
+                $file->getBasename('.blade.php'),
+                'html',
+                $this->render($file, $data),
+                $data
+            )
+        ];
     }
 
-    public function render($file, $data)
+    private function render($file, $data)
     {
         return $this->viewFactory->file($file->getRealPath(), $data)->render();
     }

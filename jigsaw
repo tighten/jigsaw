@@ -13,14 +13,24 @@ use Mni\FrontYAML\Bridge\Symfony\SymfonyYAMLParser;
 use Mni\FrontYAML\Markdown\MarkdownParser;
 use Mni\FrontYAML\Parser;
 use Mni\FrontYAML\YAML\YAMLParser;
+use TightenCo\Jigsaw\BasicOutputPathResolver;
+use TightenCo\Jigsaw\CollectionDataLoader;
+use TightenCo\Jigsaw\CollectionHandlers\MarkdownCollectionItemHandler;
+use TightenCo\Jigsaw\CollectionPaginator;
 use TightenCo\Jigsaw\Console\BuildCommand;
 use TightenCo\Jigsaw\Console\InitCommand;
 use TightenCo\Jigsaw\Console\ServeCommand;
+use TightenCo\Jigsaw\DataLoader;
 use TightenCo\Jigsaw\Filesystem;
+use TightenCo\Jigsaw\FrontMatterParser;
 use TightenCo\Jigsaw\Handlers\BladeHandler;
+use TightenCo\Jigsaw\Handlers\CollectionItemHandler;
 use TightenCo\Jigsaw\Handlers\DefaultHandler;
+use TightenCo\Jigsaw\Handlers\IgnoredHandler;
 use TightenCo\Jigsaw\Handlers\MarkdownHandler;
+use TightenCo\Jigsaw\Handlers\PaginatedPageHandler;
 use TightenCo\Jigsaw\Jigsaw;
+use TightenCo\Jigsaw\SiteBuilder;
 use TightenCo\Jigsaw\TemporaryFilesystem;
 
 if (file_exists(__DIR__.'/vendor/autoload.php')) {
@@ -29,11 +39,14 @@ if (file_exists(__DIR__.'/vendor/autoload.php')) {
     require __DIR__.'/../../autoload.php';
 }
 
-// Config
 $cachePath = getcwd() . '/_tmp';
 $buildPath = getcwd() . '/build';
 $sourcePath = getcwd() . '/source';
 $bootstrapFile = getcwd() . '/bootstrap.php';
+
+if (file_exists($bootstrapFile)) {
+    require $bootstrapFile;
+}
 
 $container = new Container;
 
@@ -53,28 +66,69 @@ $container->bind(BladeHandler::class, function ($c) {
     return new BladeHandler($c[Factory::class]);
 });
 
+$container->bind(TemporaryFilesystem::class, function ($c) use ($cachePath) {
+    return new TemporaryFilesystem($cachePath);
+});
+
 $container->bind(MarkdownParser::class, ParsedownParser::class);
 $container->bind(YAMLParser::class, SymfonyYAMLParser::class);
 $container->bind(Parser::class, function ($c) {
     return new Parser($c[YAMLParser::class], $c[MarkdownParser::class]);
 });
 
-$container->bind(MarkdownHandler::class, function ($c) use ($cachePath) {
-    $tempFilesystem = new TemporaryFilesystem($cachePath);
-    return new MarkdownHandler($tempFilesystem, $c[Factory::class], $c[Parser::class]);
+$container->bind(MarkdownHandler::class, function ($c) {
+    return new MarkdownHandler($c[TemporaryFilesystem::class], $c[Factory::class], $c[Parser::class]);
 });
 
-$jigsaw = new Jigsaw(new Filesystem, $cachePath);
-
-if (file_exists($bootstrapFile)) {
-    require $bootstrapFile;
+if (! file_exists(getcwd() . '/collections.php')) {
+    $collectionSettings = [];
+} else {
+    $collectionSettings = include getcwd() . '/collections.php';
 }
 
-$jigsaw->registerHandler($container[MarkdownHandler::class]);
-$jigsaw->registerHandler($container[BladeHandler::class]);
-$jigsaw->registerHandler($container[DefaultHandler::class]);
+$container->instance('cwd', getcwd());
+$container->instance('collectionSettings', $collectionSettings);
 
-$buildCommand = new BuildCommand($jigsaw, $sourcePath, $buildPath);
+$container->bind('outputPathResolver', function ($c ) {
+    return new BasicOutputPathResolver;
+});
+
+$container->bind(CollectionDataLoader::class, function ($c) {
+    return new CollectionDataLoader($c['collectionSettings'], new Filesystem, $c['outputPathResolver'], [new MarkdownCollectionItemHandler]);
+});
+
+$container->bind(DataLoader::class, function ($c) {
+    return new DataLoader($c['cwd'], $c[CollectionDataLoader::class]);
+});
+
+$container->bind(CollectionItemHandler::class, function ($c) {
+    return new CollectionItemHandler($c['collectionSettings'], $c['outputPathResolver'], [$c[MarkdownHandler::class]]);
+});
+
+$container->bind(CollectionPaginator::class, function ($c) {
+    return new CollectionPaginator($c['outputPathResolver']);
+});
+
+$container->bind(PaginatedPageHandler::class, function ($c) {
+    return new PaginatedPageHandler($c[CollectionPaginator::class], $c[Factory::class], $c[FrontMatterParser::class], $c[TemporaryFilesystem::class]);
+});
+
+$container->bind(SiteBuilder::class, function ($c) use ($cachePath) {
+    return new SiteBuilder(new Filesystem, $cachePath, $c['outputPathResolver'], [
+        $c[PaginatedPageHandler::class],
+        $c[CollectionItemHandler::class],
+        new IgnoredHandler,
+        $c[MarkdownHandler::class],
+        $c[BladeHandler::class],
+        $c[DefaultHandler::class],
+    ]);
+});
+
+$container->bind(Jigsaw::class, function ($c) {
+    return new Jigsaw($c[DataLoader::class], $c[SiteBuilder::class]);
+});
+
+$buildCommand = new BuildCommand($container, $sourcePath, $buildPath);
 
 $app = new Symfony\Component\Console\Application('Jigsaw', '0.6.4');
 $app->add($buildCommand);

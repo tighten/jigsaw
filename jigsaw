@@ -9,6 +9,11 @@ use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Engines\PhpEngine;
 use Illuminate\View\Factory;
 use Illuminate\View\FileViewFinder;
+use Mni\FrontYAML\Bridge\Parsedown\ParsedownParser;
+use Mni\FrontYAML\Bridge\Symfony\SymfonyYAMLParser;
+use Mni\FrontYAML\Markdown\MarkdownParser;
+use Mni\FrontYAML\Parser;
+use Mni\FrontYAML\YAML\YAMLParser;
 use TightenCo\Jigsaw\BasicOutputPathResolver;
 use TightenCo\Jigsaw\BladeMarkdownEngine;
 use TightenCo\Jigsaw\CollectionDataLoader;
@@ -40,12 +45,13 @@ if (file_exists(__DIR__.'/vendor/autoload.php')) {
     require __DIR__.'/../../autoload.php';
 }
 
-// Config
 $cachePath = getcwd() . '/_tmp';
 $buildPath = getcwd() . '/build';
 $sourcePath = getcwd() . '/source';
+$bootstrapFile = getcwd() . '/bootstrap.php';
 
 $container = new Container;
+
 $config = include getcwd() . '/config.php';
 
 if (! file_exists(getcwd() . '/collections.php')) {
@@ -66,11 +72,24 @@ $container->bind('outputPathResolver', function ($c) {
     return new BasicOutputPathResolver;
 });
 
+$container->bind(YAMLParser::class, SymfonyYAMLParser::class);
+
+$container->bind(MarkdownParser::class, ParsedownParser::class);
+
+$container->bind(Parser::class, function ($c) {
+    return new Parser($c[YAMLParser::class], $c[MarkdownParser::class]);
+});
+
+$container->bind(FrontMatterParser::class, function ($c) {
+    return new FrontMatterParser($c[Parser::class]);
+});
+
 $container->bind(Factory::class, function ($c) use ($cachePath, $sourcePath) {
     $resolver = new EngineResolver;
 
     $bladeCompiler = new BladeCompiler(new Filesystem, $cachePath);
     $compilerEngine = new CompilerEngine($bladeCompiler, new Filesystem);
+
 
     $resolver->register('blade', function () use ($compilerEngine) {
         return $compilerEngine;
@@ -149,6 +168,10 @@ $container->bind(SiteBuilder::class, function ($c) use ($cachePath) {
         $c[DefaultHandler::class],
     ]);
 });
+
+if (file_exists($bootstrapFile)) {
+    include $bootstrapFile;
+}
 
 $container->bind(Jigsaw::class, function ($c) {
     return new Jigsaw($c[DataLoader::class], $c[SiteBuilder::class]);

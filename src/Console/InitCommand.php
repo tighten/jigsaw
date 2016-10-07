@@ -1,7 +1,7 @@
 <?php namespace TightenCo\Jigsaw\Console;
 
 use Symfony\Component\Console\Input\InputArgument;
-use TightenCo\Jigsaw\Filesystem;
+use TightenCo\Jigsaw\File\Filesystem;
 
 class InitCommand extends Command
 {

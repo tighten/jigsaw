@@ -1,6 +1,9 @@
 <?php namespace TightenCo\Jigsaw;
 
 use Exception;
+use TightenCo\Jigsaw\Collection\Collection;
+use TightenCo\Jigsaw\Collection\CollectionItem;
+use TightenCo\Jigsaw\File\InputFile;
 use TightenCo\Jigsaw\IterableObject;
 use TightenCo\Jigsaw\IterableObjectWithDefault;
 

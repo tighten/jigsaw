@@ -1,7 +1,7 @@
 <?php namespace TightenCo\Jigsaw\Handlers;
 
-use TightenCo\Jigsaw\Filesystem;
-use TightenCo\Jigsaw\OutputFile;
+use TightenCo\Jigsaw\File\Filesystem;
+use TightenCo\Jigsaw\File\OutputFile;
 
 class DefaultHandler
 {

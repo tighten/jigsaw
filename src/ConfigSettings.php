@@ -1,7 +1,7 @@
 <?php namespace TightenCo\Jigsaw;
 
 use TightenCo\Jigsaw\IterableObject;
-use TightenCo\Jigsaw\HelperFunctionTrait;
+use TightenCo\Jigsaw\Traits\HelperFunctionTrait;
 
 class ConfigSettings extends IterableObject
 {

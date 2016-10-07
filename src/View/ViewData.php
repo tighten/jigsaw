@@ -1,6 +1,6 @@
-<?php namespace TightenCo\Jigsaw;
+<?php namespace TightenCo\Jigsaw\View;
 
-use TightenCo\Jigsaw\HelperFunctionTrait;
+use TightenCo\Jigsaw\Traits\HelperFunctionTrait;
 use TightenCo\Jigsaw\IterableObject;
 
 class ViewData extends IterableObject

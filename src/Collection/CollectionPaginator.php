@@ -1,4 +1,4 @@
-<?php namespace TightenCo\Jigsaw;
+<?php namespace TightenCo\Jigsaw\Collection;
 
 class CollectionPaginator
 {

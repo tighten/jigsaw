@@ -1,7 +1,7 @@
-<?php namespace TightenCo\Jigsaw;
+<?php namespace TightenCo\Jigsaw\Collection;
 
 use TightenCo\Jigsaw\IterableObject;
-use TightenCo\Jigsaw\HelperFunctionTrait;
+use TightenCo\Jigsaw\Traits\HelperFunctionTrait;
 
 class CollectionItem extends IterableObject
 {

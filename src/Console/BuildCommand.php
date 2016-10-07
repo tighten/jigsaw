@@ -3,7 +3,7 @@
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use TightenCo\Jigsaw\Jigsaw;
-use TightenCo\Jigsaw\PrettyOutputPathResolver;
+use TightenCo\Jigsaw\PathResolvers\PrettyOutputPathResolver;
 
 class BuildCommand extends Command
 {

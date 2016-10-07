@@ -1,6 +1,6 @@
-<?php namespace TightenCo\Jigsaw\CollectionHandlers;
+<?php namespace TightenCo\Jigsaw\CollectionItemHandlers;
 
-use TightenCo\Jigsaw\FrontMatterParser;
+use TightenCo\Jigsaw\Parsers\FrontMatterParser;
 
 class BladeCollectionItemHandler
 {

@@ -1,7 +1,7 @@
-<?php namespace TightenCo\Jigsaw;
+<?php namespace TightenCo\Jigsaw\Collection;
 
 use Illuminate\Support\Collection as BaseCollection;
-use TightenCo\Jigsaw\HelperFunctionTrait;
+use TightenCo\Jigsaw\Traits\HelperFunctionTrait;
 
 class Collection extends BaseCollection
 {

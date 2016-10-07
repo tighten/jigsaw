@@ -1,4 +1,4 @@
-<?php namespace TightenCo\Jigsaw;
+<?php namespace TightenCo\Jigsaw\View;
 
 use Exception;
 use Illuminate\View\Engines\EngineInterface;

@@ -1,10 +1,10 @@
 <?php namespace TightenCo\Jigsaw\Handlers;
 
-use TightenCo\Jigsaw\FrontMatterParser;
+use TightenCo\Jigsaw\File\OutputFile;
 use TightenCo\Jigsaw\IterableObject;
-use TightenCo\Jigsaw\OutputFile;
-use TightenCo\Jigsaw\ViewData;
-use TightenCo\Jigsaw\ViewRenderer;
+use TightenCo\Jigsaw\Parsers\FrontMatterParser;
+use TightenCo\Jigsaw\View\ViewData;
+use TightenCo\Jigsaw\View\ViewRenderer;
 
 class PaginatedPageHandler
 {

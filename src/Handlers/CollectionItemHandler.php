@@ -1,23 +1,22 @@
 <?php namespace TightenCo\Jigsaw\Handlers;
 
-use TightenCo\Jigsaw\OutputFile;
+use TightenCo\Jigsaw\File\OutputFile;
+use TightenCo\Jigsaw\View\ViewData;
 
 class CollectionItemHandler
 {
     private $collectionSettings;
-    private $outputPathResolver;
     private $handlers;
 
-    public function __construct($collectionSettings, $outputPathResolver, $handlers)
+    public function __construct($collectionSettings, $handlers)
     {
-        $this->collectionSettings = collect($collectionSettings);
-        $this->outputPathResolver = $outputPathResolver;
+        $this->collectionSettings = $collectionSettings;
         $this->handlers = collect($handlers);
     }
 
     public function shouldHandle($file)
     {
-        return $this->isInCollectionDirectory($file);
+        return $this->isInCollectionDirectory($file) && ! starts_with($file->getFilename(), '_');
     }
 
     private function isInCollectionDirectory($file)
@@ -38,17 +37,22 @@ class CollectionItemHandler
 
     public function handle($file, $data)
     {
-        $handler = $this->handlers->first(function ($_, $handler) use ($file) {
+        $handler = $this->handlers->first(function ($handler) use ($file) {
             return $handler->shouldHandle($file);
         });
+        $viewData = ViewData::withCollectionItem($data, $this->getCollectionName($file), $file->getFilenameWithoutExtension());
+        $handledFiles = $handler->handleCollectionItem($file, $viewData);
 
-        $handledFiles = $handler->handle($file, $data);
-        $settings = $this->collectionSettings[$this->getCollectionName($file)];
+        return $handledFiles->map(function ($file, $templateToExtend) {
+            $path = $templateToExtend ? $file->data()->path->get($templateToExtend) : (string) $file->data()->path;
 
-        return collect($handledFiles)->map(function ($file) use ($settings) {
-            $permalink = $settings['permalink']->__invoke($file->data());
-
-            return new OutputFile(dirname($permalink), basename($permalink), $file->extension(), $file->contents(), $file->data());
-        })->all();
+            return new OutputFile(
+                dirname($path),
+                basename($path, '.' . $file->extension()),
+                $file->extension(),
+                $file->contents(),
+                $file->data()
+            );
+        })->values();
     }
 }

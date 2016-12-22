@@ -1,5 +1,8 @@
 <?php namespace TightenCo\Jigsaw;
 
+use TightenCo\Jigsaw\File\Filesystem;
+use TightenCo\Jigsaw\File\InputFile;
+
 class SiteBuilder
 {
     private $files;
@@ -63,7 +66,9 @@ class SiteBuilder
 
     private function handle($file, $data)
     {
-        return $this->getHandler($file)->handle($file, $data);
+        $meta = $this->getMetaData($file, $data);
+
+        return $this->getHandler($file)->handle($file, $this->addMetaToPageData($meta, $data));
     }
 
     private function buildFile($file, $dest)
@@ -75,9 +80,24 @@ class SiteBuilder
 
     private function getHandler($file)
     {
-        return collect($this->handlers)->first(function ($_, $handler) use ($file) {
+        return collect($this->handlers)->first(function ($handler) use ($file) {
             return $handler->shouldHandle($file);
         });
+    }
+
+    private function getMetaData($file, $data)
+    {
+        $meta['filename'] = $file->getFilenameWithoutExtension();
+        $meta['extension'] = $file->getFullExtension();
+        $meta['path'] = rtrim($this->outputPathResolver->link($file->getRelativePath(), $meta['filename'], 'html'), '/');
+        $meta['url'] = rtrim(array_get($data, 'config.baseUrl'), '/') . '/' . trim($meta['path'], '/');
+
+        return $meta;
+    }
+
+    private function addMetaToPageData($meta, $data)
+    {
+        return $data->put('config', $data->get('config')->merge($meta))->merge($meta);
     }
 
     private function getOutputDirectory($file)

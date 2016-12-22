@@ -1,11 +1,9 @@
 <?php namespace TightenCo\Jigsaw\Console;
 
-use TightenCo\Jigsaw\Jigsaw;
-use TightenCo\Jigsaw\PrettyOutputPathResolver;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use TightenCo\Jigsaw\Jigsaw;
+use TightenCo\Jigsaw\PathResolvers\PrettyOutputPathResolver;
 
 class BuildCommand extends Command
 {

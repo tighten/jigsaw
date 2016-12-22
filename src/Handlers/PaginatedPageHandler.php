@@ -1,23 +1,24 @@
 <?php namespace TightenCo\Jigsaw\Handlers;
 
-use Illuminate\View\Factory;
-use TightenCo\Jigsaw\OutputFile;
-use TightenCo\Jigsaw\FrontMatterParser;
-use TightenCo\Jigsaw\CollectionPaginator;
+use TightenCo\Jigsaw\File\OutputFile;
+use TightenCo\Jigsaw\IterableObject;
+use TightenCo\Jigsaw\Parsers\FrontMatterParser;
+use TightenCo\Jigsaw\View\ViewData;
+use TightenCo\Jigsaw\View\ViewRenderer;
 
 class PaginatedPageHandler
 {
     private $paginator;
-    private $viewFactory;
     private $parser;
     private $temporaryFilesystem;
+    private $view;
 
-    public function __construct($paginator, Factory $viewFactory, FrontMatterParser $parser, $temporaryFilesystem)
+    public function __construct($paginator, FrontMatterParser $parser, $temporaryFilesystem, ViewRenderer $viewRenderer)
     {
         $this->paginator = $paginator;
-        $this->viewFactory = $viewFactory;
         $this->parser = $parser;
         $this->temporaryFilesystem = $temporaryFilesystem;
+        $this->view = $viewRenderer;
     }
 
     public function shouldHandle($file)
@@ -25,36 +26,53 @@ class PaginatedPageHandler
         if (! ends_with($file->getFilename(), '.blade.php')) {
             return false;
         }
+        $content = $this->parser->parse($file->getContents());
 
-        list($frontMatter, $content) = $this->parser->parse($file->getContents());
-        return isset($frontMatter['pagination']);
+        return isset($content->frontMatter['pagination']);
     }
 
     public function handle($file, $data)
     {
-        list($frontMatter, $content) = $this->parser->parse($file->getContents());
+        $fileContent = $file->getContents();
+        $bladeContent = $this->parser->getBladeContent($fileContent);
+        $viewData = $this->addFrontMatterToViewData($fileContent, new ViewData($data));
 
-        $items = $data['site'][$frontMatter['pagination']['for']];
-        $perPage = array_get($frontMatter, 'pagination.perPage', 10);
+        $collection = $viewData->pagination->collection;
+        $perPage = $viewData->pagination->perPage ?: 10;
+        $pages = $this->paginator->paginate($file, $viewData->get($collection), $perPage);
 
-        $pages = $this->paginator->paginate($file, $items, $perPage);
+        return $pages->map(function ($page) use ($file, $viewData, $bladeContent) {
+            $page = new IterableObject($page);
+            $extension = strtolower($file->getExtension());
+            $currentPage = $page['currentPage'];
 
-        return $pages->map(function ($page) use ($file, $data, $content) {
             return new OutputFile(
                 $file->getRelativePath(),
-                $file->getBasename('.blade.php'),
-                'html',
-                $this->render($content, array_merge($data, ['pagination' => $page])),
-                $data,
-                $page['page']
+                $file->getFilenameWithoutExtension(),
+                $extension == 'php' ? 'html' : $extension,
+                $this->render(
+                    $bladeContent,
+                    $viewData->put('pagination', $page)->put('path', $page['pages'][$currentPage])
+                ),
+                $viewData,
+                $currentPage
             );
         })->all();
+    }
+
+    private function addFrontMatterToViewData($fileContent, $viewData)
+    {
+        collect($this->parser->getFrontMatter($fileContent))->each(function($value, $key) use ($viewData) {
+            $viewData = $viewData->put($key, $value);
+        });
+
+        return $viewData;
     }
 
     private function render($bladeContent, $data)
     {
         return $this->temporaryFilesystem->put($bladeContent, function ($path) use ($data) {
-            return $this->viewFactory->file($path, $data)->render();
+            return $this->view->render($path, $data);
         }, '.blade.php');
     }
 }

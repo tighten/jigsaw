@@ -1,20 +1,21 @@
 <?php namespace TightenCo\Jigsaw\Handlers;
 
-use Mni\FrontYAML\Parser;
-use TightenCo\Jigsaw\OutputFile;
-use Illuminate\Contracts\View\Factory;
+use TightenCo\Jigsaw\File\OutputFile;
+use TightenCo\Jigsaw\Parsers\FrontMatterParser;
+use TightenCo\Jigsaw\View\ViewData;
+use TightenCo\Jigsaw\View\ViewRenderer;
 
 class MarkdownHandler
 {
     private $temporaryFilesystem;
-    private $viewFactory;
     private $parser;
+    private $view;
 
-    public function __construct($temporaryFilesystem, Factory $viewFactory, $parser = null)
+    public function __construct($temporaryFilesystem, FrontMatterParser $parser, ViewRenderer $viewRenderer)
     {
         $this->temporaryFilesystem = $temporaryFilesystem;
-        $this->viewFactory = $viewFactory;
-        $this->parser = $parser ?: new Parser;
+        $this->parser = $parser;
+        $this->view = $viewRenderer;
     }
 
     public function shouldHandle($file)
@@ -22,47 +23,58 @@ class MarkdownHandler
         return in_array($file->getExtension(), ['markdown', 'md']);
     }
 
-    public function handle($file, $data)
+    public function handleCollectionItem($file, ViewData $viewData)
     {
-        $document = $this->parseFile($file);
-
-        $data = array_merge($data, ['section' => 'markdown'], $document->getYAML());
-
-        return [
-            new OutputFile(
-                $file->getRelativePath(),
-                $file->getBasename('.'.$file->getExtension()),
-                'html',
-                $this->render($document, $data),
-                $data
-            )
-        ];
+        return $this->buildOutput($file, $viewData);
     }
 
-    private function render($document, $data)
+    public function handle($file, $data)
     {
-        $data = array_merge($data, [
-            '__jigsawMarkdownContent' => $document->getContent()
-        ]);
+        $localVariables = $this->parseFrontMatter($file);
 
-        $bladeContent = $this->compileToBlade($data['extends'], $data['section']);
+        return $this->buildOutput(
+            $file, new ViewData($this->addLocalVariablesToPageData($localVariables, $data))
+        );
+    }
 
-        return $this->temporaryFilesystem->put($bladeContent, function ($path) use ($data) {
-            return $this->viewFactory->file($path, $data)->render();
+    private function addLocalVariablesToPageData($localVariables, $data)
+    {
+        return $data->put('section', 'content')->put('config', $data->get('config')->merge($localVariables))->merge($localVariables);
+    }
+
+    public function buildOutput($file, ViewData $viewData)
+    {
+        return collect($viewData->extends)->map(function($layout) use ($file, $viewData) {
+            $extension = $this->view->getExtension($layout);
+
+            return new OutputFile(
+                $file->getRelativePath(),
+                $file->getFilenameWithoutExtension(),
+                $extension == 'php' ? 'html' : $extension,
+                $this->render($file->bladeViewPath(), $viewData, $layout),
+                $viewData
+            );
+        });
+    }
+
+    private function render($includePath, $viewData, $layout)
+    {
+        return $this->temporaryFilesystem->put($this->compileToBlade($includePath, $viewData, $layout), function ($path) use ($viewData) {
+            return $this->view->render($path, $viewData);
         }, '.blade.php');
     }
 
-    private function parseFile($file)
+    private function parseFrontMatter($file)
     {
-        return $this->parser->parse($file->getContents());
+        return $this->parser->getFrontMatter($file->getContents());
     }
 
-    private function compileToBlade($extends, $section)
+    private function compileToBlade($includePath, $data, $layout)
     {
         return collect([
-            sprintf("@extends('%s')", $extends),
-            sprintf("@section('%s')", $section),
-            '{!! $__jigsawMarkdownContent !!}',
+            sprintf("@extends('%s')", $layout),
+            sprintf("@section('%s')", $data->section),
+            sprintf("@include('%s')", $includePath),
             '@endsection',
         ])->implode("\n");
     }

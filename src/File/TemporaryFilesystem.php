@@ -1,4 +1,4 @@
-<?php namespace TightenCo\Jigsaw;
+<?php namespace TightenCo\Jigsaw\File;
 
 use Illuminate\Support\Str;
 
@@ -15,10 +15,22 @@ class TemporaryFilesystem
 
     public function put($contents, $callback, $extension = '')
     {
-        $path = $this->tempPath . '/' . Str::quickRandom(32) . $extension;
+        $path = $this->buildTempPath($extension);
         $this->filesystem->put($path, $contents);
+
+        return $this->cleanup($path, $callback);
+    }
+
+    private function buildTempPath($extension)
+    {
+        return $this->tempPath . '/' . Str::quickRandom(32) . $extension;
+    }
+
+    private function cleanup($path, $callback)
+    {
         $result = $callback($path);
         $this->filesystem->delete($path);
+
         return $result;
     }
 }

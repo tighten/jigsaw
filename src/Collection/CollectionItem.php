@@ -16,6 +16,11 @@ class CollectionItem extends IterableObject
 
         return $item;
     }
+    
+    public function getCollection()
+    {
+        return $this->collection;
+    }
 
     public function getHelper($name)
     {

@@ -24,7 +24,8 @@ class BuildCommand extends Command
         $this->setName('build')
             ->setDescription('Build your site.')
             ->addArgument('env', InputArgument::OPTIONAL, "What environment should we use to build?", 'local')
-            ->addOption('pretty', null, InputOption::VALUE_REQUIRED, "Should the site use pretty URLs?", 'true');
+            ->addOption('pretty', null, InputOption::VALUE_REQUIRED, "Should the site use pretty URLs?", 'true')
+            ->addOption('dest', null, InputOption::VALUE_REQUIRED, "What custom folder should the site be built into?");
     }
 
     protected function fire()
@@ -35,6 +36,10 @@ class BuildCommand extends Command
 
         if ($this->input->getOption('pretty') === 'true') {
             $this->app->instance('outputPathResolver', new PrettyOutputPathResolver);
+        }
+        
+        if ( $this->input->getOption('dest') ){
+            $this->dest = $this->input->getOption('dest');
         }
 
         $this->app->make(Jigsaw::class)->build($this->source, $this->dest, $env);

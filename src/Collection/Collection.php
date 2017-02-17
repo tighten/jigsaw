@@ -1,13 +1,10 @@
 <?php namespace TightenCo\Jigsaw\Collection;
 
 use Illuminate\Support\Collection as BaseCollection;
-use TightenCo\Jigsaw\Traits\HelperFunctionTrait;
 
 class Collection extends BaseCollection
 {
-    use HelperFunctionTrait;
-
-    private $settings;
+    public $settings;
     public $name;
 
     public static function withSettings($settings, $name)
@@ -22,7 +19,7 @@ class Collection extends BaseCollection
     public function loadItems($items)
     {
         $sortedItems = $this->defaultSort($items)->keyBy(function($item) {
-            return $item->filename;
+            return $item->getFilename();
         });
 
         return $this->updateItems($this->addAdjacentItems($sortedItems));
@@ -35,33 +32,18 @@ class Collection extends BaseCollection
         return $this;
     }
 
-    public function addAdjacentItems($items)
+    private function addAdjacentItems($items)
     {
         $count = $items->count();
         $adjacentItems = $items->map(function($item) {
-            return $item->filename;
+            return $item->getFilename();
         });
         $previousItems = $adjacentItems->prepend(null)->take($count);
         $nextItems = $adjacentItems->push(null)->take(-$count);
 
-        return $items->map(function($item) use ($previousItems, $nextItems) {
-            return $item->put('_previousItem', $previousItems->shift())->put('_nextItem', $nextItems->shift());
+        return $items->each(function ($item) use ($previousItems, $nextItems) {
+            $item->_meta->put('previousItem', $previousItems->shift())->put('nextItem', $nextItems->shift());
         });
-    }
-
-    public function getDefaultVariables()
-    {
-        return array_get($this->settings, 'variables', []);
-    }
-
-    public function getPermalink()
-    {
-        return array_get($this->settings, 'path');
-    }
-
-    public function getHelper($functionName)
-    {
-        return array_get($this->settings, 'helpers.' . $functionName, []);
     }
 
     private function defaultSort($items)
@@ -91,14 +73,9 @@ class Collection extends BaseCollection
         $sortKeyFunction = explode('(', str_replace(' ', '', $sortKey), 2);
 
         if (isset($sortKeyFunction[1])) {
-            $parameterss = explode(',', trim($sortKeyFunction[1], ')'));
+            $parameters = explode(',', trim($sortKeyFunction[1], ')'));
 
-            return [$sortKeyFunction[0], $parameterss];
+            return [$sortKeyFunction[0], $parameters];
         }
-    }
-
-    private function missingHelperError($function_name)
-    {
-        return 'No helper function named "' . $function_name. '" for the collection "' . $this->name . '" was found in the file "collections.php".';
     }
 }

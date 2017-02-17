@@ -9,25 +9,24 @@ use TightenCo\Jigsaw\IterableObjectWithDefault;
 
 class CollectionDataLoader
 {
-    private $collectionSettings;
     private $filesystem;
     private $pathResolver;
     private $handlers;
     private $source;
-    private $configSettings;
+    private $collectionSettings;
 
-    public function __construct($collectionSettings, $filesystem, $pathResolver, $handlers = [])
+    public function __construct($filesystem, $pathResolver, $handlers = [])
     {
-        $this->collectionSettings = $collectionSettings;
         $this->filesystem = $filesystem;
         $this->pathResolver = $pathResolver;
         $this->handlers = collect($handlers);
     }
 
-    public function load($source, $configSettings)
+    public function load($source, $siteData)
     {
         $this->source = $source;
-        $this->configSettings = $configSettings;
+        $this->pageSettings = $siteData->page;
+        $this->collectionSettings = collect($siteData->collections);
 
         return $this->collectionSettings->map(function ($collectionSettings, $collectionName) {
             $collection = Collection::withSettings($collectionSettings, $collectionName);
@@ -53,14 +52,20 @@ class CollectionDataLoader
 
     private function buildCollectionItem($file, $collection)
     {
-        $data = array_merge($collection->getDefaultVariables(), $this->getHandler($file)->getItemVariables($file));
+        $data = $this->pageSettings
+            ->merge(['section' => 'content'])
+            ->merge($collection->settings)
+            ->merge($this->getHandler($file)->getItemVariables($file));
+        $data->put('_meta', new IterableObject($this->getMetaData($file, $collection, $data)));
+        $path = $this->getPath($data);
+        $data->_meta->put('path', $path)->put('url', $this->buildUrls($path));
 
-        return CollectionItem::build($collection, $this->addMeta($data, $collection, $file));
+        return CollectionItem::build($collection, $data);
     }
 
     private function addCollectionItemContent($item)
     {
-        $file = collect($this->filesystem->getFile($item->_source, $item->filename, $item->extension))->first();
+        $file = collect($this->filesystem->getFile($item->getSource(), $item->getFilename(), $item->getExtension()))->first();
 
         if ($file) {
             $item->setContent($this->getHandler($file)->getItemContent($file));
@@ -82,30 +87,30 @@ class CollectionDataLoader
         return $handler;
     }
 
-    private function addMeta($data, $collection, $file)
+    private function getMetaData($file, $collection, $data)
     {
-        $data['_source'] = $file->getPath();
-        $data['collection'] = $collection->name;
-        $data['filename'] = $file->getFilenameWithoutExtension();
-        $data['extension'] = $file->getFullExtension();
-        $data['path'] = $this->getPermalink($collection, $data);
-        $data['url'] = $this->buildUrls($data['path']);
+        $filename = $file->getFilenameWithoutExtension();
+        $baseUrl = $data->baseUrl;
+        $extension = $file->getFullExtension();
+        $collectionName = $collection->name;
+        $collection = $collectionName;
+        $source = $file->getPath();
 
-        return $data;
+        return compact('filename', 'baseUrl', 'extension', 'collection', 'collectionName', 'source');
     }
 
     private function buildUrls($paths)
     {
         $urls = collect($paths)->map(function($path) {
-            return rtrim(array_get($this->configSettings, 'baseUrl'), '/') . $path;
+            return rtrim($this->pageSettings->get('baseUrl', '/')) . $path;
         });
 
         return $urls->count() ? new IterableObjectWithDefault($urls) : null;
     }
 
-    private function getPermalink($collection, $data)
+    private function getPath($data)
     {
-        $links = $this->pathResolver->link($collection->getPermalink(), new IterableObject($data));
+        $links = $this->pathResolver->link($data->path, $data);
 
         return $links->count() ? new IterableObjectWithDefault($links) : null;
     }

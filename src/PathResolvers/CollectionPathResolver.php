@@ -52,12 +52,12 @@ class CollectionPathResolver
             return $link ? $this->resolve($link . $templateKeySuffix . $extension) : '';
         }
 
-        return $this->getDefaultPermalink($data, $templateKey) . $templateKeySuffix . $extension;
+        return $this->getDefaultPath($data, $templateKey) . $templateKeySuffix . $extension;
     }
 
-    private function getDefaultPermalink($data)
+    private function getDefaultPath($data)
     {
-        return str_slug($data['collection']) . '/' . str_slug($data['filename']);
+        return str_slug($data->getCollectionName()) . '/' . str_slug($data->getFilename());
     }
 
     private function parseShorthand($path, $data)
@@ -65,7 +65,7 @@ class CollectionPathResolver
         preg_match_all('/\{(.*?)\}/', $path, $bracketedParameters);
 
         if (count($bracketedParameters[0]) == 0) {
-            return $path . '/' . str_slug($data['filename']);
+            return $path . '/' . str_slug($data->getFilename());
         }
 
         $bracketedParametersReplaced =
@@ -86,11 +86,13 @@ class CollectionPathResolver
             $param = ltrim($param, $param[0]);
         }
 
-        if (! isset($data[$param])) {
+        $value = array_get($data, $param, $data->_meta->get($param));
+
+        if (! $value) {
             return '';
         }
 
-        $value = $dateFormat ? $this->formatDate($data[$param], $dateFormat) : $data[$param];
+        $value = $dateFormat ? $this->formatDate($value, $dateFormat) : $value;
 
         return $slugSeparator ? str_slug($value, $slugSeparator) : $value;
     }

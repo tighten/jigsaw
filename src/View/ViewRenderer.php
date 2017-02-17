@@ -52,6 +52,7 @@ class ViewRenderer
             $data->put('path', $data->item->path);
             $data->put('url', $data->item->url);
         }
+
         return $data;
     }
 }

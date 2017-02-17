@@ -23,7 +23,6 @@ class BladeCollectionItemHandler
         $extendsFromBladeContent = $this->parser->getExtendsFromBladeContent($content);
 
         return array_merge(
-            ['section' => 'content'],
             $frontMatter->all(),
             ['extends' => $extendsFromBladeContent ?: $frontMatter->get('extends')]
         );

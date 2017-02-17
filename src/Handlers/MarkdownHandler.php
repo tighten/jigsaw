@@ -1,8 +1,8 @@
 <?php namespace TightenCo\Jigsaw\Handlers;
 
 use TightenCo\Jigsaw\File\OutputFile;
+use TightenCo\Jigsaw\PageData;
 use TightenCo\Jigsaw\Parsers\FrontMatterParser;
-use TightenCo\Jigsaw\View\ViewData;
 use TightenCo\Jigsaw\View\ViewRenderer;
 
 class MarkdownHandler
@@ -23,44 +23,42 @@ class MarkdownHandler
         return in_array($file->getExtension(), ['markdown', 'md']);
     }
 
-    public function handleCollectionItem($file, ViewData $viewData)
+    public function handleCollectionItem($file, PageData $pageData)
     {
-        return $this->buildOutput($file, $viewData);
+        return $this->buildOutput($file, $pageData);
     }
 
-    public function handle($file, $data)
+    public function handle($file, $pageData)
     {
-        $localVariables = $this->parseFrontMatter($file);
+        $pageData->page->addVariables($this->getPageVariables($file));
 
-        return $this->buildOutput(
-            $file, new ViewData($this->addLocalVariablesToPageData($localVariables, $data))
-        );
+        return $this->buildOutput($file, $pageData);
     }
 
-    private function addLocalVariablesToPageData($localVariables, $data)
+    private function getPageVariables($file)
     {
-        return $data->put('section', 'content')->put('config', $data->get('config')->merge($localVariables))->merge($localVariables);
+        return array_merge(['section' => 'content'], $this->parseFrontMatter($file));
     }
 
-    public function buildOutput($file, ViewData $viewData)
+    public function buildOutput($file, PageData $pageData)
     {
-        return collect($viewData->extends)->map(function($layout) use ($file, $viewData) {
+        return collect($pageData->page->extends)->map(function ($layout) use ($file, $pageData) {
             $extension = $this->view->getExtension($layout);
 
             return new OutputFile(
                 $file->getRelativePath(),
                 $file->getFilenameWithoutExtension(),
                 $extension == 'php' ? 'html' : $extension,
-                $this->render($file->bladeViewPath(), $viewData, $layout),
-                $viewData
+                $this->render($file->bladeViewPath(), $pageData, $layout),
+                $pageData
             );
         });
     }
 
-    private function render($includePath, $viewData, $layout)
+    private function render($includePath, $pageData, $layout)
     {
-        return $this->temporaryFilesystem->put($this->compileToBlade($includePath, $viewData, $layout), function ($path) use ($viewData) {
-            return $this->view->render($path, $viewData);
+        return $this->temporaryFilesystem->put($this->compileToBlade($includePath, $pageData, $layout), function ($path) use ($pageData) {
+            return $this->view->render($path, $pageData);
         }, '.blade.php');
     }
 
@@ -73,7 +71,7 @@ class MarkdownHandler
     {
         return collect([
             sprintf("@extends('%s')", $layout),
-            sprintf("@section('%s')", $data->section),
+            sprintf("@section('%s')", $data->page->section),
             sprintf("@include('%s')", $includePath),
             '@endsection',
         ])->implode("\n");

@@ -49,24 +49,12 @@ $cachePath = getcwd() . '/_tmp';
 $buildPath = getcwd() . '/build';
 $sourcePath = getcwd() . '/source';
 $bootstrapFile = getcwd() . '/bootstrap.php';
+$configFile = include getcwd() . '/config.php';
 
 $container = new Container;
 
-$config = include getcwd() . '/config.php';
-
-if (! file_exists(getcwd() . '/collections.php')) {
-    $collectionSettings = [];
-} else {
-    $collectionSettings = include getcwd() . '/collections.php';
-}
-
 $container->instance('cwd', getcwd());
-$container->instance('config', $config);
-$container->instance('collectionSettings',
-    collect($collectionSettings)->flatMap(function ($value, $key) {
-        return is_array($value) ? [$key => $value] : [$value => []];
-    })
-);
+$container->instance('config', $configFile);
 
 $container->bind('outputPathResolver', function ($c) {
     return new BasicOutputPathResolver;
@@ -133,7 +121,7 @@ $container->bind(CollectionPathResolver::class, function ($c ) {
 });
 
 $container->bind(CollectionDataLoader::class, function ($c) {
-    return new CollectionDataLoader($c['collectionSettings'], new Filesystem, $c[CollectionPathResolver::class], [
+    return new CollectionDataLoader(new Filesystem, $c[CollectionPathResolver::class], [
         $c[MarkdownCollectionItemHandler::class],
         $c[BladeCollectionItemHandler::class],
     ]);
@@ -144,7 +132,7 @@ $container->bind(DataLoader::class, function ($c) {
 });
 
 $container->bind(CollectionItemHandler::class, function ($c) {
-    return new CollectionItemHandler($c['collectionSettings'], [
+    return new CollectionItemHandler($c['config'], [
         $c[MarkdownHandler::class],
         $c[BladeHandler::class],
     ]);

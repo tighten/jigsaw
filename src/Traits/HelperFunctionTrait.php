@@ -6,15 +6,23 @@ trait HelperFunctionTrait
 {
     public function __call($method, $args)
     {
-        $helper = method_exists($this, 'getHelper') ? $this->getHelper($method) : null;
+        $helper = $this->get($method);
 
-        return $helper ? $helper->__invoke($this, ...$args) : function() use ($method) {
+        if (! $helper && starts_with($method, 'get')) {
+            return $this->_meta->get(camel_case(substr($method, 3)), function () use ($method) {
+                throw new Exception($this->missingHelperError($method));
+            });
+        }
+
+        if (is_callable($helper)) {
+            return $helper->__invoke($this, ...$args);
+        } else {
             throw new Exception($this->missingHelperError($method));
-        };
+        }
     }
 
-    public function missingHelperError($helperName)
+    public function missingHelperError($method)
     {
-        return 'No helper function named "' . $helperName. '" was found.';
+        return 'No function named "' . $method. '" was found.';
     }
 }

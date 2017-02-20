@@ -98,11 +98,11 @@ class SiteBuilder
 
     private function getOutputDirectory($file)
     {
-        return $this->outputPathResolver->directory($file->path(), $file->name(), $file->extension(), $file->page());
+        return urldecode($this->outputPathResolver->directory($file->path(), $file->name(), $file->extension(), $file->page()));
     }
 
     private function getOutputPath($file)
     {
-        return $this->outputPathResolver->path($file->path(), $file->name(), $file->extension(), $file->page());
+        return urldecode($this->outputPathResolver->path($file->path(), $file->name(), $file->extension(), $file->page()));
     }
 }

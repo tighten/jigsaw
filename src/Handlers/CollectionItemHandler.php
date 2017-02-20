@@ -43,8 +43,9 @@ class CollectionItemHandler
         $pageData->setPageVariableToCollectionItem($this->getCollectionName($file), $file->getFilenameWithoutExtension());
 
         return $handler->handleCollectionItem($file, $pageData)
-            ->map(function ($outputFile) {
-                $path = (string) $outputFile->data()->page->getPath();
+            ->map(function ($outputFile, $templateToExtend) {
+                $path_array = $outputFile->data()->page->getPath();
+                $path = $templateToExtend ? $path_array->get($templateToExtend) : (string) $path_array;
 
                 return new OutputFile(
                     dirname($path),

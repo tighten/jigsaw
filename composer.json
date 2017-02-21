@@ -18,9 +18,9 @@
         ]
     },
     "require": {
-        "illuminate/container": "^5.3",
-        "illuminate/support": "^5.3",
-        "illuminate/view": "^5.3",
+        "illuminate/container": "^5.4",
+        "illuminate/support": "^5.4",
+        "illuminate/view": "^5.4",
         "symfony/console": "^2.5|^3.0",
         "mockery/mockery": "^0.9.4",
         "mnapoli/front-yaml": "^1.5",

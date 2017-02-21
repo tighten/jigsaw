@@ -6,6 +6,7 @@ use TightenCo\Jigsaw\Collection\CollectionItem;
 use TightenCo\Jigsaw\File\InputFile;
 use TightenCo\Jigsaw\IterableObject;
 use TightenCo\Jigsaw\IterableObjectWithDefault;
+use TightenCo\Jigsaw\PageVariable;
 
 class CollectionDataLoader
 {
@@ -110,7 +111,7 @@ class CollectionDataLoader
 
     private function getPath($data)
     {
-        $links = $this->pathResolver->link($data->path, $data);
+        $links = $this->pathResolver->link($data->path, new PageVariable($data));
 
         return $links->count() ? new IterableObjectWithDefault($links) : null;
     }

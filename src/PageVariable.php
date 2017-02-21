@@ -9,7 +9,7 @@ class PageVariable extends IterableObject
 
     public function addVariables($variables)
     {
-        $this->items = collect($this->items)->merge($variables)->all();
+        $this->items = collect($this->items)->merge($this->makeIterable($variables))->all();
     }
 
     protected function missingHelperError($functionName)

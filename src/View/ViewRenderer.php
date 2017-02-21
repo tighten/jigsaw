@@ -29,8 +29,6 @@ class ViewRenderer
 
     public function render($path, $data)
     {
-        $data = $this->updateMetaForCollectionItem($data);
-
         return $this->viewFactory->file($path, $data->all())->render();
     }
 
@@ -44,15 +42,5 @@ class ViewRenderer
             $this->viewFactory->addExtension($extension, 'php');
             $this->viewFactory->addExtension('blade.' . $extension, 'blade');
         });
-    }
-
-    private function updateMetaForCollectionItem($data)
-    {
-        if ($data->item) {
-            $data->put('path', $data->item->path);
-            $data->put('url', $data->item->url);
-        }
-
-        return $data;
     }
 }

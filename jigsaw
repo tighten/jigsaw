@@ -148,9 +148,9 @@ $container->bind(PaginatedPageHandler::class, function ($c) {
 
 $container->bind(SiteBuilder::class, function ($c) use ($cachePath) {
     return new SiteBuilder(new Filesystem, $cachePath, $c['outputPathResolver'], [
-        $c[PaginatedPageHandler::class],
         $c[CollectionItemHandler::class],
         new IgnoredHandler,
+        $c[PaginatedPageHandler::class],
         $c[MarkdownHandler::class],
         $c[BladeHandler::class],
         $c[DefaultHandler::class],

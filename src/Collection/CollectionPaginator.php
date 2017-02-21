@@ -1,5 +1,7 @@
 <?php namespace TightenCo\Jigsaw\Collection;
 
+use TightenCo\Jigsaw\IterableObject;
+
 class CollectionPaginator
 {
     private $outputPathResolver;
@@ -20,7 +22,8 @@ class CollectionPaginator
 
         return $chunked->map(function ($items, $i) use ($file, $totalPages, $numberedPageLinks) {
             $currentPage = $i + 1;
-            return [
+
+            return new IterableObject([
                 'items' => $items,
                 'next' => $currentPage < $totalPages ? $this->getPageLink($file, $currentPage + 1) : null,
                 'previous' => $currentPage > 1 ? $this->getPageLink($file, $currentPage - 1) : null,
@@ -29,7 +32,7 @@ class CollectionPaginator
                 'currentPage' => $currentPage,
                 'totalPages' => $totalPages,
                 'pages' => $numberedPageLinks,
-            ];
+            ]);
         });
     }
 

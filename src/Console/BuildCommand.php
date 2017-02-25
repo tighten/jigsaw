@@ -8,14 +8,10 @@ use TightenCo\Jigsaw\PathResolvers\PrettyOutputPathResolver;
 class BuildCommand extends Command
 {
     private $app;
-    private $source;
-    private $dest;
 
-    public function __construct($app, $source, $dest)
+    public function __construct($app)
     {
         $this->app = $app;
-        $this->source = $source;
-        $this->dest = $dest;
         parent::__construct();
     }
 
@@ -30,15 +26,42 @@ class BuildCommand extends Command
     protected function fire()
     {
         $env = $this->input->getArgument('env');
-
-        $this->dest .= '_' . $env;
+        $this->includeEnvironmentConfig($env);
+        $this->updateBuildPaths($env);
 
         if ($this->input->getOption('pretty') === 'true') {
             $this->app->instance('outputPathResolver', new PrettyOutputPathResolver);
         }
 
-        $this->app->make(Jigsaw::class)->build($this->source, $this->dest, $env);
-
+        $this->app->make(Jigsaw::class)->build($env);
         $this->info('Site built successfully!');
+    }
+
+    private function includeEnvironmentConfig($env)
+    {
+        $environmentConfigPath = $this->getAbsolutePath("config.{$env}.php");
+        $environmentConfig = file_exists($environmentConfigPath) ? include $environmentConfigPath : [];
+        $this->app->config = collect($this->app->config)->merge(collect($environmentConfig)->filter());
+    }
+
+    private function updateBuildPaths($env)
+    {
+        $this->app->buildPath = [
+            'source' => $this->getBuildPath('source', $env),
+            'destination' => $this->getBuildPath('destination', $env),
+        ];
+    }
+
+    private function getBuildPath($pathType, $env)
+    {
+        $customPath = array_get($this->app->config, 'build.' . $pathType);
+        $buildPath = $customPath ? $this->getAbsolutePath($customPath) : $this->app->buildPath[$pathType];
+
+        return str_replace('{env}', $env, $buildPath);
+    }
+
+    private function getAbsolutePath($path)
+    {
+        return $this->app->cwd . '/' . trim($path, '/');
     }
 }

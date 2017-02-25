@@ -46,15 +46,17 @@ if (file_exists(__DIR__.'/vendor/autoload.php')) {
 }
 
 $cachePath = getcwd() . '/_tmp';
-$buildPath = getcwd() . '/build';
-$sourcePath = getcwd() . '/source';
 $bootstrapFile = getcwd() . '/bootstrap.php';
-$configFile = include getcwd() . '/config.php';
+$configFile = getcwd() . '/config.php';
+$config = file_exists($configFile) ? include $configFile : [];
 
 $container = new Container;
-
 $container->instance('cwd', getcwd());
-$container->instance('config', $configFile);
+$container->instance('config', $config);
+$container->instance('buildPath', [
+    'source' => getcwd() . '/source',
+    'destination' => getcwd() . '/build_{env}',
+]);
 
 $container->bind('outputPathResolver', function ($c) {
     return new BasicOutputPathResolver;
@@ -72,12 +74,11 @@ $container->bind(FrontMatterParser::class, function ($c) {
     return new FrontMatterParser($c[Parser::class]);
 });
 
-$container->bind(Factory::class, function ($c) use ($cachePath, $sourcePath) {
+$container->bind(Factory::class, function ($c) use ($cachePath) {
     $resolver = new EngineResolver;
 
     $bladeCompiler = new BladeCompiler(new Filesystem, $cachePath);
     $compilerEngine = new CompilerEngine($bladeCompiler, new Filesystem);
-
 
     $resolver->register('blade', function () use ($compilerEngine) {
         return $compilerEngine;
@@ -87,15 +88,15 @@ $container->bind(Factory::class, function ($c) use ($cachePath, $sourcePath) {
         return new PhpEngine();
     });
 
-    $resolver->register('markdown', function () use ($c, $sourcePath) {
-        return new MarkdownEngine($c[FrontMatterParser::class], new Filesystem, $sourcePath);
+    $resolver->register('markdown', function () use ($c) {
+        return new MarkdownEngine($c[FrontMatterParser::class], new Filesystem, $c['buildPath']['source']);
     });
 
     $resolver->register('blade-markdown', function () use ($c, $compilerEngine) {
         return new BladeMarkdownEngine($compilerEngine, $c[FrontMatterParser::class]);
     });
 
-    $finder = new FileViewFinder(new Filesystem, [$sourcePath]);
+    $finder = new FileViewFinder(new Filesystem, [$c['buildPath']['source']]);
 
     return new Factory($resolver, $finder, Mockery::mock(Dispatcher::class)->shouldIgnoreMissing());
 });
@@ -128,7 +129,7 @@ $container->bind(CollectionDataLoader::class, function ($c) {
 });
 
 $container->bind(DataLoader::class, function ($c) {
-    return new DataLoader($c['config'], $c['cwd'], $c[CollectionDataLoader::class]);
+    return new DataLoader($c[CollectionDataLoader::class]);
 });
 
 $container->bind(CollectionItemHandler::class, function ($c) {
@@ -162,10 +163,10 @@ if (file_exists($bootstrapFile)) {
 }
 
 $container->bind(Jigsaw::class, function ($c) {
-    return new Jigsaw($c[DataLoader::class], $c[SiteBuilder::class]);
+    return new Jigsaw($c, $c[DataLoader::class], $c[SiteBuilder::class]);
 });
 
-$buildCommand = new BuildCommand($container, $sourcePath, $buildPath);
+$buildCommand = new BuildCommand($container);
 
 $app = new Symfony\Component\Console\Application('Jigsaw', '0.6.4');
 $app->add($buildCommand);

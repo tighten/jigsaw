@@ -8,7 +8,7 @@ class SiteData extends IterableObject
     public static function build($settings)
     {
         $siteData = new static();
-        $siteData->putIterable('collections', $settings->pull('collections'));
+        $siteData->putIterable('collections', $settings->get('collections'));
         $siteData->putIterable('page', $settings);
 
         return $siteData;

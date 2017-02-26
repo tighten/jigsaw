@@ -29,6 +29,8 @@ class PageVariable extends IterableObject
         if (($key || $this->_meta->extending) && $this->_meta->path instanceof IterableObject) {
             return $this->_meta->path->get($key ?: $this->getExtending());
         }
+
+        return $this->_meta->path;
     }
 
     public function getUrl($key = null)
@@ -36,6 +38,8 @@ class PageVariable extends IterableObject
         if (($key || $this->_meta->extending) && $this->_meta->path instanceof IterableObject) {
             return $this->_meta->url->get($key ?: $this->getExtending());
         }
+
+        return $this->_meta->url;
     }
 
     protected function missingHelperError($functionName)

@@ -167,9 +167,10 @@ $container->bind(Jigsaw::class, function ($c) {
 });
 
 $buildCommand = new BuildCommand($container);
+$serveCommand = new ServeCommand($container);
 
 $app = new Symfony\Component\Console\Application('Jigsaw', '0.6.4');
-$app->add($buildCommand);
 $app->add($container[InitCommand::class]);
-$app->add($container[ServeCommand::class]);
+$app->add($buildCommand);
+$app->add($serveCommand);
 $app->run();

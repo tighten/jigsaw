@@ -67,7 +67,7 @@ class SiteBuilder
 
     private function handle($file, $siteData)
     {
-        $meta = $this->getMetaData($file, $siteData->baseUrl);
+        $meta = $this->getMetaData($file, $siteData->page->baseUrl);
 
         return $this->getHandler($file)->handle($file, PageData::withPageMetaData($siteData, $meta));
     }

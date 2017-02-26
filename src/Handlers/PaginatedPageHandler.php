@@ -38,8 +38,9 @@ class PaginatedPageHandler
             $pageData->get($pageData->page->pagination->collection),
             $pageData->page->pagination->perPage ?: 10
         )->map(function ($page) use ($file, $pageData) {
+            $pageData->page->_meta->put('path', $page->current);
+            $pageData->page->_meta->put('url', rtrim($pageData->page->getBaseUrl(), '/') . '/' . trim($page->current, '/'));
             $pageData->put('pagination', $page);
-            $pageData->page->put('path', $page->pages->get($page->currentPage));
             $extension = strtolower($file->getExtension());
 
             return new OutputFile(

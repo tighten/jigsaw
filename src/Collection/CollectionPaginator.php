@@ -25,8 +25,9 @@ class CollectionPaginator
 
             return new IterableObject([
                 'items' => $items,
-                'next' => $currentPage < $totalPages ? $this->getPageLink($file, $currentPage + 1) : null,
                 'previous' => $currentPage > 1 ? $this->getPageLink($file, $currentPage - 1) : null,
+                'current' => $this->getPageLink($file, $currentPage),
+                'next' => $currentPage < $totalPages ? $this->getPageLink($file, $currentPage + 1) : null,
                 'first' => $this->getPageLink($file, 1),
                 'last' => $this->getPageLink($file, $totalPages),
                 'currentPage' => $currentPage,

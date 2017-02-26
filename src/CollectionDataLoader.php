@@ -103,7 +103,7 @@ class CollectionDataLoader
     private function buildUrls($paths)
     {
         $urls = collect($paths)->map(function($path) {
-            return rtrim($this->pageSettings->get('baseUrl', '/')) . $path;
+            return rtrim($this->pageSettings->get('baseUrl', '/')) . trim($path, '/');
         });
 
         return $urls->count() ? new IterableObjectWithDefault($urls) : null;

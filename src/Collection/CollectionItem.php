@@ -1,12 +1,10 @@
 <?php namespace TightenCo\Jigsaw\Collection;
 
 use TightenCo\Jigsaw\IterableObject;
-use TightenCo\Jigsaw\Traits\HelperFunctionTrait;
+use TightenCo\Jigsaw\PageVariable;
 
-class CollectionItem extends IterableObject
+class CollectionItem extends PageVariable
 {
-    use HelperFunctionTrait;
-
     private $collection;
 
     public static function build($collection, $data)
@@ -47,7 +45,7 @@ class CollectionItem extends IterableObject
         return $this->_content;
     }
 
-    private function missingHelperError($functionName)
+    protected function missingHelperError($functionName)
     {
         return 'No function named "' . $functionName. '" for the collection "' . $this->_meta->collectionName . '" was found in the file "config.php".';
     }

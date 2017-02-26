@@ -40,19 +40,24 @@ class MarkdownHandler
         return array_merge(['section' => 'content'], $this->parseFrontMatter($file));
     }
 
-    public function buildOutput($file, PageData $pageData)
+    private function buildOutput($file, PageData $pageData)
     {
-        return collect($pageData->page->extends)->map(function ($layout) use ($file, $pageData) {
-            $extension = $this->view->getExtension($layout);
+        return collect($pageData->page->extends)
+            ->map(function ($layout, $templateToExtend) use ($file, $pageData) {
+                if ($templateToExtend) {
+                    $pageData->setExtending($templateToExtend);
+                }
 
-            return new OutputFile(
-                $file->getRelativePath(),
-                $file->getFilenameWithoutExtension(),
-                $extension == 'php' ? 'html' : $extension,
-                $this->render($file->bladeViewPath(), $pageData, $layout),
-                $pageData
-            );
-        });
+                $extension = $this->view->getExtension($layout);
+
+                return new OutputFile(
+                    $file->getRelativePath(),
+                    $file->getFilenameWithoutExtension(),
+                    $extension == 'php' ? 'html' : $extension,
+                    $this->render($file->bladeViewPath(), $pageData, $layout),
+                    $pageData
+                );
+            });
     }
 
     private function render($includePath, $pageData, $layout)

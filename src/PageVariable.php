@@ -24,6 +24,20 @@ class PageVariable extends IterableObject
         }
     }
 
+    public function getPath($key = null)
+    {
+        if (($key || $this->_meta->extending) && $this->_meta->path instanceof IterableObject) {
+            return $this->_meta->path->get($key ?: $this->getExtending());
+        }
+    }
+
+    public function getUrl($key = null)
+    {
+        if (($key || $this->_meta->extending) && $this->_meta->path instanceof IterableObject) {
+            return $this->_meta->url->get($key ?: $this->getExtending());
+        }
+    }
+
     protected function missingHelperError($functionName)
     {
         return 'No function named "' . $functionName . '" was found in the file "config.php".';

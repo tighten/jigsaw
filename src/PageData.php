@@ -19,6 +19,22 @@ class PageData extends IterableObject
         $this->addSingularCollectionReference($collectionName);
     }
 
+    public function setExtending($templateToExtend)
+    {
+        $this->page->_meta->put('extending', $templateToExtend);
+    }
+
+    public function setPagePath($path)
+    {
+        $this->page->_meta->put('path', $path);
+        $this->updatePageUrl();
+    }
+
+    public function updatePageUrl()
+    {
+        $this->page->_meta->put('url', rtrim($this->page->getBaseUrl(), '/') . '/' . trim($this->page->getPath(), '/'));
+    }
+
     private function addSingularCollectionReference($collectionName)
     {
         $singular_collectionName = str_singular($collectionName);

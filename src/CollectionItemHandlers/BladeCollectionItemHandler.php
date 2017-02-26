@@ -19,12 +19,12 @@ class BladeCollectionItemHandler
     public function getItemVariables($file)
     {
         $content = $file->getContents();
-        $frontMatter = collect($this->parser->getFrontMatter($content));
+        $frontMatter = $this->parser->getFrontMatter($content);
         $extendsFromBladeContent = $this->parser->getExtendsFromBladeContent($content);
 
         return array_merge(
-            $frontMatter->all(),
-            ['extends' => $extendsFromBladeContent ?: $frontMatter->get('extends')]
+            $frontMatter,
+            ['extends' => $extendsFromBladeContent ?: array_get($frontMatter, 'extends')]
         );
     }
 

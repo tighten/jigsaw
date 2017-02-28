@@ -84,12 +84,17 @@
 <pre><code>$ composer require tightenco/jigsaw</code></pre>
 <p>Initialize a new project in the current folder:</p>
 <pre><code>$ ./vendor/bin/jigsaw init</code></pre>
+<p>When Jigsaw is installed locally, you'll run the following command (instead of <code>jigsaw build</code>) to build your site:</p>
+<pre><code>$ ./vendor/bin/jigsaw build</code></pre>
+<blockquote>
+<p>If you are using <a href="/docs/compiling-assets/">Elixir to compile assets</a>, you should update the <code>exec</code> command in <code>gulpfile.js</code> so that Elixir will run the correct <code>build</code> command: <code>.exec('./vendor/bin/jigsaw build', ['./source/**/*', '!./source/_assets/**/*'])</code></p>
+</blockquote>
         </div>
     </div>
 </div>
         </div>
         <footer class="bg-dark text-center p-xs-y-6 p-xs-x-4 text-light-muted text-sm">
-            <p>&copy; 2016 <a href="http://tighten.co" class="link-light-muted">Tighten Co.</a></p>
+            <p>&copy; 2017 <a href="http://tighten.co" class="link-light-muted">Tighten Co.</a></p>
         </footer>
 
         <script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script>

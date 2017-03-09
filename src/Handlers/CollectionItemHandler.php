@@ -27,7 +27,7 @@ class CollectionItemHandler
 
     private function hasCollectionNamed($candidate)
     {
-        return array_get($this->config, 'collections.' . $candidate);
+        return array_get($this->config, 'collections.' . $candidate) !== null;
     }
 
     private function getCollectionName($file)

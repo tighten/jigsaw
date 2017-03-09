@@ -49,7 +49,7 @@ class CollectionPathResolver
         }
 
         if (is_string($path) && $path) {
-            $link =$this->parseShorthand($this->cleanInputPath($path), $data);
+            $link = $this->parseShorthand($this->cleanInputPath($path), $data);
 
             return $link ? $this->resolve($link . $templateKeySuffix . $extension) : '';
         }
@@ -59,7 +59,7 @@ class CollectionPathResolver
 
     private function getDefaultPath($data)
     {
-        return str_slug($data->_meta->get('collectionName')) . '/' . str_slug($data->_meta->get('filename'));
+        return str_slug($data->getCollectionName()) . '/' . str_slug($data->getFilename());
     }
 
     private function parseShorthand($path, $data)
@@ -67,7 +67,7 @@ class CollectionPathResolver
         preg_match_all('/\{(.*?)\}/', $path, $bracketedParameters);
 
         if (count($bracketedParameters[0]) == 0) {
-            return $path . '/' . str_slug($data->_meta->get('collectionName'));
+            return $path . '/' . str_slug($data->getFilename());
         }
 
         $bracketedParametersReplaced =

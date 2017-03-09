@@ -14,10 +14,11 @@ use Mni\FrontYAML\Bridge\Symfony\SymfonyYAMLParser;
 use Mni\FrontYAML\Markdown\MarkdownParser;
 use Mni\FrontYAML\Parser;
 use Mni\FrontYAML\YAML\YAMLParser;
-use TightenCo\Jigsaw\Collection\CollectionPaginator;
 use TightenCo\Jigsaw\CollectionDataLoader;
 use TightenCo\Jigsaw\CollectionItemHandlers\BladeCollectionItemHandler;
 use TightenCo\Jigsaw\CollectionItemHandlers\MarkdownCollectionItemHandler;
+use TightenCo\Jigsaw\Collection\CollectionPaginator;
+use TightenCo\Jigsaw\ConfigFile;
 use TightenCo\Jigsaw\Console\BuildCommand;
 use TightenCo\Jigsaw\Console\InitCommand;
 use TightenCo\Jigsaw\Console\ServeCommand;
@@ -47,16 +48,17 @@ if (file_exists(__DIR__.'/vendor/autoload.php')) {
 
 $cachePath = getcwd() . '/_tmp';
 $bootstrapFile = getcwd() . '/bootstrap.php';
-$configFile = getcwd() . '/config.php';
-$config = file_exists($configFile) ? include $configFile : [];
 
 $container = new Container;
 $container->instance('cwd', getcwd());
-$container->instance('config', $config);
 $container->instance('buildPath', [
     'source' => getcwd() . '/source',
     'destination' => getcwd() . '/build_{env}',
 ]);
+
+$container->bind('config', function () {
+    return (new ConfigFile(getcwd() . '/config.php'))->config;
+});
 
 $container->bind('outputPathResolver', function ($c) {
     return new BasicOutputPathResolver;

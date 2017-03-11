@@ -3,11 +3,16 @@
 use ArrayAccess;
 use Exception;
 use Illuminate\Support\Collection as BaseCollection;
+use Illuminate\Support\HigherOrderCollectionProxy;
 
 class IterableObject extends BaseCollection implements ArrayAccess
 {
     public function __get($key)
     {
+        if (! $this->offsetExists($key) && in_array($key, static::$proxies)) {
+            return new HigherOrderCollectionProxy($this, $key);
+        }
+
         return $this->get($key);
     }
 

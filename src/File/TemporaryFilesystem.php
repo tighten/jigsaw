@@ -23,7 +23,7 @@ class TemporaryFilesystem
 
     private function buildTempPath($extension)
     {
-        return $this->tempPath . '/' . Str::quickRandom(32) . $extension;
+        return $this->tempPath . '/' . Str::random(32) . $extension;
     }
 
     private function cleanup($path, $callback)

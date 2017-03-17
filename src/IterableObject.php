@@ -3,18 +3,27 @@
 use ArrayAccess;
 use Exception;
 use Illuminate\Support\Collection as BaseCollection;
+use Illuminate\Support\HigherOrderCollectionProxy;
 
 class IterableObject extends BaseCollection implements ArrayAccess
 {
     public function __get($key)
     {
-        if (! $this->has($key)) {
-            return;
+        if (! $this->offsetExists($key) && in_array($key, static::$proxies)) {
+            return new HigherOrderCollectionProxy($this, $key);
         }
 
-        $element = $this->get($key);
+        return $this->get($key);
+    }
 
-        return is_array($element) ? new self($element) : $element;
+    public function get($key, $default = null)
+    {
+        if ($this->offsetExists($key)) {
+
+            return $this->getElement($key);
+        }
+
+        return value($default);
     }
 
     public function offsetGet($key)
@@ -24,8 +33,28 @@ class IterableObject extends BaseCollection implements ArrayAccess
             throw new Exception($prefix . "The key '$key' does not exist.");
         }
 
-        $element = $this->items[$key];
+        return $this->getElement($key);
+    }
 
-        return is_array($element) ? new self($element) : $element;
+    public function putIterable($key, $element)
+    {
+        $this->put($key, $this->isArrayable($element) ? $this->makeIterable($element) : $element);
+    }
+
+    protected function getElement($key)
+    {
+        return $this->items[$key];
+    }
+
+    protected function makeIterable($items)
+    {
+        return new IterableObject(collect($items)->map(function ($item) {
+            return $this->isArrayable($item) ? $this->makeIterable($item) : $item;
+        }));
+    }
+
+    protected function isArrayable($element)
+    {
+        return is_array($element) || $element instanceof BaseCollection;
     }
 }

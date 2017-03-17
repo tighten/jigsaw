@@ -1,12 +1,10 @@
 <?php namespace TightenCo\Jigsaw\Collection;
 
 use TightenCo\Jigsaw\IterableObject;
-use TightenCo\Jigsaw\Traits\HelperFunctionTrait;
+use TightenCo\Jigsaw\PageVariable;
 
-class CollectionItem extends IterableObject
+class CollectionItem extends PageVariable
 {
-    use HelperFunctionTrait;
-
     private $collection;
 
     public static function build($collection, $data)
@@ -17,19 +15,14 @@ class CollectionItem extends IterableObject
         return $item;
     }
 
-    public function getHelper($name)
-    {
-        return $this->collection->getHelper($name);
-    }
-
     public function getNext()
     {
-        return $this->_nextItem ? $this->collection->get($this->_nextItem) : null;
+        return $this->_meta->nextItem ? $this->collection->get($this->_meta->nextItem) : null;
     }
 
     public function getPrevious()
     {
-        return $this->_previousItem ? $this->collection->get($this->_previousItem) : null;
+        return $this->_meta->previousItem ? $this->collection->get($this->_meta->previousItem) : null;
     }
 
     public function getFirst()
@@ -52,8 +45,8 @@ class CollectionItem extends IterableObject
         return $this->_content;
     }
 
-    private function missingHelperError($function_name)
+    protected function missingHelperError($functionName)
     {
-        return 'No helper function named "' . $function_name. '" for the collection "' . $this->get('collection') . '" was found in the file "collections.php".';
+        return 'No function named "' . $functionName. '" for the collection "' . $this->_meta->collectionName . '" was found in the file "config.php".';
     }
 }

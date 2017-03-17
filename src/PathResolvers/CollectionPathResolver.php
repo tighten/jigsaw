@@ -1,5 +1,7 @@
 <?php namespace TightenCo\Jigsaw\PathResolvers;
 
+use TightenCo\Jigsaw\IterableObject;
+
 class CollectionPathResolver
 {
     private $outputPathResolver;
@@ -11,11 +13,11 @@ class CollectionPathResolver
         $this->view = $viewRenderer;
     }
 
-    public function link($permalink, $data)
+    public function link($path, $data)
     {
-        return collect($data->extends)->map(function($bladeViewPath, $templateKey) use ($permalink, $data) {
+        return collect($data->extends)->map(function($bladeViewPath, $templateKey) use ($path, $data) {
             return $this->cleanOutputPath(
-                $this->getPath($permalink, $data, $this->getExtension($bladeViewPath), $templateKey)
+                $this->getPath($path, $data, $this->getExtension($bladeViewPath), $templateKey)
             );
         });
     }
@@ -27,37 +29,37 @@ class CollectionPathResolver
         return collect(['php', 'html'])->contains($extension) ? '' : '.' . $extension;
     }
 
-    private function getPath($permalink, $data, $extension, $templateKey = null)
+    private function getPath($path, $data, $extension, $templateKey = null)
     {
         $templateKeySuffix = $templateKey ? '/' . $templateKey : '';
 
-        if ($templateKey && is_array($permalink)) {
-            $permalink = array_get($permalink, $templateKey);
+        if ($templateKey && $path instanceof IterableObject) {
+            $path = $path->get($templateKey);
             $templateKeySuffix = '';
 
-            if (! $permalink) {
+            if (! $path) {
                 return;
             }
         }
 
-        if (is_callable($permalink)) {
-            $link = $this->cleanInputPath($permalink->__invoke($data));
+        if (is_callable($path)) {
+            $link = $this->cleanInputPath($path->__invoke($data));
 
             return $link ? $this->resolve($link . $templateKeySuffix . $extension) : '';
         }
 
-        if (is_string($permalink) && $permalink) {
-            $link =$this->parseShorthand($this->cleanInputPath($permalink), $data);
+        if (is_string($path) && $path) {
+            $link = $this->parseShorthand($this->cleanInputPath($path), $data);
 
             return $link ? $this->resolve($link . $templateKeySuffix . $extension) : '';
         }
 
-        return $this->getDefaultPermalink($data, $templateKey) . $templateKeySuffix . $extension;
+        return $this->getDefaultPath($data, $templateKey) . $templateKeySuffix . $extension;
     }
 
-    private function getDefaultPermalink($data)
+    private function getDefaultPath($data)
     {
-        return str_slug($data['collection']) . '/' . str_slug($data['filename']);
+        return str_slug($data->getCollectionName()) . '/' . str_slug($data->getFilename());
     }
 
     private function parseShorthand($path, $data)
@@ -65,7 +67,7 @@ class CollectionPathResolver
         preg_match_all('/\{(.*?)\}/', $path, $bracketedParameters);
 
         if (count($bracketedParameters[0]) == 0) {
-            return $path . '/' . str_slug($data['filename']);
+            return $path . '/' . str_slug($data->getFilename());
         }
 
         $bracketedParametersReplaced =
@@ -86,11 +88,13 @@ class CollectionPathResolver
             $param = ltrim($param, $param[0]);
         }
 
-        if (! isset($data[$param])) {
+        $value = array_get($data, $param, $data->_meta->get($param));
+
+        if (! $value) {
             return '';
         }
 
-        $value = $dateFormat ? $this->formatDate($data[$param], $dateFormat) : $data[$param];
+        $value = $dateFormat ? $this->formatDate($value, $dateFormat) : $value;
 
         return $slugSeparator ? str_slug($value, $slugSeparator) : $value;
     }

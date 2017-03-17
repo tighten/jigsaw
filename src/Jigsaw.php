@@ -2,18 +2,23 @@
 
 class Jigsaw
 {
+    private $app;
     private $dataLoader;
     private $siteBuilder;
 
-    public function __construct($dataLoader, $siteBuilder)
+    public function __construct($app, $dataLoader, $siteBuilder)
     {
+        $this->app = $app;
         $this->dataLoader = $dataLoader;
         $this->siteBuilder = $siteBuilder;
     }
 
-    public function build($source, $dest, $env)
+    public function build($env)
     {
-        $siteData = $this->dataLoader->load($source, $env);
-        $this->siteBuilder->build($source, $dest, $siteData);
+        $this->siteBuilder->build(
+            $this->app->buildPath['source'],
+            $this->app->buildPath['destination'],
+            $this->dataLoader->load($this->app->buildPath['source'], $this->app->config)
+        );
     }
 }

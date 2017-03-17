@@ -18,9 +18,7 @@ class MarkdownCollectionItemHandler
 
     public function getItemVariables($file)
     {
-        $document = $this->parser->parse($file->getContents());
-
-        return array_merge(['section' => 'content'], $document->frontMatter);
+        return $this->parser->parse($file->getContents())->frontMatter;
     }
 
     public function getItemContent($file)

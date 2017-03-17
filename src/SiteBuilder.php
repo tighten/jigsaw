@@ -2,6 +2,7 @@
 
 use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\File\InputFile;
+use TightenCo\Jigsaw\PageData;
 
 class SiteBuilder
 {
@@ -23,10 +24,10 @@ class SiteBuilder
         $this->handlers[] = $handler;
     }
 
-    public function build($source, $dest, $data)
+    public function build($source, $dest, $siteData)
     {
         $this->prepareDirectories([$this->cachePath, $dest]);
-        $this->buildSite($source, $dest, $data);
+        $this->buildSite($source, $dest, $siteData);
         $this->cleanup();
     }
 
@@ -53,22 +54,22 @@ class SiteBuilder
         $this->files->deleteDirectory($this->cachePath);
     }
 
-    private function buildSite($source, $dest, $data)
+    private function buildSite($source, $destination, $siteData)
     {
         $result = collect($this->files->allFiles($source))->map(function ($file) use ($source) {
             return new InputFile($file, $source);
-        })->flatMap(function ($file) use ($data) {
-            return $this->handle($file, $data);
-        })->each(function ($file) use ($dest) {
-            $this->buildFile($file, $dest);
+        })->flatMap(function ($file) use ($siteData) {
+            return $this->handle($file, $siteData);
+        })->each(function ($file) use ($destination) {
+            $this->buildFile($file, $destination);
         });
     }
 
-    private function handle($file, $data)
+    private function handle($file, $siteData)
     {
-        $meta = $this->getMetaData($file, $data);
+        $meta = $this->getMetaData($file, $siteData->page->baseUrl);
 
-        return $this->getHandler($file)->handle($file, $this->addMetaToPageData($meta, $data));
+        return $this->getHandler($file)->handle($file, PageData::withPageMetaData($siteData, $meta));
     }
 
     private function buildFile($file, $dest)
@@ -85,28 +86,23 @@ class SiteBuilder
         });
     }
 
-    private function getMetaData($file, $data)
+    private function getMetaData($file, $baseUrl)
     {
-        $meta['filename'] = $file->getFilenameWithoutExtension();
-        $meta['extension'] = $file->getFullExtension();
-        $meta['path'] = rtrim($this->outputPathResolver->link($file->getRelativePath(), $meta['filename'], 'html'), '/');
-        $meta['url'] = rtrim(array_get($data, 'config.baseUrl'), '/') . '/' . trim($meta['path'], '/');
+        $filename = $file->getFilenameWithoutExtension();
+        $path = rtrim($this->outputPathResolver->link($file->getRelativePath(), $filename, 'html'), '/');
+        $extension = $file->getFullExtension();
+        $url = rtrim($baseUrl, '/') . '/' . trim($path, '/');
 
-        return $meta;
-    }
-
-    private function addMetaToPageData($meta, $data)
-    {
-        return $data->put('config', $data->get('config')->merge($meta))->merge($meta);
+        return compact('filename', 'baseUrl', 'path', 'extension', 'url');
     }
 
     private function getOutputDirectory($file)
     {
-        return $this->outputPathResolver->directory($file->path(), $file->name(), $file->extension(), $file->page());
+        return urldecode($this->outputPathResolver->directory($file->path(), $file->name(), $file->extension(), $file->page()));
     }
 
     private function getOutputPath($file)
     {
-        return $this->outputPathResolver->path($file->path(), $file->name(), $file->extension(), $file->page());
+        return urldecode($this->outputPathResolver->path($file->path(), $file->name(), $file->extension(), $file->page()));
     }
 }

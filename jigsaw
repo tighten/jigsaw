@@ -14,10 +14,11 @@ use Mni\FrontYAML\Bridge\Symfony\SymfonyYAMLParser;
 use Mni\FrontYAML\Markdown\MarkdownParser;
 use Mni\FrontYAML\Parser;
 use Mni\FrontYAML\YAML\YAMLParser;
-use TightenCo\Jigsaw\Collection\CollectionPaginator;
 use TightenCo\Jigsaw\CollectionDataLoader;
 use TightenCo\Jigsaw\CollectionItemHandlers\BladeCollectionItemHandler;
 use TightenCo\Jigsaw\CollectionItemHandlers\MarkdownCollectionItemHandler;
+use TightenCo\Jigsaw\Collection\CollectionPaginator;
+use TightenCo\Jigsaw\ConfigFile;
 use TightenCo\Jigsaw\Console\BuildCommand;
 use TightenCo\Jigsaw\Console\InitCommand;
 use TightenCo\Jigsaw\Console\ServeCommand;
@@ -46,27 +47,18 @@ if (file_exists(__DIR__.'/vendor/autoload.php')) {
 }
 
 $cachePath = getcwd() . '/_tmp';
-$buildPath = getcwd() . '/build';
-$sourcePath = getcwd() . '/source';
 $bootstrapFile = getcwd() . '/bootstrap.php';
 
 $container = new Container;
-
-$config = include getcwd() . '/config.php';
-
-if (! file_exists(getcwd() . '/collections.php')) {
-    $collectionSettings = [];
-} else {
-    $collectionSettings = include getcwd() . '/collections.php';
-}
-
 $container->instance('cwd', getcwd());
-$container->instance('config', $config);
-$container->instance('collectionSettings',
-    collect($collectionSettings)->flatMap(function ($value, $key) {
-        return is_array($value) ? [$key => $value] : [$value => []];
-    })
-);
+$container->instance('buildPath', [
+    'source' => getcwd() . '/source',
+    'destination' => getcwd() . '/build_{env}',
+]);
+
+$container->bind('config', function () {
+    return (new ConfigFile(getcwd() . '/config.php'))->config;
+});
 
 $container->bind('outputPathResolver', function ($c) {
     return new BasicOutputPathResolver;
@@ -84,12 +76,11 @@ $container->bind(FrontMatterParser::class, function ($c) {
     return new FrontMatterParser($c[Parser::class]);
 });
 
-$container->bind(Factory::class, function ($c) use ($cachePath, $sourcePath) {
+$container->bind(Factory::class, function ($c) use ($cachePath) {
     $resolver = new EngineResolver;
 
     $bladeCompiler = new BladeCompiler(new Filesystem, $cachePath);
     $compilerEngine = new CompilerEngine($bladeCompiler, new Filesystem);
-
 
     $resolver->register('blade', function () use ($compilerEngine) {
         return $compilerEngine;
@@ -99,15 +90,15 @@ $container->bind(Factory::class, function ($c) use ($cachePath, $sourcePath) {
         return new PhpEngine();
     });
 
-    $resolver->register('markdown', function () use ($c, $sourcePath) {
-        return new MarkdownEngine($c[FrontMatterParser::class], new Filesystem, $sourcePath);
+    $resolver->register('markdown', function () use ($c) {
+        return new MarkdownEngine($c[FrontMatterParser::class], new Filesystem, $c['buildPath']['source']);
     });
 
     $resolver->register('blade-markdown', function () use ($c, $compilerEngine) {
         return new BladeMarkdownEngine($compilerEngine, $c[FrontMatterParser::class]);
     });
 
-    $finder = new FileViewFinder(new Filesystem, [$sourcePath]);
+    $finder = new FileViewFinder(new Filesystem, [$c['buildPath']['source']]);
 
     return new Factory($resolver, $finder, Mockery::mock(Dispatcher::class)->shouldIgnoreMissing());
 });
@@ -133,18 +124,18 @@ $container->bind(CollectionPathResolver::class, function ($c ) {
 });
 
 $container->bind(CollectionDataLoader::class, function ($c) {
-    return new CollectionDataLoader($c['collectionSettings'], new Filesystem, $c[CollectionPathResolver::class], [
+    return new CollectionDataLoader(new Filesystem, $c[CollectionPathResolver::class], [
         $c[MarkdownCollectionItemHandler::class],
         $c[BladeCollectionItemHandler::class],
     ]);
 });
 
 $container->bind(DataLoader::class, function ($c) {
-    return new DataLoader($c['config'], $c['cwd'], $c[CollectionDataLoader::class]);
+    return new DataLoader($c[CollectionDataLoader::class]);
 });
 
 $container->bind(CollectionItemHandler::class, function ($c) {
-    return new CollectionItemHandler($c['collectionSettings'], [
+    return new CollectionItemHandler($c['config'], [
         $c[MarkdownHandler::class],
         $c[BladeHandler::class],
     ]);
@@ -160,9 +151,9 @@ $container->bind(PaginatedPageHandler::class, function ($c) {
 
 $container->bind(SiteBuilder::class, function ($c) use ($cachePath) {
     return new SiteBuilder(new Filesystem, $cachePath, $c['outputPathResolver'], [
-        $c[PaginatedPageHandler::class],
         $c[CollectionItemHandler::class],
         new IgnoredHandler,
+        $c[PaginatedPageHandler::class],
         $c[MarkdownHandler::class],
         $c[BladeHandler::class],
         $c[DefaultHandler::class],
@@ -174,13 +165,14 @@ if (file_exists($bootstrapFile)) {
 }
 
 $container->bind(Jigsaw::class, function ($c) {
-    return new Jigsaw($c[DataLoader::class], $c[SiteBuilder::class]);
+    return new Jigsaw($c, $c[DataLoader::class], $c[SiteBuilder::class]);
 });
 
-$buildCommand = new BuildCommand($container, $sourcePath, $buildPath);
+$buildCommand = new BuildCommand($container);
+$serveCommand = new ServeCommand($container);
 
 $app = new Symfony\Component\Console\Application('Jigsaw', '0.6.4');
-$app->add($buildCommand);
 $app->add($container[InitCommand::class]);
-$app->add($container[ServeCommand::class]);
+$app->add($buildCommand);
+$app->add($serveCommand);
 $app->run();

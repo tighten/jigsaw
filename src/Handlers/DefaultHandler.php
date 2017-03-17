@@ -17,7 +17,7 @@ class DefaultHandler
         return true;
     }
 
-    public function handle($file, $data)
+    public function handle($file, $pageData)
     {
         return [
             new OutputFile(
@@ -25,7 +25,7 @@ class DefaultHandler
                 $file->getBasename('.'.$file->getExtension()),
                 $file->getExtension(),
                 $this->files->get($file->getRealPath()),
-                $data
+                $pageData
             )
         ];
     }

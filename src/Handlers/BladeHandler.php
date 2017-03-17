@@ -1,8 +1,8 @@
 <?php namespace TightenCo\Jigsaw\Handlers;
 
 use TightenCo\Jigsaw\File\OutputFile;
+use TightenCo\Jigsaw\PageData;
 use TightenCo\Jigsaw\Parsers\FrontMatterParser;
-use TightenCo\Jigsaw\View\ViewData;
 use TightenCo\Jigsaw\View\ViewRenderer;
 
 class BladeHandler
@@ -10,6 +10,7 @@ class BladeHandler
     private $temporaryFilesystem;
     private $parser;
     private $view;
+    private $hasFrontMatter;
 
     public function __construct($temporaryFilesystem, FrontMatterParser $parser, ViewRenderer $viewRenderer)
     {
@@ -23,66 +24,62 @@ class BladeHandler
         return str_contains($file->getFilename(), '.blade.');
     }
 
-    public function handleCollectionItem($file, ViewData $viewData)
+    public function handleCollectionItem($file, PageData $pageData)
     {
-        return $this->buildOutput($file, $viewData);
+        $this->getPageVariables($file);
+
+        return $this->buildOutput($file, $pageData);
     }
 
-    public function handle($file, $data)
+    public function handle($file, $pageData)
     {
-        return $this->buildOutput(
-            $file, new ViewData($data)
-        );
+        $pageData->page->addVariables($this->getPageVariables($file));
+
+        return $this->buildOutput($file, $pageData);
     }
 
-    public function buildOutput($file, ViewData $viewData)
+    private function buildOutput($file, $pageData)
     {
-        $path = $file->getRelativePath();
-        $filename = $file->getFilenameWithoutExtension();
         $extension = strtolower($file->getExtension());
-        $fullPathName = $file->getRealPath();
-        $renderedBladeWithFrontMatter = $this->parseFrontMatter($file, $viewData);
 
         return collect([
             new OutputFile(
-                $path,
-                $filename,
+                $file->getRelativePath(),
+                $file->getFilenameWithoutExtension(),
                 $extension == 'php' ? 'html' : $extension,
-                $renderedBladeWithFrontMatter ?: $this->render($fullPathName, $viewData),
-                $viewData
+                $this->hasFrontMatter ?
+                    $this->renderWithFrontMatter($file, $pageData) :
+                    $this->render($file->getRealPath(), $pageData),
+                $pageData
             )
         ]);
     }
 
-    private function parseFrontMatter($file, $viewData)
+    private function getPageVariables($file)
     {
-        $content = $file->getContents();
-        $frontMatter = collect($this->parser->getFrontMatter($content));
+        $frontMatter = $this->parseFrontMatter($file);
+        $this->hasFrontMatter = count($frontMatter) > 0;
 
-        if (! $frontMatter->count()) {
-            return;
-        }
+        return $frontMatter;
+    }
 
-        $viewData = $this->addFrontMatterToViewData($frontMatter, $viewData);
+    private function parseFrontMatter($file)
+    {
+        return $this->parser->getFrontMatter($file->getContents());
+    }
 
+    private function render($path, $pageData)
+    {
+        return $this->view->render($path, $pageData);
+    }
+
+    private function renderWithFrontMatter($file, $pageData)
+    {
         return $this->temporaryFilesystem->put(
-            $this->parser->getBladeContent($content), function ($path) use ($viewData) {
-                return $this->render($path, $viewData);
+            $this->parser->getBladeContent($file->getContents()),
+            function ($path) use ($pageData) {
+                return $this->render($path, $pageData);
             },
         '.blade.php');
-    }
-
-    private function addFrontMatterToViewData($frontMatter, $viewData)
-    {
-        $frontMatter->each(function($value, $key) use ($viewData) {
-            $viewData = $viewData->put($key, $value);
-        });
-
-        return $viewData;
-    }
-
-    private function render($path, $data)
-    {
-        return $this->view->render($path, $data);
     }
 }

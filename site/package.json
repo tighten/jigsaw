@@ -2,6 +2,7 @@
   "private": true,
   "devDependencies": {
     "gulp": "^3.8.8",
+    "hasbin": "^1.2.3",
     "laravel-elixir": "^4.2.0",
     "yargs": "^4.6.0"
   }

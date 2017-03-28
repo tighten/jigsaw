@@ -1,7 +1,6 @@
 {
   "private": true,
   "devDependencies": {
-    "fs": "0.0.1-security",
     "gulp": "^3.8.8",
     "hasbin": "^1.2.3",
     "laravel-elixir": "^4.2.0",

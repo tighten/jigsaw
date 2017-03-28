@@ -1,3 +1,6 @@
 /build_local/
 /node_modules/
 /vendor/
+/source/build
+/source/css
+/source/js

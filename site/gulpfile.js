@@ -11,7 +11,7 @@ elixir(function(mix) {
     var port = argv.p || argv.port || 3000;
 
     mix.sass('main.scss')
-        .exec(bin.path() + ' build ' + env, ['./source/*', './source/**/*', '!./source/_assets/**/*'])
+        .exec(bin.path() + ' build ' + env, ['./source/*', './source/**/*', '!./source/_assets/**/*', '!./source/build/**/*'])
         .browserSync({
             port: port,
             server: { baseDir: 'build_' + env },

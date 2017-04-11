@@ -16,7 +16,6 @@ class PageData extends IterableObject
     public function setPageVariableToCollectionItem($collectionName, $itemName)
     {
         $this->put('page', $this->get($collectionName)->get($itemName));
-        $this->addSingularCollectionReference($collectionName);
     }
 
     public function setExtending($templateToExtend)
@@ -33,14 +32,5 @@ class PageData extends IterableObject
     public function updatePageUrl()
     {
         $this->page->_meta->put('url', rtrim($this->page->getBaseUrl(), '/') . '/' . trim($this->page->getPath(), '/'));
-    }
-
-    private function addSingularCollectionReference($collectionName)
-    {
-        $singular_collectionName = str_singular($collectionName);
-
-        if ($singular_collectionName != $collectionName) {
-            $this->put($singular_collectionName, $this->get('page'));
-        };
     }
 }

@@ -80,20 +80,91 @@
             </p>
         </div>
         <div class="col-md-9 documentation-page">
-            <h2>Starting a New Site</h2>
-<p>The fastest way to start a new Jigsaw site is to use the built-in <code>init</code> command to scaffold the default directory structure.</p>
-<p>If you have Jigsaw installed globally, simply run:</p>
-<pre><code>$ jigsaw init my-site</code></pre>
-<p>This will scaffold a new Jigsaw site in a new folder called <code>my-site</code> in the current directory.</p>
-<p>If you've already created a folder for your site and installed Jigsaw local to that folder with Composer, run:</p>
-<pre><code>$ jigsaw init</code></pre>
-<p>This will scaffold a new Jigsaw site in the current directory.</p>
-<h3>Directory structure</h3>
-<p>By default, Jigsaw gives you the following directory structure:</p>
-<p><img src="../../img/directory-structure.png" alt="Default directory structure" /></p>
-<p>The <code>source</code> directory contains the actual contents of your site. This is where all of your sites pages, CSS, Javascript, images, etc. will be kept.</p>
-<p>At the root of the directory, Jigsaw provides <code>gulpfile.js</code> and <code>package.json</code> for compiling your assets, and a <code>config.php</code> file where you can specify variables to be made available in your templates.</p>
-<p>Next, learn about <a href="../building-and-previewing">building and previewing your site</a>.</p>
+            <h4><a href="/docs/collections">Collections</a></h4>
+<h2>Extending Parent Templates</h2>
+<p>To display each of your collection items on their own page, you need to specify a parent template. You can do this in the <code>extends</code> key of the YAML front matter, or with the <code>@extends</code> directive in a Blade file:</p>
+<blockquote>
+<p><em>my-first-post.md</em></p>
+</blockquote>
+<pre><code>---
+extends: _layouts.post
+title: My First Blog Post
+author: Keith Damiani
+date: 2017-03-23
+section: content
+---
+
+This post is *profoundly* interesting.</code></pre>
+<blockquote>
+<p><em>my-second-post.blade.php</em></p>
+</blockquote>
+<pre><code>---
+title: My Second Blog Post
+author: Keith Damiani
+date: 2017-03-25
+section: content
+---
+@extends ('_layouts.post')
+
+This is {{ $page-&gt;author }}'s second &lt;strong&gt;amazing&lt;/strong&gt; post.</code></pre>
+<h3>Collection items with no parent template</h3>
+<p>However, parent templates are optional for collection items. In some cases—such as for a collection of staff bios that appear on an &quot;About Us&quot; page—you may not need to display each of your collection items on their own pages. To do this, simply omit the <code>extends</code> key from the YAML front matter, or the <code>@extends</code> directive from a Blade file.</p>
+<h3>Collection items with multiple parent templates</h3>
+<p>Collection items can also extend <em>multiple</em> parent templates, by specifying the templates as an array in the <code>extends</code> key in the YAML front matter. This will generate a separate URL for each template—allowing, for example, a collection item to have both <code>/web/item</code> and <code>/api/item</code> endpoints, or <code>/summary</code> and <code>/detail</code> views.</p>
+<blockquote>
+<p>_<em>people/abraham-lincoln.md</em></p>
+</blockquote>
+<pre><code>---
+name: Abraham Lincoln
+role: President
+number: 16
+extends:
+  web: _layouts.person
+  api: _layouts.api.person
+section: content
+---
+...</code></pre>
+<blockquote>
+<p>_<em>layouts.person.blade.php</em></p>
+</blockquote>
+<pre><code>@extends('_layouts.master')
+
+@section('body')
+    &lt;header&gt;
+        &lt;h1&gt;{{ $page-&gt;name }}&lt;/h1&gt;
+        &lt;h2&gt;{{ $page-&gt;role }}&lt;/h2&gt;
+    &lt;/header&gt;
+
+    @yield('content')
+@endsection</code></pre>
+<blockquote>
+<p>_<em>layouts.api.person.blade.js</em></p>
+</blockquote>
+<pre><code>{!! ($page-&gt;api()) !!}</code></pre>
+<p>If using multiple parent templates, you can specify separate paths in <code>config.php</code> for each resulting page:</p>
+<blockquote>
+<p><em>config.php</em></p>
+</blockquote>
+<pre><code>&lt;?php
+
+return [
+    'collections' =&gt; [
+        'people' =&gt; [
+            'path' =&gt; [
+                'web' =&gt; 'people/{number}/{filename}',
+                'api' =&gt; 'people/api/{number}/{filename}',
+            ],
+            'api' =&gt; function ($page) {
+                return [
+                    'slug' =&gt; str_slug($page-&gt;getFilename()),
+                    'name' =&gt; $page-&gt;name,
+                    'number' =&gt; $page-&gt;number,
+                    'content' =&gt; $page-&gt;getContent(),
+                ];
+            },
+        ],
+    ],
+];</code></pre>
         </div>
     </div>
 </div>

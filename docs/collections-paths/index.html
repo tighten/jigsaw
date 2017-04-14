@@ -80,20 +80,28 @@
             </p>
         </div>
         <div class="col-md-9 documentation-page">
-            <h2>Starting a New Site</h2>
-<p>The fastest way to start a new Jigsaw site is to use the built-in <code>init</code> command to scaffold the default directory structure.</p>
-<p>If you have Jigsaw installed globally, simply run:</p>
-<pre><code>$ jigsaw init my-site</code></pre>
-<p>This will scaffold a new Jigsaw site in a new folder called <code>my-site</code> in the current directory.</p>
-<p>If you've already created a folder for your site and installed Jigsaw local to that folder with Composer, run:</p>
-<pre><code>$ jigsaw init</code></pre>
-<p>This will scaffold a new Jigsaw site in the current directory.</p>
-<h3>Directory structure</h3>
-<p>By default, Jigsaw gives you the following directory structure:</p>
-<p><img src="../../img/directory-structure.png" alt="Default directory structure" /></p>
-<p>The <code>source</code> directory contains the actual contents of your site. This is where all of your sites pages, CSS, Javascript, images, etc. will be kept.</p>
-<p>At the root of the directory, Jigsaw provides <code>gulpfile.js</code> and <code>package.json</code> for compiling your assets, and a <code>config.php</code> file where you can specify variables to be made available in your templates.</p>
-<p>Next, learn about <a href="../building-and-previewing">building and previewing your site</a>.</p>
+            <h4><a href="/docs/collections">Collections</a></h4>
+<h2>Paths</h2>
+<h3>Default Path Setting</h3>
+<p>By default, each of your collection items (if they <code>extend</code> a parent template) will be assigned a path where the first segment is the name of the collection, and the second segment is the filename converted to a URL &quot;slug&quot;—all lowercase, with words separated by dashes. So the default path for a file named <code>My First Blog Post.md</code> in a collection named <code>posts</code> would be <code>/posts/my-first-blog-post</code>.</p>
+<p>Jigsaw gives you the ability to customize your collection paths, however, by adding a <code>path</code> key to your collection array.</p>
+<h3>Custom Path Shorthand</h3>
+<p>You can specify your collection path as a string. In this string, you can reference the values of any variables that are defined within the YAML front matter of the collection item, by specifying the variable name enclosed in <code>{}</code> brackets. If your collection items each include a <code>title</code> variable, for example, you could define your path as:</p>
+<pre><code>'path' =&gt; 'blog/{title}'                             // 'blog/Title Of First Post'</code></pre>
+<p>In addition, the variables <code>filename</code> (containing the filename without extension) and <code>collection</code> (containing the collection name) are available:</p>
+<pre><code>'path' =&gt; '{collection}/{filename}'                  // 'posts/my first blog post'</code></pre>
+<p>In most cases, when using filenames or titles, you will want to &quot;slugify&quot; them when used as part of a path. To do so, prepend a separator to the variable name:</p>
+<pre><code>'path' =&gt; '{collection}/{-filename}'                 // 'posts/my-first-blog-post'
+'path' =&gt; '{collection}/{_filename}'                 // 'posts/my_first_blog_post'</code></pre>
+<p>If you included a date as a variable in your collection items (in YYYY-MM-DD format), you can control the formatting of that date in your path by following the variable name with a pipe and using PHP date formatting codes. For any <code>/</code>s in your date formatting code, Jigsaw will create subdirectories as needed:</p>
+<pre><code>'path' =&gt; '{collection}/{published|Y-m-d}/{-title}'  // 'posts/2017-03-27/title-of-first-post'
+'path' =&gt; '{collection}/{published|Y/m}/{-title}'    // 'posts/2017/03/27/title-of-first-post'
+'path' =&gt; 'blog-{published|F-Y}/{-title}'            // 'blog-March-2017/title-of-first-post'</code></pre>
+<h3>Custom Path Closure</h3>
+<p>Though the path shorthand allows you to easily create the most common permalink formats, you can also return a closure from <code>path</code> if you require more control. The closure will receive the contents of the current collection item as its first parameter. For example:</p>
+<pre><code>'path' =&gt; function ($page) {
+    return 'posts/' . ($page-&gt;featured ? 'featured/' : '') . str_slug($page-&gt;getFilename());
+},</code></pre>
         </div>
     </div>
 </div>

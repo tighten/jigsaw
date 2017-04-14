@@ -80,20 +80,29 @@
             </p>
         </div>
         <div class="col-md-9 documentation-page">
-            <h2>Starting a New Site</h2>
-<p>The fastest way to start a new Jigsaw site is to use the built-in <code>init</code> command to scaffold the default directory structure.</p>
-<p>If you have Jigsaw installed globally, simply run:</p>
-<pre><code>$ jigsaw init my-site</code></pre>
-<p>This will scaffold a new Jigsaw site in a new folder called <code>my-site</code> in the current directory.</p>
-<p>If you've already created a folder for your site and installed Jigsaw local to that folder with Composer, run:</p>
-<pre><code>$ jigsaw init</code></pre>
-<p>This will scaffold a new Jigsaw site in the current directory.</p>
-<h3>Directory structure</h3>
-<p>By default, Jigsaw gives you the following directory structure:</p>
-<p><img src="../../img/directory-structure.png" alt="Default directory structure" /></p>
-<p>The <code>source</code> directory contains the actual contents of your site. This is where all of your sites pages, CSS, Javascript, images, etc. will be kept.</p>
-<p>At the root of the directory, Jigsaw provides <code>gulpfile.js</code> and <code>package.json</code> for compiling your assets, and a <code>config.php</code> file where you can specify variables to be made available in your templates.</p>
-<p>Next, learn about <a href="../building-and-previewing">building and previewing your site</a>.</p>
+            <h2>Helper Functions</h2>
+<p>In addition to storing variables in <code>config.php</code>, you can also define helper functions by adding a key with the name of the function and returning a closure. Helper functions are called by referencing the function name from the <code>$page</code> object in any Blade template.</p>
+<p>The function's closure automatically recieves the current <code>$page</code> as its first parameter. Additional parameters can be specified as well, and passed to the function when it is called in your template.</p>
+<p>For instance, you can add a function that identifies if the current page belongs to a particular section, for highlighting the currenct section in a menu template:</p>
+<blockquote>
+<p><em>config.php</em></p>
+</blockquote>
+<pre><code>&lt;?php
+
+return [
+    'company' =&gt; 'Tighten Co',
+    'selected' =&gt; function ($page, $section) {
+        return str_contains($data-&gt;getPath(), $section) ? 'selected' : '';
+    },
+];</code></pre>
+<p>This function is accessible by calling <code>$page-&gt;selected()</code> from any page.</p>
+<p>Now, we can build a menu partial that highlights the current menu item for each page:</p>
+<blockquote>
+<p>_<em>menu.blade.php</em></p>
+</blockquote>
+<pre><code>&lt;a class="{{ $page-&gt;selected('about') }}" href="{{ $page-&gt;baseUrl }}/about"&gt;About Us&lt;/a&gt;
+&lt;a class="{{ $page-&gt;selected('projects') }}" href="{{ $page-&gt;baseUrl }}/projects"&gt;Projects&lt;/a&gt;
+&lt;a class="{{ $page-&gt;selected('posts') }}" href="{{ $page-&gt;baseUrl }}/posts"&gt;Blog&lt;/a&gt;</code></pre>
         </div>
     </div>
 </div>

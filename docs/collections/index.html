@@ -80,64 +80,101 @@
             </p>
         </div>
         <div class="col-md-9 documentation-page">
-            <h2>Markdown</h2>
-<p>Have some pages you'd rather write in Markdown than Blade? <a href="https://github.com/tightenco/jigsaw-site/tree/master/source/docs">We know the feeling</a>.</p>
-<p>Using Markdown in Jigsaw is as simple as using a <code>.markdown</code> or <code>.md</code> extension, and specifying a few details in YAML front matter.</p>
-<p>For example, say you have this layout and you'd like to populate the <code>content</code> section using Markdown:</p>
-<pre><code class="language-html">&lt;html&gt;
-    &lt;head&gt;...&lt;/head&gt;
-    &lt;body&gt;
-        @yield('content')
-    &lt;/body&gt;
-&lt;/html&gt;</code></pre>
-<p>If that layout was named <code>master</code> in the <code>_layouts</code> folder, you could create a Markdown page that used this layout like so:</p>
-<pre><code class="language-markdown">---
-extends: _layouts.master
+            <h2>Collections</h2>
+<p>Jigsaw provides powerful features for working with groups of related pages, or <em>collections</em>. Collections give you the ability to access your content at an aggregate level, enabling you to easily add near-dynamic features like menus, pagination, categories, and tags to your static site.</p>
+<p>Collections can be used to generate pages of related content—for example, blog posts or articles that are sorted by date, with an index page displaying summaries of the five most recent posts—or for embedding related blocks of content <em>within</em> a page, for content like staff bios, product descriptions, or a portfolio of projects.</p>
+<h3>Defining a Collection</h3>
+<p>To define a collection, add an array named <code>collections</code> to <code>config.php</code>. Each collection should be indicated by the name of the collection (typically, plural), followed by an array of settings. For example:</p>
+<blockquote>
+<p><em>config.php</em></p>
+</blockquote>
+<pre><code>&lt;?php
+
+return [
+    'company' =&gt; 'Tighten Co',
+    'contact_email' =&gt; 'support@tighten.co',
+    'collections' =&gt; [
+        'people' =&gt; [
+            'path' =&gt; 'people',
+            'sort' =&gt; 'last_name',
+        ],
+        'posts' =&gt; [
+            'path' =&gt; 'blog/{date|Y-m-d}/{filename}',
+            'author' =&gt; 'Tighten Co.',
+        ],
+    ],
+];</code></pre>
+<p>Jigsaw will look for collection items in a directory with the same name as your collection, preceded by an underscore: in this example, <code>_people</code> and <code>_posts</code>. Collection items can be Markdown or Blade files, or even <a href="/docs/other-file-types">Blade/Markdown hybrid</a> files.</p>
+<p><img src="../../img/collections-directory-structure.png" alt="Collections directory structure" /></p>
+<p>In <code>config.php</code>, the array where you define your collection can contain <a href="/docs/collections-paths">path</a> and <a href="/docs/collections-sorting">sort</a> settings for the collection, as well as <a href="/docs/collections-variables-and-functions/">variables and helper functions</a>. None of these elements are required, however; if omitted, default path and sort settings will be used. In fact, for the simplest configuration using default settings and no variables or functions, you can define a collection with simply its name:</p>
+<blockquote>
+<p><em>config.php</em></p>
+</blockquote>
+<pre><code>&lt;?php
+
+return [
+    'collections' =&gt; [ 'posts' ],
+];</code></pre>
+<h3>Generating Collection Pages</h3>
+<p>If you'd like to generate an individual page for each of your collection items—for example, a page for each blog post—specify a <a href="/docs/collections-extending-parent-templates">parent template</a> file in the <code>extends</code> key of the YAML front matter, or with the <code>@extends</code> directive in a Blade file, just as you would with a regular Jigsaw page. For example:</p>
+<blockquote>
+<p><em>my-first-post.md</em></p>
+</blockquote>
+<pre><code>---
+extends: _layouts.post
+title: My First Blog Post
+author: Keith Damiani
+date: 2017-03-23
 section: content
 ---
 
-# My awesome heading!
+This post is *profoundly* interesting.</code></pre>
+<blockquote>
+<p>_<em>layouts/post.blade.php</em></p>
+</blockquote>
+<pre><code>@extends('_layouts.master')
 
-My awesome content!</code></pre>
-<p>The end result would be a generated page that looked like this:</p>
-<pre><code class="language-html">&lt;html&gt;
-    &lt;head&gt;...&lt;/head&gt;
-    &lt;body&gt;
-        &lt;h1&gt;My awesome heading!&lt;/h1&gt;
-        &lt;p&gt;My awesome content!&lt;/p&gt;
-    &lt;/body&gt;
-&lt;/html&gt;</code></pre>
-<h3>Custom front matter variables</h3>
-<p>Imagine you have a layout named <code>post.blade.php</code> in your <code>_layouts</code> folder that looks like this:</p>
-<pre><code class="language-html">@extends('_layouts.master')
+&lt;h1&gt;{{ $page-&gt;title }}&lt;/h1&gt;
+&lt;p&gt;By {{ $page-&gt;author }} • {{ $page-&gt;date }}&lt;/p&gt;
 
-@section('content')
-    &lt;h1&gt;{{ $title }}&lt;/h1&gt;
-    &lt;h2&gt;by {{ $author }}&lt;/h2&gt;
+@yield('content')</code></pre>
+<h3>Accessing Collection Items</h3>
+<p>In any Blade template, you have access to each of your collections using a variable with the collection's name. This variable references an object that contains all the elements in your collection, and can be iterated over to
+access individual collection items. The collection variable also behaves as if it were an <a href="https://laravel.com/docs/5.4/collections">Illuminate Collection</a> in Laravel, meaning you have access to all of Laravel's standard collection methods like <code>count()</code>, <code>filter()</code>, and <code>where()</code>.</p>
+<p>For example, to create a list of the titles for all your blog posts, you can iterate over the <code>$posts</code> object in a Blade <code>@foreach</code> loop, and display the <code>title</code> property that you defined in the YAML front matter of each post:</p>
+<blockquote>
+<p><em>posts.blade.php</em></p>
+</blockquote>
+<pre><code>&lt;p&gt;Total of {{ $posts-&gt;count() }} posts&lt;/p&gt;
 
-    @yield('postContent')
-@endsection</code></pre>
-<p>You can populate the <code>$title</code> and <code>$author</code> variables by adding custom keys to the YAML front matter:</p>
-<pre><code class="language-markdown">---
-extends: _layouts.post
-section: postContent
-title: "Jigsaw is awesome!"
-author: "Adam Wathan"
----
+&lt;ul&gt;
+@foreach ($posts as $post)
+    &lt;li&gt;{{ $post-&gt;title }}&lt;/li&gt;
+@endforeach
+&lt;/ul&gt;</code></pre>
+<h3>Collection Metadata</h3>
+<p>In addition to the <a href="/docs/page-metadata/">metadata</a> available for every page, such as <code>getPath()</code>, <code>getUrl()</code>, and <code>getFilename()</code>, collection items have access to a few additional functions:</p>
+<ul>
+<li><code>getContent()</code> returns the main content of the collection item (currently, for Markdown files only)</li>
+<li><code>getCollection()</code> returns the name of the collection</li>
+<li><code>getPrevious()</code> and <code>getNext()</code> give you the adjacent items in the collection, based on the collection's default <a href="/docs/collections-sorting">sort order</a></li>
+<li><code>getFirst()</code> returns the first item of a collection (as does the Laravel collection method <code>first()</code>)</li>
+<li><code>getLast()</code> returns the last item of a collection (as does the Laravel collection method <code>last()</code>)</li>
+</ul>
+<blockquote>
+<p>_<em>layouts/post.blade.php</em></p>
+</blockquote>
+<pre><code>@extends('_layouts.master')
 
-Jigsaw is one of the greatest static site generators of all time.</code></pre>
-<p>...which would generate this:</p>
-<pre><code class="language-html">&lt;html&gt;
-    &lt;head&gt;...&lt;/head&gt;
-    &lt;body&gt;
-        &lt;h1&gt;Jigsaw is awesome!&lt;/h1&gt;
-        &lt;h2&gt;by Adam Wathan&lt;/h2&gt;
+&lt;h1&gt;{{ $page-&gt;title }}&lt;/h1&gt;
 
-        &lt;p&gt;
-            Jigsaw is one of the greatest static site generators of all time.
-        &lt;/p&gt;
-    &lt;/body&gt;
-&lt;/html&gt;</code></pre>
+@yield('content')
+
+@if ($page-&gt;getNext())
+    &lt;p&gt;Read my next post:
+        &lt;a href="{{ $page-&gt;getNext()-&gt;path }}"&gt;{{ $page-&gt;getNext()-&gt;title }}&lt;/a&gt;
+    &lt;/p&gt;
+@endif</code></pre>
         </div>
     </div>
 </div>

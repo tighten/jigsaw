@@ -51,15 +51,28 @@
         <div class="col-md-3 m-xs-b-6">
             <nav class="nav-list">
                 <a class="nav-list-item" href="/docs/installation/">Installation</a>
+                <a class="nav-list-item nav-list-item--sub" href="/docs/upgrading/">Upgrading</a>
                 <a class="nav-list-item" href="/docs/starting-a-new-site/">Starting a New Site</a>
                 <a class="nav-list-item" href="/docs/building-and-previewing/">Building &amp; Previewing</a>
                 <a class="nav-list-item" href="/docs/site-variables/">Site Variables</a>
+                <a class="nav-list-item" href="/docs/helper-functions/">Helper Functions</a>
+                <a class="nav-list-item" href="/docs/page-metadata/">Page Metadata</a>
                 <a class="nav-list-item" href="/docs/environments/">Environments</a>
-                <a class="nav-list-item" href="/docs/blade-templating/">Blade Templating</a>
-                <a class="nav-list-item" href="/docs/layouts-and-partials/">Layouts &amp; Partials</a>
-                <a class="nav-list-item" href="/docs/markdown/">Markdown</a>
-                <a class="nav-list-item" href="/docs/compiling-assets/">Compiling Assets</a>
+
+                <a class="nav-list-item" href="/docs/blade-templates-and-partials/">Supported File Types</a>
+                <a class="nav-list-item nav-list-item--sub" href="/docs/blade-templates-and-partials/">Blade Templates &amp; Partials</a>
+                <a class="nav-list-item nav-list-item--sub" href="/docs/markdown/">Markdown</a>
+                <a class="nav-list-item nav-list-item--sub" href="/docs/other-file-types/">Other File Types</a>
+
+                <a class="nav-list-item" href="/docs/collections/">Collections</a>
+                <a class="nav-list-item nav-list-item--sub" href="/docs/collections-extending-parent-templates/">Extending Parent Templates</a>
+                <a class="nav-list-item nav-list-item--sub" href="/docs/collections-paths/">Paths</a>
+                <a class="nav-list-item nav-list-item--sub" href="/docs/collections-sorting/">Sorting</a>
+                <a class="nav-list-item nav-list-item--sub" href="/docs/collections-pagination/">Pagination</a>
+                <a class="nav-list-item nav-list-item--sub" href="/docs/collections-variables-and-functions/">Variables &amp; Helper Functions</a>
+
                 <a class="nav-list-item" href="/docs/pretty-urls/">Pretty URLs</a>
+                <a class="nav-list-item" href="/docs/compiling-assets/">Compiling Assets</a>
                 <a class="nav-list-item" href="/docs/deploying-your-site/">Deploying Your Site</a>
             </nav>
             <p class="p-xs-x-1 p-xs-y-4 text-dark-soft">
@@ -86,9 +99,6 @@
 <pre><code>$ ./vendor/bin/jigsaw init</code></pre>
 <p>When Jigsaw is installed locally, you'll run the following command (instead of <code>jigsaw build</code>) to build your site:</p>
 <pre><code>$ ./vendor/bin/jigsaw build</code></pre>
-<blockquote>
-<p>If you are using <a href="/docs/compiling-assets/">Elixir to compile assets</a>, you should update the <code>exec</code> command in <code>gulpfile.js</code> so that Elixir will run the correct <code>build</code> command: <code>.exec('./vendor/bin/jigsaw build', ['./source/**/*', '!./source/_assets/**/*'])</code></p>
-</blockquote>
         </div>
     </div>
 </div>

@@ -80,20 +80,88 @@
             </p>
         </div>
         <div class="col-md-9 documentation-page">
-            <h2>Starting a New Site</h2>
-<p>The fastest way to start a new Jigsaw site is to use the built-in <code>init</code> command to scaffold the default directory structure.</p>
-<p>If you have Jigsaw installed globally, simply run:</p>
-<pre><code>$ jigsaw init my-site</code></pre>
-<p>This will scaffold a new Jigsaw site in a new folder called <code>my-site</code> in the current directory.</p>
-<p>If you've already created a folder for your site and installed Jigsaw local to that folder with Composer, run:</p>
-<pre><code>$ jigsaw init</code></pre>
-<p>This will scaffold a new Jigsaw site in the current directory.</p>
-<h3>Directory structure</h3>
-<p>By default, Jigsaw gives you the following directory structure:</p>
-<p><img src="../../img/directory-structure.png" alt="Default directory structure" /></p>
-<p>The <code>source</code> directory contains the actual contents of your site. This is where all of your sites pages, CSS, Javascript, images, etc. will be kept.</p>
-<p>At the root of the directory, Jigsaw provides <code>gulpfile.js</code> and <code>package.json</code> for compiling your assets, and a <code>config.php</code> file where you can specify variables to be made available in your templates.</p>
-<p>Next, learn about <a href="../building-and-previewing">building and previewing your site</a>.</p>
+            <h4><a href="/docs/collections">Collections</a></h4>
+<h2>Variables &amp; Helper Functions</h2>
+<p>Each collection can have its own set of variables and helper functions defined in the collection array in <code>config.php</code>. These follow the same format as the site-wide <a href="/docs/site-variables">variables</a> and <a href="/docs/helper-functions">helper functions</a> that are defined at the top level of the <code>config.php</code> array.</p>
+<h3>Variables</h3>
+<p>Just as with site-wide variables, collection variables defined in <code>config.php</code> can act as defaults, which can be overridden by variables of the same name specified in the YAML front matter of a collection item. In fact, top-level variables in <code>config.php</code> will be overridden by variables of the same name in a collection's array, which will be further overridden by references in the YAML header of any individual page, allowing you to set up a cascade of variable defaults. For example:</p>
+<blockquote>
+<p><em>config.php</em></p>
+</blockquote>
+<pre><code>&lt;?php
+
+return [
+    'author' =&gt; 'Default Site Author',
+    'collections' =&gt; [
+        'posts' =&gt; [
+            'author' =&gt; 'Default Blog Author',
+        ],
+    ],
+];</code></pre>
+<blockquote>
+<p>_<em>posts/blog-post-1.blade.php</em></p>
+</blockquote>
+<pre><code>---
+extends: _layouts.post
+title: My First Post
+author: Keith Damiani
+---
+@section ('content')
+
+&lt;h1&gt;{{ $page-&gt;title }}&lt;/h1&gt;
+&lt;p&gt;By {{ $page-&gt;author }}&lt;/p&gt;
+
+@endsection</code></pre>
+<p>For this collection item, author will be <em>Keith Damiani</em>, the value from the YAML header.</p>
+<hr />
+<blockquote>
+<p>_<em>posts/blog-post-2.blade.php</em></p>
+</blockquote>
+<pre><code>---
+extends: _layouts.post
+title: My Second Post
+---
+@section ('content')
+
+&lt;h1&gt;{{ $page-&gt;title }}&lt;/h1&gt;
+&lt;p&gt;By {{ $page-&gt;author }}&lt;/p&gt;
+
+@endsection</code></pre>
+<p>For this collection item, author will be <em>Default Blog Author</em>, the value from the <code>posts</code> array in <code>config.php</code>.</p>
+<hr />
+<blockquote>
+<p><em>about-us.blade.php</em></p>
+</blockquote>
+<pre><code>---
+extends: _layouts.about
+title: About our company
+---
+@section ('content')
+
+&lt;h1&gt;{{ $page-&gt;title }}&lt;/h1&gt;
+&lt;p&gt;By {{ $page-&gt;author }}&lt;/p&gt;
+
+@endsection</code></pre>
+<p>For this regular (non-collection) page, author will be <em>Default Site Author</em>, the value from the top level of <code>config.php.</code></p>
+<h3>Helper Functions</h3>
+<p>Helper functions can be included in the collection setitngs array in <code>config.php</code>, and will be available to all of that collection's items. The same cascading rules that apply to variables also apply to functions, i.e. functions defined for a collection will override a function of the same name defined at the top level. For example:</p>
+<blockquote>
+<p><em>config.php</em></p>
+</blockquote>
+<pre><code>&lt;?php
+
+return [
+    'excerpt' =&gt; function ($page, $characters = 100) {
+        return substr($page-&gt;getContent(), 0, $characters);
+    },
+    'collections' =&gt; [
+        'posts' =&gt; [
+            'excerpt' =&gt; function ($page, $characters = 50) {
+                return substr(strip_tags($page-&gt;getContent()), 0, $characters);
+            },
+        ],
+    ],
+];</code></pre>
         </div>
     </div>
 </div>

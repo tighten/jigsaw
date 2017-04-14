@@ -80,20 +80,62 @@
             </p>
         </div>
         <div class="col-md-9 documentation-page">
-            <h2>Starting a New Site</h2>
-<p>The fastest way to start a new Jigsaw site is to use the built-in <code>init</code> command to scaffold the default directory structure.</p>
-<p>If you have Jigsaw installed globally, simply run:</p>
-<pre><code>$ jigsaw init my-site</code></pre>
-<p>This will scaffold a new Jigsaw site in a new folder called <code>my-site</code> in the current directory.</p>
-<p>If you've already created a folder for your site and installed Jigsaw local to that folder with Composer, run:</p>
-<pre><code>$ jigsaw init</code></pre>
-<p>This will scaffold a new Jigsaw site in the current directory.</p>
-<h3>Directory structure</h3>
-<p>By default, Jigsaw gives you the following directory structure:</p>
-<p><img src="../../img/directory-structure.png" alt="Default directory structure" /></p>
-<p>The <code>source</code> directory contains the actual contents of your site. This is where all of your sites pages, CSS, Javascript, images, etc. will be kept.</p>
-<p>At the root of the directory, Jigsaw provides <code>gulpfile.js</code> and <code>package.json</code> for compiling your assets, and a <code>config.php</code> file where you can specify variables to be made available in your templates.</p>
-<p>Next, learn about <a href="../building-and-previewing">building and previewing your site</a>.</p>
+            <h4><a href="/docs/collections">Collections</a></h4>
+<h2>Pagination</h2>
+<p>You can create a Blade template that displays your collection items in a paginated format by including a <code>pagination</code> key in the template's YAML front matter. The pagination header should include the <code>collection</code> name and the <code>perPage</code> count:</p>
+<blockquote>
+<p><em>posts.blade.php</em></p>
+</blockquote>
+<pre><code>---
+pagination:
+  collection: posts
+  perPage: 5
+---
+@extends('_layouts.master')
+...</code></pre>
+<p>Once the <code>pagination</code> has been defined in the header, the template will have access to a special <code>$pagination</code> variable, which has several attributes:</p>
+<ul>
+<li><code>$pagination-&gt;items</code> contains an array of collection items for the current page</li>
+<li><code>$pagination-&gt;currentPage</code> contains the page number of the current page</li>
+<li><code>$pagination-&gt;totalPages</code> contains the total number of pages</li>
+<li>
+<p><code>$pagination-&gt;pages</code> contains an array of paths to each page</p>
+<blockquote>
+<p>Note that the <code>pages</code> are indexed by their page number, i.e. they are 1-based. So you can refer to the paths of a page by the page number, i.e. <code>$pagination-&gt;page[1]</code> will return the path to the first page.</p>
+</blockquote>
+</li>
+<li><code>$pagination-&gt;first</code> contains the path to the first page (the same as <code>$pagination-&gt;path[1]</code>)</li>
+<li><code>$pagination-&gt;last</code> contains the path to the last page</li>
+<li><code>$pagination-&gt;next</code> contains the path to the next page</li>
+<li><code>$pagination-&gt;previous</code> contains the path to the previous page</li>
+</ul>
+<p>Using these <code>$pagination</code> attributes, you can build a set of pagination buttons and links:</p>
+<pre><code>@if ($previous = $pagination-&gt;previous)
+    &lt;a href="{{ $page-&gt;baseUrl }}{{ $pagination-&gt;first }}"&gt;&amp;lt;&amp;lt;&lt;/a&gt;
+    &lt;a href="{{ $page-&gt;baseUrl }}{{ $previous }}"&gt;&amp;lt;&lt;/a&gt;
+@else
+    &amp;lt;&amp;lt; &amp;lt;
+@endif
+
+@foreach ($pagination-&gt;pages as $pageNumber =&gt; $path)
+    &lt;a href="{{ $page-&gt;baseUrl }}{{ $path }}"
+        class="{{ $pagination-&gt;currentPage == $pageNumber ? 'selected' : '' }}"&gt;
+        {{ $pageNumber }}
+    &lt;/a&gt;
+@endforeach
+
+@if ($next = $pagination-&gt;next)
+    &lt;a href="{{ $page-&gt;baseUrl }}{{ $next }}"&gt;&amp;gt;&lt;/a&gt;
+    &lt;a href="{{ $page-&gt;baseUrl }}{{ $pagination-&gt;last }}"&gt;&amp;gt;&amp;gt;&lt;/a&gt;
+@else
+    &amp;gt; &amp;gt;&amp;gt;
+@endif</code></pre>
+<p>To display the items on each page, iterate over the <code>$pagination-&gt;items</code> collection:</p>
+<pre><code>@foreach ($pagination-&gt;items as $post)
+    &lt;h3&gt;&lt;a href="{{ $post-&gt;getUrl() }}"&gt;{{ $post-&gt;title }}&lt;/a&gt;&lt;/h3&gt;
+    &lt;p class="text-sm"&gt;by {{ $post-&gt;author }} • {{ $post-&gt;date }}&lt;/p&gt;
+    &lt;div&gt;{!! $post-&gt;getContent() !!}&lt;/div&gt;
+@endforeach</code></pre>
         </div>
     </div>
 </div>

@@ -51,28 +51,15 @@
         <div class="col-md-3 m-xs-b-6">
             <nav class="nav-list">
                 <a class="nav-list-item" href="/docs/installation/">Installation</a>
-                <a class="nav-list-item nav-list-item--sub" href="/docs/upgrading/">Upgrading</a>
                 <a class="nav-list-item" href="/docs/starting-a-new-site/">Starting a New Site</a>
                 <a class="nav-list-item" href="/docs/building-and-previewing/">Building &amp; Previewing</a>
                 <a class="nav-list-item" href="/docs/site-variables/">Site Variables</a>
-                <a class="nav-list-item" href="/docs/helper-functions/">Helper Functions</a>
-                <a class="nav-list-item" href="/docs/page-metadata/">Page Metadata</a>
                 <a class="nav-list-item" href="/docs/environments/">Environments</a>
-
-                <a class="nav-list-item" href="/docs/blade-templates-and-partials/">Supported File Types</a>
-                <a class="nav-list-item nav-list-item--sub" href="/docs/blade-templates-and-partials/">Blade Templates &amp; Partials</a>
-                <a class="nav-list-item nav-list-item--sub" href="/docs/markdown/">Markdown</a>
-                <a class="nav-list-item nav-list-item--sub" href="/docs/other-file-types/">Other File Types</a>
-
-                <a class="nav-list-item" href="/docs/collections/">Collections</a>
-                <a class="nav-list-item nav-list-item--sub" href="/docs/collections-extending-parent-templates/">Extending Parent Templates</a>
-                <a class="nav-list-item nav-list-item--sub" href="/docs/collections-paths/">Paths</a>
-                <a class="nav-list-item nav-list-item--sub" href="/docs/collections-sorting/">Sorting</a>
-                <a class="nav-list-item nav-list-item--sub" href="/docs/collections-pagination/">Pagination</a>
-                <a class="nav-list-item nav-list-item--sub" href="/docs/collections-variables-and-functions/">Variables &amp; Helper Functions</a>
-
-                <a class="nav-list-item" href="/docs/pretty-urls/">Pretty URLs</a>
+                <a class="nav-list-item" href="/docs/blade-templating/">Blade Templating</a>
+                <a class="nav-list-item" href="/docs/layouts-and-partials/">Layouts &amp; Partials</a>
+                <a class="nav-list-item" href="/docs/markdown/">Markdown</a>
                 <a class="nav-list-item" href="/docs/compiling-assets/">Compiling Assets</a>
+                <a class="nav-list-item" href="/docs/pretty-urls/">Pretty URLs</a>
                 <a class="nav-list-item" href="/docs/deploying-your-site/">Deploying Your Site</a>
             </nav>
             <p class="p-xs-x-1 p-xs-y-4 text-dark-soft">
@@ -80,55 +67,9 @@
             </p>
         </div>
         <div class="col-md-9 documentation-page">
-            <h4><a href="/docs/collections">Collections</a></h4>
-<h2>Sorting</h2>
-<p>You can control the order in which your collection items are sorted. When iterating over your collection in a <code>@foreach</code> loop, the items will be returned in the order you specify.</p>
-<h3>Default Sort</h3>
-<p>By default, collection items will be sorted by their filenames in ascending order. This can be a handy way to order items by date, for instance, by prepending the date to each filename:</p>
-<pre><code>2017-01-01-my-first-post.md
-2017-02-14-my-second-post.md
-2017-03-15-my-third-post.md
-...</code></pre>
-<h3>Sorting by a Variable</h3>
-<p>You can also sort your collection by the values of variables defined in the YAML front matter of each collection item. Add a <code>sort</code> key to the collection's array in <code>config.php</code>, and specify the name of the field to sort by:</p>
-<blockquote>
-<p><em>config.php</em></p>
-</blockquote>
-<pre><code>&lt;?php
-
-return [
-    'collections' =&gt; [
-        'posts' =&gt; [
-            'sort' =&gt; 'sort_order',
-        ],
-    ],
-];</code></pre>
-<p>To sort by multiple variables (for a hierarchical sort), specify an array of variables:</p>
-<blockquote>
-<p><em>config.php</em></p>
-</blockquote>
-<pre><code>&lt;?php
-
-return [
-    'collections' =&gt; [
-        'posts' =&gt; [
-            'sort' =&gt; ['featured', 'date'],
-        ],
-    ],
-];</code></pre>
-<p>To sort in descending order, prepend a <code>-</code> to the variable name:</p>
-<blockquote>
-<p><em>config.php</em></p>
-</blockquote>
-<pre><code>&lt;?php
-
-return [
-    'collections' =&gt; [
-        'posts' =&gt; [
-            'sort' =&gt; ['featured', '-date'],
-        ],
-    ],
-];</code></pre>
+            <h2>Blade Templating</h2>
+<p>Jigsaw specific documentation for Blade is coming soon!</p>
+<p>In the mean time, check out <a href="https://laravel.com/docs/blade">the official Blade documentation</a>.</p>
         </div>
     </div>
 </div>

@@ -51,28 +51,15 @@
         <div class="col-md-3 m-xs-b-6">
             <nav class="nav-list">
                 <a class="nav-list-item" href="/docs/installation/">Installation</a>
-                <a class="nav-list-item nav-list-item--sub" href="/docs/upgrading/">Upgrading</a>
                 <a class="nav-list-item" href="/docs/starting-a-new-site/">Starting a New Site</a>
                 <a class="nav-list-item" href="/docs/building-and-previewing/">Building &amp; Previewing</a>
                 <a class="nav-list-item" href="/docs/site-variables/">Site Variables</a>
-                <a class="nav-list-item" href="/docs/helper-functions/">Helper Functions</a>
-                <a class="nav-list-item" href="/docs/page-metadata/">Page Metadata</a>
                 <a class="nav-list-item" href="/docs/environments/">Environments</a>
-
-                <a class="nav-list-item" href="/docs/blade-templates-and-partials/">Supported File Types</a>
-                <a class="nav-list-item nav-list-item--sub" href="/docs/blade-templates-and-partials/">Blade Templates &amp; Partials</a>
-                <a class="nav-list-item nav-list-item--sub" href="/docs/markdown/">Markdown</a>
-                <a class="nav-list-item nav-list-item--sub" href="/docs/other-file-types/">Other File Types</a>
-
-                <a class="nav-list-item" href="/docs/collections/">Collections</a>
-                <a class="nav-list-item nav-list-item--sub" href="/docs/collections-extending-parent-templates/">Extending Parent Templates</a>
-                <a class="nav-list-item nav-list-item--sub" href="/docs/collections-paths/">Paths</a>
-                <a class="nav-list-item nav-list-item--sub" href="/docs/collections-sorting/">Sorting</a>
-                <a class="nav-list-item nav-list-item--sub" href="/docs/collections-pagination/">Pagination</a>
-                <a class="nav-list-item nav-list-item--sub" href="/docs/collections-variables-and-functions/">Variables &amp; Helper Functions</a>
-
-                <a class="nav-list-item" href="/docs/pretty-urls/">Pretty URLs</a>
+                <a class="nav-list-item" href="/docs/blade-templating/">Blade Templating</a>
+                <a class="nav-list-item" href="/docs/layouts-and-partials/">Layouts &amp; Partials</a>
+                <a class="nav-list-item" href="/docs/markdown/">Markdown</a>
                 <a class="nav-list-item" href="/docs/compiling-assets/">Compiling Assets</a>
+                <a class="nav-list-item" href="/docs/pretty-urls/">Pretty URLs</a>
                 <a class="nav-list-item" href="/docs/deploying-your-site/">Deploying Your Site</a>
             </nav>
             <p class="p-xs-x-1 p-xs-y-4 text-dark-soft">
@@ -110,43 +97,7 @@
 <p>Then simply follow the steps in <a href="http://docs.aws.amazon.com/gettingstarted/latest/swh/website-hosting-intro.html">Amazon's static site documentation</a> to deploy your <code>build_production</code> folder to your S3 bucket.</p>
 <h3>Manually</h3>
 <p>If you have an existing server that you'd like to use to host your Jigsaw site, all you need to do is get the contents <code>build_production</code> into a public folder that's pointed at by the URL you'd like to use.</p>
-<h3>Changing the Source and Destination Directories</h3>
-<p>Jigsaw will look for your source files in a <code>source</code> directory, and will output your files to a directory named <code>build_</code> followed by the environment you specified in the <code>jigsaw build</code> command (<code>build_local</code> by default, or <code>build_staging</code>, <code>build_production</code>, etc.). You can, however, customize these locations by adding a <code>build</code> key to the array in <code>config.php</code>, and specifying your own source and/or destination paths.</p>
-<blockquote>
-<p><em>config.php</em></p>
-</blockquote>
-<pre><code>&lt;?php
-
-return [
-    'build' =&gt; [
-        'source' =&gt; 'src',
-        'destination' =&gt; 'my_desination',
-    ],
-    ...</code></pre>
-<p>Source and destination paths are relative to your project root, i.e where your config.php file is located.</p>
-<blockquote>
-<p><em>config.php</em></p>
-</blockquote>
-<pre><code>&lt;?php
-
-return [
-    'build' =&gt; [
-        'destination' =&gt; '../build-one-level-up',
-    ],
-    ...</code></pre>
-<p>To include the environment name in your destination path, use the <code>{env}</code> token in your path name. <code>{env}</code> will be replaced by the environment specified when running jigsaw build, and defaults to <code>local</code>.</p>
-<blockquote>
-<p><em>config.php</em></p>
-</blockquote>
-<pre><code>&lt;?php
-
-return [
-    'build' =&gt; [
-        'destination' =&gt; '../../{env}/public',
-    ],
-    ...</code></pre>
-<p>In this example, running <code>jigsaw build staging</code> would output your built files to staging/public, two levels up from your project root. Jigsaw will create any directories that do not already exist.</p>
-<p>You can also assign different source and build paths for different environments by using multiple <a href="/docs/environments/">environment-specific <code>config.php</code> files</a>. Source and destination paths in <code>config.production.php</code>, for example, will get merged with any build paths that have been defined in <code>config.php</code> when running <code>jigsaw build production</code>.</p>
+<p>We plan to add specific documentation for manually serving a Jigsaw site with nginx soon!</p>
         </div>
     </div>
 </div>

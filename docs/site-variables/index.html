@@ -51,28 +51,15 @@
         <div class="col-md-3 m-xs-b-6">
             <nav class="nav-list">
                 <a class="nav-list-item" href="/docs/installation/">Installation</a>
-                <a class="nav-list-item nav-list-item--sub" href="/docs/upgrading/">Upgrading</a>
                 <a class="nav-list-item" href="/docs/starting-a-new-site/">Starting a New Site</a>
                 <a class="nav-list-item" href="/docs/building-and-previewing/">Building &amp; Previewing</a>
                 <a class="nav-list-item" href="/docs/site-variables/">Site Variables</a>
-                <a class="nav-list-item" href="/docs/helper-functions/">Helper Functions</a>
-                <a class="nav-list-item" href="/docs/page-metadata/">Page Metadata</a>
                 <a class="nav-list-item" href="/docs/environments/">Environments</a>
-
-                <a class="nav-list-item" href="/docs/blade-templates-and-partials/">Supported File Types</a>
-                <a class="nav-list-item nav-list-item--sub" href="/docs/blade-templates-and-partials/">Blade Templates &amp; Partials</a>
-                <a class="nav-list-item nav-list-item--sub" href="/docs/markdown/">Markdown</a>
-                <a class="nav-list-item nav-list-item--sub" href="/docs/other-file-types/">Other File Types</a>
-
-                <a class="nav-list-item" href="/docs/collections/">Collections</a>
-                <a class="nav-list-item nav-list-item--sub" href="/docs/collections-extending-parent-templates/">Extending Parent Templates</a>
-                <a class="nav-list-item nav-list-item--sub" href="/docs/collections-paths/">Paths</a>
-                <a class="nav-list-item nav-list-item--sub" href="/docs/collections-sorting/">Sorting</a>
-                <a class="nav-list-item nav-list-item--sub" href="/docs/collections-pagination/">Pagination</a>
-                <a class="nav-list-item nav-list-item--sub" href="/docs/collections-variables-and-functions/">Variables &amp; Helper Functions</a>
-
-                <a class="nav-list-item" href="/docs/pretty-urls/">Pretty URLs</a>
+                <a class="nav-list-item" href="/docs/blade-templating/">Blade Templating</a>
+                <a class="nav-list-item" href="/docs/layouts-and-partials/">Layouts &amp; Partials</a>
+                <a class="nav-list-item" href="/docs/markdown/">Markdown</a>
                 <a class="nav-list-item" href="/docs/compiling-assets/">Compiling Assets</a>
+                <a class="nav-list-item" href="/docs/pretty-urls/">Pretty URLs</a>
                 <a class="nav-list-item" href="/docs/deploying-your-site/">Deploying Your Site</a>
             </nav>
             <p class="p-xs-x-1 p-xs-y-4 text-dark-soft">
@@ -81,24 +68,19 @@
         </div>
         <div class="col-md-9 documentation-page">
             <h2>Site Variables</h2>
-<p>Anything you add to the array in <code>config.php</code> will be made available in all of your templates, as a property of the <code>$page</code> object.</p>
-<blockquote>
-<p>NOTE: Earlier versions of Jigsaw allowed access to site variables directly by their name. Version 1.0, however, uses the <code>$page</code> object as a means for accessing all site variables.</p>
-</blockquote>
-<p>For example, if your <code>config.php</code> looks like this:</p>
+<p>Anything you add to the array in <code>config.php</code> will be made available as a variable in your templates.</p>
+<p>For example, if your config looks like this:</p>
 <pre><code class="language-php">&lt;?php
 
 return [
     'contact_email' =&gt; 'support@example.com',
 ];</code></pre>
-<p>...you can use that variable in any of your templates like so:</p>
+<p>...you can use that variable in your templates like so:</p>
 <pre><code>@extends('_layouts.master')
 
 @section('content')
-    &lt;p&gt;Contact us at {{ $page-&gt;contact_email }}&lt;/p&gt;
+    &lt;p&gt;Contact us at {{ $contact_email }}&lt;/p&gt;
 @stop</code></pre>
-<p>If you prefer, site variables can also be accessed as arrays:</p>
-<pre><code>&lt;p&gt;Contact us at {{ $page['contact_email'] }}&lt;/p&gt;</code></pre>
 <p>Jigsaw also supports environment-specific site variables, which you can learn more about <a href="../environments/">here</a>.</p>
         </div>
     </div>

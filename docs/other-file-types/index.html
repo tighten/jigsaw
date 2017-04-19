@@ -80,20 +80,12 @@
             </p>
         </div>
         <div class="col-md-9 documentation-page">
-            <h2>Starting a New Site</h2>
-<p>The fastest way to start a new Jigsaw site is to use the built-in <code>init</code> command to scaffold the default directory structure.</p>
-<p>If you have Jigsaw installed globally, simply run:</p>
-<pre><code>$ jigsaw init my-site</code></pre>
-<p>This will scaffold a new Jigsaw site in a new folder called <code>my-site</code> in the current directory.</p>
-<p>If you've already created a folder for your site and installed Jigsaw local to that folder with Composer, run:</p>
-<pre><code>$ jigsaw init</code></pre>
-<p>This will scaffold a new Jigsaw site in the current directory.</p>
-<h3>Directory structure</h3>
-<p>By default, Jigsaw gives you the following directory structure:</p>
-<p><img src="../../img/directory-structure.png" alt="Default directory structure" /></p>
-<p>The <code>source</code> directory contains the actual contents of your site. This is where all of your sites pages, CSS, Javascript, images, etc. will be kept.</p>
-<p>At the root of the directory, Jigsaw provides <code>gulpfile.js</code> and <code>package.json</code> for compiling your assets, and a <code>config.php</code> file where you can specify variables to be made available in your templates.</p>
-<p>Next, learn about <a href="../building-and-previewing">building and previewing your site</a>.</p>
+            <h2>Other File Types</h2>
+<h3>Blade/Markdown Hybrids</h3>
+<p>Markdown files can use Blade syntax in them—for displaying data, control structures, etc.—by using the extension <code>.blade.md</code>. Files with a <code>.blade.md</code> extension will be processed first by the Blade engine, before the Markdown is parsed.</p>
+<p>Regular <code>.blade.php</code> templates can also use the <code>@include</code> directive to include partials that are Markdown files. A Markdown partial that is included in a Blade template using <code>@include</code> will be parsed by the Markdown parser first.</p>
+<h3>Non-HTML Files</h3>
+<p>Other non-HTML, text-type files can also be processed with the Blade engine first, allowing you to dynamically generate non-HTML files that include variables and Blade control structures. Supported file extensions include <code>.blade.js</code>, <code>.blade.json</code>, <code>.blade.xml</code>, <code>.blade.rss</code>, <code>.blade.txt</code>, and <code>.blade.text</code>. Note that after these file are first processed by Blade, the output file will maintain its filetype extension in the resulting URL; for example, a file named <code>some-file.blade.xml</code> will be processed by Blade, then will be accessible at the URL <code>my-jigsaw-site.com/some-file.xml</code>.</p>
         </div>
     </div>
 </div>

@@ -55,7 +55,7 @@
                 <a class="nav-list-item" href="/docs/starting-a-new-site/">Starting a New Site</a>
                 <a class="nav-list-item" href="/docs/building-and-previewing/">Building &amp; Previewing</a>
                 <a class="nav-list-item" href="/docs/site-variables/">Site Variables</a>
-                <a class="nav-list-item" href="/docs/helper-functions/">Helper Functions</a>
+                <a class="nav-list-item" href="/docs/helper-methods/">Helper Methods</a>
                 <a class="nav-list-item" href="/docs/page-metadata/">Page Metadata</a>
                 <a class="nav-list-item" href="/docs/environments/">Environments</a>
 
@@ -155,7 +155,7 @@ access individual collection items. The collection variable also behaves as if i
 <h3>Collection Metadata</h3>
 <p>In addition to the <a href="/docs/page-metadata/">metadata</a> available for every page, such as <code>getPath()</code>, <code>getUrl()</code>, and <code>getFilename()</code>, collection items have access to a few additional functions:</p>
 <ul>
-<li><code>getContent()</code> returns the main content of the collection item (currently, for Markdown files only)</li>
+<li><code>getContent()</code> returns the main content of the collection item, i.e. the body of the Markdown file (currently, <code>getContent()</code> is available for Markdown files only)</li>
 <li><code>getCollection()</code> returns the name of the collection</li>
 <li><code>getPrevious()</code> and <code>getNext()</code> give you the adjacent items in the collection, based on the collection's default <a href="/docs/collections-sorting">sort order</a></li>
 <li><code>getFirst()</code> returns the first item of a collection (as does the Laravel collection method <code>first()</code>)</li>

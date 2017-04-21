@@ -92,7 +92,7 @@
 return [
     'company' =&gt; 'Tighten Co',
     'selected' =&gt; function ($page, $section) {
-        return str_contains($data-&gt;getPath(), $section) ? 'selected' : '';
+        return str_contains($page-&gt;getPath(), $section) ? 'selected' : '';
     },
 ];</code></pre>
 <p>This method is accessible by calling <code>$page-&gt;selected()</code> from any page.</p>

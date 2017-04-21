@@ -96,6 +96,9 @@
 <p>If you'd like to change the source and destination folders for your assets, edit the following lines in <code>gulpfile.js</code>:</p>
 <pre><code>elixir.config.assetsPath = 'source/_assets';
 elixir.config.publicPath = 'source';</code></pre>
+<h3>Versioning</h3>
+<p>Jigsaw also supports Elixir's <a href="https://laravel.com/docs/elixir#versioning-and-cache-busting">asset versioning</a>. To edit the build path of the generated versions, modify the following line in <code>gulpfile.js</code>:</p>
+<pre><code>elixir.config.versioning.buildFolder = '/';</code></pre>
 <h3>Enabling different preprocessors</h3>
 <p>Jigsaw ships with the following <code>gulpfile.js</code> and is configured to use Sass out of the box:</p>
 <pre><code class="language-js">var gulp = require('gulp');

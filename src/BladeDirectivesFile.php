@@ -2,7 +2,7 @@
 
 use Illuminate\View\Compilers\BladeCompiler;
 
-class BladeFile
+class BladeDirectivesFile
 {
     protected $directives;
 

@@ -14,7 +14,7 @@ use Mni\FrontYAML\Bridge\Symfony\SymfonyYAMLParser;
 use Mni\FrontYAML\Markdown\MarkdownParser;
 use Mni\FrontYAML\Parser;
 use Mni\FrontYAML\YAML\YAMLParser;
-use TightenCo\Jigsaw\BladeFile;
+use TightenCo\Jigsaw\BladeDirectivesFile;
 use TightenCo\Jigsaw\CollectionDataLoader;
 use TightenCo\Jigsaw\CollectionItemHandlers\BladeCollectionItemHandler;
 use TightenCo\Jigsaw\CollectionItemHandlers\MarkdownCollectionItemHandler;
@@ -99,7 +99,7 @@ $container->bind(Factory::class, function ($c) use ($cachePath) {
         return new BladeMarkdownEngine($compilerEngine, $c[FrontMatterParser::class]);
     });
 
-    (new BladeFile(getcwd() . '/blade.php'))->register($bladeCompiler);
+    (new BladeDirectivesFile(getcwd() . '/blade.php'))->register($bladeCompiler);
 
     $finder = new FileViewFinder(new Filesystem, [$c['buildPath']['source']]);
 

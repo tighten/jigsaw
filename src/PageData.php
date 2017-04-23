@@ -1,8 +1,5 @@
 <?php namespace TightenCo\Jigsaw;
 
-use TightenCo\Jigsaw\IterableObject;
-use TightenCo\Jigsaw\PageVariable;
-
 class PageData extends IterableObject
 {
     public static function withPageMetaData($siteData, $meta)

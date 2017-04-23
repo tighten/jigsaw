@@ -33,7 +33,7 @@ class CollectionDataLoader
             $collection = Collection::withSettings($collectionSettings, $collectionName);
             $collection->loadItems($this->buildCollection($collection));
 
-            return $collection->updateItems($collection->map(function($item) {
+            return $collection->updateItems($collection->map(function ($item) {
                 return $this->addCollectionItemContent($item);
             }));
         })->all();
@@ -102,7 +102,7 @@ class CollectionDataLoader
 
     private function buildUrls($paths)
     {
-        $urls = collect($paths)->map(function($path) {
+        $urls = collect($paths)->map(function ($path) {
             return rtrim($this->pageSettings->get('baseUrl'), ' /') . '/' . trim($path, '/');
         });
 

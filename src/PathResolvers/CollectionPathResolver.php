@@ -15,7 +15,7 @@ class CollectionPathResolver
 
     public function link($path, $data)
     {
-        return collect($data->extends)->map(function($bladeViewPath, $templateKey) use ($path, $data) {
+        return collect($data->extends)->map(function ($bladeViewPath, $templateKey) use ($path, $data) {
             return $this->cleanOutputPath(
                 $this->getPath($path, $data, $this->getExtension($bladeViewPath), $templateKey)
             );
@@ -71,7 +71,7 @@ class CollectionPathResolver
         }
 
         $bracketedParametersReplaced =
-            collect($bracketedParameters[0])->map(function($param) use ($data) {
+            collect($bracketedParameters[0])->map(function ($param) use ($data) {
                 return ['token' => $param, 'value' => $this->getParameterValue($param, $data)];
             })->reduce(function ($carry, $param) use ($path) {
                 return str_replace($param['token'], $param['value'], $carry);
@@ -80,7 +80,8 @@ class CollectionPathResolver
         return $bracketedParametersReplaced;
     }
 
-    private function getParameterValue($param, $data) {
+    private function getParameterValue($param, $data)
+    {
         list($param, $dateFormat) = explode('|', trim($param, '{}') . '|');
         $slugSeparator = ctype_alpha($param[0]) ? null : $param[0];
 

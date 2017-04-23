@@ -1,8 +1,5 @@
 <?php namespace TightenCo\Jigsaw;
 
-use TightenCo\Jigsaw\IterableObject;
-use TightenCo\Jigsaw\PageVariable;
-
 class SiteData extends IterableObject
 {
     public static function build($settings)

@@ -19,7 +19,6 @@ class IterableObject extends BaseCollection implements ArrayAccess
     public function get($key, $default = null)
     {
         if ($this->offsetExists($key)) {
-
             return $this->getElement($key);
         }
 

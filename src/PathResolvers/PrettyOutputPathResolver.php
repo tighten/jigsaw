@@ -8,7 +8,7 @@ class PrettyOutputPathResolver
             if ($page > 1) {
                 return '/' . ltrim($this->trimPath($path) . '/', '/') . $page . '/';
             }
-            return  ltrim( '/' . $this->trimPath($path) . '/', '/') . '/';
+            return  ltrim('/' . $this->trimPath($path) . '/', '/') . '/';
         }
 
         if ($type === 'html' && $name !== 'index') {

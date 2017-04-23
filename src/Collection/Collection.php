@@ -18,7 +18,7 @@ class Collection extends BaseCollection
 
     public function loadItems($items)
     {
-        $sortedItems = $this->defaultSort($items)->keyBy(function($item) {
+        $sortedItems = $this->defaultSort($items)->keyBy(function ($item) {
             return $item->getFilename();
         });
 
@@ -35,7 +35,7 @@ class Collection extends BaseCollection
     private function addAdjacentItems($items)
     {
         $count = $items->count();
-        $adjacentItems = $items->map(function($item) {
+        $adjacentItems = $items->map(function ($item) {
             return $item->getFilename();
         });
         $previousItems = $adjacentItems->prepend(null)->take($count);

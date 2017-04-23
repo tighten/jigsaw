@@ -34,6 +34,10 @@ class PrettyOutputPathResolver
             return $this->trimPath($path) . '/' . $name . '/' . 'index.html';
         }
 
+        if (empty($type)) {
+            return sprintf('%s%s%s', $this->trimPath($path), '/', $name);
+        }
+
         return sprintf('%s%s%s.%s', $this->trimPath($path), '/', $name, $type);
     }
 

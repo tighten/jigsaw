@@ -39,11 +39,12 @@ class CollectionPaginator
 
     private function getPageLink($file, $pageNumber)
     {
-        return rtrim($this->outputPathResolver->link(
+        $link = $this->outputPathResolver->link(
             $file->getRelativePath(),
             $file->getFilenameWithoutExtension(),
             'html',
             $pageNumber
-        ), '/');
+        );
+        return ($link !== '/') ? rtrim($link, '/') : $link;
     }
 }

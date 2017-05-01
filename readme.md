@@ -16,3 +16,6 @@ Site variables defined in `config.php`, as well as any variables defined in the 
 
 Check out http://jigsaw.tighten.co/docs/upgrading/ for an example.
 
+### Trouble installing jigsaw globally? 
+Some users are currently having problems when installing jigsaw globally. See issue [#94](https://github.com/tightenco/jigsaw/issues/94). The problem may be some conflict with another package (maybe `laravel/valet`). Try the method described [here](https://github.com/tightenco/jigsaw/issues/94#issuecomment-298230220).
+

@@ -13,6 +13,11 @@ class CollectionItem extends PageVariable
 
         return $item;
     }
+    
+    public function getCollection()
+    {
+        return $this->collection;
+    }
 
     public function getNext()
     {

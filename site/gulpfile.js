@@ -1,4 +1,3 @@
-var gulp = require('gulp');
 var elixir = require('laravel-elixir');
 var argv = require('yargs').argv;
 var bin = require('./tasks/bin');

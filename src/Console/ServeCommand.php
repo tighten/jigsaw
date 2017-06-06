@@ -39,7 +39,7 @@ class ServeCommand extends Command
 
         $this->info("Server started on http://localhost:{$port}");
 
-        passthru("php -S localhost:{$port} -t " . $this->getBuildPath($env));
+        passthru("php -S localhost:{$port} -t " . escapeshellarg($this->getBuildPath($env)));
     }
 
     private function getBuildPath($env)

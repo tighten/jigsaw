@@ -75,7 +75,7 @@ class SiteBuilder
     {
         $directory = $this->getOutputDirectory($file);
         $this->prepareDirectory("{$dest}/{$directory}");
-        $this->files->put("{$dest}/{$this->getOutputPath($file)}", $file->contents());
+        $file->putContents("{$dest}/{$this->getOutputPath($file)}");
     }
 
     private function getHandler($file)

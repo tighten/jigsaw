@@ -13,9 +13,7 @@ class InputFile
 
     public function topLevelDirectory()
     {
-        $parts = explode('/', $this->relativePath());
-
-        return count($parts) == 1 ? '' : $parts[0];
+        return basename(pathinfo($this->relativePath(), PATHINFO_DIRNAME));
     }
 
     public function relativePath()

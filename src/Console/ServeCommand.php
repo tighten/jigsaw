@@ -24,13 +24,13 @@ class ServeCommand extends Command
                 'What environment should we serve?',
                 'local'
             )
-			      ->addOption(
-				        'site',
-				        's',
-				        InputOption::VALUE_OPTIONAL,
-				        'What site should we use?',
-				        null
-			      )
+            ->addOption(
+                'site',
+                's',
+                InputOption::VALUE_OPTIONAL,
+                'What site should we use?',
+                null
+            )
             ->addOption(
                 'port',
                 'p',
@@ -52,18 +52,18 @@ class ServeCommand extends Command
 
     private function getSiteConfig($env)
     {
-    	  if(!isset($this->app->config['sites'])) {
-    		    return $this->getAbsolutePath("config.{$env}.php");
-		    }
+        if(!isset($this->app->config['sites'])) {
+            return $this->getAbsolutePath("config.{$env}.php");
+        }
 
-		    $site = $this->input->getOption('site');
-		    if(empty($site)) {
-			      $site = key($this->app->config['sites']);
-		    }
+        $site = $this->input->getOption('site');
+        if(empty($site)) {
+            $site = key($this->app->config['sites']);
+        }
 
-		    $config = $this->app->config['sites'][ $site ];
-		    return $this->getAbsolutePath($config.DIRECTORY_SEPARATOR."config.php");
-	  }
+        $config = $this->app->config['sites'][ $site ];
+        return $this->getAbsolutePath($config.DIRECTORY_SEPARATOR."config.php");
+    }
 
     private function getBuildPath($env)
     {

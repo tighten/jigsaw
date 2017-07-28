@@ -103,11 +103,11 @@ $container->bind(Factory::class, function ($c) use ($cachePath) {
 
     $finder = new FileViewFinder(new Filesystem, [$c['buildPath']['source']]);
 
-	  if(isset($c['config']['modules'])) {
-		    foreach($c['config']['modules'] as $namespace => $path) {
-			      $finder->addNamespace($namespace, $path);
-		    }
-	  }
+    if(isset($c['config']['modules'])) {
+        foreach($c['config']['modules'] as $namespace => $path) {
+            $finder->addNamespace($namespace, $path);
+        }
+    }
 
     return new Factory($resolver, $finder, Mockery::mock(Dispatcher::class)->shouldIgnoreMissing());
 });

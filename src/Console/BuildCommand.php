@@ -59,7 +59,7 @@ class BuildCommand extends Command
 
     private function buildSite($env, $site = null, $source = null) {
 		if(!empty($site)) {
-			$config = (new ConfigFile($this->getAbsolutePath($source.'/config.php')))->config;
+			$config = (new ConfigFile($this->getAbsolutePath($source.DIRECTORY_SEPARATOR.'config.php')))->config;
 			$config['build']['source'] = $source.DIRECTORY_SEPARATOR.'source';
 			$this->app->instance('config', collect($config));
 		} else {

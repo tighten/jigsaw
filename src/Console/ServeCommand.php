@@ -2,6 +2,7 @@
 
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
+use TightenCo\Jigsaw\ConfigFile;
 
 class ServeCommand extends Command
 {
@@ -23,6 +24,13 @@ class ServeCommand extends Command
                 'What environment should we serve?',
                 'local'
             )
+			->addOption(
+				'site',
+				's',
+				InputOption::VALUE_OPTIONAL,
+				'What site should we use?',
+				null
+			)
             ->addOption(
                 'port',
                 'p',
@@ -42,9 +50,23 @@ class ServeCommand extends Command
         passthru("php -S localhost:{$port} -t " . escapeshellarg($this->getBuildPath($env)));
     }
 
+    private function getSiteConfig($env) {
+    	if(!isset($this->app->config['sites'])) {
+    		return $this->getAbsolutePath("config.{$env}.php");
+		}
+
+		$site = $this->input->getOption('site');
+		if(empty($site)) {
+			$site = key($this->app->config['sites']);
+		}
+
+		$config = $this->app->config['sites'][ $site ];
+		return $this->getAbsolutePath($config.DIRECTORY_SEPARATOR."config.php");
+	}
+
     private function getBuildPath($env)
     {
-        $environmentConfigPath = $this->getAbsolutePath("config.{$env}.php");
+        $environmentConfigPath = $this->getSiteConfig($env);
         $environmentConfig = file_exists($environmentConfigPath) ? include $environmentConfigPath : [];
 
         $customBuildPath = array_get(

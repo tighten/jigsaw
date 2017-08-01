@@ -13,14 +13,16 @@ class InputFile
 
     public function topLevelDirectory()
     {
-        $parts = preg_split('/[\\/\\\]+/', $this->relativePath());
+        $parts = explode(DIRECTORY_SEPARATOR, $this->relativePath());
 
         return count($parts) == 1 ? '' : $parts[0];
     }
 
     public function relativePath()
     {
-        return trim(str_replace($this->basePath, '', $this->file->getPathname()), "\\/");
+        $relative_path = str_replace(realpath($this->basePath), '', realpath($this->file->getPathname()));
+
+        return trim($relative_path, DIRECTORY_SEPARATOR);
     }
 
     public function bladeViewPath()

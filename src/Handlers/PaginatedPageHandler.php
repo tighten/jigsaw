@@ -36,7 +36,7 @@ class PaginatedPageHandler
 
         return $this->paginator->paginate($file,
             $pageData->get($pageData->page->pagination->collection),
-            $pageData->page->pagination->perPage ?: 10
+            $pageData->page->pagination->perPage ?: ($pageData->page->perPage ?: 10)
         )->map(function ($page) use ($file, $pageData) {
             $pageData->setPagePath($page->current);
             $pageData->put('pagination', $page);

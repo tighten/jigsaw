@@ -6,25 +6,25 @@ class PrettyOutputPathResolver
     {
         if ($type === 'html' && $name === 'index') {
             if ($page > 1) {
-                return '/' . ltrim($this->trimPath($path) . '/', '/') . $page . '/';
+                return '/' . ltrim($this->trimPath($path) . '/', "\\/") . $page . '/';
             }
-            return  ltrim('/' . $this->trimPath($path) . '/', '/') . '/';
+            return  ltrim('/' . $this->trimPath($path) . '/', "\\/") . '/';
         }
 
         if ($type === 'html' && $name !== 'index') {
             if ($page > 1) {
-                return '/' . ltrim($this->trimPath($path) . '/', '/') . $name . '/' . $page . '/';
+                return '/' . ltrim($this->trimPath($path) . '/', "\\/") . $name . '/' . $page . '/';
             }
-            return '/' . ltrim($this->trimPath($path) . '/', '/') . $name . '/';
+            return '/' . ltrim($this->trimPath($path) . '/', "\\/") . $name . '/';
         }
 
-        return sprintf('%s%s%s.%s', '/', ltrim($this->trimPath($path) . '/', '/'), $name, $type);
+        return sprintf('%s%s%s.%s', '/', ltrim($this->trimPath($path) . '/', "\\/"), $name, $type);
     }
 
     public function path($path, $name, $type, $page = 1)
     {
         if ($type === 'html' && $name === 'index' && $page > 1) {
-            return ltrim($this->trimPath($path) . '/' . $page . '/' . 'index.html', '/');
+            return ltrim($this->trimPath($path) . '/' . $page . '/' . 'index.html', "\\/");
         }
 
         if ($type === 'html' && $name !== 'index') {
@@ -44,7 +44,7 @@ class PrettyOutputPathResolver
     public function directory($path, $name, $type, $page = 1)
     {
         if ($type === 'html' && $name === 'index' && $page > 1) {
-            return ltrim($this->trimPath($path) . '/' . $page, '/');
+            return ltrim($this->trimPath($path) . '/' . $page, "\\/");
         }
 
         if ($type === 'html' && $name !== 'index') {
@@ -59,6 +59,6 @@ class PrettyOutputPathResolver
 
     private function trimPath($path)
     {
-        return rtrim(ltrim($path, '/'), '/');
+        return rtrim(ltrim($path, "\\/"), "\\/");
     }
 }

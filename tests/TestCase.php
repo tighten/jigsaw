@@ -17,7 +17,7 @@ class TestCase extends BaseTestCase
     {
         parent::setUpBeforeClass();
 
-        exec('jigsaw build testing');
+        echo shell_exec('./jigsaw build testing');
     }
 
     public static function tearDownAfterClass()
@@ -31,9 +31,18 @@ class TestCase extends BaseTestCase
 
     public function setUp()
     {
-        $this->filesystem = new Filesystem;
-        $this->build_files = $this->filesystem->allFiles('tests/build-testing');
-        $this->snapshot_files = $this->filesystem->allFiles('tests/snapshots');
+        try {
+            $this->filesystem = new Filesystem;
+            $this->build_files = $this->filesystem->allFiles('tests/build-testing');
+        } catch (\Exception $e) {
+            die("Error: Jigsaw test site was not built.\r\n");
+        }
+
+        try {
+            $this->snapshot_files = $this->filesystem->allFiles('tests/snapshots');
+        } catch (\Exception $e) {
+            die("Error: Snapshot files are missing.\r\n");
+        }
 
         parent::setUp();
     }

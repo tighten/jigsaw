@@ -88,9 +88,9 @@ class SiteBuilder
     private function getMetaData($file, $baseUrl)
     {
         $filename = $file->getFilenameWithoutExtension();
-        $path = rtrim($this->outputPathResolver->link($file->getRelativePath(), $filename, 'html'), '/');
+        $path = rightTrimPath($this->outputPathResolver->link($file->getRelativePath(), $filename, 'html'));
         $extension = $file->getFullExtension();
-        $url = rtrim($baseUrl, '/') . '/' . trim($path, '/');
+        $url = rightTrimPath($baseUrl) . '/' . trimPath($path);
 
         return compact('filename', 'baseUrl', 'path', 'extension', 'url');
     }

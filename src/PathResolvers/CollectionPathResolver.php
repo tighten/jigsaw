@@ -123,7 +123,7 @@ class CollectionPathResolver
 
     private function ensureSlashAtBeginningOnly($path)
     {
-        return '/' . trim($path, '/.');
+        return '/' . trimPath($path);
     }
 
     private function resolve($path)

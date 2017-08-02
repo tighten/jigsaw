@@ -28,6 +28,6 @@ class PageData extends IterableObject
 
     public function updatePageUrl()
     {
-        $this->page->_meta->put('url', rtrim($this->page->getBaseUrl(), '/') . '/' . trim($this->page->getPath(), '/'));
+        $this->page->_meta->put('url', rightTrimPath($this->page->getBaseUrl()) . '/' . trimPath($this->page->getPath()));
     }
 }

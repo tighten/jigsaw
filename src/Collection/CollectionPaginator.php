@@ -46,6 +46,6 @@ class CollectionPaginator
             $pageNumber
         );
 
-        return ($link !== '/') ? rtrim($link, '/') : $link;
+        return $link !== '/' ? rightTrimPath($link) : $link;
     }
 }

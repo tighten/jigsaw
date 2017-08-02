@@ -67,6 +67,6 @@ class BuildCommand extends Command
 
     private function getAbsolutePath($path)
     {
-        return $this->app->cwd . '/' . trim($path, '/');
+        return $this->app->cwd . '/' . trimPath($path);
     }
 }

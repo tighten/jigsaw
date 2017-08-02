@@ -1,0 +1,100 @@
+<?php
+
+return [
+    'environment' => 'testing',
+    'build' => [
+        'source' => 'tests/source',
+        'destination' => 'tests/build-testing',
+    ],
+    'baseUrl' => 'http://jigsaw-test.dev',
+    'global_array' => [ 1, 2, 3 ],
+    'global_variable' => 'some global variable',
+    'number' => '98765',
+    'perPage' => 4,
+    'php' => '<?php',
+    'nested_array' => [
+        [
+            'name' => 'first name',
+            'position' => 'first',
+            'value' => 1,
+        ],
+        [
+            'name' => 'second name',
+            'position' => 'second',
+            'value' => 2,
+        ],
+        [
+            'name' => 'third name',
+            'position' => 'third',
+            'value' => 3,
+        ],
+    ],
+    'globalPreview' => function ($data, $characters = 100) {
+        return substr(strip_tags($data->getContent()), 0, $characters);
+    },
+    'helperFunction' => function ($data) {
+        return 'hello global! #' . $data->number;
+    },
+    'selected' => function($data, $section) {
+        return strpos($data->getPath(), $section) > -1;
+    },
+    'collections' => [
+        'collection_tests' => [
+            'sum' => 99999,
+        ],
+        'posts' => [
+            'helperFunction' => function ($data) {
+                return 'hello from posts! #' . $data->number;
+            },
+            'author' => 'Default Author',
+            'date_formatted' => function($post) {
+                list($year, $month, $day) = parseDate($post['date']);
+                return sprintf('%s/%s/%s', $month, $day, $year);
+            },
+            'preview' => function ($post, $characters = 75) {
+                return substr(strip_tags($post->getContent()), 0, $characters);
+            },
+            'api' => function($post) {
+                return [
+                    'slug' => str_slug($post->title),
+                    'title' => $post->title,
+                    'author' => $post->author,
+                    'date' => $post->date,
+                    'content' => $post->getContent(),
+                ];
+            },
+            'isSelected' => function ($post, $current_page) {
+                return $post->getPath() == $current_page->getPath();
+            },
+        ],
+
+        'people' => [
+            'path' => [
+                'web' => 'people/web/{date|Y-m-d}/{_filename}',
+                'test' => 'people/test/{-filename}',
+                'api' => 'people/api.test/{name}/{date|Y-m-d}/{-name}'
+            ],
+            'number_doubled' => function($data) {
+                return $data->number * 2;
+            },
+            'api' => function($data) {
+                return collect([
+                    'name' => $data->name,
+                    'number' => $data->number,
+                    'role' => $data->role,
+                    'content' => strip_tags($data->getContent()),
+                ])->toJson();
+            },
+        ],
+    ],
+];
+
+function parseDate($timestamp) {
+    $date = DateTime::createFromFormat('U', $timestamp);
+
+    return [
+        $date->format('Y'),
+        $date->format('m'),
+        $date->format('d'),
+    ];
+}

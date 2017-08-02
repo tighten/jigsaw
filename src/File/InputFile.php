@@ -22,7 +22,7 @@ class InputFile
     {
         $relative_path = str_replace(realpath($this->basePath), '', realpath($this->file->getPathname()));
 
-        return trim($relative_path, DIRECTORY_SEPARATOR);
+        return trimPath($relative_path);
     }
 
     public function bladeViewPath()

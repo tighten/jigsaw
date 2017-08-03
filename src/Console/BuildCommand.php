@@ -34,9 +34,9 @@ class BuildCommand extends Command
             $this->app->instance('outputPathResolver', new PrettyOutputPathResolver);
         }
 
-		if($this->app->config->has('modules')) {
-			$this->modules = $this->app->config->get('modules');
-		}
+        if($this->app->config->has('modules')) {
+            $this->modules = $this->app->config->get('modules');
+        }
 
         if(!$this->app->config->has('sites')) {
             $this->buildSite($env);

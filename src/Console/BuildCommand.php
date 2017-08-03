@@ -8,7 +8,7 @@ use TightenCo\Jigsaw\PathResolvers\PrettyOutputPathResolver;
 
 class BuildCommand extends Command
 {
-    private $app;
+    private $app, $modules = [];
 
     public function __construct($app)
     {
@@ -33,6 +33,10 @@ class BuildCommand extends Command
         if ($this->input->getOption('pretty') === 'true') {
             $this->app->instance('outputPathResolver', new PrettyOutputPathResolver);
         }
+
+		if($this->app->config->has('modules')) {
+			$this->modules = $this->app->config->get('modules');
+		}
 
         if(!$this->app->config->has('sites')) {
             $this->buildSite($env);
@@ -62,6 +66,7 @@ class BuildCommand extends Command
         if(!empty($site)) {
             $config = (new ConfigFile($this->getAbsolutePath($source.DIRECTORY_SEPARATOR.'config.php')))->config;
             $config['build']['source'] = $source.DIRECTORY_SEPARATOR.'source';
+            $config['modules'] = $this->modules;
             $this->app->instance('config', collect($config));
         } else {
             $site = 'Site';
@@ -69,7 +74,7 @@ class BuildCommand extends Command
 
         $this->updateBuildPaths($env);
         $this->app->make(Jigsaw::class)->build($env);
-        $this->info("{$site} built successfully.");
+        $this->info("{$site} built successfully!");
     }
 
     private function includeEnvironmentConfig($env)

@@ -6,7 +6,7 @@ use Illuminate\Container\Container;
 class BuildHasCompleted
 {
     /** @var  $app Container */
-    protected $app;
+    public $app;
 
     public function __construct($app)
     {

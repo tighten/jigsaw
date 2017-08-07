@@ -37,8 +37,8 @@ class BuildCommand extends Command
 
         $this->app->make(Jigsaw::class)->build($env);
         /** @var $dispatcher Dispatcher */
-        $dispatcher = $this->app->make(Dispatcher::class);
-        $dispatcher->fire(new BuildHasCompleted(Jigsaw::class));
+//        $dispatcher = $this->app->make(Dispatcher::class);
+//        $dispatcher->fire(new BuildHasCompleted(Jigsaw::class));
         $this->info('Site built successfully!');
     }
 

@@ -64,8 +64,14 @@ class BuildCommand extends Command
     private function buildSite($env, $site = null, $source = null)
     {
         if(!empty($site)) {
+        	// If the config.php has a sites array, assume there is a "source" directory inside the site
+			// and if no destination is specified in the site's specific config.php, default to a new
+			// build_local/site_name directory to build into. This namespaces each site's build.
             $config = (new ConfigFile($this->getAbsolutePath($source.DIRECTORY_SEPARATOR.'config.php')))->config;
             $config['build']['source'] = $source.DIRECTORY_SEPARATOR.'source';
+			$config['build']['destination'] = array_has($config, 'build.destination')
+				? array_get($config, 'build.destination')
+				: 'build_local'.DIRECTORY_SEPARATOR.$site;
             $config['modules'] = $this->modules;
             $this->app->instance('config', collect($config));
         } else {

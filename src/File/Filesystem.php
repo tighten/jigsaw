@@ -5,9 +5,9 @@ use Symfony\Component\Finder\Finder;
 
 class Filesystem extends BaseFilesystem
 {
-    public function getFile($directory, $filename, $extension)
+    public function getFile($directory, $filename)
     {
-        return iterator_to_array(Finder::create()->files()->name($filename . '.' . $extension)->in($directory), false);
+        return iterator_to_array(Finder::create()->files()->name($filename)->in($directory), false)[0];
     }
 
     public function allFiles($directory, $hidden = false)

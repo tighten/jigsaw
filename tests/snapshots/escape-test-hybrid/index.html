@@ -96,8 +96,6 @@
                         <h2>Testing Escaping</h2>
     <h3>escape-test-hybrid</h3>
 <p>Can we have php opening tags here?</p>
-<p><strong><em> convert all &lt; to entitites after markdown processing is complete;
-</em></strong> strip out all / tags first, replace with placeholder, add back at very end;</p>
 <pre><code>&amp;lt;?php
 @if('something')
 @endif</code></pre>
@@ -105,17 +103,13 @@
 <hr>
 <p>Start...</p>
 <hr>
-<ol>
-<li>This works: <p>&lt;?php (where _php is a .md file)</p></li>
-</ol>
+<p>This works: <p>&lt;?php</p> (where _php is a .md file)</p>
 <pre><code class="language-php">ok
 
 Only an issue with blade.md files:
 
-This works: &lt;?php
-
 This does not work: &amp;lt;?php
-
+This works: &lt;?php
 This works: &lt;?php
 This works: &lt;?php
 This works: &lt;?php
@@ -123,19 +117,9 @@ This works: &lt;?php
 This works: &lt;?php
 This works: &lt;?.php
 
-ok
-
-&lt;? =
-&lt;&gt;?=
-&lt;&gt;?php
-&lt; ?php
-{{ '&lt;?php' }}
-
 // Test comment...
 
-@verbatim
 stuff in here is rendered verbatim
-@endverbatim
 
 public function store()
 {

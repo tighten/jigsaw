@@ -4,8 +4,6 @@ title: "Features"
 section: content
 ---
 
-abokhell
-
 ### Enhanced permalink support
 - Permalinks for collection items can be configured with the optional `path` key in `collections.php`
 - If `path` is not specified, permalinks will default to slugified filename

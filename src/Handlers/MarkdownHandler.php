@@ -54,17 +54,55 @@ class MarkdownHandler
                     $file->getRelativePath(),
                     $file->getFilenameWithoutExtension(),
                     $extension == 'php' ? 'html' : $extension,
-                    $this->render($file->bladeViewPath(), $pageData, $layout),
+                    $this->render($file, $pageData, $layout),
                     $pageData
                 );
             });
     }
 
-    private function render($includePath, $pageData, $layout)
+    private function render($file, $pageData, $layout)
     {
-        return $this->temporaryFilesystem->put($this->compileToBlade($includePath, $pageData, $layout), function ($path) use ($pageData) {
-            return $this->view->render($path, $pageData);
-        }, '.blade.php');
+        return $this->temporaryFilesystem->put(
+            $this->getEscapedMarkdownContent($file),
+            function ($path) use ($pageData, $layout) {
+                $duplicatedMarkdownFilename = basename($path, '.blade.md');
+
+                return $this->renderBladeWrapper($duplicatedMarkdownFilename, $pageData, $layout);
+            },
+            '.blade.md'
+        );
+    }
+
+    private function getEscapedMarkdownContent($file)
+    {
+        $markdownFileContent = $this->escapePhpOpenTags($file->getContents());
+
+        if ($file->getFullExtension() == 'md') {
+            $markdownFileContent = $this->escapeAtSymbolInMarkdown($markdownFileContent);
+        }
+
+        return $markdownFileContent;
+    }
+
+    private function escapePhpOpenTags($content)
+    {
+        return str_replace("<?php", "<{{'?php'}}", $content);
+    }
+
+    private function escapeAtSymbolInMarkdown($content)
+    {
+        return str_replace("@", "{{'@'}}", $content);
+    }
+
+    private function renderBladeWrapper($duplicatedMarkdownFilename, $pageData, $layout)
+    {
+        return $this->temporaryFilesystem->put(
+            $this->createBladeWrapper($duplicatedMarkdownFilename, $pageData, $layout),
+            function ($path) use ($pageData) {
+                return $this->view->render($path, $pageData);
+            },
+            '.blade.php'
+        );
     }
 
     private function parseFrontMatter($file)
@@ -72,12 +110,12 @@ class MarkdownHandler
         return $this->parser->getFrontMatter($file->getContents());
     }
 
-    private function compileToBlade($includePath, $data, $layout)
+    private function createBladeWrapper($path, $pageData, $layout)
     {
         return collect([
-            sprintf("@extends('%s')", $layout),
-            sprintf("@section('%s')", $data->page->section),
-            sprintf("@include('%s')", $includePath),
+            "@extends('{$layout}')",
+            "@section('{$pageData->page->section}')",
+            "@include('{$path}')",
             '@endsection',
         ])->implode("\n");
     }

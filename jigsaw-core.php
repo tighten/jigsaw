@@ -97,7 +97,7 @@ $container->bind(Factory::class, function ($c) use ($cachePath) {
 
     (new BladeDirectivesFile(getcwd() . '/blade.php'))->register($bladeCompiler);
 
-    $finder = new FileViewFinder(new Filesystem, [$c['buildPath']['source']]);
+    $finder = new FileViewFinder(new Filesystem, [$cachePath, $c['buildPath']['source']]);
 
     return new Factory($resolver, $finder, Mockery::mock(Dispatcher::class)->shouldIgnoreMissing());
 });

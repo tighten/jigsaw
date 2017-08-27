@@ -43,18 +43,20 @@ if (file_exists(__DIR__.'/vendor/autoload.php')) {
     require __DIR__.'/../../autoload.php';
 }
 
-$cachePath = getcwd() . '/_tmp';
-$bootstrapFile = getcwd() . '/bootstrap.php';
-
 $container = new Container;
+
 $container->instance('cwd', getcwd());
+
+$cachePath = $container['cwd'] . '/_tmp';
+$bootstrapFile = $container['cwd'] . '/bootstrap.php';
+
 $container->instance('buildPath', [
-    'source' => getcwd() . '/source',
-    'destination' => getcwd() . '/build_{env}',
+    'source' => $container['cwd'] . '/source',
+    'destination' => $container['cwd'] . '/build_{env}',
 ]);
 
-$container->bind('config', function () {
-    return (new ConfigFile(getcwd() . '/config.php'))->config;
+$container->bind('config', function ($c) {
+    return (new ConfigFile($c['cwd'] . '/config.php'))->config;
 });
 
 $container->bind('outputPathResolver', function ($c) {
@@ -95,7 +97,7 @@ $container->bind(Factory::class, function ($c) use ($cachePath) {
         return new BladeMarkdownEngine($compilerEngine, $c[FrontMatterParser::class]);
     });
 
-    (new BladeDirectivesFile(getcwd() . '/blade.php'))->register($bladeCompiler);
+    (new BladeDirectivesFile($c['cwd'] . '/blade.php'))->register($bladeCompiler);
 
     $finder = new FileViewFinder(new Filesystem, [$cachePath, $c['buildPath']['source']]);
 

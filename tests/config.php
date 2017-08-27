@@ -86,6 +86,9 @@ return [
                 ])->toJson();
             },
         ],
+
+        'dot-files-collection' => [
+        ],
     ],
 ];
 

@@ -23,7 +23,6 @@ class TestCase extends BaseTestCase
             'source' => $this->sourcePath,
             'destination' => $this->destinationPath,
         ];
-
         $this->filesystem = new Filesystem;
         $this->tempPath = $cachePath;
         $this->prepareTempDirectory();

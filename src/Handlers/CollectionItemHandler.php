@@ -15,7 +15,8 @@ class CollectionItemHandler
 
     public function shouldHandle($file)
     {
-        return $this->isInCollectionDirectory($file) && ! starts_with($file->getFilename(), '_');
+        return  $this->isInCollectionDirectory($file)
+            && ! starts_with($file->getFilename(), ['.', '_']);
     }
 
     private function isInCollectionDirectory($file)

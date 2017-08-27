@@ -23,6 +23,13 @@ class InputFile
         return $this->getBasename('.' . $this->getFullExtension());
     }
 
+    public function getExtension()
+    {
+        if (! starts_with($this->getFilename(), '.')) {
+            return $this->file->getExtension();
+        }
+    }
+
     public function getFullExtension()
     {
         $extension = $this->getExtension();

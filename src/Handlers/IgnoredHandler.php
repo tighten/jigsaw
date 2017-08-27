@@ -4,7 +4,7 @@ class IgnoredHandler
 {
     public function shouldHandle($file)
     {
-        return preg_match('/(^(_|\.)|\/(_|\.))/', $file->getRelativePathname()) === 1;
+        return preg_match('/(^(_|\.DS_Store)|\/(_|\.DS_Store))/', $file->getRelativePathname()) === 1;
     }
 
     public function handle($file, $data)

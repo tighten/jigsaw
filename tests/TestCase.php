@@ -17,7 +17,7 @@ class TestCase extends BaseTestCase
     {
         parent::setUpBeforeClass();
 
-        echo shell_exec('./jigsaw build testing');
+        echo shell_exec('php ./jigsaw build testing');
     }
 
     public static function tearDownAfterClass()

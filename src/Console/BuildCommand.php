@@ -1,7 +1,9 @@
 <?php namespace TightenCo\Jigsaw\Console;
 
+use Illuminate\Events\Dispatcher;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
+use TightenCo\Jigsaw\Events\BuildHasCompleted;
 use TightenCo\Jigsaw\Jigsaw;
 use TightenCo\Jigsaw\PathResolvers\PrettyOutputPathResolver;
 
@@ -34,6 +36,9 @@ class BuildCommand extends Command
         }
 
         $this->app->make(Jigsaw::class)->build($env);
+        /** @var $dispatcher Dispatcher */
+        $dispatcher = $this->app->make(Dispatcher::class);
+        $dispatcher->fire(new BuildHasCompleted($this->app));
         $this->info('Site built successfully!');
     }
 

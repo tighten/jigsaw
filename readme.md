@@ -16,3 +16,9 @@ Site variables defined in `config.php`, as well as any variables defined in the 
 
 Check out http://jigsaw.tighten.co/docs/upgrading/ for an example.
 
+### Contribute
+
+ * Clone the repo
+ * Go to the root folder and execute `composer install && npm install`
+ * Create a dev site by executing `jigsaw init`
+ * Generate the dev site using `jigsaw build`

@@ -107,7 +107,7 @@ $container->bind(Factory::class, function ($c) use ($cachePath) {
 });
 
 $container->bind(ViewRenderer::class, function ($c) {
-    return new ViewRenderer($c[Factory::class]);
+    return new ViewRenderer($c[Factory::class], isset($c['config']['minify_html']));
 });
 
 $container->bind(BladeHandler::class, function ($c) {

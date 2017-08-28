@@ -5,6 +5,7 @@ use Illuminate\View\Factory;
 class ViewRenderer
 {
     private $viewFactory;
+    private $minifyHtml;
     private $extensionEngines = [
         'md' => 'markdown',
         'markdown' => 'markdown',
@@ -15,9 +16,10 @@ class ViewRenderer
         'js', 'json', 'xml', 'rss', 'atom', 'txt', 'text', 'html'
     ];
 
-    public function __construct(Factory $viewFactory)
+    public function __construct(Factory $viewFactory, $minifyHtml = false)
     {
         $this->viewFactory = $viewFactory;
+        $this->minifyHtml = $minifyHtml;
         $this->finder = $this->viewFactory->getFinder();
         $this->addExtensions();
     }
@@ -29,7 +31,30 @@ class ViewRenderer
 
     public function render($path, $data)
     {
-        return $this->viewFactory->file($path, $data->all())->render();
+        $minifyHtmlCallback = null;
+        if ($this->minifyHtml) {
+            $minifyHtmlCallback = function ($view, $contents) {
+                 $search = array(
+                    '/\>[^\S ]+/s',     // strip whitespaces after tags, except space
+                    '/[^\S ]+\</s',     // strip whitespaces before tags, except space
+                    '/(\s)+/s',         // shorten multiple whitespace sequences
+                    '/<!--(.|\s)*?-->/' // Remove HTML comments
+                );
+
+                $replace = array(
+                    '>',
+                    '<',
+                    '\\1',
+                    ''
+                );
+
+                $buffer = preg_replace($search, $replace, $contents);
+
+                return $buffer;
+            };
+        }
+
+        return $this->viewFactory->file($path, $data->all())->render($minifyHtmlCallback);
     }
 
     private function addExtensions()

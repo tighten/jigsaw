@@ -38,7 +38,30 @@ class CollectionDataLoader
 
     private function buildCollection($collection)
     {
-        return collect($this->filesystem->allFiles("{$this->source}/_{$collection->name}", true))
+        $collectionPath = "{$this->source}/_{$collection->name}";
+
+        if (isset($collection->settings['remote'])) {
+            if (! file_exists($collectionPath)) {
+                mkdir($collectionPath);
+            }
+
+            foreach ($collection->settings['remote']($collection) as $c) {
+                $file = "---\n";
+                foreach (array_keys($c) as $field) {
+                    if ($field !== 'content') {
+                        $file .= "$field: {$c[$field]}\n";
+                    }
+                }
+                $file .= "---\n";
+                $file .= $c['content'];
+
+                file_put_contents("$collectionPath/{$c['filename']}.md", $file);
+                # maybe change this so the generate files are not put into the source folder, because you don't actually need them versioned
+                # don't get why the generated css is in the source folder either
+            }
+        }
+        
+        return collect($this->filesystem->allFiles($collectionPath, true))
             ->reject(function ($file) {
                 return starts_with($file->getFilename(), '_');
             })->map(function ($file) {

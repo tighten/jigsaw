@@ -20,4 +20,3 @@ function removeDirectory($path)
 
     return;
 }
-

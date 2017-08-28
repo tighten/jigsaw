@@ -35,7 +35,7 @@ return [
     'helperFunction' => function ($data) {
         return 'hello global! #' . $data->number;
     },
-    'selected' => function($data, $section) {
+    'selected' => function ($data, $section) {
         return strpos($data->getPath(), $section) > -1;
     },
     'collections' => [
@@ -47,14 +47,14 @@ return [
                 return 'hello from posts! #' . $data->number;
             },
             'author' => 'Default Author',
-            'date_formatted' => function($post) {
+            'date_formatted' => function ($post) {
                 list($year, $month, $day) = parseDate($post['date']);
                 return sprintf('%s/%s/%s', $month, $day, $year);
             },
             'preview' => function ($post, $characters = 75) {
                 return substr(strip_tags($post->getContent()), 0, $characters);
             },
-            'api' => function($post) {
+            'api' => function ($post) {
                 return [
                     'slug' => str_slug($post->title),
                     'title' => $post->title,
@@ -74,10 +74,10 @@ return [
                 'test' => 'people/test/{-filename}',
                 'api' => 'people/api.test/{name}/{date|Y-m-d}/{-name}'
             ],
-            'number_doubled' => function($data) {
+            'number_doubled' => function ($data) {
                 return $data->number * 2;
             },
-            'api' => function($data) {
+            'api' => function ($data) {
                 return collect([
                     'name' => $data->name,
                     'number' => $data->number,
@@ -89,7 +89,8 @@ return [
     ],
 ];
 
-function parseDate($timestamp) {
+function parseDate($timestamp)
+{
     $date = DateTime::createFromFormat('U', $timestamp);
 
     return [

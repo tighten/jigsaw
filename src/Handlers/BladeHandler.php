@@ -80,6 +80,7 @@ class BladeHandler
             function ($path) use ($pageData) {
                 return $this->render($path, $pageData);
             },
-        '.blade.php');
+        '.blade.php'
+        );
     }
 }

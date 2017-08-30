@@ -55,7 +55,7 @@ class SiteBuilder
 
     private function buildSite($source, $destination, $siteData)
     {
-        $result = collect($this->files->allFiles($source, true))->map(function ($file) use ($source) {
+        $result = collect($this->files->allFiles($source))->map(function ($file) use ($source) {
             return new InputFile($file, $source);
         })->flatMap(function ($file) use ($siteData) {
             return $this->handle($file, $siteData);

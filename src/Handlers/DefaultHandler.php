@@ -23,7 +23,7 @@ class DefaultHandler
             new CopyFile(
                 $file->getRealPath(),
                 $file->getRelativePath(),
-                $file->getBasename('.'.$file->getExtension()),
+                $file->getBasename('.' . $file->getExtension()),
                 $file->getExtension(),
                 $pageData
             )

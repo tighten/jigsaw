@@ -4,46 +4,52 @@ namespace Tests;
 
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use TightenCo\Jigsaw\File\Filesystem;
+use TightenCo\Jigsaw\File\InputFile;
 
 class TestCase extends BaseTestCase
 {
-    const DELETE_BUILT_FILES = true;
-
-    public $build_files;
+    public $app;
     public $filesystem;
-    public $snapshot_files;
-
-    public static function setUpBeforeClass()
-    {
-        parent::setUpBeforeClass();
-
-        echo shell_exec('./jigsaw build testing');
-    }
-
-    public static function tearDownAfterClass()
-    {
-        if (self::DELETE_BUILT_FILES) {
-            (new Filesystem)->deleteDirectory('tests/build-testing');
-        }
-
-        parent::tearDownAfterClass();
-    }
+    public $tempPath;
+    protected $sourcePath = __DIR__ . '/source';
+    protected $destinationPath = __DIR__ . '/build_testing';
 
     public function setUp()
     {
-        try {
-            $this->filesystem = new Filesystem;
-            $this->build_files = $this->filesystem->allFiles('tests/build-testing');
-        } catch (\Exception $e) {
-            die("Error: Jigsaw test site was not built.\r\n");
-        }
-
-        try {
-            $this->snapshot_files = $this->filesystem->allFiles('tests/snapshots');
-        } catch (\Exception $e) {
-            die("Error: Snapshot files are missing.\r\n");
-        }
-
         parent::setUp();
+        require('jigsaw-core.php');
+        $this->app = $container;
+        $this->app->buildPath = [
+            'source' => $this->sourcePath,
+            'destination' => $this->destinationPath,
+        ];
+        $this->filesystem = new Filesystem;
+        $this->tempPath = $cachePath;
+        $this->prepareTempDirectory();
+    }
+
+    public function tearDown()
+    {
+        $this->cleanupTempDirectory();
+        parent::tearDown();
+    }
+
+    protected function prepareTempDirectory()
+    {
+        if (! $this->filesystem->isDirectory($this->tempPath)) {
+            $this->filesystem->makeDirectory($this->tempPath, 0755, true);
+        }
+    }
+
+    protected function cleanupTempDirectory()
+    {
+        $this->filesystem->deleteDirectory($this->tempPath);
+    }
+
+    public function getInputFile($filename)
+    {
+        $sourceFile = $this->filesystem->getFile(str_finish($this->sourcePath, '/') . pathinfo($filename)['dirname'], basename($filename));
+
+        return new InputFile($sourceFile, $this->sourcePath);
     }
 }

@@ -38,7 +38,7 @@ class CollectionDataLoader
 
     private function buildCollection($collection)
     {
-        return collect($this->filesystem->allFiles("{$this->source}/_{$collection->name}", true))
+        return collect($this->filesystem->allFiles("{$this->source}/_{$collection->name}"))
             ->reject(function ($file) {
                 return starts_with($file->getFilename(), '_');
             })->map(function ($file) {
@@ -63,7 +63,7 @@ class CollectionDataLoader
 
     private function addCollectionItemContent($item)
     {
-        $file = collect($this->filesystem->getFile($item->getSource(), $item->getFilename(), $item->getExtension()))->first();
+        $file = $this->filesystem->getFile($item->getSource(), $item->getFilename() . '.' . $item->getExtension());
 
         if ($file) {
             $item->setContent($this->getHandler($file)->getItemContent($file));

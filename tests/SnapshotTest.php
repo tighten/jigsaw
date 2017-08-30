@@ -2,9 +2,7 @@
 
 namespace Tests;
 
-use Tests\TestCase;
-
-class SnapshotTest extends TestCase
+class SnapshotTest extends SnapshotTestCase
 {
     public function test_all_files_are_built()
     {

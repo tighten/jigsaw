@@ -43,6 +43,8 @@ if (file_exists(__DIR__.'/vendor/autoload.php')) {
     require __DIR__.'/../../autoload.php';
 }
 
+setlocale(LC_ALL, 'en_US.UTF8');
+
 $container = new Container;
 
 $container->instance('cwd', getcwd());

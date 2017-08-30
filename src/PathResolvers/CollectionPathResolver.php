@@ -11,7 +11,6 @@ class CollectionPathResolver
     {
         $this->outputPathResolver = $outputPathResolver;
         $this->view = $viewRenderer;
-        $this->setLocale();
     }
 
     public function link($path, $data)
@@ -130,11 +129,6 @@ class CollectionPathResolver
     private function resolve($path)
     {
         return $this->outputPathResolver->link(dirname($path), basename($path), 'html');
-    }
-
-    private function setLocale()
-    {
-        setlocale(LC_ALL, 'en_US.UTF8');
     }
 
     private function slug($string, $separator = '-')

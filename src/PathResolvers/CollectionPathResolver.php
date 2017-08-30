@@ -131,6 +131,10 @@ class CollectionPathResolver
         return $this->outputPathResolver->link(dirname($path), basename($path), 'html');
     }
 
+    /**
+     * This is identical to Laravel's built-in `str_slug()` helper,
+     * except it preserves `.` characters.
+     */
     private function slug($string, $separator = '-')
     {
         // Transliterate a UTF-8 value to ASCII

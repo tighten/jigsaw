@@ -10,7 +10,7 @@ rename('tests/build-testing', 'tests/snapshots');
 
 function removeDirectory($path)
 {
-    $files = glob($path . '/*');
+    $files = glob($path . '/{,.}[!.,!..]*', GLOB_MARK|GLOB_BRACE);
 
     foreach ($files as $file) {
         is_dir($file) ? removeDirectory($file) : unlink($file);

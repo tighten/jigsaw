@@ -38,7 +38,7 @@ class CollectionDataLoader
 
     private function buildCollection($collection)
     {
-        return collect($this->filesystem->allFiles("{$this->source}/_{$collection->name}", true))
+        return collect($this->filesystem->allFiles("{$this->source}/_{$collection->name}"))
             ->reject(function ($file) {
                 return starts_with($file->getFilename(), '_');
             })->map(function ($file) {

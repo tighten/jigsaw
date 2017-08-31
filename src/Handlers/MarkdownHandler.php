@@ -75,23 +75,21 @@ class MarkdownHandler
 
     private function getEscapedMarkdownContent($file)
     {
-        $markdownFileContent = $this->escapePhpOpenTags($file->getContents());
+        $content = str_replace('<?php', "__PHP_OPEN__", $file->getContents());
 
         if ($file->getFullExtension() == 'md') {
-            $markdownFileContent = $this->escapeAtSymbolInMarkdown($markdownFileContent);
+            $content = str_replace(
+                ['{{', '}}', '{!!', '!!}', '@'],
+                ['__OPEN_CURLIES__', '__CLOSE_CURLIES__', '__OPEN_DANGER__', '__CLOSE_DANGER__', '__LONE_AT__'],
+                $content
+            );
         }
 
-        return $markdownFileContent;
-    }
-
-    private function escapePhpOpenTags($content)
-    {
-        return str_replace("<?php", "<{{'?php'}}", $content);
-    }
-
-    private function escapeAtSymbolInMarkdown($content)
-    {
-        return str_replace("@", "{{'@'}}", $content);
+        return str_replace(
+            ['__OPEN_CURLIES__', '__CLOSE_CURLIES__', '__OPEN_DANGER__', '__CLOSE_DANGER__', '__LONE_AT__', '__PHP_OPEN__'],
+            ["<?= '{{' ?>", "<?= '}}' ?>", "<?= '{!!' ?>", "<?= '!!}' ?>", "<?= '@' ?>", "<?= '<?php' ?>"],
+            $content
+        );
     }
 
     private function renderBladeWrapper($duplicatedMarkdownFilename, $pageData, $layout)

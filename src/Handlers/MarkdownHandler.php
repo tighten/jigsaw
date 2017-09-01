@@ -75,21 +75,17 @@ class MarkdownHandler
 
     private function getEscapedMarkdownContent($file)
     {
-        $content = str_replace('<?php', "__PHP_OPEN__", $file->getContents());
+        $replacements = ["<?php" => "<{{'?php'}}"];
 
         if ($file->getFullExtension() == 'md') {
-            $content = str_replace(
-                ['{{', '}}', '{!!', '!!}', '@'],
-                ['__OPEN_CURLIES__', '__CLOSE_CURLIES__', '__OPEN_DANGER__', '__CLOSE_DANGER__', '__LONE_AT__'],
-                $content
-            );
+            $replacements = array_merge([
+                "@" => "{{'@'}}",
+                "{{" => "@{{",
+                "{!!" => "@{!!",
+            ], $replacements);
         }
 
-        return str_replace(
-            ['__OPEN_CURLIES__', '__CLOSE_CURLIES__', '__OPEN_DANGER__', '__CLOSE_DANGER__', '__LONE_AT__', '__PHP_OPEN__'],
-            ["<?= '{{' ?>", "<?= '}}' ?>", "<?= '{!!' ?>", "<?= '!!}' ?>", "<?= '@' ?>", "<?= '<?php' ?>"],
-            $content
-        );
+        return strtr($file->getContents(), $replacements);
     }
 
     private function renderBladeWrapper($duplicatedMarkdownFilename, $pageData, $layout)

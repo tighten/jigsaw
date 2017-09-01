@@ -14,6 +14,8 @@ Start...
 public function store()
 {
     $test = true;
+    {{ a-blade-echo-that-should-remain-in-markdown }}
+    {!! a-blade-danger-echo-that-should-remain-in-markdown !!}
 }
 ```
 <hr>

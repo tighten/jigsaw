@@ -1,5 +1,6 @@
 <?php namespace TightenCo\Jigsaw\Collection;
 
+use Closure;
 use Illuminate\Support\Collection as BaseCollection;
 
 class Collection extends BaseCollection
@@ -48,34 +49,38 @@ class Collection extends BaseCollection
 
     private function defaultSort($items)
     {
-        return collect(array_get($this->settings, 'sort'))
-            ->reverse()
-            ->reduce(function ($carry, $sortSetting) {
-                return $this->sortItems($carry, $sortSetting);
-            }, $items);
-    }
+        $sortSettings = collect(array_get($this->settings, 'sort'))->map(function ($setting) {
+            return [
+                'key' => ltrim($setting, '-+'),
+                'direction' => $setting[0] === '-' ? -1 : 1,
+            ];
+        });
 
-    private function sortItems($items, $sortSetting)
-    {
-        $sortKey = ltrim($sortSetting, '-+');
-        $sortType = $sortSetting[0] === '-' ? 'sortByDesc' : 'sortBy';
-        $sortKeyFunction = $this->checkIfSortKeyIsFunction($sortKey);
+        if (! $sortSettings->count()) {
+            return $items;
+        }
 
-        return $items->{$sortType}(function ($item, $_) use ($sortKey, $sortKeyFunction) {
-            return $sortKeyFunction ?
-                call_user_func_array([$item, $sortKeyFunction[0]], $sortKeyFunction[1]) :
-                $item->$sortKey;
+        return $items->sort(function ($item_1, $item_2) use ($sortSettings) {
+            return $this->compareItems($item_1, $item_2, $sortSettings);
         });
     }
 
-    private function checkIfSortKeyIsFunction($sortKey)
+    private function compareItems($item_1, $item_2, $sortSettings)
     {
-        $sortKeyFunction = explode('(', str_replace(' ', '', $sortKey), 2);
+        foreach ($sortSettings as $setting) {
+            $comparison = $setting['direction'] * strcasecmp(
+                $this->getValueForSorting($item_1, array_get($setting, 'key')),
+                $this->getValueForSorting($item_2, array_get($setting, 'key'))
+            );
 
-        if (isset($sortKeyFunction[1])) {
-            $parameters = explode(',', trim($sortKeyFunction[1], ')'));
-
-            return [$sortKeyFunction[0], $parameters];
+            if ($comparison) {
+                return $comparison;
+            }
         }
+    }
+
+    private function getValueForSorting($item, $key)
+    {
+        return $item->$key instanceof Closure ? $item->$key($item) : $item->$key;
     }
 }

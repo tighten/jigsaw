@@ -42,6 +42,9 @@ return [
         'collection_tests' => [
             'sum' => 99999,
         ],
+        'sort_tests' => [
+            'sort' => ['letter', '-number'],
+        ],
         'posts' => [
             'helperFunction' => function ($data) {
                 return 'hello from posts! #' . $data->number;

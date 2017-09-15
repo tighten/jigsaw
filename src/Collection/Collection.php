@@ -68,19 +68,19 @@ class Collection extends BaseCollection
     private function compareItems($item_1, $item_2, $sortSettings)
     {
         foreach ($sortSettings as $setting) {
-            $comparison = $setting['direction'] * strcasecmp(
-                $this->getValueForSorting($item_1, array_get($setting, 'key')),
-                $this->getValueForSorting($item_2, array_get($setting, 'key'))
-            );
+            $value_1 = $this->getValueForSorting($item_1, array_get($setting, 'key'));
+            $value_2 = $this->getValueForSorting($item_2, array_get($setting, 'key'));
 
-            if ($comparison) {
-                return $comparison;
+            if ($value_1 > $value_2) {
+               return $setting['direction'];
+            } elseif ($value_1 < $value_2) {
+               return -$setting['direction'];
             }
         }
     }
 
     private function getValueForSorting($item, $key)
     {
-        return $item->$key instanceof Closure ? $item->$key($item) : $item->$key;
+        return strtolower($item->$key instanceof Closure ? $item->$key($item) : $item->$key);
     }
 }

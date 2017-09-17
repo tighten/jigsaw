@@ -45,6 +45,9 @@ return [
         'sort_tests' => [
             'sort' => ['letter', '-number'],
         ],
+        'invalid_path_characters_test' => [
+            'path' => '{title}',
+        ],
         'posts' => [
             'helperFunction' => function ($data) {
                 return 'hello from posts! #' . $data->number;

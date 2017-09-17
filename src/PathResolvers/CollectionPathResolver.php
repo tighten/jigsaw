@@ -89,7 +89,7 @@ class CollectionPathResolver
             $param = ltrim($param, $param[0]);
         }
 
-        $value = array_get($data, $param, $data->_meta->get($param));
+        $value = $this->filterInvalidCharacters(array_get($data, $param, $data->_meta->get($param)));
 
         if (! $value) {
             return '';
@@ -151,5 +151,13 @@ class CollectionPathResolver
         $string = preg_replace('!['.preg_quote($separator).'\s]+!u', $separator, $string);
 
         return trim($string, $separator);
+    }
+
+    /**
+     * Filter characters that are invalid in URL, like ® and ™, allowing spaces
+     */
+    private function filterInvalidCharacters($value)
+    {
+        return is_string($value) ? preg_replace('/[^\x20-\x7E]/', '', $value) : $value;
     }
 }

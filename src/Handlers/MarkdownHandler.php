@@ -20,7 +20,7 @@ class MarkdownHandler
 
     public function shouldHandle($file)
     {
-        return in_array($file->getExtension(), ['markdown', 'md']);
+        return in_array($file->getExtension(), ['markdown', 'md', 'mdown']);
     }
 
     public function handleCollectionItem($file, PageData $pageData)
@@ -77,7 +77,7 @@ class MarkdownHandler
     {
         $replacements = ["<?php" => "<{{'?php'}}"];
 
-        if ($file->getFullExtension() == 'md') {
+        if ($file->getFullExtension() == 'md' || $file->getFullExtension() == 'mdown') {
             $replacements = array_merge([
                 "@" => "{{'@'}}",
                 "{{" => "@{{",

@@ -4,17 +4,20 @@ namespace TightenCo\Jigsaw\Console;
 
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Finder\Finder;
 use TightenCo\Jigsaw\File\Filesystem;
 
 class MakePostCommand extends Command
 {
     private $files;
+    private $base;
 
     public function __construct(Filesystem $files)
     {
         $this->files = $files;
+        $this->base = getcwd();
         parent::__construct();
+
+        var_dump($this->base);
     }
 
     protected function configure()
@@ -30,12 +33,9 @@ class MakePostCommand extends Command
 
     protected function fire()
     {
-        $files = Finder::create()->in(__DIR__.'/stubs');
+        $file = $this->files->getFile(__DIR__.'/stubs', '*.md');
 
-        foreach ($files as $file) {
-            $this->updateLayoutKey($file)
-                ->updateSectionKey($file);
-        }
+        $this->updateLayoutKey($file)->updateSectionKey($file);
 
         $this->info("File created.");
     }
@@ -86,7 +86,7 @@ class MakePostCommand extends Command
      */
     private function updateKey($file, $name, $value)
     {
-        $contents = $file->getContents();
+        $contents = $this->files->get($file);
 
         $updated = str_replace($name, $value, $contents);
 

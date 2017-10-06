@@ -30,6 +30,66 @@ class MakePostCommand extends Command
 
     protected function fire()
     {
+        $files = Finder::create()->in(__DIR__.'/stubs');
+
+        foreach ($files as $file) {
+            $this->updateLayoutKey($file)
+                ->updateSectionKey($file);
+        }
+
+        $this->info("File created.");
     }
 
+    /**
+     * Apply the needed fixes to the filename.
+     *
+     * @param  string $fileName
+     * @return string
+     */
+    private function normalizeFileName($fileName)
+    {
+        return strtolower($fileName);
+    }
+
+    /**
+     * Update the layout key in the template file.
+     *
+     * @param  File $file
+     * @return $this
+     */
+    private function updateLayoutKey($file)
+    {
+        $this->updateKey($file, 'DummyLayout', '_layouts.master');
+
+        return $this;
+    }
+
+    /**
+     * Update the section key in the template file.
+     *
+     * @param  File $file
+     * @return $this
+     */
+    private function updateSectionKey($file)
+    {
+        $this->updateKey($file, 'DummySection', 'content');
+
+        return $this;
+    }
+
+    /**
+     * Update a given key name with a given value
+     * @param  File $file
+     * @param  string $name
+     * @param  string $value
+     * @return void
+     */
+    private function updateKey($file, $name, $value)
+    {
+        $contents = $file->getContents();
+
+        $updated = str_replace($name, $value, $contents);
+
+        file_put_contents($file->getRealPath(), $updated);
+    }
 }

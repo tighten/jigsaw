@@ -26,7 +26,8 @@ class MakePostCommand extends Command
             ->addOption('description', 'd', InputOption::VALUE_OPTIONAL, 'The description of title of the post.', 'My New Description')
             ->addOption('layout', 'l', InputOption::VALUE_OPTIONAL, 'The layout your file should extend from', '_layouts.master')
             ->addOption('section', 's', InputOption::VALUE_OPTIONAL, 'The name of the section you file should use.', 'content')
-            ->addOption('extension', 'e', InputOption::VALUE_OPTIONAL, 'The type of file you want to generate.', 'md');
+            ->addOption('extension', 'e', InputOption::VALUE_OPTIONAL, 'The type of file you want to generate.', 'md')
+            ->addOption('folder', 'f', InputOption::VALUE_OPTIONAL, 'The folder where the file should be created in the public path', '_posts');
     }
 
     protected function fire()
@@ -55,7 +56,7 @@ class MakePostCommand extends Command
 
     private function getFilePath()
     {
-        $directory = public_path("_posts");
+        $directory = public_path($this->input->getOption('folder'));
 
         if (! $this->files->isDirectory($directory)) {
             $this->files->makeDirectory($directory);

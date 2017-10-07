@@ -22,10 +22,10 @@ class MakePostCommand extends Command
         $this->setName('make:post')
             ->setDescription('Create a new post factory')
             ->addArgument('name', InputArgument::REQUIRED, 'The name of the file you want to create')
-            ->addOption('title', 't', InputOption::VALUE_OPTIONAL, 'The name of title of the post.', 'My New Post')
-            ->addOption('description', 'd', InputOption::VALUE_OPTIONAL, 'The description of title of the post.', 'My New Description')
+            ->addOption('title', 't', InputOption::VALUE_OPTIONAL, 'The title of the post.', 'My New Post')
+            ->addOption('description', 'd', InputOption::VALUE_OPTIONAL, 'The description of the post.', 'My New Description')
             ->addOption('layout', 'l', InputOption::VALUE_OPTIONAL, 'The layout your file should extend from', '_layouts.master')
-            ->addOption('section', 's', InputOption::VALUE_OPTIONAL, 'The name of the section you file should use.', 'content')
+            ->addOption('section', 's', InputOption::VALUE_OPTIONAL, 'The name of the section your file should use.', 'content')
             ->addOption('extension', 'e', InputOption::VALUE_OPTIONAL, 'The type of file you want to generate.', 'md')
             ->addOption('folder', 'f', InputOption::VALUE_OPTIONAL, 'The folder where the file should be created in the public path', '_posts');
     }

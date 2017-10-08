@@ -36,6 +36,7 @@ use TightenCo\Jigsaw\SiteBuilder;
 use TightenCo\Jigsaw\View\BladeMarkdownEngine;
 use TightenCo\Jigsaw\View\MarkdownEngine;
 use TightenCo\Jigsaw\View\ViewRenderer;
+use TightenCo\Jigsaw\Action\Action;
 
 if (file_exists(__DIR__.'/vendor/autoload.php')) {
     require __DIR__.'/vendor/autoload.php';
@@ -161,6 +162,10 @@ $container->bind(SiteBuilder::class, function ($c) use ($cachePath) {
         $c[BladeHandler::class],
         $c[DefaultHandler::class],
     ]);
+});
+
+$container->singleton(Action::class, function($c){
+    return new Action();
 });
 
 if (file_exists($bootstrapFile)) {

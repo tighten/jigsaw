@@ -4,4 +4,5 @@ return [
     'baseUrl' => '',
     'production' => false,
     'collections' => [],
+    'extensions' => []
 ];

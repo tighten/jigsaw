@@ -46,7 +46,7 @@ return [
             'sort' => ['letter', '-number'],
         ],
         'invalid_path_characters_test' => [
-            'path' => '{title}',
+            'path' => '{-title}',
         ],
         'posts' => [
             'helperFunction' => function ($data) {

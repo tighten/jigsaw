@@ -77,7 +77,7 @@ class MarkdownHandler
     {
         $replacements = ["<?php" => "<{{'?php'}}"];
 
-        if ($file->getFullExtension() == 'md' || $file->getFullExtension() == 'mdown') {
+        if (in_array($file->getFullExtension(), ['markdown', 'md', 'mdown'])) {
             $replacements = array_merge([
                 "@" => "{{'@'}}",
                 "{{" => "@{{",

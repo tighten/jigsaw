@@ -97,11 +97,23 @@ class SiteBuilder
 
     private function getOutputDirectory($file)
     {
+        if( $permalink = $this->getFilePermalink($file) ) {
+            return urldecode(dirname($permalink));
+        }
+
         return urldecode($this->outputPathResolver->directory($file->path(), $file->name(), $file->extension(), $file->page()));
     }
 
     private function getOutputPath($file)
     {
+        if( $permalink = $this->getFilePermalink($file) ) {
+            return urldecode($permalink);
+        }
+
         return urldecode($this->outputPathResolver->path($file->path(), $file->name(), $file->extension(), $file->page()));
+    }
+
+    private function getFilePermalink($file) {
+        return $file->data()->page->permalink ?: NULL;
     }
 }

@@ -8,6 +8,7 @@ class ViewRenderer
     private $extensionEngines = [
         'md' => 'markdown',
         'markdown' => 'markdown',
+        'mdown' => 'markdown',
         'blade.md' => 'blade-markdown',
         'blade.markdown' => 'blade-markdown',
     ];

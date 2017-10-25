@@ -18,7 +18,10 @@ let plugins = [
     new AfterBuild(() => {
         command.get(jigsaw.path() + ' build ' + env, (error, stdout, stderr) => {
             console.log(error ? stderr : stdout);
-            browserSyncInstance.reload();
+
+            if (browserSyncInstance) {
+                browserSyncInstance.reload();
+            }
         });
     }),
 

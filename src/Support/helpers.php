@@ -64,10 +64,7 @@ function mix($path, $manifestDirectory = 'assets')
     $manifest = $manifests[$manifestPath];
 
     if (! isset($manifest[$path])) {
-        report(new Exception("Unable to locate Mix file: {$path}."));
-        if (! app('config')->get('app.debug')) {
-            return $path;
-        }
+        throw new InvalidArgumentException("Unable to locate Mix file: {$path}.");
     }
 
     return new HtmlString($manifestDirectory.$manifest[$path]);

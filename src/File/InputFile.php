@@ -4,6 +4,9 @@ class InputFile
 {
     protected $file;
     protected $basePath;
+    protected $extraBladeExtensions = [
+        'js', 'json', 'xml', 'rss', 'atom', 'txt', 'text', 'html'
+    ];
 
     public function __construct($file, $basePath)
     {
@@ -32,9 +35,12 @@ class InputFile
 
     public function getFullExtension()
     {
-        $extension = $this->getExtension();
+        return $this->isBladeFile() ? 'blade.' . $this->getExtension() : $this->getExtension();
+    }
 
-        return strpos($this->getBasename(), '.blade.' . $extension) > 0 ? 'blade.' . $extension : $extension;
+    public function getExtraBladeExtension()
+    {
+        return $this->isBladeFile() && in_array($this->getExtension(), $this->extraBladeExtensions) ? $this->getExtension() : '';
     }
 
     public function getRelativeFilePath()
@@ -42,6 +48,11 @@ class InputFile
         $relative_path = str_replace(realpath($this->basePath), '', realpath($this->file->getPathname()));
 
         return trimPath($relative_path);
+    }
+
+    protected function isBladeFile()
+    {
+        return strpos($this->getBasename(), '.blade.' . $this->getExtension()) > 0;
     }
 
     public function __call($method, $args)

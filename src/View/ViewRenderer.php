@@ -10,6 +10,7 @@ class ViewRenderer
         'markdown' => 'markdown',
         'mdown' => 'markdown',
         'blade.md' => 'blade-markdown',
+        'blade.mdown' => 'blade-markdown',
         'blade.markdown' => 'blade-markdown',
     ];
     private $bladeExtensions = [

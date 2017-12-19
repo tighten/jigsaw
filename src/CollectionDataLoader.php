@@ -7,11 +7,12 @@ use TightenCo\Jigsaw\File\InputFile;
 
 class CollectionDataLoader
 {
-    private $filesystem;
-    private $pathResolver;
-    private $handlers;
-    private $source;
     private $collectionSettings;
+    private $filesystem;
+    private $handlers;
+    private $pageSettings;
+    private $pathResolver;
+    private $source;
 
     public function __construct($filesystem, $pathResolver, $handlers = [])
     {
@@ -38,7 +39,13 @@ class CollectionDataLoader
 
     private function buildCollection($collection)
     {
-        return collect($this->filesystem->allFiles("{$this->source}/_{$collection->name}"))
+        $path = "{$this->source}/_{$collection->name}";
+
+        if (! $this->filesystem->exists($path)) {
+            return collect();
+        }
+
+        return collect($this->filesystem->allFiles($path))
             ->reject(function ($file) {
                 return starts_with($file->getFilename(), '_');
             })->map(function ($file) {
@@ -57,6 +64,7 @@ class CollectionDataLoader
         $data->put('_meta', new IterableObject($this->getMetaData($file, $collection, $data)));
         $path = $this->getPath($data);
         $data->_meta->put('path', $path)->put('url', $this->buildUrls($path));
+
 
         return CollectionItem::build($collection, $data);
     }

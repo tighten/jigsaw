@@ -44,6 +44,11 @@ class CollectionItem extends PageVariable
         return $this->_content;
     }
 
+    public function __toString()
+    {
+        return (String) $this->getContent();
+    }
+
     protected function missingHelperError($functionName)
     {
         return 'No function named "' . $functionName. '" for the collection "' . $this->_meta->collectionName . '" was found in the file "config.php".';

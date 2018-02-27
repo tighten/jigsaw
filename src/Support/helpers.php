@@ -19,6 +19,22 @@ function trimPath($path)
     return rightTrimPath(leftTrimPath($path));
 }
 
+function resolvePath($path)
+{
+    $path = str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $path);
+    $segments = [];
+
+    collect(explode(DIRECTORY_SEPARATOR, $path))->filter()->each(function ($part) use (&$segments) {
+        if ($part == '..') {
+            array_pop($segments);
+        } elseif  ($part != '.') {
+            $segments[] = $part;
+        }
+    });
+
+    return implode(DIRECTORY_SEPARATOR, $segments);
+}
+
 /**
  * Get the path to the public folder.
  */

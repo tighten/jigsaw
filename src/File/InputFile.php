@@ -45,7 +45,7 @@ class InputFile
 
     public function getRelativeFilePath()
     {
-        $relative_path = str_replace(realpath($this->basePath), '', realpath($this->file->getPathname()));
+        $relative_path = str_replace(resolvePath($this->basePath), '', resolvePath($this->file->getPathname()));
 
         return trimPath($relative_path);
     }

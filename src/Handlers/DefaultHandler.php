@@ -21,7 +21,7 @@ class DefaultHandler
     {
         return [
             new CopyFile(
-                $file->getRealPath(),
+                $file->getPathName(),
                 $file->getRelativePath(),
                 $file->getBasename('.' . $file->getExtension()),
                 $file->getExtension(),

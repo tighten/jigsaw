@@ -49,7 +49,7 @@ class BladeHandler
                 $extension == 'php' ? 'html' : $extension,
                 $this->hasFrontMatter ?
                     $this->renderWithFrontMatter($file, $pageData) :
-                    $this->render($file->getRealPath(), $pageData),
+                    $this->render($file->getPathName(), $pageData),
                 $pageData
             )
         ]);

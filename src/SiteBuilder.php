@@ -18,16 +18,16 @@ class SiteBuilder
         $this->handlers = $handlers;
     }
 
-    public function registerHandler($handler)
-    {
-        $this->handlers[] = $handler;
-    }
-
     public function build($source, $dest, $siteData)
     {
         $this->prepareDirectories([$this->cachePath, $dest]);
-        $this->buildSite($source, $dest, $siteData);
+        $this->writeFiles($source, $dest, $siteData);
         $this->cleanup();
+    }
+
+    public function registerHandler($handler)
+    {
+        $this->handlers[] = $handler;
     }
 
     private function prepareDirectories($directories)
@@ -53,14 +53,14 @@ class SiteBuilder
         $this->files->deleteDirectory($this->cachePath);
     }
 
-    private function buildSite($source, $destination, $siteData)
+    private function writeFiles($source, $destination, $siteData)
     {
         $result = collect($this->files->allFiles($source))->map(function ($file) use ($source) {
             return new InputFile($file, $source);
         })->flatMap(function ($file) use ($siteData) {
             return $this->handle($file, $siteData);
         })->each(function ($file) use ($destination) {
-            $this->buildFile($file, $destination);
+            $this->writeFile($file, $destination);
         });
     }
 
@@ -71,7 +71,7 @@ class SiteBuilder
         return $this->getHandler($file)->handle($file, PageData::withPageMetaData($siteData, $meta));
     }
 
-    private function buildFile($file, $dest)
+    private function writeFile($file, $dest)
     {
         $directory = $this->getOutputDirectory($file);
         $this->prepareDirectory("{$dest}/{$directory}");

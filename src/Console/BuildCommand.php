@@ -2,7 +2,7 @@
 
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-use TightenCo\Jigsaw\ConfigFile;
+use TightenCo\Jigsaw\File\ConfigFile;
 use TightenCo\Jigsaw\Jigsaw;
 use TightenCo\Jigsaw\PathResolvers\PrettyOutputPathResolver;
 

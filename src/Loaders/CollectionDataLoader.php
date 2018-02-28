@@ -1,9 +1,12 @@
-<?php namespace TightenCo\Jigsaw;
+<?php namespace TightenCo\Jigsaw\Loaders;
 
 use Exception;
 use TightenCo\Jigsaw\Collection\Collection;
 use TightenCo\Jigsaw\Collection\CollectionItem;
 use TightenCo\Jigsaw\File\InputFile;
+use TightenCo\Jigsaw\IterableObject;
+use TightenCo\Jigsaw\IterableObjectWithDefault;
+use TightenCo\Jigsaw\PageVariable;
 
 class CollectionDataLoader
 {

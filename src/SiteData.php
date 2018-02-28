@@ -2,11 +2,11 @@
 
 class SiteData extends IterableObject
 {
-    public static function build($settings)
+    public static function build($config)
     {
         $siteData = new static();
-        $siteData->putIterable('collections', $settings->get('collections'));
-        $siteData->putIterable('page', $settings);
+        $siteData->putIterable('collections', $config->get('collections'));
+        $siteData->putIterable('page', $config);
 
         return $siteData;
     }
@@ -17,6 +17,6 @@ class SiteData extends IterableObject
             return $this->put($collectionName, new PageVariable($collection));
         });
 
-        $this->forget('collections');
+        return $this->forget('collections');
     }
 }

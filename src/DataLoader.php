@@ -9,11 +9,13 @@ class DataLoader
         $this->collectionDataLoader = $collectionDataLoader;
     }
 
-    public function load($source, $config)
+    public function loadSiteData($config)
     {
-        $siteData = SiteData::build($config);
-        $siteData->addCollectionData($this->collectionDataLoader->load($source, $siteData));
+        return SiteData::build($config);
+    }
 
-        return $siteData;
+    public function loadCollectionData($siteData, $source)
+    {
+        return $this->collectionDataLoader->load($siteData, $source);
     }
 }

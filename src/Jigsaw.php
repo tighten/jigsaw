@@ -15,10 +15,14 @@ class Jigsaw
 
     public function build($env)
     {
+        $siteData = $this->dataLoader->loadSiteData($this->app->config);
+        $collectionData = $this->dataLoader->loadCollectionData($siteData,$this->app->buildPath['source']);
+
         $this->siteBuilder->build(
             $this->app->buildPath['source'],
             $this->app->buildPath['destination'],
-            $this->dataLoader->load($this->app->buildPath['source'], $this->app->config)
+            $siteData,
+            $collectionData
         );
     }
 }

@@ -21,7 +21,7 @@ class CollectionDataLoader
         $this->handlers = collect($handlers);
     }
 
-    public function load($source, $siteData)
+    public function load($siteData, $source)
     {
         $this->source = $source;
         $this->pageSettings = $siteData->page;
@@ -64,7 +64,6 @@ class CollectionDataLoader
         $data->put('_meta', new IterableObject($this->getMetaData($file, $collection, $data)));
         $path = $this->getPath($data);
         $data->_meta->put('path', $path)->put('url', $this->buildUrls($path));
-
 
         return CollectionItem::build($collection, $data);
     }

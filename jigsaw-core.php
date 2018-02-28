@@ -29,6 +29,7 @@ use TightenCo\Jigsaw\Handlers\IgnoredHandler;
 use TightenCo\Jigsaw\Handlers\MarkdownHandler;
 use TightenCo\Jigsaw\Handlers\PaginatedPageHandler;
 use TightenCo\Jigsaw\Jigsaw;
+use TightenCo\Jigsaw\Loaders\CollectionRemoteItemLoader;
 use TightenCo\Jigsaw\Parsers\FrontMatterParser;
 use TightenCo\Jigsaw\PathResolvers\BasicOutputPathResolver;
 use TightenCo\Jigsaw\PathResolvers\CollectionPathResolver;
@@ -163,10 +164,14 @@ $container->bind(SiteBuilder::class, function ($c) use ($cachePath) {
     ]);
 });
 
+$container->bind(CollectionRemoteItemLoader::class, function ($c) {
+    return new CollectionRemoteItemLoader(new Filesystem);
+});
+
 if (file_exists($bootstrapFile)) {
     include $bootstrapFile;
 }
 
 $container->bind(Jigsaw::class, function ($c) {
-    return new Jigsaw($c, $c[DataLoader::class], $c[SiteBuilder::class]);
+    return new Jigsaw($c, $c[DataLoader::class], $c[CollectionRemoteItemLoader::class], $c[SiteBuilder::class]);
 });

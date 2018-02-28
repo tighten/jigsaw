@@ -16,7 +16,6 @@ use Mni\FrontYAML\YAML\YAMLParser;
 use TightenCo\Jigsaw\BladeDirectivesFile;
 use TightenCo\Jigsaw\CollectionDataLoader;
 use TightenCo\Jigsaw\CollectionItemHandlers\BladeCollectionItemHandler;
-use TightenCo\Jigsaw\CollectionItemHandlers\JsonCollectionItemHandler;
 use TightenCo\Jigsaw\CollectionItemHandlers\MarkdownCollectionItemHandler;
 use TightenCo\Jigsaw\Collection\CollectionPaginator;
 use TightenCo\Jigsaw\ConfigFile;
@@ -131,7 +130,6 @@ $container->bind(CollectionDataLoader::class, function ($c) {
     return new CollectionDataLoader(new Filesystem, $c[CollectionPathResolver::class], [
         $c[MarkdownCollectionItemHandler::class],
         $c[BladeCollectionItemHandler::class],
-        $c[JsonCollectionItemHandler::class],
     ]);
 });
 

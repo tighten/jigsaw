@@ -161,6 +161,34 @@ class RemoteCollectionsTest extends TestCase
         $this->assertNull($files->getChild('source/_test/_tmp'));
     }
 
+    public function test_items_key_in_config_can_return_an_illuminate_collection()
+    {
+        $config = collect([
+            'collections' => [
+                'test' => [
+                    'items' => collect([
+                        [
+                            'extends' => '_layouts.master',
+                            'content' => 'item content',
+                        ],
+                    ]),
+                ],
+            ],
+        ]);
+        $files = $this->setupSource([
+            '_layouts' => [
+                'master.blade.php' => "<div>@yield('content')</div>",
+            ],
+        ]);
+        $this->buildSite($config, $files);
+
+        $this->assertCount(1, $files->getChild('build/test')->getChildren());
+        $this->assertEquals(
+            '<div><p>item content</p></div>',
+            $files->getChild('build/test/test-1.html')->getContent()
+        );
+    }
+
     public function test_value_of_content_key_in_item_array_is_parsed_as_markdown()
     {
         $config = collect([

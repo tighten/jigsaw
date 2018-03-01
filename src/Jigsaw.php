@@ -15,7 +15,7 @@ class Jigsaw
         $this->siteBuilder = $siteBuilder;
     }
 
-    public function build($env)
+    public function build()
     {
         $siteData = $this->dataLoader->loadSiteData($this->app->config);
         $this->remoteItemLoader->write($siteData->collections, $this->app->buildPath['source']);

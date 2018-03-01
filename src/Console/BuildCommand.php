@@ -34,7 +34,7 @@ class BuildCommand extends Command
             $this->app->instance('outputPathResolver', new PrettyOutputPathResolver);
         }
 
-        $this->app->make(Jigsaw::class)->build($env);
+        $this->app->make(Jigsaw::class)->build();
         $this->info('Site built successfully!');
     }
 

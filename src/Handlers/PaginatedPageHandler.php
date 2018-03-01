@@ -40,7 +40,7 @@ class PaginatedPageHandler
             $pageData->page->pagination->perPage ?: ($pageData->page->perPage ?: 10)
         )->map(function ($page) use ($file, $pageData) {
             $pageData->setPagePath($page->current);
-            $pageData->put('pagination', $page);
+            $pageData->page->addVariables(['pagination'=> $page]);
             $extension = strtolower($file->getExtension());
 
             return new OutputFile(

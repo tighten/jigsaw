@@ -30,8 +30,8 @@ class CollectionRemoteItem
 
     protected function getHeader()
     {
-        $yaml = Yaml::dump(collect($this->item)->except('content')->toArray());
+        $variables = collect($this->item)->except('content')->toArray();
 
-        return $yaml ? "---\n" . $yaml . "---\n" : null;
+        return count($variables) ? "---\n" . Yaml::dump($variables) . "---\n" : null;
     }
 }

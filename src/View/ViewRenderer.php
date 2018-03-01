@@ -8,11 +8,13 @@ class ViewRenderer
     private $extensionEngines = [
         'md' => 'markdown',
         'markdown' => 'markdown',
+        'mdown' => 'markdown',
         'blade.md' => 'blade-markdown',
+        'blade.mdown' => 'blade-markdown',
         'blade.markdown' => 'blade-markdown',
     ];
     private $bladeExtensions = [
-        'js', 'json', 'xml', 'rss', 'txt', 'text', 'html'
+        'js', 'json', 'xml', 'rss', 'atom', 'txt', 'text', 'html'
     ];
 
     public function __construct(Factory $viewFactory)

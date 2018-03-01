@@ -1,6 +1,5 @@
 <?php namespace TightenCo\Jigsaw\Collection;
 
-use TightenCo\Jigsaw\IterableObject;
 use TightenCo\Jigsaw\PageVariable;
 
 class CollectionItem extends PageVariable

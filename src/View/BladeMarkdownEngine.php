@@ -1,7 +1,7 @@
 <?php namespace TightenCo\Jigsaw\View;
 
 use Exception;
-use Illuminate\View\Engines\EngineInterface;
+use Illuminate\Contracts\View\Engine as EngineInterface;
 use Symfony\Component\Debug\Exception\FatalThrowableError;
 use Throwable;
 

@@ -4,9 +4,6 @@ use Exception;
 use TightenCo\Jigsaw\Collection\Collection;
 use TightenCo\Jigsaw\Collection\CollectionItem;
 use TightenCo\Jigsaw\File\InputFile;
-use TightenCo\Jigsaw\IterableObject;
-use TightenCo\Jigsaw\IterableObjectWithDefault;
-use TightenCo\Jigsaw\PageVariable;
 
 class CollectionDataLoader
 {
@@ -33,7 +30,7 @@ class CollectionDataLoader
             $collection = Collection::withSettings($collectionSettings, $collectionName);
             $collection->loadItems($this->buildCollection($collection));
 
-            return $collection->updateItems($collection->map(function($item) {
+            return $collection->updateItems($collection->map(function ($item) {
                 return $this->addCollectionItemContent($item);
             }));
         })->all();
@@ -66,7 +63,7 @@ class CollectionDataLoader
 
     private function addCollectionItemContent($item)
     {
-        $file = collect($this->filesystem->getFile($item->getSource(), $item->getFilename(), $item->getExtension()))->first();
+        $file = $this->filesystem->getFile($item->getSource(), $item->getFilename() . '.' . $item->getExtension());
 
         if ($file) {
             $item->setContent($this->getHandler($file)->getItemContent($file));
@@ -102,8 +99,8 @@ class CollectionDataLoader
 
     private function buildUrls($paths)
     {
-        $urls = collect($paths)->map(function($path) {
-            return rtrim($this->pageSettings->get('baseUrl'), ' /') . '/' . trim($path, '/');
+        $urls = collect($paths)->map(function ($path) {
+            return rightTrimPath($this->pageSettings->get('baseUrl')) . '/' . trimPath($path);
         });
 
         return $urls->count() ? new IterableObjectWithDefault($urls) : null;

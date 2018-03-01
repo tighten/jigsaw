@@ -2,7 +2,6 @@
 
 use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\File\InputFile;
-use TightenCo\Jigsaw\PageData;
 
 class SiteBuilder
 {
@@ -76,7 +75,7 @@ class SiteBuilder
     {
         $directory = $this->getOutputDirectory($file);
         $this->prepareDirectory("{$dest}/{$directory}");
-        $this->files->put("{$dest}/{$this->getOutputPath($file)}", $file->contents());
+        $file->putContents("{$dest}/{$this->getOutputPath($file)}");
     }
 
     private function getHandler($file)
@@ -89,20 +88,33 @@ class SiteBuilder
     private function getMetaData($file, $baseUrl)
     {
         $filename = $file->getFilenameWithoutExtension();
-        $path = rtrim($this->outputPathResolver->link($file->getRelativePath(), $filename, 'html'), '/');
         $extension = $file->getFullExtension();
-        $url = rtrim($baseUrl, '/') . '/' . trim($path, '/');
+        $path = rightTrimPath($this->outputPathResolver->link($file->getRelativePath(), $filename, $file->getExtraBladeExtension() ?: 'html'));
+        $url = rightTrimPath($baseUrl) . '/' . trimPath($path);
 
         return compact('filename', 'baseUrl', 'path', 'extension', 'url');
     }
 
     private function getOutputDirectory($file)
     {
+        if ($permalink = $this->getFilePermalink($file)) {
+            return urldecode(dirname($permalink));
+        }
+
         return urldecode($this->outputPathResolver->directory($file->path(), $file->name(), $file->extension(), $file->page()));
     }
 
     private function getOutputPath($file)
     {
+        if ($permalink = $this->getFilePermalink($file)) {
+            return urldecode($permalink);
+        }
+
         return urldecode($this->outputPathResolver->path($file->path(), $file->name(), $file->extension(), $file->page()));
+    }
+
+    private function getFilePermalink($file)
+    {
+        return $file->data()->page->permalink ?: NULL;
     }
 }

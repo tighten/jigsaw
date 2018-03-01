@@ -13,7 +13,7 @@ class MarkdownCollectionItemHandler
 
     public function shouldHandle($file)
     {
-        return in_array($file->getExtension(), ['markdown', 'md']);
+        return in_array($file->getExtension(), ['markdown', 'md', 'mdown']);
     }
 
     public function getItemVariables($file)

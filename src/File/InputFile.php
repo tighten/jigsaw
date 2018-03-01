@@ -4,6 +4,9 @@ class InputFile
 {
     protected $file;
     protected $basePath;
+    protected $extraBladeExtensions = [
+        'js', 'json', 'xml', 'rss', 'atom', 'txt', 'text', 'html'
+    ];
 
     public function __construct($file, $basePath)
     {
@@ -13,19 +16,9 @@ class InputFile
 
     public function topLevelDirectory()
     {
-        $parts = explode('/', $this->relativePath());
+        $parts = explode(DIRECTORY_SEPARATOR, $this->getRelativeFilePath());
 
         return count($parts) == 1 ? '' : $parts[0];
-    }
-
-    public function relativePath()
-    {
-        return str_replace($this->basePath . '/', '', $this->file->getPathname());
-    }
-
-    public function bladeViewPath()
-    {
-        return $this->getRelativePath() . '/' . $this->getFilenameWithoutExtension();
     }
 
     public function getFilenameWithoutExtension()
@@ -33,11 +26,33 @@ class InputFile
         return $this->getBasename('.' . $this->getFullExtension());
     }
 
+    public function getExtension()
+    {
+        if (! starts_with($this->getFilename(), '.')) {
+            return $this->file->getExtension();
+        }
+    }
+
     public function getFullExtension()
     {
-        $extension = $this->getExtension();
+        return $this->isBladeFile() ? 'blade.' . $this->getExtension() : $this->getExtension();
+    }
 
-        return strpos($this->getBasename(), '.blade.' . $extension) > 0 ? 'blade.' . $extension : $extension;
+    public function getExtraBladeExtension()
+    {
+        return $this->isBladeFile() && in_array($this->getExtension(), $this->extraBladeExtensions) ? $this->getExtension() : '';
+    }
+
+    public function getRelativeFilePath()
+    {
+        $relative_path = str_replace(realpath($this->basePath), '', realpath($this->file->getPathname()));
+
+        return trimPath($relative_path);
+    }
+
+    protected function isBladeFile()
+    {
+        return strpos($this->getBasename(), '.blade.' . $this->getExtension()) > 0;
     }
 
     public function __call($method, $args)

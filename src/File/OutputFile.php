@@ -48,4 +48,9 @@ class OutputFile
     {
         return $this->page;
     }
+
+    public function putContents($destination)
+    {
+        return file_put_contents($destination, $this->contents);
+    }
 }

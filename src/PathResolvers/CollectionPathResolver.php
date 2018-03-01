@@ -15,7 +15,7 @@ class CollectionPathResolver
 
     public function link($path, $data)
     {
-        return collect($data->extends)->map(function($bladeViewPath, $templateKey) use ($path, $data) {
+        return collect($data->extends)->map(function ($bladeViewPath, $templateKey) use ($path, $data) {
             return $this->cleanOutputPath(
                 $this->getPath($path, $data, $this->getExtension($bladeViewPath), $templateKey)
             );
@@ -59,7 +59,7 @@ class CollectionPathResolver
 
     private function getDefaultPath($data)
     {
-        return str_slug($data->getCollectionName()) . '/' . str_slug($data->getFilename());
+        return $this->slug($data->getCollectionName()) . '/' . $this->slug($data->getFilename());
     }
 
     private function parseShorthand($path, $data)
@@ -67,11 +67,11 @@ class CollectionPathResolver
         preg_match_all('/\{(.*?)\}/', $path, $bracketedParameters);
 
         if (count($bracketedParameters[0]) == 0) {
-            return $path . '/' . str_slug($data->getFilename());
+            return $path . '/' . $this->slug($data->getFilename());
         }
 
         $bracketedParametersReplaced =
-            collect($bracketedParameters[0])->map(function($param) use ($data) {
+            collect($bracketedParameters[0])->map(function ($param) use ($data) {
                 return ['token' => $param, 'value' => $this->getParameterValue($param, $data)];
             })->reduce(function ($carry, $param) use ($path) {
                 return str_replace($param['token'], $param['value'], $carry);
@@ -80,7 +80,8 @@ class CollectionPathResolver
         return $bracketedParametersReplaced;
     }
 
-    private function getParameterValue($param, $data) {
+    private function getParameterValue($param, $data)
+    {
         list($param, $dateFormat) = explode('|', trim($param, '{}') . '|');
         $slugSeparator = ctype_alpha($param[0]) ? null : $param[0];
 
@@ -88,7 +89,7 @@ class CollectionPathResolver
             $param = ltrim($param, $param[0]);
         }
 
-        $value = array_get($data, $param, $data->_meta->get($param));
+        $value = $this->filterInvalidCharacters(array_get($data, $param, $data->_meta->get($param)));
 
         if (! $value) {
             return '';
@@ -96,7 +97,7 @@ class CollectionPathResolver
 
         $value = $dateFormat ? $this->formatDate($value, $dateFormat) : $value;
 
-        return $slugSeparator ? str_slug($value, $slugSeparator) : $value;
+        return $slugSeparator ? $this->slug($value, $slugSeparator) : $value;
     }
 
     private function formatDate($date, $format)
@@ -122,11 +123,41 @@ class CollectionPathResolver
 
     private function ensureSlashAtBeginningOnly($path)
     {
-        return '/' . trim($path, '/.');
+        return '/' . trimPath($path);
     }
 
     private function resolve($path)
     {
         return $this->outputPathResolver->link(dirname($path), basename($path), 'html');
+    }
+
+    /**
+     * This is identical to Laravel's built-in `str_slug()` helper,
+     * except it preserves `.` characters.
+     */
+    private function slug($string, $separator = '-')
+    {
+        // Transliterate a UTF-8 value to ASCII
+        $string = iconv('UTF-8', 'ASCII//TRANSLIT', $string);
+
+        // Convert all dashes/underscores into separator
+        $flip = $separator == '-' ? '_' : '-';
+        $string = preg_replace('!['.preg_quote($flip).']+!u', $separator, $string);
+
+        // Remove all characters that are not the separator, letters, numbers, whitespace, or dot
+        $string = preg_replace('![^'.preg_quote($separator).'\pL\pN\s\.]+!u', '', mb_strtolower($string));
+
+        // Replace all separator characters and whitespace by a single separator
+        $string = preg_replace('!['.preg_quote($separator).'\s]+!u', $separator, $string);
+
+        return trim($string, $separator);
+    }
+
+    /**
+     * Filter characters that are invalid in URL, like ® and ™, allowing spaces
+     */
+    private function filterInvalidCharacters($value)
+    {
+        return is_string($value) ? preg_replace('/[^\x20-\x7E]/', '', $value) : $value;
     }
 }

@@ -4,6 +4,25 @@ use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 
 /**
+ * Remove slashes (including backslashes on Windows),
+ * spaces, and periods from the beginning and/or end of paths.
+ */
+function leftTrimPath($path)
+{
+    return ltrim($path, " .\\/");
+}
+
+function rightTrimPath($path)
+{
+    return rtrim($path, " .\\/");
+}
+
+function trimPath($path)
+{
+    return rightTrimPath(leftTrimPath($path));
+}
+
+/**
  * Get the path to the public folder.
  */
 function public_path($path = '')

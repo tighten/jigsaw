@@ -54,21 +54,21 @@ class UseCommand extends Command
             $this->scaffoldElixir();
         }
 
-        $this->info("\nRun `npm install` to update your Node.js dependencies.\n");
+        $this->info("Run `npm install` to update your Node.js dependencies.\n");
     }
 
     private function scaffoldMix()
     {
         $this->deleteFiles($this->elixirFiles);
         $this->files->copyDirectory(__DIR__ . '/../../stubs/mix', $this->base);
-        $this->info("\nNow using Laravel Mix and Weback to compile assets.\n");
+        $this->info("\nNow using Laravel Mix and Weback to compile assets.");
     }
 
     private function scaffoldElixir()
     {
         $this->deleteFiles($this->mixFiles);
         $this->files->copyDirectory(__DIR__ . '/../../stubs/elixir', $this->base);
-        $this->info("\nNow using Laravel Elixir and Gulp to compile assets.\n");
+        $this->info("\nNow using Laravel Elixir and Gulp to compile assets.");
     }
 
     private function deleteFiles($files)

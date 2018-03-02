@@ -14,7 +14,7 @@ class UseCommand extends Command
         'tasks/bin.js',
     ];
     private $mixFiles = [
-        'webpack.mix.js'
+        'webpack.mix.js',
         'package.json',
         'tasks/bin.js',
     ];

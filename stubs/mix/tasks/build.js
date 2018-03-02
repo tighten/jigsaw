@@ -1,5 +1,5 @@
 let argv = require('yargs').argv;
-let bin = require('bin');
+let bin = require('./bin');
 let command = require('node-cmd');
 
 let AfterWebpack = require('on-build-webpack');
@@ -24,7 +24,7 @@ module.exports = {
 
     watch: function(paths) {
         return new Watch({
-            options: { ignoreInitial: true }
+            options: { ignoreInitial: true },
             paths: paths,
         })
     },

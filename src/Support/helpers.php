@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\HtmlString;
+use Illuminate\Support\Str;
+
 /**
  * Remove slashes (including backslashes on Windows),
  * spaces, and periods from the beginning and/or end of paths.
@@ -46,4 +49,42 @@ function elixir($file, $buildDirectory = 'build')
     }
 
     throw new InvalidArgumentException("File {$file} not defined in asset manifest.");
+}
+
+/**
+ * Get the path to a versioned Mix file.
+ */
+function mix($path, $manifestDirectory = 'assets')
+{
+    static $manifests = [];
+
+    if (! Str::startsWith($path, '/')) {
+        $path = "/{$path}";
+    }
+
+    if ($manifestDirectory && ! Str::startsWith($manifestDirectory, '/')) {
+        $manifestDirectory = "/{$manifestDirectory}";
+    }
+
+    if (file_exists(public_path($manifestDirectory.'/hot'))) {
+        return new HtmlString("//localhost:8080{$path}");
+    }
+
+    $manifestPath = public_path($manifestDirectory.'/mix-manifest.json');
+
+    if (! isset($manifests[$manifestPath])) {
+        if (! file_exists($manifestPath)) {
+            throw new Exception('The Mix manifest does not exist.');
+        }
+
+        $manifests[$manifestPath] = json_decode(file_get_contents($manifestPath), true);
+    }
+
+    $manifest = $manifests[$manifestPath];
+
+    if (! isset($manifest[$path])) {
+        throw new InvalidArgumentException("Unable to locate Mix file: {$path}.");
+    }
+
+    return new HtmlString($manifestDirectory.$manifest[$path]);
 }

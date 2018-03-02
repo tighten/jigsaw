@@ -11,11 +11,13 @@ class UseCommand extends Command
     private $elixirFiles = [
         'gulpfile.js',
         'package.json',
+        'package-lock.json',
         'tasks/bin.js',
     ];
     private $mixFiles = [
         'webpack.mix.js',
         'package.json',
+        'package-lock.json',
         'tasks/bin.js',
     ];
 

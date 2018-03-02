@@ -1,7 +1,7 @@
-var gulp = require('gulp');
-var elixir = require('laravel-elixir');
 var argv = require('yargs').argv;
 var bin = require('./tasks/bin');
+var elixir = require('laravel-elixir');
+var gulp = require('gulp');
 
 elixir.config.assetsPath = 'source/_assets';
 elixir.config.publicPath = 'source';

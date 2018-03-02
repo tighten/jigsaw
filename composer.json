@@ -35,6 +35,7 @@
         "jigsaw"
     ],
     "require-dev": {
+        "mikey179/vfsStream": "^1.6",
         "phpunit/phpunit": "~7.0"
     }
 }

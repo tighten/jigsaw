@@ -33,12 +33,17 @@ class InitCommand extends Command
         }
 
         $this->scaffoldSite();
-
+        $this->scaffoldMix();
         $this->info('Site initialized successfully!');
     }
 
     private function scaffoldSite()
     {
         $this->files->copyDirectory(__DIR__ . '/../../stubs/site', $this->base);
+    }
+
+    private function scaffoldMix()
+    {
+        $this->files->copyDirectory(__DIR__ . '/../../stubs/mix', $this->base);
     }
 }

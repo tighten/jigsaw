@@ -15,7 +15,7 @@ class CollectionRemoteItemLoader
 
     public function write($collections, $source)
     {
-        $collections->each(function ($collection, $collectionName) use ($source) {
+        collect($collections)->each(function ($collection, $collectionName) use ($source) {
             $items = $this->getItems($collection);
 
             if (count($items)) {

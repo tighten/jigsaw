@@ -12,11 +12,13 @@ class Filesystem extends BaseFilesystem
 
     public function allFiles($directory, $ignore_dotfiles = false)
     {
-        return iterator_to_array(Finder::create()
-            ->in($directory)
-            ->ignoreDotFiles($ignore_dotfiles)
-            ->notName('.DS_Store')
-            ->files()
-        , false);
+        return iterator_to_array(
+            Finder::create()
+                ->in($directory)
+                ->ignoreDotFiles($ignore_dotfiles)
+                ->notName('.DS_Store')
+                ->files(),
+            false
+        );
     }
 }

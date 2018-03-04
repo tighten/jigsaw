@@ -20,7 +20,7 @@ use TightenCo\Jigsaw\CollectionItemHandlers\MarkdownCollectionItemHandler;
 use TightenCo\Jigsaw\Collection\CollectionPaginator;
 use TightenCo\Jigsaw\ConfigFile;
 use TightenCo\Jigsaw\DataLoader;
-use TightenCo\Jigsaw\Event\EventBus;
+use TightenCo\Jigsaw\Events\EventBus;
 use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\File\TemporaryFilesystem;
 use TightenCo\Jigsaw\Handlers\BladeHandler;

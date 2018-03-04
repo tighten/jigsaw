@@ -1,24 +1,25 @@
-<?php namespace TightenCo\Jigsaw\Event;
+<?php namespace TightenCo\Jigsaw\Events;
+
+use TightenCo\Jigsaw\Jigsaw;
 
 class EventBus
 {
-    public $before;
-    public $after;
+    public $start;
+    public $beforeBuild;
+    public $afterBuild;
 
     public function __construct()
     {
-        $this->before = collect();
-        $this->after = collect();
+        $this->start = collect();
+        $this->beforeBuild = collect();
+        $this->afterBuild = collect();
     }
 
-    public function before($task)
+    public function __call($event, $arguments)
     {
-        $this->before = $this->before->merge(collect($task));
-    }
-
-    public function after($task)
-    {
-        $this->after = $this->after->merge(collect($task));
+        if ($this->{$event}) {
+            $this->{$event} = $this->{$event}->merge(collect($arguments[0]));
+        }
     }
 
     public function fire($event, Jigsaw $jigsaw)

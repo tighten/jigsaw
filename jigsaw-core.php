@@ -20,6 +20,7 @@ use TightenCo\Jigsaw\CollectionItemHandlers\MarkdownCollectionItemHandler;
 use TightenCo\Jigsaw\Collection\CollectionPaginator;
 use TightenCo\Jigsaw\ConfigFile;
 use TightenCo\Jigsaw\DataLoader;
+use TightenCo\Jigsaw\Event\EventBus;
 use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\File\TemporaryFilesystem;
 use TightenCo\Jigsaw\Handlers\BladeHandler;
@@ -163,7 +164,12 @@ $container->bind(SiteBuilder::class, function ($c) use ($cachePath) {
     ]);
 });
 
+$container->singleton('events', function ($c) {
+    return new EventBus();
+});
+
 if (file_exists($bootstrapFile)) {
+    $events = $container->events;
     include $bootstrapFile;
 }
 

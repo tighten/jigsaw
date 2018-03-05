@@ -17,7 +17,7 @@ class EventBus
 
     public function __call($event, $arguments)
     {
-        if ($this->{$event}) {
+        if (isset($this->{$event})) {
             $this->{$event} = $this->{$event}->merge(collect($arguments[0]));
         }
     }

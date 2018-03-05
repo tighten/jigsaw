@@ -18,16 +18,18 @@ class SiteBuilder
         $this->handlers = $handlers;
     }
 
-    public function registerHandler($handler)
-    {
-        $this->handlers[] = $handler;
-    }
-
     public function build($source, $dest, $siteData)
     {
         $this->prepareDirectories([$this->cachePath, $dest]);
-        $this->buildSite($source, $dest, $siteData);
+        $outputFiles = $this->buildSite($source, $dest, $siteData);
         $this->cleanup();
+
+        return $outputFiles;
+    }
+
+    public function registerHandler($handler)
+    {
+        $this->handlers[] = $handler;
     }
 
     private function prepareDirectories($directories)

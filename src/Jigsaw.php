@@ -20,12 +20,12 @@ class Jigsaw
     {
         $this->env = $env;
         $this->siteData = $this->dataLoader->loadSiteData($this->app->config);
-        $this->fireEvent('start');
+        $this->fireEvent('beforeBuild');
 
         $collectionData = $this->dataLoader->loadCollectionData($this->siteData, $this->getSourcePath());
         $this->siteData = $this->siteData->addCollectionData($collectionData);
 
-        $this->fireEvent('beforeBuild');
+        $this->fireEvent('afterCollections');
 
         $this->outputPaths = $this->siteBuilder->build(
             $this->getSourcePath(),

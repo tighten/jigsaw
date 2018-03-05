@@ -4,14 +4,14 @@ use TightenCo\Jigsaw\Jigsaw;
 
 class EventBus
 {
-    public $start;
     public $beforeBuild;
+    public $afterCollections;
     public $afterBuild;
 
     public function __construct()
     {
-        $this->start = collect();
         $this->beforeBuild = collect();
+        $this->afterCollections = collect();
         $this->afterBuild = collect();
     }
 

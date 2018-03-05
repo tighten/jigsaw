@@ -20,7 +20,7 @@ class CollectionItemTest extends TestCase
             'test_to_string.blade.php' => '<div>{!! $collection->first() !!}</div>',
         ]);
 
-        $this->buildSite($config, $files);
+        $this->buildSite($files, $config);
 
         $this->assertEquals(
             $files->getChild('build/test_get_content.html')->getContent(),
@@ -30,20 +30,5 @@ class CollectionItemTest extends TestCase
             '<div><h3>Collection Item Content</h3></div>',
             $files->getChild('build/test_to_string.html')->getContent()
         );
-    }
-
-    public function setupSource($source = [])
-    {
-        return vfsStream::setup('virtual', null, ['source' => $source]);
-    }
-
-    protected function buildSite($config = [], $vfs)
-    {
-        $this->app->config = $config;
-        $this->app->buildPath = [
-            'source' => $vfs->url() . '/source',
-            'destination' => $vfs->url() . '/build',
-        ];
-        $this->app->make(Jigsaw::class)->build('test');
     }
 }

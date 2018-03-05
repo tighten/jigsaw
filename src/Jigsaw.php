@@ -19,21 +19,26 @@ class Jigsaw
     public function build($env)
     {
         $this->env = $env;
-
-        $this->app->events->fire('start', $this);
-
         $this->siteData = $this->dataLoader->loadSiteData($this->app->config);
-        $collectionData = $this->dataLoader->loadCollectionData($this->siteData, $this->getDestinationPath());
+        $this->fireEvent('start');
 
-        $this->app->events->fire('beforeBuild', $this);
+        $collectionData = $this->dataLoader->loadCollectionData($this->siteData, $this->getSourcePath());
+        $this->siteData = $this->siteData->addCollectionData($collectionData);
+
+        $this->fireEvent('beforeBuild');
 
         $this->outputLinks = $this->siteBuilder->build(
             $this->getSourcePath(),
             $this->getDestinationPath(),
-            $this->siteData->addCollectionData($collectionData)
+            $this->siteData
         );
 
-        $this->app->events->fire('afterBuild', $this);
+        $this->fireEvent('afterBuild');
+    }
+
+    protected function fireEvent($event)
+    {
+        $this->app->events->fire($event, $this);
     }
 
     public function getEnvironment()

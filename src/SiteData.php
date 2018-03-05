@@ -17,6 +17,6 @@ class SiteData extends IterableObject
             return $this->put($collectionName, new PageVariable($collection));
         });
 
-        $this->forget('collections');
+        return $this->forget('collections');
     }
 }

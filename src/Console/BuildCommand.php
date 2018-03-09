@@ -2,6 +2,7 @@
 
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
+use TightenCo\Jigsaw\File\ConfigFile;
 use TightenCo\Jigsaw\Jigsaw;
 use TightenCo\Jigsaw\PathResolvers\PrettyOutputPathResolver;
 
@@ -33,14 +34,14 @@ class BuildCommand extends Command
             $this->app->instance('outputPathResolver', new PrettyOutputPathResolver);
         }
 
-        $this->app->make(Jigsaw::class)->build($env);
+        $this->app->make(Jigsaw::class)->build();
         $this->info('Site built successfully!');
     }
 
     private function includeEnvironmentConfig($env)
     {
         $environmentConfigPath = $this->getAbsolutePath("config.{$env}.php");
-        $environmentConfig = file_exists($environmentConfigPath) ? include $environmentConfigPath : [];
+        $environmentConfig = (new ConfigFile($environmentConfigPath))->config;
 
         $this->app->config = collect($this->app->config)
             ->merge(collect($environmentConfig))

@@ -13,13 +13,11 @@ use Mni\FrontYAML\Bridge\Symfony\SymfonyYAMLParser;
 use Mni\FrontYAML\Markdown\MarkdownParser;
 use Mni\FrontYAML\Parser;
 use Mni\FrontYAML\YAML\YAMLParser;
-use TightenCo\Jigsaw\BladeDirectivesFile;
-use TightenCo\Jigsaw\CollectionDataLoader;
 use TightenCo\Jigsaw\CollectionItemHandlers\BladeCollectionItemHandler;
 use TightenCo\Jigsaw\CollectionItemHandlers\MarkdownCollectionItemHandler;
 use TightenCo\Jigsaw\Collection\CollectionPaginator;
-use TightenCo\Jigsaw\ConfigFile;
-use TightenCo\Jigsaw\DataLoader;
+use TightenCo\Jigsaw\File\BladeDirectivesFile;
+use TightenCo\Jigsaw\File\ConfigFile;
 use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\File\TemporaryFilesystem;
 use TightenCo\Jigsaw\Handlers\BladeHandler;
@@ -29,6 +27,9 @@ use TightenCo\Jigsaw\Handlers\IgnoredHandler;
 use TightenCo\Jigsaw\Handlers\MarkdownHandler;
 use TightenCo\Jigsaw\Handlers\PaginatedPageHandler;
 use TightenCo\Jigsaw\Jigsaw;
+use TightenCo\Jigsaw\Loaders\CollectionDataLoader;
+use TightenCo\Jigsaw\Loaders\CollectionRemoteItemLoader;
+use TightenCo\Jigsaw\Loaders\DataLoader;
 use TightenCo\Jigsaw\Parsers\FrontMatterParser;
 use TightenCo\Jigsaw\PathResolvers\BasicOutputPathResolver;
 use TightenCo\Jigsaw\PathResolvers\CollectionPathResolver;
@@ -163,10 +164,14 @@ $container->bind(SiteBuilder::class, function ($c) use ($cachePath) {
     ]);
 });
 
+$container->bind(CollectionRemoteItemLoader::class, function ($c) {
+    return new CollectionRemoteItemLoader(new Filesystem);
+});
+
 if (file_exists($bootstrapFile)) {
     include $bootstrapFile;
 }
 
 $container->bind(Jigsaw::class, function ($c) {
-    return new Jigsaw($c, $c[DataLoader::class], $c[SiteBuilder::class]);
+    return new Jigsaw($c, $c[DataLoader::class], $c[CollectionRemoteItemLoader::class], $c[SiteBuilder::class]);
 });

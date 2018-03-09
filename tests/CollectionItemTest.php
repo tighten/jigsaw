@@ -2,7 +2,8 @@
 
 namespace Tests;
 
-use TightenCo\Jigsaw\DataLoader;
+use TightenCo\Jigsaw\Jigsaw;
+use TightenCo\Jigsaw\Loaders\DataLoader;
 use TightenCo\Jigsaw\SiteBuilder;
 use org\bovigo\vfs\vfsStream;
 
@@ -12,26 +13,30 @@ class CollectionItemTest extends TestCase
     {
         $config = collect(['collections' => ['collection' => []]]);
         $yaml_header = implode("\n", ['---', 'section: content', '---']);
-        $vfs = vfsStream::setup('virtual', null, [
-            'source' => [
-                '_collection' => [
-                    'item.md' => $yaml_header . '### Collection Item Content',
-                ],
-                'test_get_content.blade.php' => '<div>{!! $collection->first()->getContent() !!}</div>',
-                'test_to_string.blade.php' => '<div>{!! $collection->first() !!}</div>',
+
+        $files = $this->setupSource([
+            '_collection' => [
+                'item.md' => $yaml_header . '### Collection Item Content',
             ],
+            'test_get_content.blade.php' => '<div>{!! $collection->first()->getContent() !!}</div>',
+            'test_to_string.blade.php' => '<div>{!! $collection->first() !!}</div>',
         ]);
 
-        $this->buildSite($config, $vfs);
+        $this->buildSite($config, $files);
 
         $this->assertEquals(
-            $vfs->getChild('build/test_get_content.html')->getContent(),
-            $vfs->getChild('build/test_to_string.html')->getContent()
+            $files->getChild('build/test_get_content.html')->getContent(),
+            $files->getChild('build/test_to_string.html')->getContent()
         );
         $this->assertEquals(
             '<div><h3>Collection Item Content</h3></div>',
-            $vfs->getChild('build/test_to_string.html')->getContent()
+            $files->getChild('build/test_to_string.html')->getContent()
         );
+    }
+
+    public function setupSource($source = [])
+    {
+        return vfsStream::setup('virtual', null, ['source' => $source]);
     }
 
     protected function buildSite($config = [], $vfs)
@@ -41,17 +46,15 @@ class CollectionItemTest extends TestCase
             'source' => $vfs->url() . '/source',
             'destination' => $vfs->url() . '/build',
         ];
-        $this->app->make(SiteBuilder::class)->build(
-            $this->app->buildPath['source'],
-            $this->app->buildPath['destination'],
-            $site_data = $this->buildSiteData($config, $vfs->url() . '/source')
-        );
-
-        return $site_data;
+        $this->app->make(Jigsaw::class)->build();
     }
 
-    protected function buildSiteData($config, $source_url)
+    protected function buildSiteData($config, $vfs)
     {
-        return $this->app->make(DataLoader::class)->load($source_url, $config);
+        $loader = $this->app->make(DataLoader::class);
+        $siteData = $loader->loadSiteData($config);
+        $collectionData = $loader->loadCollectionData($siteData, $vfs->url() . '/source');
+
+        return $siteData->addCollectionData($collectionData);
     }
 }

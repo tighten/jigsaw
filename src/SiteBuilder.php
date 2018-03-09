@@ -21,8 +21,10 @@ class SiteBuilder
     public function build($source, $dest, $siteData)
     {
         $this->prepareDirectories([$this->cachePath, $dest]);
-        $this->writeFiles($source, $dest, $siteData);
+        $outputFiles = $this->writeFiles($source, $dest, $siteData);
         $this->cleanup();
+
+        return $outputFiles;
     }
 
     public function registerHandler($handler)
@@ -55,12 +57,12 @@ class SiteBuilder
 
     private function writeFiles($source, $destination, $siteData)
     {
-        $result = collect($this->files->allFiles($source))->map(function ($file) use ($source) {
+        return collect($this->files->allFiles($source))->map(function ($file) use ($source) {
             return new InputFile($file, $source);
         })->flatMap(function ($file) use ($siteData) {
             return $this->handle($file, $siteData);
-        })->each(function ($file) use ($destination) {
-            $this->writeFile($file, $destination);
+        })->map(function ($file) use ($destination) {
+            return $this->writeFile($file, $destination);
         });
     }
 
@@ -76,6 +78,8 @@ class SiteBuilder
         $directory = $this->getOutputDirectory($file);
         $this->prepareDirectory("{$dest}/{$directory}");
         $file->putContents("{$dest}/{$this->getOutputPath($file)}");
+
+        return $this->getOutputLink($file);
     }
 
     private function getHandler($file)
@@ -107,14 +111,27 @@ class SiteBuilder
     private function getOutputPath($file)
     {
         if ($permalink = $this->getFilePermalink($file)) {
-            return urldecode($permalink);
+            return $permalink;
         }
 
-        return urldecode($this->outputPathResolver->path($file->path(), $file->name(), $file->extension(), $file->page()));
+        return resolvePath(urldecode($this->outputPathResolver->path(
+            $file->path(), $file->name(), $file->extension(), $file->page()
+        )));
+    }
+
+    private function getOutputLink($file)
+    {
+        if ($permalink = $this->getFilePermalink($file)) {
+            return $permalink;
+        }
+
+        return rightTrimPath(urldecode($this->outputPathResolver->link(
+            $file->path(), $file->name(), $file->extension(), $file->page()
+        )));
     }
 
     private function getFilePermalink($file)
     {
-        return $file->data()->page->permalink ?: NULL;
+        return $file->data()->page->permalink ? resolvePath(urldecode($file->data()->page->permalink)) : NULL;
     }
 }

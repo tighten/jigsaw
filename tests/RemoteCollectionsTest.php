@@ -15,7 +15,7 @@ class RemoteCollectionsTest extends TestCase
                 'collection_without_directory' => [],
             ],
         ]);
-        $siteData = $this->buildSiteData($config, $this->setupSource());
+        $siteData = $this->buildSiteData($this->setupSource(), $config);
 
         $this->assertTrue($siteData->has('collection_without_directory'));
         $this->assertCount(0, $siteData->collection_without_directory);
@@ -34,7 +34,7 @@ class RemoteCollectionsTest extends TestCase
                 'file_2.md' => 'Test markdown file #2',
             ],
         ]);
-        $siteData = $this->buildSiteData($config, $files);
+        $siteData = $this->buildSiteData($files, $config);
 
         $this->assertCount(2, $siteData->collection);
         $this->assertEquals('<p>Test markdown file #1</p>', $siteData->collection->file_1->getContent());
@@ -58,7 +58,7 @@ class RemoteCollectionsTest extends TestCase
                 'file_2.md' => $yaml_header . 'File 2 Content',
             ],
         ]);
-        $this->buildSite($config, $files);
+        $this->buildSite($files, $config);
 
         $this->assertCount(2, $files->getChild('build/collection')->getChildren());
         $this->assertEquals(
@@ -90,7 +90,7 @@ class RemoteCollectionsTest extends TestCase
                 'master.blade.php' => "<div>@yield('content')</div>",
             ],
         ]);
-        $this->buildSite($config, $files);
+        $this->buildSite($files, $config);
 
         $this->assertCount(1, $files->getChild('build/test')->getChildren());
         $this->assertEquals(
@@ -123,7 +123,7 @@ class RemoteCollectionsTest extends TestCase
                 'file_1.md' => $yaml_header . 'file content',
             ],
         ]);
-        $this->buildSite($config, $files);
+        $this->buildSite($files, $config);
 
         $this->assertCount(2, $files->getChild('build/test')->getChildren());
         $this->assertEquals(
@@ -155,7 +155,7 @@ class RemoteCollectionsTest extends TestCase
                 'master.blade.php' => "<div>@yield('content')</div>",
             ],
         ]);
-        $this->buildSite($config, $files);
+        $this->buildSite($files, $config);
 
         $this->assertCount(0, $files->getChild('source/_test')->getChildren());
         $this->assertNull($files->getChild('source/_test/_tmp'));
@@ -180,7 +180,7 @@ class RemoteCollectionsTest extends TestCase
                 'master.blade.php' => "<div>@yield('content')</div>",
             ],
         ]);
-        $this->buildSite($config, $files);
+        $this->buildSite($files, $config);
 
         $this->assertCount(1, $files->getChild('build/test')->getChildren());
         $this->assertEquals(
@@ -208,7 +208,7 @@ class RemoteCollectionsTest extends TestCase
                 'master.blade.php' => "<div>@yield('content')</div>",
             ],
         ]);
-        $this->buildSite($config, $files);
+        $this->buildSite($files, $config);
 
         $this->assertEquals(
             '<div><h2>item content</h2></div>',
@@ -236,7 +236,7 @@ class RemoteCollectionsTest extends TestCase
                 'master.blade.php' => '<div>{{ $page->variable }}</div>',
             ],
         ]);
-        $this->buildSite($config, $files);
+        $this->buildSite($files, $config);
 
         $this->assertEquals(
             '<div>page variable</div>',
@@ -263,7 +263,7 @@ class RemoteCollectionsTest extends TestCase
                 'master.blade.php' => "<div>@yield('content')</div>",
             ],
         ]);
-        $this->buildSite($config, $files);
+        $this->buildSite($files, $config);
 
         $this->assertEquals(
             '<div><p>item content</p></div>',
@@ -286,7 +286,7 @@ class RemoteCollectionsTest extends TestCase
                 'master.blade.php' => "<div>@yield('content')</div>",
             ],
         ]);
-        $this->buildSite($config, $files);
+        $this->buildSite($files, $config);
 
         $this->assertEquals(
             '<div><h2>item content</h2></div>',
@@ -315,7 +315,7 @@ class RemoteCollectionsTest extends TestCase
                 'master.blade.php' => "<div>@yield('content')</div>",
             ],
         ]);
-        $this->buildSite($config, $files);
+        $this->buildSite($files, $config);
 
         $this->assertEquals(
             '<div><p>item 1 content</p></div>',
@@ -349,7 +349,7 @@ class RemoteCollectionsTest extends TestCase
                 'master.blade.php' => "<div>@yield('content')</div>",
             ],
         ]);
-        $this->buildSite($config, $files);
+        $this->buildSite($files, $config);
 
         $this->assertTrue($files->hasChild('build/test/test-1.html'));
         $this->assertTrue($files->hasChild('build/test/test-2.html'));
@@ -375,7 +375,7 @@ class RemoteCollectionsTest extends TestCase
                 'master.blade.php' => "<div>@yield('content')</div>",
             ],
         ]);
-        $this->buildSite($config, $files);
+        $this->buildSite($files, $config);
 
         $this->assertTrue($files->hasChild('build/test/custom-filename.html'));
     }
@@ -400,7 +400,7 @@ class RemoteCollectionsTest extends TestCase
                 'master.blade.php' => "<div>@yield('content')</div>",
             ],
         ]);
-        $this->buildSite($config, $files);
+        $this->buildSite($files, $config);
 
         $this->assertEquals(
             '<div><p>item 1</p></div>',
@@ -433,36 +433,12 @@ class RemoteCollectionsTest extends TestCase
                 'master.blade.php' => "<div>@yield('content')</div>",
             ],
         ]);
-        $this->buildSite($config, $files);
+        $this->buildSite($files, $config);
 
         $content = json_decode(file_get_contents('https://jsonplaceholder.typicode.com/posts/1'))->body;
         $this->assertEquals(
             '<div><p>' . $content . '</p></div>',
             $files->getChild('build/test/test-1.html')->getContent()
         );
-    }
-
-    public function setupSource($source = [])
-    {
-        return vfsStream::setup('virtual', null, ['source' => $source]);
-    }
-
-    protected function buildSite($config = [], $vfs)
-    {
-        $this->app->config = $config;
-        $this->app->buildPath = [
-            'source' => $vfs->url() . '/source',
-            'destination' => $vfs->url() . '/build',
-        ];
-        $this->app->make(Jigsaw::class)->build();
-    }
-
-    protected function buildSiteData($config, $vfs)
-    {
-        $loader = $this->app->make(DataLoader::class);
-        $siteData = $loader->loadSiteData($config);
-        $collectionData = $loader->loadCollectionData($siteData, $vfs->url() . '/source');
-
-        return $siteData->addCollectionData($collectionData);
     }
 }

@@ -11,7 +11,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "TightenCo\\Jigsaw\\": "src"
+            "TightenCo\\Jigsaw\\": "src/"
         },
         "files": [
             "src/Support/helpers.php"

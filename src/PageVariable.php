@@ -30,6 +30,11 @@ class PageVariable extends IterableObject
             return $this->_meta->path->get($key ?: $this->getExtending());
         }
 
+        return (String) $this->_meta->path;
+    }
+
+    public function getPaths()
+    {
         return $this->_meta->path;
     }
 
@@ -39,6 +44,11 @@ class PageVariable extends IterableObject
             return $this->_meta->url->get($key ?: $this->getExtending());
         }
 
+        return (String) $this->_meta->url;
+    }
+
+    public function getUrls()
+    {
         return $this->_meta->url;
     }
 

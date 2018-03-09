@@ -13,9 +13,10 @@ use Mni\FrontYAML\Bridge\Symfony\SymfonyYAMLParser;
 use Mni\FrontYAML\Markdown\MarkdownParser;
 use Mni\FrontYAML\Parser;
 use Mni\FrontYAML\YAML\YAMLParser;
+use TightenCo\Jigsaw\Collection\CollectionPaginator;
 use TightenCo\Jigsaw\CollectionItemHandlers\BladeCollectionItemHandler;
 use TightenCo\Jigsaw\CollectionItemHandlers\MarkdownCollectionItemHandler;
-use TightenCo\Jigsaw\Collection\CollectionPaginator;
+use TightenCo\Jigsaw\Events\EventBus;
 use TightenCo\Jigsaw\File\BladeDirectivesFile;
 use TightenCo\Jigsaw\File\ConfigFile;
 use TightenCo\Jigsaw\File\Filesystem;
@@ -168,7 +169,12 @@ $container->bind(CollectionRemoteItemLoader::class, function ($c) {
     return new CollectionRemoteItemLoader(new Filesystem);
 });
 
+$container->singleton('events', function ($c) {
+    return new EventBus();
+});
+
 if (file_exists($bootstrapFile)) {
+    $events = $container->events;
     include $bootstrapFile;
 }
 

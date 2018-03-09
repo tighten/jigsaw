@@ -37,6 +37,8 @@ use TightenCo\Jigsaw\View\BladeMarkdownEngine;
 use TightenCo\Jigsaw\View\MarkdownEngine;
 use TightenCo\Jigsaw\View\ViewRenderer;
 
+die(); // TODO: remove me before merging PR
+
 if (file_exists(__DIR__.'/vendor/autoload.php')) {
     require __DIR__.'/vendor/autoload.php';
 } else {
@@ -122,7 +124,7 @@ $container->bind(MarkdownHandler::class, function ($c) {
     return new MarkdownHandler($c[TemporaryFilesystem::class], $c[FrontMatterParser::class], $c[ViewRenderer::class]);
 });
 
-$container->bind(CollectionPathResolver::class, function ($c ) {
+$container->bind(CollectionPathResolver::class, function ($c) {
     return new CollectionPathResolver($c['outputPathResolver'], $c[ViewRenderer::class]);
 });
 

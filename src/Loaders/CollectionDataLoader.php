@@ -1,17 +1,21 @@
-<?php namespace TightenCo\Jigsaw;
+<?php namespace TightenCo\Jigsaw\Loaders;
 
 use Exception;
 use TightenCo\Jigsaw\Collection\Collection;
 use TightenCo\Jigsaw\Collection\CollectionItem;
 use TightenCo\Jigsaw\File\InputFile;
+use TightenCo\Jigsaw\IterableObject;
+use TightenCo\Jigsaw\IterableObjectWithDefault;
+use TightenCo\Jigsaw\PageVariable;
 
 class CollectionDataLoader
 {
-    private $filesystem;
-    private $pathResolver;
-    private $handlers;
-    private $source;
     private $collectionSettings;
+    private $filesystem;
+    private $handlers;
+    private $pageSettings;
+    private $pathResolver;
+    private $source;
 
     public function __construct($filesystem, $pathResolver, $handlers = [])
     {
@@ -20,7 +24,7 @@ class CollectionDataLoader
         $this->handlers = collect($handlers);
     }
 
-    public function load($source, $siteData)
+    public function load($siteData, $source)
     {
         $this->source = $source;
         $this->pageSettings = $siteData->page;
@@ -38,7 +42,13 @@ class CollectionDataLoader
 
     private function buildCollection($collection)
     {
-        return collect($this->filesystem->allFiles("{$this->source}/_{$collection->name}"))
+        $path = "{$this->source}/_{$collection->name}";
+
+        if (! $this->filesystem->exists($path)) {
+            return collect();
+        }
+
+        return collect($this->filesystem->allFiles($path))
             ->reject(function ($file) {
                 return starts_with($file->getFilename(), '_');
             })->map(function ($file) {

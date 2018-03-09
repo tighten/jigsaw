@@ -9,10 +9,11 @@ class Jigsaw
     protected $dataLoader;
     protected $siteBuilder;
 
-    public function __construct($app, $dataLoader, $siteBuilder)
+    public function __construct($app, $dataLoader, $remoteItemLoader, $siteBuilder)
     {
         $this->app = $app;
         $this->dataLoader = $dataLoader;
+        $this->remoteItemLoader = $remoteItemLoader;
         $this->siteBuilder = $siteBuilder;
     }
 
@@ -22,6 +23,7 @@ class Jigsaw
         $this->siteData = $this->dataLoader->loadSiteData($this->app->config);
         $this->fireEvent('beforeBuild');
 
+        $this->remoteItemLoader->write($this->siteData->collections, $this->getSourcePath());
         $collectionData = $this->dataLoader->loadCollectionData($this->siteData, $this->getSourcePath());
         $this->siteData = $this->siteData->addCollectionData($collectionData);
 
@@ -32,6 +34,8 @@ class Jigsaw
             $this->getDestinationPath(),
             $this->siteData
         );
+
+        $this->remoteItemLoader->cleanup();
 
         $this->fireEvent('afterBuild');
     }

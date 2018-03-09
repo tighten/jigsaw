@@ -3,6 +3,7 @@
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 abstract class Command extends SymfonyCommand
 {
@@ -11,6 +12,17 @@ abstract class Command extends SymfonyCommand
         $this->input = $input;
         $this->output = $output;
         return (int) $this->fire();
+    }
+
+    protected function confirm($question, $default = false)
+    {
+        if ($this->getHelper('question')->ask(
+            $this->input,
+            $this->output,
+            new ConfirmationQuestion($question, $default)
+        )) {
+            return true;
+        }
     }
 
     protected function info($string)

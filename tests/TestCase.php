@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase as BaseTestCase;
 use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\File\InputFile;
 use TightenCo\Jigsaw\Jigsaw;
+use TightenCo\Jigsaw\Loaders\DataLoader;
 use org\bovigo\vfs\vfsStream;
 
 class TestCase extends BaseTestCase
@@ -58,6 +59,15 @@ class TestCase extends BaseTestCase
     public function setupSource($source = [])
     {
         return vfsStream::setup('virtual', null, ['source' => $source]);
+    }
+
+    protected function buildSiteData($vfs, $config = [])
+    {
+        $loader = $this->app->make(DataLoader::class);
+        $siteData = $loader->loadSiteData($config);
+        $collectionData = $loader->loadCollectionData($siteData, $vfs->url() . '/source');
+
+        return $siteData->addCollectionData($collectionData);
     }
 
     public function buildSite($vfs, $config = [])

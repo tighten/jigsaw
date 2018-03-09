@@ -39,6 +39,32 @@ return [
         return strpos($data->getPath(), $section) > -1;
     },
     'collections' => [
+        'remote_test' => [
+            'extends' => '_layouts.remote',
+            'items' => function () {
+                $remote_post = json_decode(file_get_contents('https://jsonplaceholder.typicode.com/posts/1'));
+
+                return [
+                    [
+                        'var' => 'test var 1',
+                        'content' => '### The markdown content for the 1st item',
+                    ],
+                    [
+                        'var' => 'test var 2',
+                        'filename' => 'file_2',
+                        'content' => '### The markdown content for the 2nd item',
+                    ],
+                    [
+                        'var' => 'test var 3',
+                    ],
+                    [
+                        'var' => $remote_post->title,
+                        'content' => $remote_post->body,
+                    ],
+                    '## This item has no content key, just string content',
+                ];
+            },
+        ],
         'collection_tests' => [
             'sum' => 99999,
         ],

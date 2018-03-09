@@ -1,4 +1,6 @@
-<?php namespace TightenCo\Jigsaw;
+<?php namespace TightenCo\Jigsaw\Loaders;
+
+use TightenCo\Jigsaw\SiteData;
 
 class DataLoader
 {
@@ -16,6 +18,6 @@ class DataLoader
 
     public function loadCollectionData($siteData, $source)
     {
-        return $this->collectionDataLoader->load($source, $siteData);
+        return $this->collectionDataLoader->load($siteData, $source);
     }
 }

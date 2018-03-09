@@ -4,11 +4,13 @@
 use TightenCo\Jigsaw\Console\BuildCommand;
 use TightenCo\Jigsaw\Console\InitCommand;
 use TightenCo\Jigsaw\Console\ServeCommand;
+use TightenCo\Jigsaw\Console\UseCommand;
 
 require_once(__DIR__ . '/jigsaw-core.php');
 
-$app = new Symfony\Component\Console\Application('Jigsaw', '1.0.11');
+$app = new Symfony\Component\Console\Application('Jigsaw', '1.0.12');
 $app->add($container[InitCommand::class]);
+$app->add($container[UseCommand::class]);
 $app->add(new BuildCommand($container));
 $app->add(new ServeCommand($container));
 $app->run();

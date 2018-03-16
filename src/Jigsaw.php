@@ -117,7 +117,7 @@ class Jigsaw
 
     public function writeSourceFile($fileName, $contents)
     {
-        return $this->getFilesystem()->put($this->getSourcePath() . '/' . $fileName, $contents);
+        return $this->getFilesystem()->putWithDirectories($this->getSourcePath() . '/' . $fileName, $contents);
     }
 
     public function readOutputFile($fileName)
@@ -127,6 +127,6 @@ class Jigsaw
 
     public function writeOutputFile($fileName, $contents)
     {
-        return $this->getFilesystem()->put($this->getDestinationPath() . '/' . $fileName, $contents);
+        return $this->getFilesystem()->putWithDirectories($this->getDestinationPath() . '/' . $fileName, $contents);
     }
 }

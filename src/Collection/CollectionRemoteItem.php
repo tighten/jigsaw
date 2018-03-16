@@ -9,7 +9,7 @@ class CollectionRemoteItem
     private $index;
     private $prefix;
 
-    public function __construct($item, $index, $collectionName = null)
+    public function __construct($item, $index = 0, $collectionName = null)
     {
         $this->item = $item;
         $this->index = $index;

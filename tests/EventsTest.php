@@ -243,6 +243,16 @@ class EventsTest extends TestCase
         $this->assertEquals('## test', $source->getChild('source/file.md')->getContent());
     }
 
+    public function test_user_can_write_a_new_source_file_in_a_new_directory_in_event_listener()
+    {
+        $this->app['events']->beforeBuild(function ($jigsaw) use (&$result) {
+            $result = $jigsaw->writeSourceFile('new_directory/file.md', '## test');
+        });
+        $this->buildSite($source = $this->setupSource());
+
+        $this->assertEquals('## test', $source->getChild('source/new_directory/file.md')->getContent());
+    }
+
     public function test_user_can_update_an_existing_source_file_in_event_listener()
     {
         $this->app['events']->beforeBuild(function ($jigsaw) use (&$result) {
@@ -291,6 +301,16 @@ class EventsTest extends TestCase
 
         $this->assertEquals('<h1>test</h1>', $original);
         $this->assertEquals('<h1>revised test</h1>', $source->getChild('build/test/file.html')->getContent());
+    }
+
+    public function test_user_can_write_a_new_output_file_in_a_new_directory_in_after_build_event_listener()
+    {
+        $this->app['events']->afterBuild(function ($jigsaw) use (&$result) {
+            $result = $jigsaw->writeOutputFile('new_directory/file.html', 'test');
+        });
+        $this->buildSite($source = $this->setupSource());
+
+        $this->assertEquals('test', $source->getChild('build/new_directory/file.html')->getContent());
     }
 }
 

@@ -1,5 +1,7 @@
 <?php namespace TightenCo\Jigsaw;
 
+use TightenCo\Jigsaw\File\Filesystem;
+
 class Jigsaw
 {
     public $app;
@@ -110,21 +112,21 @@ class Jigsaw
 
     public function readSourceFile($fileName)
     {
-        return $this->getFilesystem()->getFile($this->getSourcePath(), $fileName);
+        return $this->getFilesystem()->get($this->getSourcePath() . '/' . $fileName);
     }
 
     public function writeSourceFile($fileName, $contents)
     {
-        return $this->getFilesystem()->put($this->getSourcePath() . '/' . $fileName, $file);
+        return $this->getFilesystem()->put($this->getSourcePath() . '/' . $fileName, $contents);
     }
 
     public function readOutputFile($fileName)
     {
-        return $this->getFilesystem()->getFile($this->getDestinationPath(), $fileName);
+        return $this->getFilesystem()->get($this->getDestinationPath() . '/' . $fileName);
     }
 
     public function writeOutputFile($fileName, $contents)
     {
-        return $this->getFilesystem()->put($this->getDestinationPath() . '/' . $fileName, $file);
+        return $this->getFilesystem()->put($this->getDestinationPath() . '/' . $fileName, $contents);
     }
 }

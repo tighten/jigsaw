@@ -46,6 +46,16 @@ class EventsTest extends TestCase
         $this->assertEquals('set in TestListener', $jigsaw->getConfig('variable_b'));
     }
 
+    public function test_listeners_for_undefined_events_are_ignored()
+    {
+        $this->app['events']->someUndefinedEvent(function ($jigsaw) use (&$result) {
+            $result = 'value if fired';
+        });
+        $jigsaw = $this->buildSite($this->setupSource());
+
+        $this->assertNull($result);
+    }
+
     public function test_user_can_retrieve_environment_in_event_listener()
     {
         $this->app['events']->beforeBuild(function ($jigsaw) use (&$result) {

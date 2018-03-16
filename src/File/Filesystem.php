@@ -10,6 +10,19 @@ class Filesystem extends BaseFilesystem
         return iterator_to_array(Finder::create()->files()->name($filename)->in($directory), false)[0];
     }
 
+    public function putWithDirectories($file_path, $contents)
+    {
+        $directory_path = collect(explode('/', $file_path));
+        $directory_path->pop();
+        $directory_path = trimPath($directory_path->implode('/'));
+
+        if (! $this->isDirectory($directory_path)) {
+            $this->makeDirectory($directory_path, 0755, true);
+        }
+
+        $this->put($file_path, $contents);
+    }
+
     public function allFiles($directory, $ignore_dotfiles = false)
     {
         return iterator_to_array(

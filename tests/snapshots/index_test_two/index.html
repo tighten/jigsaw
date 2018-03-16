@@ -102,19 +102,33 @@
 <li>
 <p>Shorthand for easily specifying common permalink structures:</p>
 <ul>
-<li><code>path</code> key can be a string rather than a closure; if it's a string, any bracketed parameters like <code>{filename}</code> will be replaced with values</li>
-<li>prepending a separator to a parameter name will slugify that parameter, using that separator (e.g. <code>{+filename}</code> will yield <code>the+slugified+filename</code>)</li>
-<li>any dates from YAML front matter can be formatted using PHP date formatting codes, by following the parameter name with a pipe: <code>{date|Y/m/d}</code>, for example, yields <code>2016/08/29</code>.</li>
+<li>
+<p><code>path</code> key can be a string rather than a closure; if it's a string, any bracketed parameters like <code>{filename}</code> will be replaced with values</p>
+</li>
+<li>
+<p>prepending a separator to a parameter name will slugify that parameter, using that separator (e.g. <code>{+filename}</code> will yield <code>the+slugified+filename</code>)</p>
+</li>
+<li>
+<p>any dates from YAML front matter can be formatted using PHP date formatting codes, by following the parameter name with a pipe: <code>{date|Y/m/d}</code>, for example, yields <code>2016/08/29</code>.</p>
+</li>
 <li>
 <p>if no parameters are included, the slugified filename will be appended by default. This allows users to simply specify a collection subdirectory: <code>'path' =&gt; 'posts'</code> will yield item URLs like <code>/posts/the-slugified-filename</code>.</p>
 </li>
 <li>
 <p><strong>Examples of</strong> <code>path</code> <strong>shorthand syntax:</strong></p>
 </li>
-<li><code>'people'</code> yields <code>/people/the-slugified-filename</code></li>
-<li><code>'people/{+filename}'</code> yields <code>./people/the+slugified+filename</code></li>
-<li><code>'{collection}/{date|Y}/{title}'</code> yields <code>./people/2016/The Item Title</code></li>
-<li><code>'{collection}/{date|Y/m/d}/{+title}'</code> yields <code>./people/2016/08/29/the+item+title</code></li>
+<li>
+<p><code>'people'</code> yields <code>/people/the-slugified-filename</code></p>
+</li>
+<li>
+<p><code>'people/{+filename}'</code> yields <code>./people/the+slugified+filename</code></p>
+</li>
+<li>
+<p><code>'{collection}/{date|Y}/{title}'</code> yields <code>./people/2016/The Item Title</code></p>
+</li>
+<li>
+<p><code>'{collection}/{date|Y/m/d}/{+title}'</code> yields <code>./people/2016/08/29/the+item+title</code></p>
+</li>
 </ul>
 </li>
 </ul>

@@ -51,7 +51,7 @@ testvar: Successful!
     <div class="col-xs-12">
         <h3><a href="{{ $post->getUrl() }}">{{ $post->title }}</a></h3>
         <p class="text-sm">by {{ $post->author }} · {{ $post->date_formatted() }} · Number {{ $post->number }}</p>
-        <div class="p-xs-b-6 border-b">{!! $post->getContent() !!}</div>
+        <div class="p-xs-b-6 border-b">{!! $post !!}</div>
     </div>
 </div>
 @endforeach

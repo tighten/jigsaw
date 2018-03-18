@@ -9,10 +9,10 @@ if (mix.inProduction()) {
     mix.setPublicPath('source/assets/');
 }
 
-mix.webpackConfig(webpack => {
-    return {
-        plugins: [jigsaw.browserSync()]
-    }
+mix.webpackConfig({
+    plugins: [
+        jigsaw.browserSync(),
+    ],
 });
 
 mix.js('source/_assets/js/main.js', 'js/')

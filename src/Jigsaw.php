@@ -61,7 +61,7 @@ class Jigsaw
     {
         return $this->siteData->get('collections') ?
             $this->siteData->get('collections')->keys() :
-            $this->siteData->forget('page');
+            $this->siteData->except('page');
     }
 
     public function getConfig($key = null)

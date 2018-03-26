@@ -18,6 +18,9 @@ class BladeDirectivesFile
     {
         $this->bladeCompiler = $bladeCompiler;
         $this->directives = file_exists($file_path) ? include $file_path : [];
+        if (!is_array($this->directives)) {
+            $this->directives = [];
+        }
     }
 
 	public static function init($file_path, BladeCompiler $compiler) {

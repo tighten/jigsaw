@@ -101,7 +101,7 @@ $container->bind(Factory::class, function ($c) use ($cachePath) {
         return new BladeMarkdownEngine($compilerEngine, $c[FrontMatterParser::class]);
     });
 
-    (new BladeDirectivesFile($c['cwd'] . '/blade.php'))->register($bladeCompiler);
+    BladeDirectivesFile::init($c['cwd'] . '/blade.php', $bladeCompiler)->register();
 
     $finder = new FileViewFinder(new Filesystem, [$cachePath, $c['buildPath']['source']]);
 

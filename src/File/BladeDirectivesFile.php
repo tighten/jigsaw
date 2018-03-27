@@ -22,11 +22,7 @@ class BladeDirectivesFile
             $this->directives = [];
         }
     }
-
-	public static function init($file_path, BladeCompiler $compiler) {
-        return new static($file_path, $compiler);
-    }
-
+    
     public function register()
     {
         collect($this->directives)->each(function ($callback, $directive) {

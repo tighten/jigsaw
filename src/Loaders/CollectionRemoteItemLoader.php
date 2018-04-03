@@ -18,7 +18,7 @@ class CollectionRemoteItemLoader
         collect($collections)->each(function ($collection, $collectionName) use ($source) {
             $items = $this->getItems($collection);
 
-            if (count($items)) {
+            if (is_array($items) && count($items)) {
                 $this->writeTempFiles($items, $this->createTempDirectory($source, $collectionName), $collectionName);
             }
         });

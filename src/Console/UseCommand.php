@@ -63,7 +63,7 @@ class UseCommand extends Command
     {
         $this->deleteFiles($this->elixirFiles);
         $this->files->copyDirectory(__DIR__ . '/../../stubs/mix', $this->base);
-        $this->info("\nNow using Laravel Mix and Weback to compile assets.");
+        $this->info("\nNow using Laravel Mix and Webpack to compile assets.");
     }
 
     private function scaffoldElixir()

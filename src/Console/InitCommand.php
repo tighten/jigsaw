@@ -46,7 +46,7 @@ class InitCommand extends Command
             $this->info('Running it again may overwrite important files.');
             $this->info('');
 
-            if (! $this->confirm('Do you wish to continue?')) {
+            if (! $this->confirm('Do you wish to continue? ')) {
                 return;
             }
         }

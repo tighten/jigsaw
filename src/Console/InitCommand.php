@@ -32,9 +32,26 @@ class InitCommand extends Command
             $this->base .= '/' . $base;
         }
 
-        $this->scaffoldSite();
-        $this->scaffoldMix();
-        $this->info('Site initialized successfully!');
+        $this->ifAlreadyScaffoldedWarnBeforeDoingTheFollowing(function () {
+            $this->scaffoldSite();
+            $this->scaffoldMix();
+            $this->info('Site initialized successfully!');
+        });
+    }
+
+    private function ifAlreadyScaffoldedWarnBeforeDoingTheFollowing($callback)
+    {
+        if ($this->files->exists($this->base . '/config.php')) {
+            $this->info('It looks like you\'ve already run "jigsaw init" on this project.');
+            $this->info('Running it again may overwrite important files.');
+            $this->info('');
+
+            if (! $this->confirm('Do you wish to continue? ')) {
+                return;
+            }
+        }
+
+        $callback();
     }
 
     private function scaffoldSite()

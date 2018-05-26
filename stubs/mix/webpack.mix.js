@@ -7,10 +7,10 @@ mix.webpackConfig({
     plugins: [
         build.jigsaw,
         build.browserSync(),
-        build.watch(['source/**/*.md', 'source/**/*.php', 'source/**/*.scss']),
+        build.watch(['source/**/*.md', 'source/**/*.php', 'source/**/*.less']),
     ]
 });
 
 mix.js('source/_assets/js/main.js', 'js')
-    .sass('source/_assets/sass/main.scss', 'css/main.css')
+    .less('source/_assets/less/main.less', 'css/main.css')
     .version();

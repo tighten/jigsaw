@@ -20,8 +20,14 @@ class SiteBuilder
 
     public function build($source, $dest, $siteData)
     {
-        $this->prepareDirectories([$this->cachePath, $dest]);
-        $outputFiles = $this->writeFiles($source, $dest, $siteData);
+        $this->prepareDirectory($this->cachePath);
+
+        $generatedFiles = $this->generateFiles($source, $siteData);
+
+        $this->prepareDirectory($dest);
+
+        $outputFiles = $this->writeFiles($dest, $generatedFiles);
+        
         $this->cleanup();
 
         return $outputFiles;
@@ -55,13 +61,18 @@ class SiteBuilder
         $this->files->deleteDirectory($this->cachePath);
     }
 
-    private function writeFiles($source, $destination, $siteData)
+    private function generateFiles($source, $siteData)
     {
         return collect($this->files->allFiles($source))->map(function ($file) use ($source) {
             return new InputFile($file, $source);
         })->flatMap(function ($file) use ($siteData) {
             return $this->handle($file, $siteData);
-        })->map(function ($file) use ($destination) {
+        });
+    }
+
+    private function writeFiles($destination, $files)
+    {
+        return $files->map(function ($file) use ($destination) {
             return $this->writeFile($file, $destination);
         });
     }

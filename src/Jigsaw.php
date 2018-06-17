@@ -36,6 +36,7 @@ class Jigsaw
         $this->siteData = $this->dataLoader->loadSiteData($this->app->config);
         $this->fireEvent('beforeBuild');
 
+        $this->consoleOutput->writeln('<comment>Load collections ...</comment>');
         $this->remoteItemLoader->write($this->siteData->collections, $this->getSourcePath());
         $collectionData = $this->dataLoader->loadCollectionData($this->siteData, $this->getSourcePath());
         $this->siteData = $this->siteData->addCollectionData($collectionData);

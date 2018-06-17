@@ -7,7 +7,7 @@ class Filesystem extends BaseFilesystem
 {
     public function getFile($directory, $filename)
     {
-        return iterator_to_array(Finder::create()->files()->name($filename)->in($directory), false)[0];
+        return iterator_to_array(Finder::create()->path(rtrim($directory, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$filename)->append([]), false);
     }
 
     public function putWithDirectories($file_path, $contents)

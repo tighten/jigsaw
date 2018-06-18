@@ -8,6 +8,7 @@ use TightenCo\Jigsaw\File\InputFile;
 use TightenCo\Jigsaw\Jigsaw;
 use TightenCo\Jigsaw\Loaders\DataLoader;
 use org\bovigo\vfs\vfsStream;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 class TestCase extends BaseTestCase
 {
@@ -79,7 +80,7 @@ class TestCase extends BaseTestCase
         ];
 
         $jigsaw = $this->app->make(Jigsaw::class);
-        $jigsaw->build('test');
+        $jigsaw->setVerbose(false)->build('test');
 
         return $jigsaw;
     }

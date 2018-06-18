@@ -4,6 +4,7 @@ namespace TightenCo\Jigsaw;
 
 use TightenCo\Jigsaw\File\Filesystem;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 class Jigsaw
 {
@@ -14,6 +15,7 @@ class Jigsaw
     protected $dataLoader;
     protected $siteBuilder;
     protected $consoleOutput;
+    protected $verbose;
 
     public function __construct($app, $dataLoader, $remoteItemLoader, $siteBuilder)
     {
@@ -21,11 +23,12 @@ class Jigsaw
         $this->dataLoader = $dataLoader;
         $this->remoteItemLoader = $remoteItemLoader;
         $this->siteBuilder = $siteBuilder;
+        $this->consoleOutput = new ConsoleOutput();
     }
 
-    public function setConsoleOutput(OutputInterface $consoleOutput)
+    public function setVerbose($verbose)
     {
-        $this->consoleOutput = $consoleOutput;
+        $this->consoleOutput->setVerbosity($verbose ? 0 : -1);
 
         return $this;
     }

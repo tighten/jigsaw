@@ -23,7 +23,7 @@ class SiteBuilder
         $this->handlers = $handlers;
     }
 
-    public function setConsoleOutput(OutputInterface $consoleOutput)
+    public function setConsoleOutput($consoleOutput)
     {
         $this->consoleOutput = $consoleOutput;
 

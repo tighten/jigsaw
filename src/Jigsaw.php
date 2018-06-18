@@ -15,7 +15,6 @@ class Jigsaw
     protected $dataLoader;
     protected $siteBuilder;
     protected $consoleOutput;
-    protected $verbose;
 
     public function __construct($app, $dataLoader, $remoteItemLoader, $siteBuilder)
     {

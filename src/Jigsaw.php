@@ -1,9 +1,12 @@
 <?php namespace TightenCo\Jigsaw;
 
 use TightenCo\Jigsaw\File\Filesystem;
+use Illuminate\Support\Traits\Macroable;
 
 class Jigsaw
 {
+    use Macroable;
+
     public $app;
     protected $env;
     protected $outputPaths;

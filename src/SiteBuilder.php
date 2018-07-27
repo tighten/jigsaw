@@ -1,7 +1,11 @@
-<?php namespace TightenCo\Jigsaw;
+<?php
 
-use TightenCo\Jigsaw\File\Filesystem;
+namespace TightenCo\Jigsaw;
+
 use TightenCo\Jigsaw\File\InputFile;
+use TightenCo\Jigsaw\File\Filesystem;
+use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class SiteBuilder
 {
@@ -9,6 +13,7 @@ class SiteBuilder
     private $cachePath;
     private $outputPathResolver;
     private $handlers;
+    private $consoleOutput;
 
     public function __construct(Filesystem $files, $cachePath, $outputPathResolver, $handlers = [])
     {
@@ -18,10 +23,23 @@ class SiteBuilder
         $this->handlers = $handlers;
     }
 
+    public function setConsoleOutput($consoleOutput)
+    {
+        $this->consoleOutput = $consoleOutput;
+
+        return $this;
+    }
+
     public function build($source, $dest, $siteData)
     {
-        $this->prepareDirectories([$this->cachePath, $dest]);
-        $outputFiles = $this->writeFiles($source, $dest, $siteData);
+        $this->prepareDirectory($this->cachePath);
+
+        $outputFiles = $this->generateFiles($source, $siteData);
+
+        $this->prepareDirectory($dest);
+
+        $outputFiles = $this->writeFiles($dest, $outputFiles);
+
         $this->cleanup();
 
         return $outputFiles;
@@ -30,6 +48,8 @@ class SiteBuilder
     public function registerHandler($handler)
     {
         $this->handlers[] = $handler;
+
+        return $this;
     }
 
     private function prepareDirectories($directories)
@@ -55,15 +75,46 @@ class SiteBuilder
         $this->files->deleteDirectory($this->cachePath);
     }
 
-    private function writeFiles($source, $destination, $siteData)
+    private function generateFiles($source, $siteData)
     {
-        return collect($this->files->allFiles($source))->map(function ($file) use ($source) {
+        $this->consoleOutput->writeln('<comment>Generating files from source</comment>');
+
+        $files = collect($this->files->allFiles($source));
+
+        $progressBar = new ProgressBar($this->consoleOutput, $files->count());
+        $progressBar->start();
+
+        $files = $files->map(function ($file) use ($source) {
             return new InputFile($file, $source);
-        })->flatMap(function ($file) use ($siteData) {
+        })->flatMap(function ($file) use ($siteData, $progressBar) {
+            $progressBar->advance();
+
             return $this->handle($file, $siteData);
-        })->map(function ($file) use ($destination) {
+        });
+
+        $progressBar->finish();
+        $this->consoleOutput->writeln('');
+
+        return $files;
+    }
+
+    private function writeFiles($destination, $files)
+    {
+        $this->consoleOutput->writeln('<comment>Writing files to destination</comment>');
+
+        $progressBar = new ProgressBar($this->consoleOutput, $files->count());
+        $progressBar->start();
+
+        $files = $files->map(function ($file) use ($destination, $progressBar) {
+            $progressBar->advance();
+
             return $this->writeFile($file, $destination);
         });
+
+        $progressBar->finish();
+        $this->consoleOutput->writeln('');
+
+        return $files;
     }
 
     private function handle($file, $siteData)
@@ -94,7 +145,7 @@ class SiteBuilder
         $filename = $file->getFilenameWithoutExtension();
         $extension = $file->getFullExtension();
         $path = rightTrimPath($this->outputPathResolver->link($file->getRelativePath(), $filename, $file->getExtraBladeExtension() ?: 'html'));
-        $url = rightTrimPath($baseUrl) . '/' . trimPath($path);
+        $url = rightTrimPath($baseUrl).'/'.trimPath($path);
 
         return compact('filename', 'baseUrl', 'path', 'extension', 'url');
     }
@@ -115,7 +166,10 @@ class SiteBuilder
         }
 
         return resolvePath(urldecode($this->outputPathResolver->path(
-            $file->path(), $file->name(), $file->extension(), $file->page()
+            $file->path(),
+            $file->name(),
+            $file->extension(),
+            $file->page()
         )));
     }
 
@@ -126,12 +180,15 @@ class SiteBuilder
         }
 
         return rightTrimPath(urldecode($this->outputPathResolver->link(
-            $file->path(), $file->name(), $file->extension(), $file->page()
+            $file->path(),
+            $file->name(),
+            $file->extension(),
+            $file->page()
         )));
     }
 
     private function getFilePermalink($file)
     {
-        return $file->data()->page->permalink ? resolvePath(urldecode($file->data()->page->permalink)) : NULL;
+        return $file->data()->page->permalink ? resolvePath(urldecode($file->data()->page->permalink)) : null;
     }
 }

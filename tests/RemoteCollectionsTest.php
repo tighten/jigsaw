@@ -41,7 +41,7 @@ class RemoteCollectionsTest extends TestCase
         $this->assertEquals('<p>Test markdown file #2</p>', $siteData->collection->file_2->getContent());
     }
 
-    public function test_outputs_files_are_built_from_files_in_a_collection_directory()
+    public function test_output_files_are_built_from_files_in_a_collection_directory()
     {
         $config = collect([
             'collections' => [
@@ -391,6 +391,38 @@ class RemoteCollectionsTest extends TestCase
                             ['content' => 'item 1'],
                             ['content' => 'item 2'],
                         ];
+                    },
+                ],
+            ],
+        ]);
+        $files = $this->setupSource([
+            '_layouts' => [
+                'master.blade.php' => "<div>@yield('content')</div>",
+            ],
+        ]);
+        $this->buildSite($files, $config);
+
+        $this->assertEquals(
+            '<div><p>item 1</p></div>',
+            $files->getChild('build/test/test-1.html')->getContent()
+        );
+        $this->assertEquals(
+            '<div><p>item 2</p></div>',
+            $files->getChild('build/test/test-2.html')->getContent()
+        );
+    }
+
+    public function test_items_key_in_config_can_be_a_function_that_returns_a_collection()
+    {
+        $config = collect([
+            'collections' => [
+                'test' => [
+                    'extends' => '_layouts.master',
+                    'items' => function() {
+                        return collect([
+                            ['content' => 'item 1'],
+                            ['content' => 'item 2'],
+                        ]);
                     },
                 ],
             ],

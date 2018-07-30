@@ -111,6 +111,20 @@ class EventsTest extends TestCase
         $this->assertEquals('new value', $result->getConfig('test_variable'));
     }
 
+    public function test_user_can_get_a_nested_config_variable_with_dot_notation_in_event_listener()
+    {
+        $this->app['events']->beforeBuild(function ($jigsaw) use (&$result) {
+            $result = $jigsaw->getConfig('test_variable.some_key');
+        });
+        $this->buildSite($this->setupSource(), [
+            'test_variable' => [
+                'some_key' => 'value',
+            ],
+        ]);
+
+        $this->assertEquals('value', $result);
+    }
+
     public function test_user_can_add_a_nested_config_variable_with_dot_notation_in_event_listener()
     {
         $this->app['events']->beforeBuild(function ($jigsaw) use (&$result) {

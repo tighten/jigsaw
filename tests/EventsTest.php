@@ -90,22 +90,138 @@ class EventsTest extends TestCase
     {
         $this->app['events']->beforeBuild(function ($jigsaw) use (&$result) {
             $jigsaw->setConfig('new_variable', 'value');
-            $result = $jigsaw->getConfig('new_variable');
+            $result = $jigsaw;
         });
+
         $this->buildSite($this->setupSource());
 
-        $this->assertEquals('value', $result);
+        $this->assertEquals('value', $result->getSiteData()->new_variable);
+        $this->assertEquals('value', $result->getConfig('new_variable'));
     }
 
     public function test_user_can_update_an_existing_config_variable_in_event_listener()
     {
         $this->app['events']->beforeBuild(function ($jigsaw) use (&$result) {
             $jigsaw->setConfig('test_variable', 'new value');
-            $result = $jigsaw->getConfig('test_variable');
+            $result = $jigsaw;
         });
         $this->buildSite($this->setupSource(), ['test_variable' => 'original value']);
 
-        $this->assertEquals('new value', $result);
+        $this->assertEquals('new value', $result->getSiteData()->test_variable);
+        $this->assertEquals('new value', $result->getConfig('test_variable'));
+    }
+
+    public function test_user_can_get_a_nested_config_variable_with_dot_notation_in_event_listener()
+    {
+        $this->app['events']->beforeBuild(function ($jigsaw) use (&$result) {
+            $result = $jigsaw->getConfig('test_variable.some_key');
+        });
+        $this->buildSite($this->setupSource(), [
+            'test_variable' => [
+                'some_key' => 'value',
+            ],
+        ]);
+
+        $this->assertEquals('value', $result);
+    }
+
+    public function test_user_can_add_a_nested_config_variable_with_dot_notation_in_event_listener()
+    {
+        $this->app['events']->beforeBuild(function ($jigsaw) use (&$result) {
+            $jigsaw->setConfig('test_variable.new_key', 'new value');
+            $result = $jigsaw;
+        });
+        $this->buildSite($this->setupSource(), [
+            'test_variable' => [
+                'existing_key' => 'original value',
+            ],
+        ]);
+
+        $this->assertEquals('new value', $result->getSiteData()->test_variable['new_key']);
+        $this->assertEquals('new value', $result->getConfig('test_variable')['new_key']);
+        $this->assertEquals('original value', $result->getConfig('test_variable')['existing_key']);
+    }
+
+    public function test_user_can_update_an_existing_nested_config_variable_with_dot_notation_in_event_listener()
+    {
+        $this->app['events']->beforeBuild(function ($jigsaw) use (&$result) {
+            $jigsaw->setConfig('test_variable.nested', 'new value');
+            $result = $jigsaw;
+        });
+        $this->buildSite($this->setupSource(), [
+            'test_variable' => [
+                'nested' => 'original value'
+            ],
+        ]);
+
+        $this->assertEquals('new value', $result->getSiteData()->test_variable['nested']);
+        $this->assertEquals('new value', $result->getConfig('test_variable')['nested']);
+    }
+
+    public function test_collection_items_created_in_before_build_event_listener_are_output_to_filesystem()
+    {
+        $this->app['events']->beforeBuild(function ($jigsaw) use (&$result) {
+            $jigsaw->setConfig('collections.posts', [
+                'extends' => '_layouts.master',
+                'items' => [
+                    [
+                        'content' => 'Content for post #1',
+                        'filename' => 'post_1',
+                    ],
+                ],
+            ]);
+        });
+        $files = $this->setupSource([
+            '_layouts' => [
+                'master.blade.php' => "<div>@yield('content')</div>",
+            ],
+        ]);
+        $config = collect(['collections' => ['posts' => []]]);
+
+        $this->buildSite($files, $config);
+
+        $this->assertCount(1, $files->getChild('build/posts')->getChildren());
+        $this->assertEquals(
+            '<div><p>Content for post #1</p></div>',
+            $files->getChild('build/posts/post-1.html')->getContent()
+        );
+    }
+
+    public function test_collection_items_added_in_before_build_event_listener_are_output_to_filesystem()
+    {
+        $this->app['events']->beforeBuild(function ($jigsaw) use (&$result) {
+            $jigsaw->setConfig('collections.posts', [
+                'extends' => '_layouts.master',
+                'items' => [
+                    [
+                        'content' => 'Content for post #2',
+                        'filename' => 'post_2',
+                    ],
+                ],
+            ]);
+        });
+        $yaml_header = implode("\n", ['---', 'extends: _layouts.master', 'section: content', '---']);
+        $files = $this->setupSource([
+            '_layouts' => [
+                'master.blade.php' => "<div>@yield('content')</div>",
+            ],
+            '_posts' => [
+                'post_1.md' => $yaml_header . 'Content for post #1',
+            ],
+        ]);
+        $config = collect(['collections' => ['posts' => []]]);
+
+        $this->buildSite($files, $config);
+
+        $this->assertCount(2, $files->getChild('build/posts')->getChildren());
+        $this->assertEquals(
+            '<div><p>Content for post #1</p></div>',
+            $files->getChild('build/posts/post-1.html')->getContent()
+        );
+        $this->assertEquals(
+            '<div><p>Content for post #2</p></div>',
+            $files->getChild('build/posts/post-2.html')->getContent()
+        );
     }
 
     public function test_user_can_retrieve_a_collection_of_collection_names_in_event_listener()

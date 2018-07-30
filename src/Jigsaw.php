@@ -47,6 +47,11 @@ class Jigsaw
         $this->app->events->fire($event, $this);
     }
 
+    public function getSiteData()
+    {
+        return $this->siteData;
+    }
+
     public function getEnvironment()
     {
         return $this->env;
@@ -71,7 +76,8 @@ class Jigsaw
 
     public function setConfig($key, $value)
     {
-        data_set($this->siteData->page, $key, $value);
+        $this->siteData->set($key, $value);
+        $this->siteData->page->set($key, $value);
     }
 
     public function getSourcePath()

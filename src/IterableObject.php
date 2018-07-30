@@ -35,6 +35,11 @@ class IterableObject extends BaseCollection implements ArrayAccess
         return $this->getElement($key);
     }
 
+    public function set($key, $value)
+    {
+        data_set($this->items, $key, $this->isArrayable($value) ? $this->makeIterable($value) : $value);
+    }
+
     public function putIterable($key, $element)
     {
         $this->put($key, $this->isArrayable($element) ? $this->makeIterable($element) : $element);

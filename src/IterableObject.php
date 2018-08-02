@@ -38,6 +38,10 @@ class IterableObject extends BaseCollection implements ArrayAccess
     public function set($key, $value)
     {
         data_set($this->items, $key, $this->isArrayable($value) ? $this->makeIterable($value) : $value);
+
+        if ($first_key = array_get(explode('.', $key), 0)) {
+            $this->putIterable($first_key, $this->get($first_key));
+        }
     }
 
     public function putIterable($key, $element)
@@ -52,6 +56,10 @@ class IterableObject extends BaseCollection implements ArrayAccess
 
     protected function makeIterable($items)
     {
+        if ($items instanceof IterableObject) {
+            return $items;
+        }
+
         return new IterableObject(collect($items)->map(function ($item) {
             return $this->isArrayable($item) ? $this->makeIterable($item) : $item;
         }));

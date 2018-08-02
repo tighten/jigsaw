@@ -52,9 +52,13 @@ class IterableObject extends BaseCollection implements ArrayAccess
 
     protected function makeIterable($items)
     {
+        if ($items instanceof IterableObject) {
+            return $items;
+        }
+
         return new IterableObject(collect($items)->map(function ($item) {
-            return $this->isArrayable($item) ? $this->makeIterable($item) : $item;
-        }));
+                return $this->isArrayable($item) ? $this->makeIterable($item) : $item;
+            }));
     }
 
     protected function isArrayable($element)

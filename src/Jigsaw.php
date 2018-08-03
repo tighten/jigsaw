@@ -3,7 +3,6 @@
 namespace TightenCo\Jigsaw;
 
 use TightenCo\Jigsaw\File\Filesystem;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 class Jigsaw
@@ -136,21 +135,21 @@ class Jigsaw
 
     public function readSourceFile($fileName)
     {
-        return $this->getFilesystem()->get($this->getSourcePath().'/'.$fileName);
+        return $this->getFilesystem()->get($this->getSourcePath() . '/' . $fileName);
     }
 
     public function writeSourceFile($fileName, $contents)
     {
-        return $this->getFilesystem()->putWithDirectories($this->getSourcePath().'/'.$fileName, $contents);
+        return $this->getFilesystem()->putWithDirectories($this->getSourcePath() . '/' . $fileName, $contents);
     }
 
     public function readOutputFile($fileName)
     {
-        return $this->getFilesystem()->get($this->getDestinationPath().'/'.$fileName);
+        return $this->getFilesystem()->get($this->getDestinationPath() . '/' . $fileName);
     }
 
     public function writeOutputFile($fileName, $contents)
     {
-        return $this->getFilesystem()->putWithDirectories($this->getDestinationPath().'/'.$fileName, $contents);
+        return $this->getFilesystem()->putWithDirectories($this->getDestinationPath() . '/' . $fileName, $contents);
     }
 }

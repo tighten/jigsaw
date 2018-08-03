@@ -33,13 +33,9 @@ class SiteBuilder
     public function build($source, $dest, $siteData)
     {
         $this->prepareDirectory($this->cachePath);
-
         $outputFiles = $this->generateFiles($source, $siteData);
-
         $this->prepareDirectory($dest);
-
         $outputFiles = $this->writeFiles($dest, $outputFiles);
-
         $this->cleanup();
 
         return $outputFiles;
@@ -78,12 +74,9 @@ class SiteBuilder
     private function generateFiles($source, $siteData)
     {
         $this->consoleOutput->writeln('<comment>Generating files from source</comment>');
-
         $files = collect($this->files->allFiles($source));
-
         $progressBar = new ProgressBar($this->consoleOutput, $files->count());
         $progressBar->start();
-
         $files = $files->map(function ($file) use ($source) {
             return new InputFile($file, $source);
         })->flatMap(function ($file) use ($siteData, $progressBar) {
@@ -91,7 +84,6 @@ class SiteBuilder
 
             return $this->handle($file, $siteData);
         });
-
         $progressBar->finish();
         $this->consoleOutput->writeln('');
 
@@ -100,19 +92,11 @@ class SiteBuilder
 
     private function writeFiles($destination, $files)
     {
-        $this->consoleOutput->writeln('<comment>Writing files to destination</comment>');
+        $this->consoleOutput->writeln('<comment>Writing files to destination...</comment>');
 
-        $progressBar = new ProgressBar($this->consoleOutput, $files->count());
-        $progressBar->start();
-
-        $files = $files->map(function ($file) use ($destination, $progressBar) {
-            $progressBar->advance();
-
+        $files = $files->map(function ($file) use ($destination) {
             return $this->writeFile($file, $destination);
         });
-
-        $progressBar->finish();
-        $this->consoleOutput->writeln('');
 
         return $files;
     }
@@ -145,7 +129,7 @@ class SiteBuilder
         $filename = $file->getFilenameWithoutExtension();
         $extension = $file->getFullExtension();
         $path = rightTrimPath($this->outputPathResolver->link($file->getRelativePath(), $filename, $file->getExtraBladeExtension() ?: 'html'));
-        $url = rightTrimPath($baseUrl).'/'.trimPath($path);
+        $url = rightTrimPath($baseUrl) . '/' . trimPath($path);
 
         return compact('filename', 'baseUrl', 'path', 'extension', 'url');
     }

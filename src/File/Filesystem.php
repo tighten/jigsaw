@@ -8,8 +8,7 @@ class Filesystem extends BaseFilesystem
 {
     public function getFile($directory, $filename)
     {
-        $filePath = rtrim($directory, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$filename;
-
+        $filePath = rtrim($directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $filename;
         return new SplFileInfo($filePath, $directory, $filename);
     }
 

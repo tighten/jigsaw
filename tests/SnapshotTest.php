@@ -12,7 +12,7 @@ class SnapshotTest extends SnapshotTestCase
     public function test_all_built_files_contain_expected_content()
     {
         collect($this->build_files)->each(function ($file) {
-            echo("\r\nChecking " . $file->getRelativePathname());
+            echo "\r\nChecking " . $file->getRelativePathname();
             $this->assertEquals(
                 file_get_contents('tests/snapshots/' . $file->getRelativePathname()),
                 $file->getContents(),
@@ -21,12 +21,12 @@ class SnapshotTest extends SnapshotTestCase
         });
 
         $this->echoLine();
-        echo("\r\n√ All built files pass.");
+        echo "\r\n√ All built files pass.";
         $this->echoLine();
     }
 
     protected function echoLine()
     {
-        echo("\r\n-----------------------");
+        echo "\r\n-----------------------";
     }
 }

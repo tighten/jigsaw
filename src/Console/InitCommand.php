@@ -1,7 +1,9 @@
-<?php namespace TightenCo\Jigsaw\Console;
+<?php
 
-use Symfony\Component\Console\Input\InputArgument;
+namespace TightenCo\Jigsaw\Console;
+
 use TightenCo\Jigsaw\File\Filesystem;
+use Symfony\Component\Console\Input\InputArgument;
 
 class InitCommand extends Command
 {
@@ -46,7 +48,7 @@ class InitCommand extends Command
             $this->info('Running it again may overwrite important files.');
             $this->info('');
 
-            if (! $this->confirm('Do you wish to continue? ')) {
+            if (!$this->confirm('Do you wish to continue? ')) {
                 return;
             }
         }

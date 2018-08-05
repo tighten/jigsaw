@@ -1,9 +1,11 @@
-<?php namespace TightenCo\Jigsaw\Handlers;
+<?php
 
-use TightenCo\Jigsaw\File\OutputFile;
+namespace TightenCo\Jigsaw\Handlers;
+
 use TightenCo\Jigsaw\PageData;
-use TightenCo\Jigsaw\Parsers\FrontMatterParser;
+use TightenCo\Jigsaw\File\OutputFile;
 use TightenCo\Jigsaw\View\ViewRenderer;
+use TightenCo\Jigsaw\Parsers\FrontMatterParser;
 
 class MarkdownHandler
 {
@@ -20,7 +22,7 @@ class MarkdownHandler
 
     public function shouldHandle($file)
     {
-        return in_array($file->getExtension(), ['markdown', 'md', 'mdown']);
+        return in_array($file->getExtension(), ['markdown', 'md', 'mdown'], true);
     }
 
     public function handleCollectionItem($file, PageData $pageData)
@@ -53,7 +55,7 @@ class MarkdownHandler
                 return new OutputFile(
                     $file->getRelativePath(),
                     $file->getFilenameWithoutExtension(),
-                    $extension == 'php' ? 'html' : $extension,
+                    'php' == $extension ? 'html' : $extension,
                     $this->render($file, $pageData, $layout),
                     $pageData
                 );
@@ -75,13 +77,13 @@ class MarkdownHandler
 
     private function getEscapedMarkdownContent($file)
     {
-        $replacements = ["<?php" => "<{{'?php'}}"];
+        $replacements = ['<?php' => "<{{'?php'}}"];
 
-        if (in_array($file->getFullExtension(), ['markdown', 'md', 'mdown'])) {
+        if (in_array($file->getFullExtension(), ['markdown', 'md', 'mdown'], true)) {
             $replacements = array_merge([
-                "@" => "{{'@'}}",
-                "{{" => "@{{",
-                "{!!" => "@{!!",
+                '@' => "{{'@'}}",
+                '{{' => '@{{',
+                '{!!' => '@{!!',
             ], $replacements);
         }
 

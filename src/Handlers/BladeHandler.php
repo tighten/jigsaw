@@ -1,9 +1,11 @@
-<?php namespace TightenCo\Jigsaw\Handlers;
+<?php
 
-use TightenCo\Jigsaw\File\OutputFile;
+namespace TightenCo\Jigsaw\Handlers;
+
 use TightenCo\Jigsaw\PageData;
-use TightenCo\Jigsaw\Parsers\FrontMatterParser;
+use TightenCo\Jigsaw\File\OutputFile;
 use TightenCo\Jigsaw\View\ViewRenderer;
+use TightenCo\Jigsaw\Parsers\FrontMatterParser;
 
 class BladeHandler
 {
@@ -46,12 +48,12 @@ class BladeHandler
             new OutputFile(
                 $file->getRelativePath(),
                 $file->getFilenameWithoutExtension(),
-                $extension == 'php' ? 'html' : $extension,
+                'php' == $extension ? 'html' : $extension,
                 $this->hasFrontMatter ?
                     $this->renderWithFrontMatter($file, $pageData) :
                     $this->render($file->getPathName(), $pageData),
                 $pageData
-            )
+            ),
         ]);
     }
 

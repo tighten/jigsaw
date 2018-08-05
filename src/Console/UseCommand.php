@@ -1,8 +1,9 @@
-<?php namespace TightenCo\Jigsaw\Console;
+<?php
 
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
+namespace TightenCo\Jigsaw\Console;
+
 use TightenCo\Jigsaw\File\Filesystem;
+use Symfony\Component\Console\Input\InputArgument;
 
 class UseCommand extends Command
 {
@@ -43,16 +44,17 @@ class UseCommand extends Command
     {
         $this->comment("\nThis will replace your current `package.json` file, and any existing Gulp or Webpack configurations.");
 
-        if (! $this->confirm("Do you wish to continue? ")) {
+        if (!$this->confirm('Do you wish to continue? ')) {
             $this->info("\nNo changes were made.\n");
+
             return;
         }
 
         $tool = $this->input->getArgument('tool');
 
-        if ($tool == 'mix' || $tool == 'webpack') {
+        if ('mix' == $tool || 'webpack' == $tool) {
             $this->scaffoldMix();
-        } elseif ($tool == 'elixir' || $tool == 'gulp') {
+        } elseif ('elixir' == $tool || 'gulp' == $tool) {
             $this->scaffoldElixir();
         }
 

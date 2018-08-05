@@ -1,7 +1,9 @@
-<?php namespace TightenCo\Jigsaw\Loaders;
+<?php
 
-use TightenCo\Jigsaw\Collection\CollectionRemoteItem;
+namespace TightenCo\Jigsaw\Loaders;
+
 use TightenCo\Jigsaw\File\Filesystem;
+use TightenCo\Jigsaw\Collection\CollectionRemoteItem;
 
 class CollectionRemoteItemLoader
 {
@@ -42,7 +44,7 @@ class CollectionRemoteItemLoader
 
     private function getItems($collection)
     {
-        if (! $collection->items) {
+        if (!$collection->items) {
             return;
         }
 
@@ -53,7 +55,7 @@ class CollectionRemoteItemLoader
 
     private function prepareDirectory($directory, $clean = false)
     {
-        if (! $this->files->isDirectory($directory)) {
+        if (!$this->files->isDirectory($directory)) {
             $this->files->makeDirectory($directory, 0755, true);
         }
 

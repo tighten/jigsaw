@@ -2,9 +2,9 @@
 
 namespace Tests;
 
-use TightenCo\Jigsaw\Handlers\MarkdownHandler;
-use TightenCo\Jigsaw\IterableObject;
 use TightenCo\Jigsaw\PageData;
+use TightenCo\Jigsaw\IterableObject;
+use TightenCo\Jigsaw\Handlers\MarkdownHandler;
 
 class PhpOpenTagInMarkdown extends TestCase
 {

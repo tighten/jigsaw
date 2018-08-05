@@ -1,11 +1,13 @@
-<?php namespace TightenCo\Jigsaw\File;
+<?php
+
+namespace TightenCo\Jigsaw\File;
 
 class InputFile
 {
     protected $file;
     protected $basePath;
     protected $extraBladeExtensions = [
-        'js', 'json', 'xml', 'rss', 'atom', 'txt', 'text', 'html'
+        'js', 'json', 'xml', 'rss', 'atom', 'txt', 'text', 'html',
     ];
 
     public function __construct($file, $basePath)
@@ -18,7 +20,7 @@ class InputFile
     {
         $parts = explode(DIRECTORY_SEPARATOR, $this->getRelativeFilePath());
 
-        return count($parts) == 1 ? '' : $parts[0];
+        return 1 == count($parts) ? '' : $parts[0];
     }
 
     public function getFilenameWithoutExtension()
@@ -28,7 +30,7 @@ class InputFile
 
     public function getExtension()
     {
-        if (! starts_with($this->getFilename(), '.')) {
+        if (!starts_with($this->getFilename(), '.')) {
             return $this->file->getExtension();
         }
     }
@@ -40,7 +42,7 @@ class InputFile
 
     public function getExtraBladeExtension()
     {
-        return $this->isBladeFile() && in_array($this->getExtension(), $this->extraBladeExtensions) ? $this->getExtension() : '';
+        return $this->isBladeFile() && in_array($this->getExtension(), $this->extraBladeExtensions, true) ? $this->getExtension() : '';
     }
 
     public function getRelativeFilePath()

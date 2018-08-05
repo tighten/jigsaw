@@ -1,20 +1,24 @@
-<?php namespace TightenCo\Jigsaw\PathResolvers;
+<?php
+
+namespace TightenCo\Jigsaw\PathResolvers;
 
 class PrettyOutputPathResolver
 {
     public function link($path, $name, $type, $page = 1)
     {
-        if ($type === 'html' && $name === 'index') {
+        if ('html' === $type && 'index' === $name) {
             if ($page > 1) {
                 return '/' . leftTrimPath(trimPath($path) . '/') . $page . '/';
             }
+
             return  leftTrimPath('/' . trimPath($path) . '/') . '/';
         }
 
-        if ($type === 'html' && $name !== 'index') {
+        if ('html' === $type && 'index' !== $name) {
             if ($page > 1) {
                 return '/' . leftTrimPath(trimPath($path) . '/') . $name . '/' . $page . '/';
             }
+
             return '/' . leftTrimPath(trimPath($path) . '/') . $name . '/';
         }
 
@@ -23,14 +27,15 @@ class PrettyOutputPathResolver
 
     public function path($path, $name, $type, $page = 1)
     {
-        if ($type === 'html' && $name === 'index' && $page > 1) {
+        if ('html' === $type && 'index' === $name && $page > 1) {
             return leftTrimPath(trimPath($path) . '/' . $page . '/' . 'index.html');
         }
 
-        if ($type === 'html' && $name !== 'index') {
+        if ('html' === $type && 'index' !== $name) {
             if ($page > 1) {
                 return  trimPath($path) . '/' . $name . '/' . $page . '/' . 'index.html';
             }
+
             return trimPath($path) . '/' . $name . '/' . 'index.html';
         }
 
@@ -43,14 +48,15 @@ class PrettyOutputPathResolver
 
     public function directory($path, $name, $type, $page = 1)
     {
-        if ($type === 'html' && $name === 'index' && $page > 1) {
+        if ('html' === $type && 'index' === $name && $page > 1) {
             return leftTrimPath(trimPath($path) . '/' . $page);
         }
 
-        if ($type === 'html' && $name !== 'index') {
+        if ('html' === $type && 'index' !== $name) {
             if ($page > 1) {
                 return  trimPath($path) . '/' . $name . '/' . $page;
             }
+
             return trimPath($path) . '/' . $name;
         }
 

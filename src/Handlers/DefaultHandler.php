@@ -1,7 +1,9 @@
-<?php namespace TightenCo\Jigsaw\Handlers;
+<?php
 
-use TightenCo\Jigsaw\File\Filesystem;
+namespace TightenCo\Jigsaw\Handlers;
+
 use TightenCo\Jigsaw\File\CopyFile;
+use TightenCo\Jigsaw\File\Filesystem;
 
 class DefaultHandler
 {
@@ -26,7 +28,7 @@ class DefaultHandler
                 $file->getBasename('.' . $file->getExtension()),
                 $file->getExtension(),
                 $pageData
-            )
+            ),
         ];
     }
 }

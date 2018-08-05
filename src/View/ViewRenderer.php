@@ -1,4 +1,6 @@
-<?php namespace TightenCo\Jigsaw\View;
+<?php
+
+namespace TightenCo\Jigsaw\View;
 
 use Illuminate\View\Factory;
 
@@ -14,7 +16,7 @@ class ViewRenderer
         'blade.markdown' => 'blade-markdown',
     ];
     private $bladeExtensions = [
-        'js', 'json', 'xml', 'rss', 'atom', 'txt', 'text', 'html'
+        'js', 'json', 'xml', 'rss', 'atom', 'txt', 'text', 'html',
     ];
 
     public function __construct(Factory $viewFactory)

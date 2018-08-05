@@ -1,9 +1,11 @@
-<?php namespace TightenCo\Jigsaw\View;
+<?php
+
+namespace TightenCo\Jigsaw\View;
 
 use Exception;
+use Throwable;
 use Illuminate\Contracts\View\Engine as EngineInterface;
 use Symfony\Component\Debug\Exception\FatalThrowableError;
-use Throwable;
 
 class MarkdownEngine implements EngineInterface
 {

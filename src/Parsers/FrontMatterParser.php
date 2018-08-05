@@ -1,4 +1,6 @@
-<?php namespace TightenCo\Jigsaw\Parsers;
+<?php
+
+namespace TightenCo\Jigsaw\Parsers;
 
 use Mni\FrontYAML\Parser;
 
@@ -21,7 +23,7 @@ class FrontMatterParser
     public function parse($content, $parseMarkdown = false)
     {
         $document = $this->parser->parse($content, $parseMarkdown);
-        $this->frontMatter = $document->getYAML() !== null ? $document->getYAML() : [];
+        $this->frontMatter = null !== $document->getYAML() ? $document->getYAML() : [];
         $this->content = $document->getContent();
 
         return $this;
@@ -42,8 +44,8 @@ class FrontMatterParser
         $parsed = $this->parse($content);
         $extendsFromFrontMatter = array_get($parsed->frontMatter, 'extends');
 
-        return (! $this->getExtendsFromBladeContent($parsed->content) && $extendsFromFrontMatter) ?
-            $this->addExtendsToBladeContent($extendsFromFrontMatter, $parsed->content):
+        return (!$this->getExtendsFromBladeContent($parsed->content) && $extendsFromFrontMatter) ?
+            $this->addExtendsToBladeContent($extendsFromFrontMatter, $parsed->content) :
             $parsed->content;
     }
 

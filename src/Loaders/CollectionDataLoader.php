@@ -1,12 +1,14 @@
-<?php namespace TightenCo\Jigsaw\Loaders;
+<?php
+
+namespace TightenCo\Jigsaw\Loaders;
 
 use Exception;
-use TightenCo\Jigsaw\Collection\Collection;
-use TightenCo\Jigsaw\Collection\CollectionItem;
+use TightenCo\Jigsaw\PageVariable;
 use TightenCo\Jigsaw\File\InputFile;
 use TightenCo\Jigsaw\IterableObject;
+use TightenCo\Jigsaw\Collection\Collection;
+use TightenCo\Jigsaw\Collection\CollectionItem;
 use TightenCo\Jigsaw\IterableObjectWithDefault;
-use TightenCo\Jigsaw\PageVariable;
 
 class CollectionDataLoader
 {
@@ -44,7 +46,7 @@ class CollectionDataLoader
     {
         $path = "{$this->source}/_{$collection->name}";
 
-        if (! $this->filesystem->exists($path)) {
+        if (!$this->filesystem->exists($path)) {
             return collect();
         }
 
@@ -88,7 +90,7 @@ class CollectionDataLoader
             return $handler->shouldHandle($file);
         });
 
-        if (! $handler) {
+        if (!$handler) {
             throw new Exception('No matching collection item handler');
         }
 

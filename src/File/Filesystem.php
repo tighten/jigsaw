@@ -1,7 +1,9 @@
-<?php namespace TightenCo\Jigsaw\File;
+<?php
 
-use Illuminate\Filesystem\Filesystem as BaseFilesystem;
+namespace TightenCo\Jigsaw\File;
+
 use Symfony\Component\Finder\Finder;
+use Illuminate\Filesystem\Filesystem as BaseFilesystem;
 
 class Filesystem extends BaseFilesystem
 {
@@ -16,7 +18,7 @@ class Filesystem extends BaseFilesystem
         $directory_path->pop();
         $directory_path = trimPath($directory_path->implode('/'));
 
-        if (! $this->isDirectory($directory_path)) {
+        if (!$this->isDirectory($directory_path)) {
             $this->makeDirectory($directory_path, 0755, true);
         }
 

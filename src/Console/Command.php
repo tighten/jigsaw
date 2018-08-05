@@ -1,9 +1,11 @@
-<?php namespace TightenCo\Jigsaw\Console;
+<?php
 
-use Symfony\Component\Console\Command\Command as SymfonyCommand;
+namespace TightenCo\Jigsaw\Console;
+
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Console\Command\Command as SymfonyCommand;
 
 abstract class Command extends SymfonyCommand
 {
@@ -11,6 +13,7 @@ abstract class Command extends SymfonyCommand
     {
         $this->input = $input;
         $this->output = $output;
+
         return (int) $this->fire();
     }
 

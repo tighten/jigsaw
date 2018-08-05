@@ -1,9 +1,11 @@
-<?php namespace TightenCo\Jigsaw\Console;
+<?php
 
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use TightenCo\Jigsaw\File\ConfigFile;
+namespace TightenCo\Jigsaw\Console;
+
 use TightenCo\Jigsaw\Jigsaw;
+use TightenCo\Jigsaw\File\ConfigFile;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputArgument;
 use TightenCo\Jigsaw\PathResolvers\PrettyOutputPathResolver;
 
 class BuildCommand extends Command
@@ -20,8 +22,8 @@ class BuildCommand extends Command
     {
         $this->setName('build')
             ->setDescription('Build your site.')
-            ->addArgument('env', InputArgument::OPTIONAL, "What environment should we use to build?", 'local')
-            ->addOption('pretty', null, InputOption::VALUE_REQUIRED, "Should the site use pretty URLs?", 'true');
+            ->addArgument('env', InputArgument::OPTIONAL, 'What environment should we use to build?', 'local')
+            ->addOption('pretty', null, InputOption::VALUE_REQUIRED, 'Should the site use pretty URLs?', 'true');
     }
 
     protected function fire()
@@ -30,8 +32,8 @@ class BuildCommand extends Command
         $this->includeEnvironmentConfig($env);
         $this->updateBuildPaths($env);
 
-        if ($this->input->getOption('pretty') === 'true') {
-            $this->app->instance('outputPathResolver', new PrettyOutputPathResolver);
+        if ('true' === $this->input->getOption('pretty')) {
+            $this->app->instance('outputPathResolver', new PrettyOutputPathResolver());
         }
 
         $this->app->make(Jigsaw::class)->build($env);
@@ -46,7 +48,7 @@ class BuildCommand extends Command
         $this->app->config = collect($this->app->config)
             ->merge(collect($environmentConfig))
             ->filter(function ($item) {
-                return $item !== null;
+                return null !== $item;
             });
     }
 

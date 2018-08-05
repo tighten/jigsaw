@@ -10,11 +10,11 @@ rename('tests/build-testing', 'tests/snapshots');
 
 function removeDirectory($path)
 {
-    if (! $path) {
+    if (!$path) {
         exit("Path to the 'tests/snapshots' directory is missing");
     }
 
-    $files = glob($path . '/{,.}[!.,!..]*', GLOB_MARK|GLOB_BRACE);
+    $files = glob($path . '/{,.}[!.,!..]*', GLOB_MARK | GLOB_BRACE);
 
     foreach ($files as $file) {
         is_dir($file) ? removeDirectory($file) : unlink($file);

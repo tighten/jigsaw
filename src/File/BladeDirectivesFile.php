@@ -1,4 +1,6 @@
-<?php namespace TightenCo\Jigsaw\File;
+<?php
+
+namespace TightenCo\Jigsaw\File;
 
 use Illuminate\View\Compilers\BladeCompiler;
 
@@ -12,7 +14,7 @@ class BladeDirectivesFile
         $this->bladeCompiler = $bladeCompiler;
         $this->directives = file_exists($file_path) ? include $file_path : [];
 
-        if (! is_array($this->directives)) {
+        if (!is_array($this->directives)) {
             $this->directives = [];
         }
     }

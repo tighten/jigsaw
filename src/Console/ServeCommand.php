@@ -1,7 +1,9 @@
-<?php namespace TightenCo\Jigsaw\Console;
+<?php
 
-use Symfony\Component\Console\Input\InputArgument;
+namespace TightenCo\Jigsaw\Console;
+
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputArgument;
 
 class ServeCommand extends Command
 {

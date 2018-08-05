@@ -1,4 +1,6 @@
-<?php namespace TightenCo\Jigsaw\Events;
+<?php
+
+namespace TightenCo\Jigsaw\Events;
 
 use TightenCo\Jigsaw\Jigsaw;
 

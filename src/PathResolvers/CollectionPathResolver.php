@@ -1,4 +1,6 @@
-<?php namespace TightenCo\Jigsaw\PathResolvers;
+<?php
+
+namespace TightenCo\Jigsaw\PathResolvers;
 
 use TightenCo\Jigsaw\IterableObject;
 
@@ -37,7 +39,7 @@ class CollectionPathResolver
             $path = $path->get($templateKey);
             $templateKeySuffix = '';
 
-            if (! $path) {
+            if (!$path) {
                 return;
             }
         }
@@ -66,7 +68,7 @@ class CollectionPathResolver
     {
         preg_match_all('/\{(.*?)\}/', $path, $bracketedParameters);
 
-        if (count($bracketedParameters[0]) == 0) {
+        if (0 == count($bracketedParameters[0])) {
             return $path . '/' . $this->slug($data->getFilename());
         }
 
@@ -82,7 +84,7 @@ class CollectionPathResolver
 
     private function getParameterValue($param, $data)
     {
-        list($param, $dateFormat) = explode('|', trim($param, '{}') . '|');
+        [$param, $dateFormat] = explode('|', trim($param, '{}') . '|');
         $slugSeparator = ctype_alpha($param[0]) ? null : $param[0];
 
         if ($slugSeparator) {
@@ -91,7 +93,7 @@ class CollectionPathResolver
 
         $value = $this->filterInvalidCharacters(array_get($data, $param, $data->_meta->get($param)));
 
-        if (! $value) {
+        if (!$value) {
             return '';
         }
 
@@ -141,20 +143,20 @@ class CollectionPathResolver
         $string = iconv('UTF-8', 'ASCII//TRANSLIT', $string);
 
         // Convert all dashes/underscores into separator
-        $flip = $separator == '-' ? '_' : '-';
-        $string = preg_replace('!['.preg_quote($flip).']+!u', $separator, $string);
+        $flip = '-' == $separator ? '_' : '-';
+        $string = preg_replace('![' . preg_quote($flip) . ']+!u', $separator, $string);
 
         // Remove all characters that are not the separator, letters, numbers, whitespace, or dot
-        $string = preg_replace('![^'.preg_quote($separator).'\pL\pN\s\.]+!u', '', mb_strtolower($string));
+        $string = preg_replace('![^' . preg_quote($separator) . '\pL\pN\s\.]+!u', '', mb_strtolower($string));
 
         // Replace all separator characters and whitespace by a single separator
-        $string = preg_replace('!['.preg_quote($separator).'\s]+!u', $separator, $string);
+        $string = preg_replace('![' . preg_quote($separator) . '\s]+!u', $separator, $string);
 
         return trim($string, $separator);
     }
 
     /**
-     * Filter characters that are invalid in URL, like ® and ™, allowing spaces
+     * Filter characters that are invalid in URL, like ® and ™, allowing spaces.
      */
     private function filterInvalidCharacters($value)
     {

@@ -1,4 +1,6 @@
-<?php namespace TightenCo\Jigsaw\CollectionItemHandlers;
+<?php
+
+namespace TightenCo\Jigsaw\CollectionItemHandlers;
 
 use TightenCo\Jigsaw\Parsers\FrontMatterParser;
 
@@ -13,7 +15,7 @@ class MarkdownCollectionItemHandler
 
     public function shouldHandle($file)
     {
-        return in_array($file->getExtension(), ['markdown', 'md', 'mdown']);
+        return in_array($file->getExtension(), ['markdown', 'md', 'mdown'], true);
     }
 
     public function getItemVariables($file)

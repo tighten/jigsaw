@@ -1,9 +1,11 @@
-<?php namespace TightenCo\Jigsaw\Handlers;
+<?php
 
-use TightenCo\Jigsaw\File\OutputFile;
+namespace TightenCo\Jigsaw\Handlers;
+
 use TightenCo\Jigsaw\PageData;
-use TightenCo\Jigsaw\Parsers\FrontMatterParser;
+use TightenCo\Jigsaw\File\OutputFile;
 use TightenCo\Jigsaw\View\ViewRenderer;
+use TightenCo\Jigsaw\Parsers\FrontMatterParser;
 
 class PaginatedPageHandler
 {
@@ -22,7 +24,7 @@ class PaginatedPageHandler
 
     public function shouldHandle($file)
     {
-        if (! ends_with($file->getFilename(), '.blade.php')) {
+        if (!ends_with($file->getFilename(), '.blade.php')) {
             return false;
         }
         $content = $this->parser->parse($file->getContents());
@@ -46,7 +48,7 @@ class PaginatedPageHandler
             return new OutputFile(
                 $file->getRelativePath(),
                 $file->getFilenameWithoutExtension(),
-                $extension == 'php' ? 'html' : $extension,
+                'php' == $extension ? 'html' : $extension,
                 $this->render(
                     $this->parser->getBladeContent($file->getContents()),
                     $pageData

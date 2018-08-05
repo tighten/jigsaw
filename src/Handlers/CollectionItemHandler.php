@@ -1,4 +1,6 @@
-<?php namespace TightenCo\Jigsaw\Handlers;
+<?php
+
+namespace TightenCo\Jigsaw\Handlers;
 
 use TightenCo\Jigsaw\File\OutputFile;
 
@@ -16,7 +18,7 @@ class CollectionItemHandler
     public function shouldHandle($file)
     {
         return $this->isInCollectionDirectory($file)
-            && ! starts_with($file->getFilename(), ['.', '_']);
+            && !starts_with($file->getFilename(), ['.', '_']);
     }
 
     private function isInCollectionDirectory($file)
@@ -28,7 +30,7 @@ class CollectionItemHandler
 
     private function hasCollectionNamed($candidate)
     {
-        return array_get($this->config, 'collections.' . $candidate) !== null;
+        return null !== array_get($this->config, 'collections.' . $candidate);
     }
 
     private function getCollectionName($file)

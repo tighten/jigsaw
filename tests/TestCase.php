@@ -2,12 +2,12 @@
 
 namespace Tests;
 
-use PHPUnit\Framework\TestCase as BaseTestCase;
-use TightenCo\Jigsaw\File\Filesystem;
-use TightenCo\Jigsaw\File\InputFile;
 use TightenCo\Jigsaw\Jigsaw;
-use TightenCo\Jigsaw\Loaders\DataLoader;
 use org\bovigo\vfs\vfsStream;
+use TightenCo\Jigsaw\File\InputFile;
+use TightenCo\Jigsaw\File\Filesystem;
+use TightenCo\Jigsaw\Loaders\DataLoader;
+use PHPUnit\Framework\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
 {
@@ -20,13 +20,13 @@ class TestCase extends BaseTestCase
     public function setUp()
     {
         parent::setUp();
-        require('jigsaw-core.php');
+        require 'jigsaw-core.php';
         $this->app = $container;
         $this->app->buildPath = [
             'source' => $this->sourcePath,
             'destination' => $this->destinationPath,
         ];
-        $this->filesystem = new Filesystem;
+        $this->filesystem = new Filesystem();
         $this->tempPath = $cachePath;
         $this->prepareTempDirectory();
     }
@@ -39,7 +39,7 @@ class TestCase extends BaseTestCase
 
     public function prepareTempDirectory()
     {
-        if (! $this->filesystem->isDirectory($this->tempPath)) {
+        if (!$this->filesystem->isDirectory($this->tempPath)) {
             $this->filesystem->makeDirectory($this->tempPath, 0755, true);
         }
     }

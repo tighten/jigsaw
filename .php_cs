@@ -1,8 +1,9 @@
 <?php
  $finder = PhpCsFixer\Finder::create()
     ->name('*.php')
-    ->in(__DIR__.DIRECTORY_SEPARATOR.'src')
-    ->in(__DIR__.DIRECTORY_SEPARATOR.'tests');
+    ->in(__DIR__ . DIRECTORY_SEPARATOR . 'src')
+    ->in(__DIR__ . DIRECTORY_SEPARATOR . 'tests');
+
  return PhpCsFixer\Config::create()
     ->setRiskyAllowed(true)
     ->setRules([
@@ -18,4 +19,4 @@
         'trailing_comma_in_multiline_array' => true,
         'yoda_style' => false,
     ])
-    ->setFinder($finder); 
+    ->setFinder($finder);

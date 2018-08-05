@@ -1,4 +1,6 @@
-<?php namespace TightenCo\Jigsaw\Handlers;
+<?php
+
+namespace TightenCo\Jigsaw\Handlers;
 
 class IgnoredHandler
 {

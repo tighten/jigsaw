@@ -1,4 +1,6 @@
-<?php namespace TightenCo\Jigsaw\PathResolvers;
+<?php
+
+namespace TightenCo\Jigsaw\PathResolvers;
 
 class PrettyOutputPathResolver
 {
@@ -8,6 +10,7 @@ class PrettyOutputPathResolver
             if ($page > 1) {
                 return '/' . leftTrimPath(trimPath($path) . '/') . $page . '/';
             }
+
             return  leftTrimPath('/' . trimPath($path) . '/') . '/';
         }
 
@@ -15,6 +18,7 @@ class PrettyOutputPathResolver
             if ($page > 1) {
                 return '/' . leftTrimPath(trimPath($path) . '/') . $name . '/' . $page . '/';
             }
+
             return '/' . leftTrimPath(trimPath($path) . '/') . $name . '/';
         }
 
@@ -31,6 +35,7 @@ class PrettyOutputPathResolver
             if ($page > 1) {
                 return  trimPath($path) . '/' . $name . '/' . $page . '/' . 'index.html';
             }
+
             return trimPath($path) . '/' . $name . '/' . 'index.html';
         }
 
@@ -51,6 +56,7 @@ class PrettyOutputPathResolver
             if ($page > 1) {
                 return  trimPath($path) . '/' . $name . '/' . $page;
             }
+
             return trimPath($path) . '/' . $name;
         }
 

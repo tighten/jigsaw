@@ -1,4 +1,6 @@
-<?php namespace TightenCo\Jigsaw\File;
+<?php
+
+namespace TightenCo\Jigsaw\File;
 
 use Illuminate\Filesystem\Filesystem as BaseFilesystem;
 use Symfony\Component\Finder\Finder;

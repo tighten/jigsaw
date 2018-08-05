@@ -23,7 +23,7 @@ class SnapshotTestCase extends BaseTestCase
     public static function tearDownAfterClass()
     {
         if (self::DELETE_BUILT_FILES) {
-            (new Filesystem)->deleteDirectory('tests/build-testing');
+            (new Filesystem())->deleteDirectory('tests/build-testing');
         }
 
         parent::tearDownAfterClass();
@@ -32,7 +32,7 @@ class SnapshotTestCase extends BaseTestCase
     public function setUp()
     {
         try {
-            $this->filesystem = new Filesystem;
+            $this->filesystem = new Filesystem();
             $this->build_files = $this->filesystem->allFiles('tests/build-testing');
         } catch (\Exception $e) {
             die("Error: Jigsaw test site was not built.\r\n");

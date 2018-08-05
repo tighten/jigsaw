@@ -1,4 +1,6 @@
-<?php namespace TightenCo\Jigsaw\Loaders;
+<?php
+
+namespace TightenCo\Jigsaw\Loaders;
 
 use Exception;
 use TightenCo\Jigsaw\Collection\Collection;

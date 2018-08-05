@@ -1,4 +1,6 @@
-<?php namespace TightenCo\Jigsaw\Console;
+<?php
+
+namespace TightenCo\Jigsaw\Console;
 
 use Symfony\Component\Console\Input\InputArgument;
 use TightenCo\Jigsaw\File\Filesystem;

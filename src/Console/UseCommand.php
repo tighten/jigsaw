@@ -1,7 +1,8 @@
-<?php namespace TightenCo\Jigsaw\Console;
+<?php
+
+namespace TightenCo\Jigsaw\Console;
 
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 use TightenCo\Jigsaw\File\Filesystem;
 
 class UseCommand extends Command
@@ -43,8 +44,9 @@ class UseCommand extends Command
     {
         $this->comment("\nThis will replace your current `package.json` file, and any existing Gulp or Webpack configurations.");
 
-        if (! $this->confirm("Do you wish to continue? ")) {
+        if (! $this->confirm('Do you wish to continue? ')) {
             $this->info("\nNo changes were made.\n");
+
             return;
         }
 

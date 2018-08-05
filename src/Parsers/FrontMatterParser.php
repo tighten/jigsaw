@@ -1,4 +1,6 @@
-<?php namespace TightenCo\Jigsaw\Parsers;
+<?php
+
+namespace TightenCo\Jigsaw\Parsers;
 
 use Mni\FrontYAML\Parser;
 
@@ -43,7 +45,7 @@ class FrontMatterParser
         $extendsFromFrontMatter = array_get($parsed->frontMatter, 'extends');
 
         return (! $this->getExtendsFromBladeContent($parsed->content) && $extendsFromFrontMatter) ?
-            $this->addExtendsToBladeContent($extendsFromFrontMatter, $parsed->content):
+            $this->addExtendsToBladeContent($extendsFromFrontMatter, $parsed->content) :
             $parsed->content;
     }
 

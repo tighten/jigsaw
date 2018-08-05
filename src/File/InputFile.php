@@ -1,11 +1,13 @@
-<?php namespace TightenCo\Jigsaw\File;
+<?php
+
+namespace TightenCo\Jigsaw\File;
 
 class InputFile
 {
     protected $file;
     protected $basePath;
     protected $extraBladeExtensions = [
-        'js', 'json', 'xml', 'rss', 'atom', 'txt', 'text', 'html'
+        'js', 'json', 'xml', 'rss', 'atom', 'txt', 'text', 'html',
     ];
 
     public function __construct($file, $basePath)

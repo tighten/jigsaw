@@ -1,4 +1,6 @@
-<?php namespace TightenCo\Jigsaw\File;
+<?php
+
+namespace TightenCo\Jigsaw\File;
 
 use Illuminate\Support\Str;
 
@@ -10,7 +12,7 @@ class TemporaryFilesystem
     public function __construct($tempPath, $filesystem = null)
     {
         $this->tempPath = $tempPath;
-        $this->filesystem = $filesystem ?: new Filesystem;
+        $this->filesystem = $filesystem ?: new Filesystem();
     }
 
     public function put($contents, $callback, $extension = '')

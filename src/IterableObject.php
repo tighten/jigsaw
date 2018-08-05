@@ -1,4 +1,6 @@
-<?php namespace TightenCo\Jigsaw;
+<?php
+
+namespace TightenCo\Jigsaw;
 
 use ArrayAccess;
 use Exception;
@@ -28,7 +30,7 @@ class IterableObject extends BaseCollection implements ArrayAccess
     public function offsetGet($key)
     {
         if (! isset($this->items[$key])) {
-            $prefix = $this->_source ? 'Error in ' . $this->_source . ': '  : 'Error: ';
+            $prefix = $this->_source ? 'Error in ' . $this->_source . ': ' : 'Error: ';
             throw new Exception($prefix . "The key '$key' does not exist.");
         }
 

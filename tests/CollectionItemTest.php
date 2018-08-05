@@ -2,10 +2,6 @@
 
 namespace Tests;
 
-use TightenCo\Jigsaw\Jigsaw;
-use TightenCo\Jigsaw\SiteBuilder;
-use org\bovigo\vfs\vfsStream;
-
 class CollectionItemTest extends TestCase
 {
     public function test_collection_item_contents_are_returned_when_item_is_referenced_as_a_string()

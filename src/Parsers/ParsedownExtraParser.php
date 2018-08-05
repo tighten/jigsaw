@@ -1,4 +1,6 @@
-<?php namespace TightenCo\Jigsaw\Parsers;
+<?php
+
+namespace TightenCo\Jigsaw\Parsers;
 
 use Mni\FrontYAML\Markdown\MarkdownParser;
 use ParsedownExtra;

@@ -14,7 +14,7 @@ function removeDirectory($path)
         exit("Path to the 'tests/snapshots' directory is missing");
     }
 
-    $files = glob($path . '/{,.}[!.,!..]*', GLOB_MARK|GLOB_BRACE);
+    $files = glob($path . '/{,.}[!.,!..]*', GLOB_MARK | GLOB_BRACE);
 
     foreach ($files as $file) {
         is_dir($file) ? removeDirectory($file) : unlink($file);

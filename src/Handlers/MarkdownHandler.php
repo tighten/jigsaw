@@ -1,4 +1,6 @@
-<?php namespace TightenCo\Jigsaw\Handlers;
+<?php
+
+namespace TightenCo\Jigsaw\Handlers;
 
 use TightenCo\Jigsaw\File\OutputFile;
 use TightenCo\Jigsaw\PageData;
@@ -75,13 +77,13 @@ class MarkdownHandler
 
     private function getEscapedMarkdownContent($file)
     {
-        $replacements = ["<?php" => "<{{'?php'}}"];
+        $replacements = ['<?php' => "<{{'?php'}}"];
 
         if (in_array($file->getFullExtension(), ['markdown', 'md', 'mdown'])) {
             $replacements = array_merge([
-                "@" => "{{'@'}}",
-                "{{" => "@{{",
-                "{!!" => "@{!!",
+                '@' => "{{'@'}}",
+                '{{' => '@{{',
+                '{!!' => '@{!!',
             ], $replacements);
         }
 

@@ -2,10 +2,6 @@
 
 namespace Tests;
 
-use TightenCo\Jigsaw\Handlers\MarkdownHandler;
-use TightenCo\Jigsaw\IterableObject;
-use TightenCo\Jigsaw\PageData;
-
 class MarkdownExtraTest extends TestCase
 {
     public function test_parse_markdown_inside_html_blocks()

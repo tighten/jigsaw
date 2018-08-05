@@ -1,4 +1,6 @@
-<?php namespace TightenCo\Jigsaw;
+<?php
+
+namespace TightenCo\Jigsaw;
 
 use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\File\InputFile;
@@ -115,7 +117,10 @@ class SiteBuilder
         }
 
         return resolvePath(urldecode($this->outputPathResolver->path(
-            $file->path(), $file->name(), $file->extension(), $file->page()
+            $file->path(),
+            $file->name(),
+            $file->extension(),
+            $file->page()
         )));
     }
 
@@ -126,12 +131,15 @@ class SiteBuilder
         }
 
         return rightTrimPath(urldecode($this->outputPathResolver->link(
-            $file->path(), $file->name(), $file->extension(), $file->page()
+            $file->path(),
+            $file->name(),
+            $file->extension(),
+            $file->page()
         )));
     }
 
     private function getFilePermalink($file)
     {
-        return $file->data()->page->permalink ? resolvePath(urldecode($file->data()->page->permalink)) : NULL;
+        return $file->data()->page->permalink ? resolvePath(urldecode($file->data()->page->permalink)) : null;
     }
 }

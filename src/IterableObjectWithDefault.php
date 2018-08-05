@@ -1,4 +1,6 @@
-<?php namespace TightenCo\Jigsaw;
+<?php
+
+namespace TightenCo\Jigsaw;
 
 class IterableObjectWithDefault extends IterableObject
 {

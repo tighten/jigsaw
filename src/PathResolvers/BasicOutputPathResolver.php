@@ -1,4 +1,6 @@
-<?php namespace TightenCo\Jigsaw\PathResolvers;
+<?php
+
+namespace TightenCo\Jigsaw\PathResolvers;
 
 class BasicOutputPathResolver
 {

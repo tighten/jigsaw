@@ -1,7 +1,8 @@
-<?php namespace TightenCo\Jigsaw\Collection;
+<?php
+
+namespace TightenCo\Jigsaw\Collection;
 
 use Symfony\Component\Yaml\Yaml;
-use TightenCo\Jigsaw\Parsers\FrontMatterParser;
 
 class CollectionRemoteItem
 {

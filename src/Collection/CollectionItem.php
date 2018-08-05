@@ -1,4 +1,6 @@
-<?php namespace TightenCo\Jigsaw\Collection;
+<?php
+
+namespace TightenCo\Jigsaw\Collection;
 
 use TightenCo\Jigsaw\PageVariable;
 
@@ -46,11 +48,11 @@ class CollectionItem extends PageVariable
 
     public function __toString()
     {
-        return (String) $this->getContent();
+        return (string) $this->getContent();
     }
 
     protected function missingHelperError($functionName)
     {
-        return 'No function named "' . $functionName. '" for the collection "' . $this->_meta->collectionName . '" was found in the file "config.php".';
+        return 'No function named "' . $functionName . '" for the collection "' . $this->_meta->collectionName . '" was found in the file "config.php".';
     }
 }

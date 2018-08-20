@@ -32,13 +32,13 @@ class SiteBuilder
 
     public function build($source, $dest, $siteData)
     {
-        $this->prepareDirectory($this->cachePath);
-        $outputFiles = $this->generateFiles($source, $siteData);
-        $this->prepareDirectory($dest);
-        $outputFiles = $this->writeFiles($dest, $outputFiles);
-        $this->cleanup();
+        //generate
+        $this->prepareDirectories([$this->cachePath, $dest.'_tmp']);
+        $this->generateFiles($source, $dest.'_tmp', $siteData);
+        $this->files->moveDirectory($dest.'_tmp', $dest, true);
 
-        return $outputFiles;
+        //clean up
+        $this->files->deleteDirectory($this->cachePath);
     }
 
     public function registerHandler($handler)
@@ -66,39 +66,29 @@ class SiteBuilder
         }
     }
 
-    private function cleanup()
-    {
-        $this->files->deleteDirectory($this->cachePath);
-    }
-
-    private function generateFiles($source, $siteData)
+    private function generateFiles($source, $destination, $siteData)
     {
         $this->consoleOutput->writeln('<comment>Generating files from source</comment>');
-        $files = collect($this->files->allFiles($source));
-        $progressBar = new ProgressBar($this->consoleOutput, $files->count());
+        $files = $this->files->allFiles($source);
+        $progressBar = new ProgressBar($this->consoleOutput, count($files));
         $progressBar->start();
-        $files = $files->map(function ($file) use ($source) {
-            return new InputFile($file, $source);
-        })->flatMap(function ($file) use ($siteData, $progressBar) {
-            $progressBar->advance();
 
-            return $this->handle($file, $siteData);
-        });
+        for($i = 0; $i < count($files); $i++) {
+
+            $subfiles = $this->handle(
+                new InputFile($files[$i], $source), $siteData
+            )->all();
+            
+            foreach ($subfiles as $subfile) {
+                $this->writeFile($subfile, $destination);
+            }
+
+            $progressBar->advance();
+            $files[$i] = null;
+        }
+
         $progressBar->finish();
         $this->consoleOutput->writeln('');
-
-        return $files;
-    }
-
-    private function writeFiles($destination, $files)
-    {
-        $this->consoleOutput->writeln('<comment>Writing files to destination...</comment>');
-
-        $files = $files->map(function ($file) use ($destination) {
-            return $this->writeFile($file, $destination);
-        });
-
-        return $files;
     }
 
     private function handle($file, $siteData)

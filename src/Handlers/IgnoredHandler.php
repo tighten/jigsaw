@@ -9,6 +9,6 @@ class IgnoredHandler
 
     public function handle($file, $data)
     {
-        return [];
+        return collect();
     }
 }

@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Container\Container;
-use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\View\Compilers\BladeCompiler;
 use Illuminate\View\Engines\CompilerEngine;
 use Illuminate\View\Engines\EngineResolver;
@@ -38,6 +37,7 @@ use TightenCo\Jigsaw\SiteBuilder;
 use TightenCo\Jigsaw\View\BladeMarkdownEngine;
 use TightenCo\Jigsaw\View\MarkdownEngine;
 use TightenCo\Jigsaw\View\ViewRenderer;
+use TightenCo\Jigsaw\Events\FakeDispatcher;
 
 if (file_exists(__DIR__.'/vendor/autoload.php')) {
     require __DIR__.'/vendor/autoload.php';
@@ -105,7 +105,7 @@ $container->bind(Factory::class, function ($c) use ($cachePath) {
 
     $finder = new FileViewFinder(new Filesystem, [$cachePath, $c['buildPath']['source']]);
 
-    return new Factory($resolver, $finder, Mockery::mock(Dispatcher::class)->shouldIgnoreMissing());
+    return new Factory($resolver, $finder, new FakeDispatcher);
 });
 
 $container->bind(ViewRenderer::class, function ($c) {

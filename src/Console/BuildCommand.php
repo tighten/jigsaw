@@ -26,6 +26,8 @@ class BuildCommand extends Command
 
     protected function fire()
     {
+        $startTime = microtime(true);
+
         $env = $this->input->getArgument('env');
         $this->includeEnvironmentConfig($env);
         $this->updateBuildPaths($env);
@@ -35,7 +37,13 @@ class BuildCommand extends Command
         }
 
         $this->app->make(Jigsaw::class)->build($env);
-        $this->info('Site built successfully!');
+
+        $buildTime = microtime(true) - $startTime;
+
+        $this->info(sprintf(
+                    "Site built successfully! (env: %s, build time: %.2f sec)", 
+                    $env, $buildTime
+                ));
     }
 
     private function includeEnvironmentConfig($env)

@@ -9,7 +9,6 @@ class Jigsaw
 {
     public $app;
     protected $env;
-    protected $outputPaths;
     protected $siteData;
     protected $dataLoader;
     protected $siteBuilder;
@@ -44,7 +43,7 @@ class Jigsaw
 
         $this->fireEvent('afterCollections');
 
-        $this->outputPaths = $this->siteBuilder
+        $this->siteBuilder
             ->setConsoleOutput($this->consoleOutput)
             ->build(
                 $this->getSourcePath(),
@@ -126,11 +125,6 @@ class Jigsaw
     public function getFilesystem()
     {
         return $this->app->make(Filesystem::class);
-    }
-
-    public function getOutputPaths()
-    {
-        return $this->outputPaths ?: [];
     }
 
     public function readSourceFile($fileName)

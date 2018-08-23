@@ -54,6 +54,11 @@ class PageVariable extends IterableObject
         return $this->_meta->url;
     }
 
+    public function isMarkdown()
+    {
+        return in_array($this->getExtension(), ['markdown', 'md', 'mdown']);
+    }
+
     protected function missingHelperError($functionName)
     {
         return 'No function named "' . $functionName . '" was found in the file "config.php".';

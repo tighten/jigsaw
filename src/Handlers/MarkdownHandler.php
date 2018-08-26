@@ -46,34 +46,101 @@ class MarkdownHandler
     private function buildOutput($file, PageData $pageData)
     {
         return collect($pageData->page->extends)
-            ->map(function ($layout, $templateToExtend) use ($file, $pageData) {
+            ->map(function ($extends, $templateToExtend) use ($file, $pageData) {
                 if ($templateToExtend) {
                     $pageData->setExtending($templateToExtend);
                 }
 
-                $extension = $this->view->getExtension($layout);
+                $extension = $this->view->getExtension($extends);
 
                 return new OutputFile(
                     $file->getRelativePath(),
-                    $file->getFilenameWithoutExtension(),
+                    $file->getFileNameWithoutExtension(),
                     $extension == 'php' ? 'html' : $extension,
-                    $this->render($file, $pageData, $layout),
+                    $this->render($file, $pageData, $extends),
                     $pageData
                 );
             });
     }
 
-    private function render($file, $pageData, $layout)
+    private function render($file, $pageData, $extends)
+    {
+        $uniqueFileName = $file->getPathname() . $extends;
+
+        if ($cached = $this->getValidCachedFile($file, $uniqueFileName)) {
+            return $this->view->render($cached->getPathname(), $pageData);
+        } else if ($file->isBladeFile()) {
+            return $this->renderBladeMarkdownFile($file, $uniqueFileName, $pageData, $extends);
+        } else {
+            return $this->renderMarkdownFile($file, $uniqueFileName, $pageData, $extends);
+        }
+    }
+
+    private function renderMarkdownFile($file, $uniqueFileName, $pageData, $extends)
+    {
+        $html = $this->parser->parseMarkdown($this->getEscapedMarkdownContent($file));
+        $wrapper = $this->view->renderString(
+            "@extends('{$extends}')\n" .
+            "@section('{$pageData->page->section}'){$html}@endsection"
+        );
+
+        return $this->view->render(
+            $this->temporaryFilesystem->put($wrapper, $uniqueFileName, '.php'),
+            $pageData
+        );
+    }
+
+    private function renderBladeMarkdownFile($file, $uniqueFileName, $pageData, $extends)
+    {
+        $contentPath = $this->renderMarkdownContent($file);
+
+        return $this->view->render(
+            $this->renderBladeWrapper(
+                $uniqueFileName,
+                basename($contentPath, '.blade.md'),
+                $pageData,
+                $extends
+            ),
+            $pageData
+        );
+    }
+
+    private function renderMarkdownContent($file)
     {
         return $this->temporaryFilesystem->put(
             $this->getEscapedMarkdownContent($file),
-            function ($path) use ($pageData, $layout) {
-                $duplicatedMarkdownFilename = basename($path, '.blade.md');
-
-                return $this->renderBladeWrapper($duplicatedMarkdownFilename, $pageData, $layout);
-            },
+            $file->getPathname(),
             '.blade.md'
         );
+    }
+
+    private function renderBladeWrapper($sourceFileName, $contentFileName, $pageData, $extends)
+    {
+        return $this->temporaryFilesystem->put(
+            $this->makeBladeWrapper($contentFileName, $pageData, $extends),
+            $sourceFileName,
+            '.blade.php'
+        );
+    }
+
+    private function makeBladeWrapper($path, $pageData, $extends)
+    {
+        return collect([
+            "@extends('{$extends}')",
+            "@section('{$pageData->page->section}')",
+            "@include('{$path}')",
+            '@endsection',
+        ])->implode("\n");
+    }
+
+    private function getValidCachedFile($file, $uniqueFileName)
+    {
+        $extension = $file->isBladeFile() ? '.blade.md' : '.php';
+        $cached = $this->temporaryFilesystem->get($uniqueFileName, $extension);
+
+        if ($cached && $cached->getLastModifiedTime() >= $file->getLastModifiedTime()) {
+            return $cached;
+        }
     }
 
     private function getEscapedMarkdownContent($file)
@@ -91,29 +158,8 @@ class MarkdownHandler
         return strtr($file->getContents(), $replacements);
     }
 
-    private function renderBladeWrapper($duplicatedMarkdownFilename, $pageData, $layout)
-    {
-        return $this->temporaryFilesystem->put(
-            $this->createBladeWrapper($duplicatedMarkdownFilename, $pageData, $layout),
-            function ($path) use ($pageData) {
-                return $this->view->render($path, $pageData);
-            },
-            '.blade.php'
-        );
-    }
-
     private function parseFrontMatter($file)
     {
         return $this->parser->getFrontMatter($file->getContents());
-    }
-
-    private function createBladeWrapper($path, $pageData, $layout)
-    {
-        return collect([
-            "@extends('{$layout}')",
-            "@section('{$pageData->page->section}')",
-            "@include('{$path}')",
-            '@endsection',
-        ])->implode("\n");
     }
 }

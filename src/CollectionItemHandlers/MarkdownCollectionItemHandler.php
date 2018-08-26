@@ -25,6 +25,8 @@ class MarkdownCollectionItemHandler
 
     public function getItemContent($file)
     {
-        return $this->parser->parseMarkdown($file->getContents())->content;
+        return function () use ($file) {
+            return $this->parser->parseMarkdown($file->getContents());
+        };
     }
 }

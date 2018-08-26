@@ -78,9 +78,9 @@ class TestCase extends BaseTestCase
             'destination' => $vfs->url() . '/build',
         ];
 
-        $jigsaw = $this->app->make(Jigsaw::class);
-        $jigsaw->build('test');
-
-        return $jigsaw;
+        return $this->app
+            ->make(Jigsaw::class)
+            ->setVerbose(false)
+            ->build('test');
     }
 }

@@ -17,7 +17,7 @@ class FrontMatterParser
 
     public function parseMarkdown($content)
     {
-        return $this->parse($content, true);
+        return $this->parse($content, true)->content;
     }
 
     public function parse($content, $parseMarkdown = false)

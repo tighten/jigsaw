@@ -54,7 +54,7 @@ class CollectionDataLoader
             ->reject(function ($file) {
                 return starts_with($file->getFilename(), '_');
             })->map(function ($file) {
-                return new InputFile($file, $this->source);
+                return new InputFile($file);
             })->map(function ($inputFile) use ($collection) {
                 return $this->buildCollectionItem($inputFile, $collection);
             });

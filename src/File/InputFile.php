@@ -43,7 +43,12 @@ class InputFile
         return $this->isBladeFile() && in_array($this->getExtension(), $this->extraBladeExtensions) ? $this->getExtension() : '';
     }
 
-    protected function isBladeFile()
+    public function getLastModifiedTime()
+    {
+        return $this->file->getMTime();
+    }
+
+    public function isBladeFile()
     {
         return strpos($this->getBasename(), '.blade.' . $this->getExtension()) > 0;
     }

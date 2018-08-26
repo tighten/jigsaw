@@ -80,10 +80,11 @@ $container->bind(FrontMatterParser::class, function ($c) {
     return new FrontMatterParser($c[Parser::class]);
 });
 
-$container->bind(Factory::class, function ($c) use ($cachePath) {
+$bladeCompiler = new BladeCompiler(new Filesystem, $cachePath);
+
+$container->bind(Factory::class, function ($c) use ($cachePath, $bladeCompiler) {
     $resolver = new EngineResolver;
 
-    $bladeCompiler = new BladeCompiler(new Filesystem, $cachePath);
     $compilerEngine = new CompilerEngine($bladeCompiler, new Filesystem);
 
     $resolver->register('blade', function () use ($compilerEngine) {
@@ -109,8 +110,8 @@ $container->bind(Factory::class, function ($c) use ($cachePath) {
     return new Factory($resolver, $finder, new FakeDispatcher());
 });
 
-$container->bind(ViewRenderer::class, function ($c) {
-    return new ViewRenderer($c[Factory::class]);
+$container->bind(ViewRenderer::class, function ($c) use ($bladeCompiler) {
+    return new ViewRenderer($c[Factory::class], $bladeCompiler);
 });
 
 $container->bind(BladeHandler::class, function ($c) {

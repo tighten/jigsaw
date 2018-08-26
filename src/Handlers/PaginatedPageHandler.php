@@ -49,10 +49,7 @@ class PaginatedPageHandler
                 $file->getRelativePath(),
                 $file->getFilenameWithoutExtension(),
                 $extension == 'php' ? 'html' : $extension,
-                $this->render(
-                    $this->parser->getBladeContent($file->getContents()),
-                    $pageData
-                ),
+                $this->render($file, $pageData),
                 $pageData,
                 $page->currentPage
             );
@@ -64,10 +61,15 @@ class PaginatedPageHandler
         return $this->parser->getFrontMatter($file->getContents());
     }
 
-    private function render($bladeContent, $pageData)
+    private function render($file, $pageData)
     {
-        return $this->temporaryFilesystem->put($bladeContent, function ($path) use ($pageData) {
-            return $this->view->render($path, $pageData);
-        }, '.blade.php');
+        $bladeContent = $this->parser->getBladeContent($file->getContents());
+        $bladeFilePath = $this->temporaryFilesystem->put(
+            $bladeContent,
+            $file->getPathname(),
+            '.blade.php'
+        );
+
+        return $this->view->render($bladeFilePath, $pageData);
     }
 }

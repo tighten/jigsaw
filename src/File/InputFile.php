@@ -5,20 +5,18 @@ namespace TightenCo\Jigsaw\File;
 class InputFile
 {
     protected $file;
-    protected $basePath;
     protected $extraBladeExtensions = [
         'js', 'json', 'xml', 'rss', 'atom', 'txt', 'text', 'html',
     ];
 
-    public function __construct($file, $basePath)
+    public function __construct($file)
     {
         $this->file = $file;
-        $this->basePath = $basePath;
     }
 
     public function topLevelDirectory()
     {
-        $parts = explode(DIRECTORY_SEPARATOR, $this->getRelativeFilePath());
+        $parts = explode(DIRECTORY_SEPARATOR, $this->file->getRelativePathName());
 
         return count($parts) == 1 ? '' : $parts[0];
     }
@@ -43,13 +41,6 @@ class InputFile
     public function getExtraBladeExtension()
     {
         return $this->isBladeFile() && in_array($this->getExtension(), $this->extraBladeExtensions) ? $this->getExtension() : '';
-    }
-
-    public function getRelativeFilePath()
-    {
-        $relative_path = str_replace(resolvePath($this->basePath), '', resolvePath($this->file->getPathname()));
-
-        return trimPath($relative_path);
     }
 
     protected function isBladeFile()

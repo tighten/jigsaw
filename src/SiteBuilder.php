@@ -2,6 +2,7 @@
 
 namespace TightenCo\Jigsaw;
 
+use Symfony\Component\Console\Helper\ProgressBar;
 use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\File\InputFile;
 
@@ -20,10 +21,19 @@ class SiteBuilder
         $this->handlers = $handlers;
     }
 
+    public function setConsoleOutput($consoleOutput)
+    {
+        $this->consoleOutput = $consoleOutput;
+
+        return $this;
+    }
+
     public function build($source, $dest, $siteData)
     {
-        $this->prepareDirectories([$this->cachePath, $dest]);
-        $outputFiles = $this->writeFiles($source, $dest, $siteData);
+        $this->prepareDirectory($this->cachePath);
+        $generatedFiles = $this->generateFiles($source, $siteData);
+        $this->prepareDirectory($dest);
+        $outputFiles = $this->writeFiles($dest, $generatedFiles);
         $this->cleanup();
 
         return $outputFiles;
@@ -54,16 +64,39 @@ class SiteBuilder
 
     private function cleanup()
     {
+        /**
+         * @todo: prevent this from running when using cache
+         */
         $this->files->deleteDirectory($this->cachePath);
     }
 
-    private function writeFiles($source, $destination, $siteData)
+    private function generateFiles($source, $siteData)
     {
-        return collect($this->files->allFiles($source))->map(function ($file) use ($source) {
-            return new InputFile($file, $source);
-        })->flatMap(function ($file) use ($siteData) {
+        $this->consoleOutput->writeln('<comment>Generating files from source ...</comment>');
+        $files = collect($this->files->allFiles($source));
+
+        $progressBar = new ProgressBar($this->consoleOutput, $files->count());
+        $progressBar->start();
+
+        $files = $files->map(function ($file) {
+            return new InputFile($file);
+        })->flatMap(function ($file) use ($siteData, $progressBar) {
+            $progressBar->advance();
+
             return $this->handle($file, $siteData);
-        })->map(function ($file) use ($destination) {
+        });
+
+        $progressBar->finish();
+        $this->consoleOutput->writeln('');
+
+        return $files;
+    }
+
+    private function writeFiles($destination, $files)
+    {
+        $this->consoleOutput->writeln('<comment>Writing files to destination ...</comment>');
+
+        return $files->map(function ($file) use ($destination) {
             return $this->writeFile($file, $destination);
         });
     }

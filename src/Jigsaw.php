@@ -2,7 +2,9 @@
 
 namespace TightenCo\Jigsaw;
 
+use Symfony\Component\Console\Output\ConsoleOutput;
 use TightenCo\Jigsaw\File\Filesystem;
+use TightenCo\Jigsaw\File\TemporaryFilesystem;
 
 class Jigsaw
 {
@@ -12,6 +14,8 @@ class Jigsaw
     protected $siteData;
     protected $dataLoader;
     protected $siteBuilder;
+    protected $consoleOutput;
+    protected $verbose;
 
     public function __construct($app, $dataLoader, $remoteItemLoader, $siteBuilder)
     {
@@ -19,34 +23,64 @@ class Jigsaw
         $this->dataLoader = $dataLoader;
         $this->remoteItemLoader = $remoteItemLoader;
         $this->siteBuilder = $siteBuilder;
+        $this->consoleOutput = new ConsoleOutput();
+    }
+
+    public function setVerbose($verbose)
+    {
+        $this->consoleOutput->setVerbosity($verbose ? 0 : -1);
+
+        return $this;
     }
 
     public function build($env)
     {
         $this->env = $env;
         $this->siteData = $this->dataLoader->loadSiteData($this->app->config);
-        $this->fireEvent('beforeBuild');
 
+        return $this->fireEvent('beforeBuild')
+            ->buildCollections()
+            ->fireEvent('afterCollections')
+            ->buildSite()
+            ->fireEvent('afterBuild')
+            ->cleanup();
+    }
+
+    protected function buildCollections()
+    {
+        $this->consoleOutput->writeln('<comment>Loading collections ...</comment>');
         $this->remoteItemLoader->write($this->siteData->collections, $this->getSourcePath());
         $collectionData = $this->dataLoader->loadCollectionData($this->siteData, $this->getSourcePath());
         $this->siteData = $this->siteData->addCollectionData($collectionData);
 
-        $this->fireEvent('afterCollections');
+        return $this;
+    }
 
-        $this->outputPaths = $this->siteBuilder->build(
-            $this->getSourcePath(),
-            $this->getDestinationPath(),
-            $this->siteData
-        );
+    protected function buildSite()
+    {
+        $this->outputPaths = $this->siteBuilder
+            ->setConsoleOutput($this->consoleOutput)
+            ->build(
+                $this->getSourcePath(),
+                $this->getDestinationPath(),
+                $this->siteData
+            );
 
+        return $this;
+    }
+
+    protected function cleanup()
+    {
         $this->remoteItemLoader->cleanup();
 
-        $this->fireEvent('afterBuild');
+        return $this;
     }
 
     protected function fireEvent($event)
     {
         $this->app->events->fire($event, $this);
+
+        return $this;
     }
 
     public function getSiteData()
@@ -80,6 +114,8 @@ class Jigsaw
     {
         $this->siteData->set($key, $value);
         $this->siteData->page->set($key, $value);
+
+        return $this;
     }
 
     public function getSourcePath()
@@ -93,6 +129,8 @@ class Jigsaw
             'source' => $path,
             'destination' => $this->app->buildPath['destination'],
         ];
+
+        return $this;
     }
 
     public function getDestinationPath()
@@ -106,6 +144,8 @@ class Jigsaw
             'source' => $this->app->buildPath['source'],
             'destination' => $path,
         ];
+
+        return $this;
     }
 
     public function getFilesystem()

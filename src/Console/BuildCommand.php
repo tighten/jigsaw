@@ -28,6 +28,7 @@ class BuildCommand extends Command
 
     protected function fire()
     {
+        $startTime = microtime(true);
         $env = $this->input->getArgument('env');
         $this->includeEnvironmentConfig($env);
         $this->updateBuildPaths($env);
@@ -36,7 +37,17 @@ class BuildCommand extends Command
             $this->app->instance('outputPathResolver', new PrettyOutputPathResolver());
         }
 
-        $this->app->make(Jigsaw::class)->build($env);
+        $jigsaw = $this->app->make(Jigsaw::class);
+
+        if ($this->input->getOption('quiet')) {
+            $jigsaw->setVerbose(false);
+        }
+
+        $this->comment('Building ' . $env . ' environment');
+
+        $jigsaw->build($env);
+
+        $this->comment('Build time: ' .  round(microtime(true) - $startTime, 2) . ' seconds');
         $this->info('Site built successfully!');
     }
 

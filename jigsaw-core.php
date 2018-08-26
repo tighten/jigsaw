@@ -12,10 +12,11 @@ use Mni\FrontYAML\Bridge\Symfony\SymfonyYAMLParser;
 use Mni\FrontYAML\Markdown\MarkdownParser;
 use Mni\FrontYAML\Parser;
 use Mni\FrontYAML\YAML\YAMLParser;
-use TightenCo\Jigsaw\Collection\CollectionPaginator;
 use TightenCo\Jigsaw\CollectionItemHandlers\BladeCollectionItemHandler;
 use TightenCo\Jigsaw\CollectionItemHandlers\MarkdownCollectionItemHandler;
+use TightenCo\Jigsaw\Collection\CollectionPaginator;
 use TightenCo\Jigsaw\Events\EventBus;
+use TightenCo\Jigsaw\Events\FakeDispatcher;
 use TightenCo\Jigsaw\File\BladeDirectivesFile;
 use TightenCo\Jigsaw\File\ConfigFile;
 use TightenCo\Jigsaw\File\Filesystem;
@@ -105,7 +106,7 @@ $container->bind(Factory::class, function ($c) use ($cachePath) {
 
     $finder = new FileViewFinder(new Filesystem, [$cachePath, $c['buildPath']['source']]);
 
-    return new Factory($resolver, $finder, Mockery::mock(Dispatcher::class)->shouldIgnoreMissing());
+    return new Factory($resolver, $finder, new FakeDispatcher());
 });
 
 $container->bind(ViewRenderer::class, function ($c) {

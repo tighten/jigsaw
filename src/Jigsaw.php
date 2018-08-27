@@ -33,7 +33,7 @@ class Jigsaw
         return $this;
     }
 
-    public function build($env)
+    public function build($env, $useCache = false)
     {
         $this->env = $env;
         $this->siteData = $this->dataLoader->loadSiteData($this->app->config);
@@ -41,7 +41,7 @@ class Jigsaw
         return $this->fireEvent('beforeBuild')
             ->buildCollections()
             ->fireEvent('afterCollections')
-            ->buildSite()
+            ->buildSite($useCache)
             ->fireEvent('afterBuild')
             ->cleanup();
     }
@@ -56,10 +56,11 @@ class Jigsaw
         return $this;
     }
 
-    protected function buildSite()
+    protected function buildSite($useCache)
     {
         $this->outputPaths = $this->siteBuilder
             ->setConsoleOutput($this->consoleOutput)
+            ->setUseCache($useCache)
             ->build(
                 $this->getSourcePath(),
                 $this->getDestinationPath(),

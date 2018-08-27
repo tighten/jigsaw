@@ -8,10 +8,11 @@ use TightenCo\Jigsaw\File\InputFile;
 
 class SiteBuilder
 {
-    private $files;
     private $cachePath;
-    private $outputPathResolver;
+    private $files;
     private $handlers;
+    private $outputPathResolver;
+    private $useCache;
 
     public function __construct(Filesystem $files, $cachePath, $outputPathResolver, $handlers = [])
     {
@@ -28,9 +29,16 @@ class SiteBuilder
         return $this;
     }
 
+    public function setUseCache($useCache)
+    {
+        $this->useCache = $useCache;
+
+        return $this;
+    }
+
     public function build($source, $dest, $siteData)
     {
-        $this->prepareDirectory($this->cachePath);
+        $this->prepareDirectory($this->cachePath, ! $this->useCache);
         $generatedFiles = $this->generateFiles($source, $siteData);
         $this->prepareDirectory($dest);
         $outputFiles = $this->writeFiles($dest, $generatedFiles);
@@ -64,10 +72,9 @@ class SiteBuilder
 
     private function cleanup()
     {
-        /**
-         * @todo: prevent this from running when using cache
-         */
+        if (! $this->useCache) {
         $this->files->deleteDirectory($this->cachePath);
+    }
     }
 
     private function generateFiles($source, $siteData)

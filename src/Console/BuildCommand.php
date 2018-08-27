@@ -23,7 +23,8 @@ class BuildCommand extends Command
         $this->setName('build')
             ->setDescription('Build your site.')
             ->addArgument('env', InputArgument::OPTIONAL, 'What environment should we use to build?', 'local')
-            ->addOption('pretty', null, InputOption::VALUE_REQUIRED, 'Should the site use pretty URLs?', 'true');
+            ->addOption('pretty', null, InputOption::VALUE_REQUIRED, 'Should the site use pretty URLs?', 'true')
+            ->addOption('cache', 'c', InputOption::VALUE_OPTIONAL, 'Should a cache be used when building the site?', 'false');
     }
 
     protected function fire()
@@ -43,12 +44,20 @@ class BuildCommand extends Command
             $jigsaw->setVerbose(false);
         }
 
-        $this->comment('Building ' . $env . ' environment');
+        $this->comment(
+            'Building ' . $env . ' environment' .
+            ($this->useCache() ? ' (caching is on)' : '')
+        );
 
-        $jigsaw->build($env);
+        $jigsaw->build($env, $this->useCache());
 
         $this->comment('Build time: ' .  round(microtime(true) - $startTime, 2) . ' seconds');
         $this->info('Site built successfully!');
+    }
+
+    private function useCache()
+    {
+        return $this->input->getOption('cache') !== 'false' || $this->app->config->get('cache');
     }
 
     private function includeEnvironmentConfig($env)

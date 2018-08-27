@@ -36,12 +36,12 @@ class SiteBuilder
         return $this;
     }
 
-    public function build($source, $dest, $siteData)
+    public function build($source, $destination, $siteData)
     {
         $this->prepareDirectory($this->cachePath, ! $this->useCache);
         $generatedFiles = $this->generateFiles($source, $siteData);
-        $this->prepareDirectory($dest);
-        $outputFiles = $this->writeFiles($dest, $generatedFiles);
+        $this->prepareDirectory($destination);
+        $outputFiles = $this->writeFiles($generatedFiles, $destination);
         $this->cleanup();
 
         return $outputFiles;
@@ -99,7 +99,7 @@ class SiteBuilder
         return $files;
     }
 
-    private function writeFiles($destination, $files)
+    private function writeFiles($files, $destination)
     {
         $this->consoleOutput->writeln('<comment>Writing files to destination ...</comment>');
 
@@ -108,20 +108,20 @@ class SiteBuilder
         });
     }
 
+    private function writeFile($file, $destination)
+    {
+        $directory = $this->getOutputDirectory($file);
+        $this->prepareDirectory("{$destination}/{$directory}");
+        $file->putContents("{$destination}/{$this->getOutputPath($file)}");
+
+        return $this->getOutputLink($file);
+    }
+
     private function handle($file, $siteData)
     {
         $meta = $this->getMetaData($file, $siteData->page->baseUrl);
 
         return $this->getHandler($file)->handle($file, PageData::withPageMetaData($siteData, $meta));
-    }
-
-    private function writeFile($file, $dest)
-    {
-        $directory = $this->getOutputDirectory($file);
-        $this->prepareDirectory("{$dest}/{$directory}");
-        $file->putContents("{$dest}/{$this->getOutputPath($file)}");
-
-        return $this->getOutputLink($file);
     }
 
     private function getHandler($file)

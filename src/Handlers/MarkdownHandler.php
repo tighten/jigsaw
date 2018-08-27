@@ -78,7 +78,8 @@ class MarkdownHandler
 
     private function renderMarkdownFile($file, $uniqueFileName, $pageData, $extends)
     {
-        $html = $this->parser->parseMarkdown($this->getEscapedMarkdownContent($file));
+        $html = $this->parser->parseMarkdownWithoutFrontMatter($this->getEscapedMarkdownContent($file));
+
         $wrapper = $this->view->renderString(
             "@extends('{$extends}')\n" .
             "@section('{$pageData->page->section}'){$html}@endsection"

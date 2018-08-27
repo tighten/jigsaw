@@ -4,17 +4,21 @@ namespace TightenCo\Jigsaw\Console;
 
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 use TightenCo\Jigsaw\File\ConfigFile;
+use TightenCo\Jigsaw\File\TemporaryFilesystem;
 use TightenCo\Jigsaw\Jigsaw;
 use TightenCo\Jigsaw\PathResolvers\PrettyOutputPathResolver;
 
 class BuildCommand extends Command
 {
     private $app;
+    private $consoleOutput;
 
     public function __construct($app)
     {
         $this->app = $app;
+        $this->consoleOutput = $app->consoleOutput;
         parent::__construct();
     }
 
@@ -33,26 +37,28 @@ class BuildCommand extends Command
         $env = $this->input->getArgument('env');
         $this->includeEnvironmentConfig($env);
         $this->updateBuildPaths($env);
+        $cacheExists = $this->app[TemporaryFilesystem::class]->hasTempDirectory();
 
         if ($this->input->getOption('pretty') === 'true') {
             $this->app->instance('outputPathResolver', new PrettyOutputPathResolver());
         }
 
-        $jigsaw = $this->app->make(Jigsaw::class);
-
         if ($this->input->getOption('quiet')) {
-            $jigsaw->setVerbose(false);
+            $verbosity = OutputInterface::VERBOSITY_QUIET;
+        } else if ($this->input->getOption('verbose')) {
+            $verbosity = OutputInterface::VERBOSITY_VERBOSE;
+        } else {
+            $verbosity = OutputInterface::VERBOSITY_NORMAL;
         }
 
-        $this->comment(
-            'Building ' . $env . ' environment' .
-            ($this->useCache() ? ' (caching is on)' : '')
-        );
+        $this->consoleOutput->setup($verbosity);
+        $this->consoleOutput->writeIntro($env, $this->useCache());
 
-        $jigsaw->build($env, $this->useCache());
+        $this->app->make(Jigsaw::class)->build($env, $this->useCache());
 
-        $this->comment('Build time: ' .  round(microtime(true) - $startTime, 2) . ' seconds');
-        $this->info('Site built successfully!');
+        $this->consoleOutput
+            ->writeTime(round(microtime(true) - $startTime, 2), $this->useCache(), $cacheExists)
+            ->writeConclusion();
     }
 
     private function useCache()

@@ -15,6 +15,7 @@ use Mni\FrontYAML\YAML\YAMLParser;
 use TightenCo\Jigsaw\CollectionItemHandlers\BladeCollectionItemHandler;
 use TightenCo\Jigsaw\CollectionItemHandlers\MarkdownCollectionItemHandler;
 use TightenCo\Jigsaw\Collection\CollectionPaginator;
+use TightenCo\Jigsaw\Console\ConsoleOutput;
 use TightenCo\Jigsaw\Events\EventBus;
 use TightenCo\Jigsaw\Events\FakeDispatcher;
 use TightenCo\Jigsaw\File\BladeDirectivesFile;
@@ -62,6 +63,10 @@ $container->instance('buildPath', [
 
 $container->bind('config', function ($c) {
     return (new ConfigFile($c['cwd'] . '/config.php'))->config;
+});
+
+$container->singleton('consoleOutput', function ($c) {
+    return new ConsoleOutput();
 });
 
 $container->bind('outputPathResolver', function ($c) {
@@ -114,12 +119,12 @@ $container->bind(ViewRenderer::class, function ($c) use ($bladeCompiler) {
     return new ViewRenderer($c[Factory::class], $bladeCompiler);
 });
 
-$container->bind(BladeHandler::class, function ($c) {
-    return new BladeHandler($c[TemporaryFilesystem::class], $c[FrontMatterParser::class], $c[ViewRenderer::class]);
-});
-
 $container->bind(TemporaryFilesystem::class, function ($c) use ($cachePath) {
     return new TemporaryFilesystem($cachePath);
+});
+
+$container->bind(BladeHandler::class, function ($c) {
+    return new BladeHandler($c[TemporaryFilesystem::class], $c[FrontMatterParser::class], $c[ViewRenderer::class]);
 });
 
 $container->bind(MarkdownHandler::class, function ($c) {
@@ -131,7 +136,7 @@ $container->bind(CollectionPathResolver::class, function ($c ) {
 });
 
 $container->bind(CollectionDataLoader::class, function ($c) {
-    return new CollectionDataLoader(new Filesystem, $c[CollectionPathResolver::class], [
+    return new CollectionDataLoader(new Filesystem, $c['consoleOutput'], $c[CollectionPathResolver::class], [
         $c[MarkdownCollectionItemHandler::class],
         $c[BladeCollectionItemHandler::class],
     ]);
@@ -157,7 +162,7 @@ $container->bind(PaginatedPageHandler::class, function ($c) {
 });
 
 $container->bind(SiteBuilder::class, function ($c) use ($cachePath) {
-    return new SiteBuilder(new Filesystem, $cachePath, $c['outputPathResolver'], [
+    return new SiteBuilder(new Filesystem, $cachePath, $c['outputPathResolver'], $c['consoleOutput'], [
         $c[CollectionItemHandler::class],
         new IgnoredHandler,
         $c[PaginatedPageHandler::class],

@@ -14,7 +14,6 @@ class Jigsaw
     protected $siteData;
     protected $dataLoader;
     protected $siteBuilder;
-    protected $consoleOutput;
     protected $verbose;
 
     public function __construct($app, $dataLoader, $remoteItemLoader, $siteBuilder)
@@ -23,14 +22,6 @@ class Jigsaw
         $this->dataLoader = $dataLoader;
         $this->remoteItemLoader = $remoteItemLoader;
         $this->siteBuilder = $siteBuilder;
-        $this->consoleOutput = new ConsoleOutput();
-    }
-
-    public function setVerbose($verbose)
-    {
-        $this->consoleOutput->setVerbosity($verbose ? 0 : -1);
-
-        return $this;
     }
 
     public function build($env, $useCache = false)
@@ -48,7 +39,6 @@ class Jigsaw
 
     protected function buildCollections()
     {
-        $this->consoleOutput->writeln('<comment>Loading collections ...</comment>');
         $this->remoteItemLoader->write($this->siteData->collections, $this->getSourcePath());
         $collectionData = $this->dataLoader->loadCollectionData($this->siteData, $this->getSourcePath());
         $this->siteData = $this->siteData->addCollectionData($collectionData);
@@ -59,7 +49,6 @@ class Jigsaw
     protected function buildSite($useCache)
     {
         $this->outputPaths = $this->siteBuilder
-            ->setConsoleOutput($this->consoleOutput)
             ->setUseCache($useCache)
             ->build(
                 $this->getSourcePath(),

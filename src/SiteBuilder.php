@@ -12,21 +12,16 @@ class SiteBuilder
     private $files;
     private $handlers;
     private $outputPathResolver;
+    private $consoleOutput;
     private $useCache;
 
-    public function __construct(Filesystem $files, $cachePath, $outputPathResolver, $handlers = [])
+    public function __construct(Filesystem $files, $cachePath, $outputPathResolver, $consoleOutput, $handlers = [])
     {
         $this->files = $files;
         $this->cachePath = $cachePath;
         $this->outputPathResolver = $outputPathResolver;
-        $this->handlers = $handlers;
-    }
-
-    public function setConsoleOutput($consoleOutput)
-    {
         $this->consoleOutput = $consoleOutput;
-
-        return $this;
+        $this->handlers = $handlers;
     }
 
     public function setUseCache($useCache)
@@ -79,29 +74,23 @@ class SiteBuilder
 
     private function generateFiles($source, $siteData)
     {
-        $this->consoleOutput->writeln('<comment>Generating files from source ...</comment>');
         $files = collect($this->files->allFiles($source));
-
-        $progressBar = new ProgressBar($this->consoleOutput, $files->count());
-        $progressBar->start();
+        $this->consoleOutput->startProgressBar('build', $files->count());
 
         $files = $files->map(function ($file) {
             return new InputFile($file);
-        })->flatMap(function ($file) use ($siteData, $progressBar) {
-            $progressBar->advance();
+        })->flatMap(function ($file) use ($siteData) {
+            $this->consoleOutput->progressBar('build')->advance();
 
             return $this->handle($file, $siteData);
         });
-
-        $progressBar->finish();
-        $this->consoleOutput->writeln('');
 
         return $files;
     }
 
     private function writeFiles($files, $destination)
     {
-        $this->consoleOutput->writeln('<comment>Writing files to destination ...</comment>');
+        $this->consoleOutput->writeWritingFiles();
 
         return $files->map(function ($file) use ($destination) {
             return $this->writeFile($file, $destination);

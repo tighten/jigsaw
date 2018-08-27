@@ -63,6 +63,7 @@ class TestCase extends BaseTestCase
 
     protected function buildSiteData($vfs, $config = [])
     {
+        $this->app->consoleOutput->setup($verbosity = -1);
         $loader = $this->app->make(DataLoader::class);
         $siteData = $loader->loadSiteData($config);
         $collectionData = $loader->loadCollectionData($siteData, $vfs->url() . '/source');
@@ -72,6 +73,7 @@ class TestCase extends BaseTestCase
 
     public function buildSite($vfs, $config = [])
     {
+        $this->app->consoleOutput->setup($verbosity = -1);
         $this->app->config = collect($config);
         $this->app->buildPath = [
             'source' => $vfs->url() . '/source',
@@ -80,7 +82,6 @@ class TestCase extends BaseTestCase
 
         return $this->app
             ->make(Jigsaw::class)
-            ->setVerbose(false)
             ->build('test');
     }
 }

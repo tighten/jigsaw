@@ -43,6 +43,11 @@ class TemporaryFilesystem
         return $path;
     }
 
+    public function hasTempDirectory()
+    {
+        return $this->filesystem->exists($this->tempPath);
+    }
+
     private function delete($path)
     {
         $this->filesystem->delete($path);

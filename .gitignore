@@ -1,5 +1,5 @@
+/cache
 /vendor
 .DS_Store
 composer.lock
 .phpunit.result.cache
-_tmp/

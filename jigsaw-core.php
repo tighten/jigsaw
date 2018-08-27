@@ -52,7 +52,7 @@ $container = new Container;
 
 $container->instance('cwd', getcwd());
 
-$cachePath = $container['cwd'] . '/_tmp';
+$cachePath = $container['cwd'] . '/cache';
 $bootstrapFile = $container['cwd'] . '/bootstrap.php';
 
 $container->instance('buildPath', [

@@ -2,9 +2,7 @@
 
 namespace TightenCo\Jigsaw;
 
-use Symfony\Component\Console\Output\ConsoleOutput;
 use TightenCo\Jigsaw\File\Filesystem;
-use TightenCo\Jigsaw\File\TemporaryFilesystem;
 
 class Jigsaw
 {

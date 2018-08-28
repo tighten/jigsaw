@@ -2,7 +2,6 @@
 
 namespace TightenCo\Jigsaw;
 
-use Symfony\Component\Console\Helper\ProgressBar;
 use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\File\InputFile;
 
@@ -68,8 +67,8 @@ class SiteBuilder
     private function cleanup()
     {
         if (! $this->useCache) {
-        $this->files->deleteDirectory($this->cachePath);
-    }
+            $this->files->deleteDirectory($this->cachePath);
+        }
     }
 
     private function generateFiles($source, $siteData)

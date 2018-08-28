@@ -4,7 +4,6 @@ namespace TightenCo\Jigsaw\File;
 
 use Illuminate\Support\Str;
 use Symfony\Component\Finder\SplFileInfo;
-use TightenCo\Jigsaw\File\InputFile;
 
 class TemporaryFilesystem
 {

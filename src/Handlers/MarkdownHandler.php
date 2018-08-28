@@ -69,7 +69,7 @@ class MarkdownHandler
 
         if ($cached = $this->getValidCachedFile($file, $uniqueFileName)) {
             return $this->view->render($cached->getPathname(), $pageData);
-        } else if ($file->isBladeFile()) {
+        } elseif ($file->isBladeFile()) {
             return $this->renderBladeMarkdownFile($file, $uniqueFileName, $pageData, $extends);
         } else {
             return $this->renderMarkdownFile($file, $uniqueFileName, $pageData, $extends);

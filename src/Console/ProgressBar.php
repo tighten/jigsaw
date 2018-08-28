@@ -3,7 +3,6 @@
 namespace TightenCo\Jigsaw\Console;
 
 use Symfony\Component\Console\Helper\ProgressBar as SymfonyProgressBar;
-use TightenCo\Jigsaw\Console\ConsoleOutput;
 
 class ProgressBar
 {

@@ -66,7 +66,7 @@ class CollectionDataLoader
                 $this->consoleOutput->progressBar('collections')->advance();
 
                 return $this->buildCollectionItem($inputFile, $collection);
-        });
+            });
     }
 
     private function buildCollectionItem($file, $collection)

@@ -24,7 +24,7 @@ class ConsoleOutput extends SymfonyConsoleOutput
             'message' => $this->section(),
             'progress' => $this->section(),
             'header' => $this->section(),
-        ])->map(function ($section){
+        ])->map(function ($section) {
             return $this->section();
         });
 

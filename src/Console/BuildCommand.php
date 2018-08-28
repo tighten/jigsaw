@@ -45,7 +45,7 @@ class BuildCommand extends Command
 
         if ($this->input->getOption('quiet')) {
             $verbosity = OutputInterface::VERBOSITY_QUIET;
-        } else if ($this->input->getOption('verbose')) {
+        } elseif ($this->input->getOption('verbose')) {
             $verbosity = OutputInterface::VERBOSITY_VERBOSE;
         } else {
             $verbosity = OutputInterface::VERBOSITY_NORMAL;

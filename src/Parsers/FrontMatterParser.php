@@ -62,15 +62,15 @@ class FrontMatterParser
     }
 
     /**
-     * Adapted from Mni\FrontYAML
+     * Adapted from Mni\FrontYAML.
      */
     public function extractContent($content)
     {
         $regex = '~^('
-            .'---'                                  # $matches[1] start separator
-            ."){1}[\r\n|\n]*(.*?)[\r\n|\n]+("       # $matches[2] front matter
-            .'---'                                  # $matches[3] end separator
-            ."){1}[\r\n|\n]*(.*)$~s";               # $matches[4] document content
+            . '---'                                  // $matches[1] start separator
+            . "){1}[\r\n|\n]*(.*?)[\r\n|\n]+("       // $matches[2] front matter
+            . '---'                                  // $matches[3] end separator
+            . "){1}[\r\n|\n]*(.*)$~s";               // $matches[4] document content
 
         return preg_match($regex, $content, $matches) === 1 ? ltrim($matches[4]) : $content;
     }

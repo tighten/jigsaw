@@ -64,11 +64,24 @@ class ConsoleOutput extends SymfonyConsoleOutput
         $progressBar->addSteps($steps)->start();
     }
 
-    public function writeIntro($env, $useCache)
+    public function writeIntro($env, $useCache = false, $cacheExisted = false)
     {
+        if ($useCache) {
+            if ($cacheExisted) {
+                $cacheMessage = '(using cache)';
+            } else {
+                $cacheMessage = '(creating cache)';
+            }
+        } else {
+            $cacheMessage = '';
+        }
+
         $this->sections['intro']->overwrite(
-            '<fg=green>Building ' . $env . ' site' .
-            ($useCache ? ' (caching is on)</>' : '</>')
+            '<fg=green>Building '
+            . $env
+            . ' site '
+            . $cacheMessage
+            . '</>'
         );
 
         return $this;

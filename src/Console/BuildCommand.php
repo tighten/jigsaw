@@ -52,7 +52,7 @@ class BuildCommand extends Command
         }
 
         $this->consoleOutput->setup($verbosity);
-        $this->consoleOutput->writeIntro($env, $this->useCache());
+        $this->consoleOutput->writeIntro($env, $this->useCache(), $cacheExists);
 
         $this->app->make(Jigsaw::class)->build($env, $this->useCache());
 

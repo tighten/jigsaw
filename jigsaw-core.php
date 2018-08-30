@@ -60,7 +60,7 @@ $container->instance('buildPath', [
 ]);
 
 $container->bind('config', function ($c) {
-    return (new ConfigFile($c['cwd'] . '/config.php'))->config;
+    return (new ConfigFile($c['cwd'] . '/config.php', $c['cwd'] . '/helpers.php'))->config;
 });
 
 $container->bind('outputPathResolver', function ($c) {

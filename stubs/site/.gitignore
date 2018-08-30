@@ -3,6 +3,7 @@
 /vendor/
 /.idea/
 /.vscode/
+/_tmp/
 npm-debug.log
 yarn-error.log
 
@@ -12,3 +13,4 @@ yarn-error.log
 # /source/assets/build/css/
 # /source/assets/build/fonts/
 # /source/assets/build/js/
+# /source/assets/build/mix-manifest.json

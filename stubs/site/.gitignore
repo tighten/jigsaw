@@ -1,9 +1,9 @@
 /build_local/
+/cache/
 /node_modules/
 /vendor/
 /.idea/
 /.vscode/
-/_tmp/
 npm-debug.log
 yarn-error.log
 

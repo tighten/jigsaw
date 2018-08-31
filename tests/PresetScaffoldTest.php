@@ -19,7 +19,7 @@ class PresetScaffoldTest extends TestCase
 
         $preset->build('blog');
 
-        $this->assertEquals($vfs->url() . '/vendor/' . $preset::PRESETS['blog'], $preset->path);
+        $this->assertEquals($vfs->url() . '/vendor/' . $preset::PRESETS['blog'], $preset->packagePath);
     }
 
     /**
@@ -33,7 +33,7 @@ class PresetScaffoldTest extends TestCase
 
         $preset->build('test/package');
 
-        $this->assertEquals($vfs->url() . '/vendor/' . 'test/package', $preset->path);
+        $this->assertEquals($vfs->url() . '/vendor/' . 'test/package', $preset->packagePath);
     }
 
     /**

@@ -12,34 +12,32 @@ class PresetScaffold extends Scaffold
         'docs' => 'tightenco/jigsaw-preset-documentation',
     ];
 
-    public $path;
+    public $packageName;
+    public $packagePath;
 
     public function build($preset)
     {
-        $this->path = $this->resolvePackage($preset);
+        $this->packageName = $this->resolvePackageName($preset);
+        $this->packagePath = $this->resolvePackagePath();
     }
 
-    protected function getPackageName($preset)
+    public function resolvePackageName($preset)
     {
-        return array_get(self::PRESETS, $preset, $preset);
-    }
+        $name = array_get(self::PRESETS, $preset, $preset);
 
-    protected function getPackagePath($package)
-    {
-        return $this->base . '/' . 'vendor' . '/' . $package;
-    }
-
-    protected function resolvePackage($preset)
-    {
-        $package = $this->getPackageName($preset);
-        $path = $this->getPackagePath($package);
-
-        if (! str_contains($package, '/')) {
-            throw new Exception("'{$package}' is not a valid package name.");
+        if (! str_contains($name, '/')) {
+            throw new Exception("'{$name}' is not a valid package name.");
         }
 
+        return $name;
+    }
+
+    protected function resolvePackagePath()
+    {
+        $path = $this->base . '/' . 'vendor' . '/' . $this->packageName;
+
         if (! $this->files->exists($path)) {
-            throw new Exception("The package '{$package}' could not be found. \nRun 'composer require {$package}' first.");
+            throw new Exception("The package '{$this->packageName}' could not be found. \nRun 'composer require {$this->packageName}' first.");
         }
 
         return $path;

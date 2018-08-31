@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use \Mockery;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\File\InputFile;
@@ -34,6 +35,7 @@ class TestCase extends BaseTestCase
     public function tearDown()
     {
         $this->cleanupTempDirectory();
+        Mockery::close();
         parent::tearDown();
     }
 

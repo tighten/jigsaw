@@ -45,6 +45,8 @@ abstract class Scaffold
 
     public function archiveExistingSite()
     {
+        $version = $this->getJigsawComposerVersion();
+
         $archivePath = $this->base . '/archived';
         $this->files->deleteDirectory($archivePath);
         $this->files->makeDirectory($archivePath, 0755, true);
@@ -56,10 +58,14 @@ abstract class Scaffold
                 $this->files->move($existingPath, $archivePath . '/' . ltrim($file, '/'));
             }
         });
+
+        $this->restoreJigsawComposerFile($version);
     }
 
     public function deleteExistingSite()
     {
+        $version = $this->getJigsawComposerVersion();
+
         collect($this->getSiteFiles())->each(function ($file) {
             $existingPath = $this->base . '/' . $file;
 
@@ -69,6 +75,8 @@ abstract class Scaffold
                 $this->files->delete($existingPath);
             }
         });
+
+        $this->restoreJigsawComposerFile($version);
     }
 
     protected function getFilesAndDirectories($directory)
@@ -84,5 +92,28 @@ abstract class Scaffold
             })->reject(function ($filename) {
                 return $filename == '.DS_Store';
             })->merge($directories);
+    }
+
+    protected function getJigsawComposerVersion()
+    {
+        if ($this->files->exists($this->base . '/composer.json')) {
+            return array_get(
+                json_decode($this->files->get($this->base . '/composer.json'), true),
+                'require.tightenco/jigsaw'
+            );
+        }
+    }
+
+    protected function restoreJigsawComposerFile($version = null)
+    {
+        if ($version) {
+            $this->files->put(
+                $this->base . '/composer.json',
+                json_encode(
+                    ['require' => ['tightenco/jigsaw' => $version]],
+                    JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT
+                )
+            );
+        }
     }
 }

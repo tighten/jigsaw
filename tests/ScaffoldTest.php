@@ -149,4 +149,60 @@ class Scaffold extends TestCase
             $this->assertNull($vfs->getChild($key));
         });
     }
+
+    /**
+     * @test
+     */
+    public function jigsaw_dependency_is_restored_to_fresh_composer_dot_json_when_archiving_site()
+    {
+        $old_composer = ['require' => ['tightenco/jigsaw' => '^1.2']];
+        $existing_site = ['composer.json' => json_encode($old_composer)];
+        $vfs = vfsStream::setup('virtual', null, $existing_site);
+        $scaffold = $this->app->make(BasicScaffold::class)->setBase($vfs->url());
+
+        $scaffold->archiveExistingSite();
+
+        $this->assertEquals($old_composer, json_decode($vfs->getChild('composer.json')->getContent(), true));
+    }
+
+    /**
+     * @test
+     */
+    public function composer_dot_json_is_not_restored_if_it_did_not_exist_when_archiving_site()
+    {
+        $vfs = vfsStream::setup('virtual', null, self::EXISTING_SITE_FILES);
+        $scaffold = $this->app->make(BasicScaffold::class)->setBase($vfs->url());
+
+        $scaffold->archiveExistingSite();
+
+        $this->assertNull($vfs->getChild('composer.json'));
+    }
+
+    /**
+     * @test
+     */
+    public function jigsaw_dependency_is_restored_to_fresh_composer_dot_json_when_deleting_site()
+    {
+        $old_composer = ['require' => ['tightenco/jigsaw' => '^1.2']];
+        $existing_site = ['composer.json' => json_encode($old_composer)];
+        $vfs = vfsStream::setup('virtual', null, $existing_site);
+        $scaffold = $this->app->make(BasicScaffold::class)->setBase($vfs->url());
+
+        $scaffold->deleteExistingSite();
+
+        $this->assertEquals($old_composer, json_decode($vfs->getChild('composer.json')->getContent(), true));
+    }
+
+    /**
+     * @test
+     */
+    public function composer_dot_json_is_not_restored_if_it_did_not_exist_when_deleting_site()
+    {
+        $vfs = vfsStream::setup('virtual', null, self::EXISTING_SITE_FILES);
+        $scaffold = $this->app->make(BasicScaffold::class)->setBase($vfs->url());
+
+        $scaffold->deleteExistingSite();
+
+        $this->assertNull($vfs->getChild('composer.json'));
+    }
 }

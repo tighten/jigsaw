@@ -2,10 +2,6 @@
 
 namespace Tests;
 
-use TightenCo\Jigsaw\Jigsaw;
-use TightenCo\Jigsaw\Loaders\DataLoader;
-use org\bovigo\vfs\vfsStream;
-
 class RemoteCollectionsTest extends TestCase
 {
     public function test_collection_does_not_require_matching_source_directory()

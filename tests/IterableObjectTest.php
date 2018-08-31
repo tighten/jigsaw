@@ -3,9 +3,6 @@
 namespace Tests;
 
 use TightenCo\Jigsaw\IterableObject;
-use TightenCo\Jigsaw\Jigsaw;
-use TightenCo\Jigsaw\SiteBuilder;
-use org\bovigo\vfs\vfsStream;
 
 class IterableObjectTest extends TestCase
 {

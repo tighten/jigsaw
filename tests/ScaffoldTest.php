@@ -3,7 +3,7 @@
 namespace Tests;
 
 use Symfony\Component\Console\Application;
-use TightenCo\Jigsaw\Scaffold\PresetScaffold;
+use TightenCo\Jigsaw\Scaffold\BasicScaffold;
 use org\bovigo\vfs\vfsStream;
 
 class Scaffold extends TestCase
@@ -34,7 +34,7 @@ class Scaffold extends TestCase
         ];
         sort($base_files);
 
-        $scaffold = $this->app->make(PresetScaffold::class);
+        $scaffold = $this->app->make(BasicScaffold::class);
 
         $this->assertEquals($base_files, $scaffold->getSiteFiles()->sort()->values()->toArray());
     }
@@ -48,7 +48,7 @@ class Scaffold extends TestCase
             self::EXISTING_SITE_FILES,
             ['archived' => []]
         ));
-        $scaffold = $this->app->make(PresetScaffold::class)->setBase($vfs->url());
+        $scaffold = $this->app->make(BasicScaffold::class)->setBase($vfs->url());
 
         $scaffold->archiveExistingSite();
 
@@ -65,7 +65,7 @@ class Scaffold extends TestCase
     public function will_create_archived_directory_if_none_exists_when_archiving_site()
     {
         $vfs = vfsStream::setup('virtual', null, self::EXISTING_SITE_FILES);
-        $scaffold = $this->app->make(PresetScaffold::class)->setBase($vfs->url());
+        $scaffold = $this->app->make(BasicScaffold::class)->setBase($vfs->url());
 
         $scaffold->archiveExistingSite();
 
@@ -85,7 +85,7 @@ class Scaffold extends TestCase
             self::EXISTING_SITE_FILES,
             ['archived' => ['old-file.md' => '']]
         ));
-        $scaffold = $this->app->make(PresetScaffold::class)->setBase($vfs->url());
+        $scaffold = $this->app->make(BasicScaffold::class)->setBase($vfs->url());
 
         $this->assertNotNull($vfs->getChild('config.php'));
         $this->assertNotNull($vfs->getChild('archived/old-file.md'));
@@ -103,7 +103,7 @@ class Scaffold extends TestCase
         $subset_of_base_files = self::EXISTING_SITE_FILES;
         unset($subset_of_base_files['bootstrap.php']);
         $vfs = vfsStream::setup('virtual', null, $subset_of_base_files);
-        $scaffold = $this->app->make(PresetScaffold::class)->setBase($vfs->url());
+        $scaffold = $this->app->make(BasicScaffold::class)->setBase($vfs->url());
 
         $scaffold->archiveExistingSite();
 
@@ -120,7 +120,7 @@ class Scaffold extends TestCase
     public function can_delete_existing_files_and_directories()
     {
         $vfs = vfsStream::setup('virtual', null, self::EXISTING_SITE_FILES);
-        $scaffold = $this->app->make(PresetScaffold::class)->setBase($vfs->url());
+        $scaffold = $this->app->make(BasicScaffold::class)->setBase($vfs->url());
 
         $scaffold->deleteExistingSite();
 
@@ -137,7 +137,7 @@ class Scaffold extends TestCase
         $subset_of_base_files = self::EXISTING_SITE_FILES;
         unset($subset_of_base_files['bootstrap.php']);
         $vfs = vfsStream::setup('virtual', null, $subset_of_base_files);
-        $scaffold = $this->app->make(PresetScaffold::class)->setBase($vfs->url());
+        $scaffold = $this->app->make(BasicScaffold::class)->setBase($vfs->url());
 
         $scaffold->deleteExistingSite();
 

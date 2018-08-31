@@ -25,12 +25,16 @@ class Scaffold extends TestCase
         $base_files = [
             '.gitignore',
             'bootstrap.php',
+            'composer.json',
+            'composer.lock',
             'config.php',
             'gulpfile.js',
             'package.json',
+            'package.lock',
             'source/',
             'tasks/',
             'webpack.mix.js',
+            'yarn.lock',
         ];
         sort($base_files);
 

@@ -6,11 +6,11 @@ use TightenCo\Jigsaw\File\Filesystem;
 
 abstract class Scaffold
 {
-    const BASE_SITE_FILES = [
-        '.gitignore',
-        'bootstrap.php',
-        'config.php',
-        'source/',
+    const ADDITIONAL_FILES_TO_RESET = [
+        'composer.json',
+        'composer.lock',
+        'package.lock',
+        'yarn.lock',
     ];
 
     public $base;
@@ -38,7 +38,9 @@ abstract class Scaffold
         return collect(['site', 'elixir', 'mix'])
             ->map(function ($stub) {
                 return $this->getFilesAndDirectories(__DIR__ . '/../../stubs/' . $stub);
-            })->flatten()->unique();
+            })->merge(self::ADDITIONAL_FILES_TO_RESET)
+            ->flatten()
+            ->unique();
     }
 
     public function archiveExistingSite()

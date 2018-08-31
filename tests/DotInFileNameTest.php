@@ -12,7 +12,10 @@ use TightenCo\Jigsaw\PathResolvers\PrettyOutputPathResolver;
 
 class DotInFileNameTest extends TestCase
 {
-    public function test_md_files_with_dot_in_filename_are_processed()
+    /**
+     * @test
+     */
+    public function md_files_with_dot_in_filename_are_processed()
     {
         $inputFile = $this->getInputFile('dot-files/filename-with.dot.1.md');
         $handler = $this->app->make(MarkdownHandler::class);
@@ -24,7 +27,10 @@ class DotInFileNameTest extends TestCase
         $this->assertContains('<h3>This file contains a dot in the filename</h3>', $outputFile[0]->contents());
     }
 
-    public function test_blade_md_hybrid_files_with_dot_in_filename_are_processed()
+    /**
+     * @test
+     */
+    public function blade_md_hybrid_files_with_dot_in_filename_are_processed()
     {
         $inputFile = $this->getInputFile('dot-files/filename-with.dot.2.blade.md');
         $handler = $this->app->make(MarkdownHandler::class);
@@ -36,7 +42,10 @@ class DotInFileNameTest extends TestCase
         $this->assertContains('<h3>This file also contains a dot in the filename</h3>', $outputFile[0]->contents());
     }
 
-    public function test_blade_files_with_dot_in_filename_are_processed()
+    /**
+     * @test
+     */
+    public function blade_files_with_dot_in_filename_are_processed()
     {
         $inputFile = $this->getInputFile('dot-files/filename-with.dot.3.blade.php');
         $handler = $this->app->make(BladeHandler::class);
@@ -48,7 +57,10 @@ class DotInFileNameTest extends TestCase
         $this->assertContains('<h3>This file contains a dot in the filename</h3>', $outputFile[0]->contents());
     }
 
-    public function test_dot_in_filename_is_preserved_for_collection_item_with_default_path_config()
+    /**
+     * @test
+     */
+    public function dot_in_filename_is_preserved_for_collection_item_with_default_path_config()
     {
         $this->app->instance('outputPathResolver', new PrettyOutputPathResolver);
         $pathResolver = $this->app->make(CollectionPathResolver::class);
@@ -58,7 +70,10 @@ class DotInFileNameTest extends TestCase
         $this->assertEquals('/collection-item-with.dot', $outputPath[0]);
     }
 
-    public function test_dot_in_filename_is_preserved_for_collection_item_with_shorthand_path_config()
+    /**
+     * @test
+     */
+    public function dot_in_filename_is_preserved_for_collection_item_with_shorthand_path_config()
     {
         $this->app->instance('outputPathResolver', new PrettyOutputPathResolver);
         $pathResolver = $this->app->make(CollectionPathResolver::class);
@@ -68,7 +83,10 @@ class DotInFileNameTest extends TestCase
         $this->assertEquals('/collection-item-with.dot', $outputPath[0]);
     }
 
-    public function test_dot_in_filename_is_preserved_for_collection_item_with_slugified_shorthand_path_config()
+    /**
+     * @test
+     */
+    public function dot_in_filename_is_preserved_for_collection_item_with_slugified_shorthand_path_config()
     {
         $this->app->instance('outputPathResolver', new PrettyOutputPathResolver);
         $pathResolver = $this->app->make(CollectionPathResolver::class);

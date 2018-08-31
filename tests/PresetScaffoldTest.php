@@ -7,7 +7,10 @@ use org\bovigo\vfs\vfsStream;
 
 class PresetScaffoldTest extends TestCase
 {
-    public function test_named_preset_resolves_to_predefined_package_path()
+    /**
+     * @test
+     */
+    public function named_preset_resolves_to_predefined_package_path()
     {
         $preset = $this->app->make(PresetScaffold::class);
         $package = explode('/', $preset::PRESETS['blog']);
@@ -19,7 +22,10 @@ class PresetScaffoldTest extends TestCase
         $this->assertEquals($vfs->url() . '/vendor/' . $preset::PRESETS['blog'], $preset->path);
     }
 
-    public function test_named_preset_resolves_to_vendor_package_path_if_not_predefined()
+    /**
+     * @test
+     */
+    public function named_preset_resolves_to_vendor_package_path_if_not_predefined()
     {
         $preset = $this->app->make(PresetScaffold::class);
         $vfs = vfsStream::setup('virtual', null, ['vendor' => ['test' => ['package' => []]]]);
@@ -30,7 +36,10 @@ class PresetScaffoldTest extends TestCase
         $this->assertEquals($vfs->url() . '/vendor/' . 'test/package', $preset->path);
     }
 
-    public function test_exception_is_thrown_if_package_can_not_be_found()
+    /**
+     * @test
+     */
+    public function exception_is_thrown_if_package_can_not_be_found()
     {
         $preset = $this->app->make(PresetScaffold::class);
         $vfs = vfsStream::setup('virtual', null, ['vendor' => ['test' => ['package' => []]]]);
@@ -47,7 +56,10 @@ class PresetScaffoldTest extends TestCase
         }
     }
 
-    public function test_exception_is_thrown_if_package_is_missing_a_slash()
+    /**
+     * @test
+     */
+    public function exception_is_thrown_if_package_is_missing_a_slash()
     {
         $preset = $this->app->make(PresetScaffold::class);
         $vfs = vfsStream::setup('virtual', null, ['vendor' => ['test' => ['package' => []]]]);

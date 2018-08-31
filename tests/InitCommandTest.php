@@ -12,7 +12,10 @@ use org\bovigo\vfs\vfsStream;
 
 class InitCommandTest extends TestCase
 {
-    public function test_init_command_with_no_arguments_uses_basic_scaffold_for_site()
+    /**
+     * @test
+     */
+    public function init_command_with_no_arguments_uses_basic_scaffold_for_site()
     {
         $basic_scaffold = Mockery::mock(BasicScaffold::class);
         $basic_scaffold->shouldReceive('build');
@@ -25,7 +28,10 @@ class InitCommandTest extends TestCase
         $this->assertContains('initialized successfully', $console->getDisplay());
     }
 
-    public function test_init_command_with_argument_uses_preset_scaffold_for_site()
+    /**
+     * @test
+     */
+    public function init_command_with_argument_uses_preset_scaffold_for_site()
     {
         $preset_scaffold = Mockery::mock(PresetScaffold::class);
         $preset_scaffold->shouldReceive('build')->with('blog');
@@ -38,7 +44,10 @@ class InitCommandTest extends TestCase
         $this->assertContains('initialized successfully', $console->getDisplay());
     }
 
-    public function test_init_command_displays_error_if_preset_name_is_invalid()
+    /**
+     * @test
+     */
+    public function init_command_displays_error_if_preset_name_is_invalid()
     {
         $console = new CommandTester($this->app->make(InitCommand::class));
         $console->execute(['preset' => 'invalid']);
@@ -46,7 +55,10 @@ class InitCommandTest extends TestCase
         $this->assertContains("'invalid' is not a valid package name.", $console->getDisplay());
     }
 
-    public function test_init_command_displays_error_if_preset_package_does_not_exist()
+    /**
+     * @test
+     */
+    public function init_command_displays_error_if_preset_package_does_not_exist()
     {
         $console = new CommandTester($this->app->make(InitCommand::class));
         $console->execute(['preset' => 'invalid/package']);
@@ -54,7 +66,10 @@ class InitCommandTest extends TestCase
         $this->assertContains("The package 'invalid/package' could not be found.", $console->getDisplay());
     }
 
-    public function test_init_command_displays_warning_if_source_directory_exists()
+    /**
+     * @test
+     */
+    public function init_command_displays_warning_if_source_directory_exists()
     {
         $basic_scaffold = Mockery::mock(BasicScaffold::class);
         $basic_scaffold->shouldNotReceive('build');
@@ -72,7 +87,10 @@ class InitCommandTest extends TestCase
         $this->assertContains("It looks like you've already run 'jigsaw init' on this project", $console->getDisplay());
     }
 
-    public function test_init_command_displays_warning_if_config_dot_php_exists()
+    /**
+     * @test
+     */
+    public function init_command_displays_warning_if_config_dot_php_exists()
     {
         $basic_scaffold = Mockery::mock(BasicScaffold::class);
         $basic_scaffold->shouldNotReceive('build');
@@ -90,7 +108,10 @@ class InitCommandTest extends TestCase
         $this->assertContains("It looks like you've already run 'jigsaw init' on this project", $console->getDisplay());
     }
 
-    public function test_will_not_build_scaffold_if_site_already_initialized_and_user_chooses_cancel()
+    /**
+     * @test
+     */
+    public function will_not_build_scaffold_if_site_already_initialized_and_user_chooses_cancel()
     {
         $basic_scaffold = Mockery::mock(BasicScaffold::class);
         $basic_scaffold->shouldNotReceive('build');
@@ -108,7 +129,10 @@ class InitCommandTest extends TestCase
         $this->assertNotContains('initialized successfully', $console->getDisplay());
     }
 
-    public function test_will_build_scaffold_if_site_already_initialized_and_user_chooses_archive()
+    /**
+     * @test
+     */
+    public function will_build_scaffold_if_site_already_initialized_and_user_chooses_archive()
     {
         $basic_scaffold = Mockery::mock(BasicScaffold::class);
         $basic_scaffold->shouldReceive('build');
@@ -126,7 +150,10 @@ class InitCommandTest extends TestCase
         $this->assertContains('initialized successfully', $console->getDisplay());
     }
 
-    public function test_will_delete_existing_site_if_user_chooses_delete_option()
+    /**
+     * @test
+     */
+    public function will_delete_existing_site_if_user_chooses_delete_option()
     {
         $basic_scaffold = Mockery::mock(BasicScaffold::class);
         $basic_scaffold->shouldReceive('build');
@@ -144,7 +171,10 @@ class InitCommandTest extends TestCase
         $this->assertContains('initialized successfully', $console->getDisplay());
     }
 
-    public function test_will_build_scaffold_if_site_already_initialized_and_user_chooses_delete()
+    /**
+     * @test
+     */
+    public function will_build_scaffold_if_site_already_initialized_and_user_chooses_delete()
     {
         $basic_scaffold = Mockery::mock(BasicScaffold::class);
         $basic_scaffold->shouldReceive('build');

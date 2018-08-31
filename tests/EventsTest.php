@@ -7,7 +7,10 @@ use org\bovigo\vfs\vfsStream;
 
 class EventsTest extends TestCase
 {
-    public function test_user_can_add_event_listeners_as_closures()
+    /**
+     * @test
+     */
+    public function user_can_add_event_listeners_as_closures()
     {
         $this->app['events']->beforeBuild(function ($jigsaw) use (&$a) {
             $a = $jigsaw->getConfig('a');
@@ -29,7 +32,10 @@ class EventsTest extends TestCase
         $this->assertEquals(789, $c);
     }
 
-    public function test_user_can_add_event_listeners_as_classes()
+    /**
+     * @test
+     */
+    public function user_can_add_event_listeners_as_classes()
     {
         $this->app['events']->beforeBuild(TestListener::class);
         $jigsaw = $this->buildSite($this->setupSource(), ['variable_a' => 'set in config.php']);
@@ -37,7 +43,10 @@ class EventsTest extends TestCase
         $this->assertEquals('set in TestListener', $jigsaw->getConfig('variable_a'));
     }
 
-    public function test_multiple_event_listeners_are_fired_in_the_order_they_were_defined()
+    /**
+     * @test
+     */
+    public function multiple_event_listeners_are_fired_in_the_order_they_were_defined()
     {
         $this->app['events']->beforeBuild([TestListener::class, TestListenerTwo::class]);
         $jigsaw = $this->buildSite($this->setupSource(), ['variable_a' => 'set in config.php']);
@@ -46,7 +55,10 @@ class EventsTest extends TestCase
         $this->assertEquals('set in TestListener', $jigsaw->getConfig('variable_b'));
     }
 
-    public function test_listeners_for_undefined_events_are_ignored()
+    /**
+     * @test
+     */
+    public function listeners_for_undefined_events_are_ignored()
     {
         $this->app['events']->someUndefinedEvent(function ($jigsaw) use (&$result) {
             $result = 'value if fired';
@@ -56,7 +68,10 @@ class EventsTest extends TestCase
         $this->assertNull($result);
     }
 
-    public function test_user_can_retrieve_environment_in_event_listener()
+    /**
+     * @test
+     */
+    public function user_can_retrieve_environment_in_event_listener()
     {
         $this->app['events']->beforeBuild(function ($jigsaw) use (&$result) {
             $result = $jigsaw->getEnvironment();
@@ -66,7 +81,10 @@ class EventsTest extends TestCase
         $this->assertEquals('test', $result);
     }
 
-    public function test_user_can_retrieve_all_config_variables_in_event_listener()
+    /**
+     * @test
+     */
+    public function user_can_retrieve_all_config_variables_in_event_listener()
     {
         $this->app['events']->beforeBuild(function ($jigsaw) use (&$result) {
             $result = $jigsaw->getConfig();
@@ -76,7 +94,10 @@ class EventsTest extends TestCase
         $this->assertEquals('value', $result->test_variable);
     }
 
-    public function test_user_can_retrieve_specific_config_variable_in_event_listener()
+    /**
+     * @test
+     */
+    public function user_can_retrieve_specific_config_variable_in_event_listener()
     {
         $this->app['events']->beforeBuild(function ($jigsaw) use (&$result) {
             $result = $jigsaw->getConfig('test_variable');
@@ -86,7 +107,10 @@ class EventsTest extends TestCase
         $this->assertEquals('value', $result);
     }
 
-    public function test_user_can_add_a_new_config_variable_in_event_listener()
+    /**
+     * @test
+     */
+    public function user_can_add_a_new_config_variable_in_event_listener()
     {
         $this->app['events']->beforeBuild(function ($jigsaw) use (&$result) {
             $jigsaw->setConfig('new_variable', 'value');
@@ -99,7 +123,10 @@ class EventsTest extends TestCase
         $this->assertEquals('value', $result->getConfig('new_variable'));
     }
 
-    public function test_user_can_update_an_existing_config_variable_in_event_listener()
+    /**
+     * @test
+     */
+    public function user_can_update_an_existing_config_variable_in_event_listener()
     {
         $this->app['events']->beforeBuild(function ($jigsaw) use (&$result) {
             $jigsaw->setConfig('test_variable', 'new value');
@@ -111,7 +138,10 @@ class EventsTest extends TestCase
         $this->assertEquals('new value', $result->getConfig('test_variable'));
     }
 
-    public function test_user_can_get_a_nested_config_variable_with_dot_notation_in_event_listener()
+    /**
+     * @test
+     */
+    public function user_can_get_a_nested_config_variable_with_dot_notation_in_event_listener()
     {
         $this->app['events']->beforeBuild(function ($jigsaw) use (&$result) {
             $result = $jigsaw->getConfig('test_variable.some_key');
@@ -125,7 +155,10 @@ class EventsTest extends TestCase
         $this->assertEquals('value', $result);
     }
 
-    public function test_user_can_add_a_nested_config_variable_with_dot_notation_in_event_listener()
+    /**
+     * @test
+     */
+    public function user_can_add_a_nested_config_variable_with_dot_notation_in_event_listener()
     {
         $this->app['events']->beforeBuild(function ($jigsaw) use (&$result) {
             $jigsaw->setConfig('test_variable.new_key', 'new value');
@@ -142,7 +175,10 @@ class EventsTest extends TestCase
         $this->assertEquals('original value', $result->getConfig('test_variable')['existing_key']);
     }
 
-    public function test_user_can_update_an_existing_nested_config_variable_with_dot_notation_in_event_listener()
+    /**
+     * @test
+     */
+    public function user_can_update_an_existing_nested_config_variable_with_dot_notation_in_event_listener()
     {
         $this->app['events']->beforeBuild(function ($jigsaw) use (&$result) {
             $jigsaw->setConfig('test_variable.nested', 'new value');
@@ -158,7 +194,10 @@ class EventsTest extends TestCase
         $this->assertEquals('new value', $result->getConfig('test_variable')['nested']);
     }
 
-    public function test_collection_items_created_in_before_build_event_listener_are_output_to_filesystem()
+    /**
+     * @test
+     */
+    public function collection_items_created_in_before_build_event_listener_are_output_to_filesystem()
     {
         $this->app['events']->beforeBuild(function ($jigsaw) use (&$result) {
             $jigsaw->setConfig('collections.posts', [
@@ -187,7 +226,10 @@ class EventsTest extends TestCase
         );
     }
 
-    public function test_collection_items_added_in_before_build_event_listener_are_output_to_filesystem()
+    /**
+     * @test
+     */
+    public function collection_items_added_in_before_build_event_listener_are_output_to_filesystem()
     {
         $this->app['events']->beforeBuild(function ($jigsaw) use (&$result) {
             $jigsaw->setConfig('collections.posts', [
@@ -224,7 +266,10 @@ class EventsTest extends TestCase
         );
     }
 
-    public function test_user_can_retrieve_a_collection_of_collection_names_in_event_listener()
+    /**
+     * @test
+     */
+    public function user_can_retrieve_a_collection_of_collection_names_in_event_listener()
     {
         $this->app['events']->beforeBuild(function ($jigsaw) use (&$result) {
             $result = $jigsaw->getCollections();
@@ -239,7 +284,10 @@ class EventsTest extends TestCase
         $this->assertEquals(['posts', 'people'], $result->all());
     }
 
-    public function test_user_can_retrieve_a_collection_of_collection_items_in_event_listener()
+    /**
+     * @test
+     */
+    public function user_can_retrieve_a_collection_of_collection_items_in_event_listener()
     {
         $this->app['events']->afterCollections(function ($jigsaw) use (&$result) {
             $result = $jigsaw->getCollection('posts');
@@ -269,7 +317,10 @@ class EventsTest extends TestCase
         $this->assertEquals('Title for post #2', $result->post_2->title);
     }
 
-    public function test_collection_items_cannot_be_retrieved_during_before_build_event()
+    /**
+     * @test
+     */
+    public function collection_items_cannot_be_retrieved_during_before_build_event()
     {
         $this->app['events']->beforeBuild(function ($jigsaw) use (&$result) {
             $result = $jigsaw->getCollection('posts');
@@ -289,7 +340,10 @@ class EventsTest extends TestCase
         $this->assertNull($result);
     }
 
-    public function test_user_can_retrieve_source_path_in_event_listener()
+    /**
+     * @test
+     */
+    public function user_can_retrieve_source_path_in_event_listener()
     {
         $this->app['events']->beforeBuild(function ($jigsaw) use (&$result) {
             $result = $jigsaw->getSourcePath();
@@ -299,7 +353,10 @@ class EventsTest extends TestCase
         $this->assertEquals($source->url() . '/source', $result);
     }
 
-    public function test_user_can_change_source_path_in_event_listener()
+    /**
+     * @test
+     */
+    public function user_can_change_source_path_in_event_listener()
     {
         $source = vfsStream::setup('virtual', null, [
             'source' => [
@@ -322,7 +379,10 @@ class EventsTest extends TestCase
         $this->assertEquals('new', $source->getChild('build/file_in_new_source.html')->getContent());
     }
 
-    public function test_user_can_retrieve_destination_path_in_event_listener()
+    /**
+     * @test
+     */
+    public function user_can_retrieve_destination_path_in_event_listener()
     {
         $this->app['events']->beforeBuild(function ($jigsaw) use (&$result) {
             $result = $jigsaw->getDestinationPath();
@@ -332,7 +392,10 @@ class EventsTest extends TestCase
         $this->assertEquals($source->url() . '/build', $result);
     }
 
-    public function test_user_can_change_destination_path_in_event_listener()
+    /**
+     * @test
+     */
+    public function user_can_change_destination_path_in_event_listener()
     {
         $source = $this->setupSource(['file.html' => 'test']);
 
@@ -349,7 +412,10 @@ class EventsTest extends TestCase
         $this->assertEquals('test', $source->getChild('new_build/file.html')->getContent());
     }
 
-    public function test_user_can_read_the_contents_of_source_file_in_event_listener()
+    /**
+     * @test
+     */
+    public function user_can_read_the_contents_of_source_file_in_event_listener()
     {
         $this->app['events']->beforeBuild(function ($jigsaw) use (&$result) {
             $result = $jigsaw->readSourceFile('file.md');
@@ -359,7 +425,10 @@ class EventsTest extends TestCase
         $this->assertEquals('## test', $result);
     }
 
-    public function test_user_can_write_a_new_source_file_in_event_listener()
+    /**
+     * @test
+     */
+    public function user_can_write_a_new_source_file_in_event_listener()
     {
         $this->app['events']->beforeBuild(function ($jigsaw) use (&$result) {
             $jigsaw->writeSourceFile('file.md', '## test');
@@ -369,7 +438,10 @@ class EventsTest extends TestCase
         $this->assertEquals('## test', $source->getChild('source/file.md')->getContent());
     }
 
-    public function test_user_can_write_a_new_source_file_in_a_new_directory_in_event_listener()
+    /**
+     * @test
+     */
+    public function user_can_write_a_new_source_file_in_a_new_directory_in_event_listener()
     {
         $this->app['events']->beforeBuild(function ($jigsaw) use (&$result) {
             $result = $jigsaw->writeSourceFile('new_directory/file.md', '## test');
@@ -379,7 +451,10 @@ class EventsTest extends TestCase
         $this->assertEquals('## test', $source->getChild('source/new_directory/file.md')->getContent());
     }
 
-    public function test_user_can_update_an_existing_source_file_in_event_listener()
+    /**
+     * @test
+     */
+    public function user_can_update_an_existing_source_file_in_event_listener()
     {
         $this->app['events']->beforeBuild(function ($jigsaw) use (&$result) {
             $jigsaw->writeSourceFile('file.md', '## updated');
@@ -389,7 +464,10 @@ class EventsTest extends TestCase
         $this->assertEquals('## updated', $source->getChild('source/file.md')->getContent());
     }
 
-    public function test_user_can_read_the_contents_of_an_output_file_in_after_build_event_listener()
+    /**
+     * @test
+     */
+    public function user_can_read_the_contents_of_an_output_file_in_after_build_event_listener()
     {
         $this->app['events']->afterBuild(function ($jigsaw) use (&$result) {
             $result = $jigsaw->readOutputFile('test/file.html');
@@ -403,7 +481,10 @@ class EventsTest extends TestCase
         $this->assertEquals('<h1>test</h1>', $result);
     }
 
-    public function test_user_can_write_a_new_output_file_in_after_build_event_listener()
+    /**
+     * @test
+     */
+    public function user_can_write_a_new_output_file_in_after_build_event_listener()
     {
         $this->app['events']->afterBuild(function ($jigsaw) use (&$result) {
             $result = $jigsaw->writeOutputFile('file.html', 'test');
@@ -413,7 +494,10 @@ class EventsTest extends TestCase
         $this->assertEquals('test', $source->getChild('build/file.html')->getContent());
     }
 
-    public function test_user_can_update_an_existing_output_file_in_after_build_event_listener()
+    /**
+     * @test
+     */
+    public function user_can_update_an_existing_output_file_in_after_build_event_listener()
     {
         $this->app['events']->afterBuild(function ($jigsaw) use (&$original, &$result) {
             $original = $jigsaw->readOutputFile('test/file.html');
@@ -429,7 +513,10 @@ class EventsTest extends TestCase
         $this->assertEquals('<h1>revised test</h1>', $source->getChild('build/test/file.html')->getContent());
     }
 
-    public function test_user_can_write_a_new_output_file_in_a_new_directory_in_after_build_event_listener()
+    /**
+     * @test
+     */
+    public function user_can_write_a_new_output_file_in_a_new_directory_in_after_build_event_listener()
     {
         $this->app['events']->afterBuild(function ($jigsaw) use (&$result) {
             $result = $jigsaw->writeOutputFile('new_directory/file.html', 'test');

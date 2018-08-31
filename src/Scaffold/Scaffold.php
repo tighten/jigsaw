@@ -20,5 +20,7 @@ abstract class Scaffold
         $this->base = $cwd ?: getcwd();
     }
 
-    abstract public function build($preset);
+    abstract public function init($preset);
+
+    abstract public function build();
 }

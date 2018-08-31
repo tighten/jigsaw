@@ -47,8 +47,19 @@ class InitCommand extends Command
 
     protected function fire()
     {
+        $scaffold = $this->getScaffold();
+
+        try {
+            $scaffold->init($this->input->getArgument('preset'));
+        } catch (Exception $e) {
+            $this->error($e->getMessage())
+                ->line();
+
+            return;
+        }
+
         if ($this->initHasAlreadyBeenRun()) {
-            $response = $this->askUser();
+            $response = $this->askUserWhatToDoWithExistingSite();
 
             switch ($response) {
                 case 'a':
@@ -72,21 +83,11 @@ class InitCommand extends Command
             }
         }
 
-        try {
-            $scaffold = $this->getScaffold();
-            $scaffold->build($this->input->getArgument('preset'));
+        $suffix = $scaffold instanceof $this->presetScaffold ?
+            " using the '" . $scaffold->packageNameShort . "' preset." :
+            ' successfully.';
 
-            $suffix = $scaffold instanceof $this->presetScaffold ?
-                " using the '" . $scaffold->packageNameShort . "' preset." :
-                ' successfully.';
-
-            $this->info(
-                'Your new Jigsaw site was initialized' . $suffix
-            )->line();
-        } catch (Exception $e) {
-            $this->error($e->getMessage())
-                ->line();
-        }
+        $this->info('Your new Jigsaw site was initialized' . $suffix)->line();
     }
 
     protected function initHasAlreadyBeenRun()
@@ -95,7 +96,7 @@ class InitCommand extends Command
             $this->files->exists($this->base . '/source');
     }
 
-    protected function askUser()
+    protected function askUserWhatToDoWithExistingSite()
     {
         $this->line()
             ->comment("It looks like you've already run 'jigsaw init' on this project.")

@@ -16,11 +16,16 @@ class PresetScaffold extends Scaffold
     public $packageNameShort;
     public $packagePath;
 
-    public function build($preset)
+    public function init($preset)
     {
         $this->packageNameShort = $this->getPackageShortName($preset);
         $this->packageName = $this->resolvePackageName($preset);
         $this->packagePath = $this->resolvePackagePath();
+    }
+
+    public function build()
+    {
+        //
     }
 
     protected function getPackageShortName($preset)

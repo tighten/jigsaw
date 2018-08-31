@@ -6,7 +6,12 @@ use TightenCo\Jigsaw\File\Filesystem;
 
 class BasicScaffold extends Scaffold
 {
-    public function build($preset = null)
+    public function init($preset = null)
+    {
+        //
+    }
+
+    public function build()
     {
         $this->scaffoldSite();
         $this->scaffoldMix();

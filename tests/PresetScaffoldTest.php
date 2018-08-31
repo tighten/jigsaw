@@ -17,7 +17,7 @@ class PresetScaffoldTest extends TestCase
         $vfs = vfsStream::setup('virtual', null, ['vendor' => [$package[0] => [$package[1] => []]]]);
         $preset->base = $vfs->url();
 
-        $preset->build('blog');
+        $preset->init('blog');
 
         $this->assertEquals($vfs->url() . '/vendor/' . $preset::PRESETS['blog'], $preset->packagePath);
     }
@@ -31,7 +31,7 @@ class PresetScaffoldTest extends TestCase
         $vfs = vfsStream::setup('virtual', null, ['vendor' => ['test' => ['package' => []]]]);
         $preset->base = $vfs->url();
 
-        $preset->build('test/package');
+        $preset->init('test/package');
 
         $this->assertEquals($vfs->url() . '/vendor/' . 'test/package', $preset->packagePath);
     }
@@ -46,7 +46,7 @@ class PresetScaffoldTest extends TestCase
         $preset->base = $vfs->url();
 
         try {
-            $preset->build('test/other-package');
+            $preset->init('test/other-package');
             $this->fail('Exception not thrown');
         } catch (\Exception $e) {
             $this->assertContains(
@@ -66,7 +66,7 @@ class PresetScaffoldTest extends TestCase
         $preset->base = $vfs->url();
 
         try {
-            $preset->build('test');
+            $preset->init('test');
             $this->fail('Exception not thrown');
         } catch (\Exception $e) {
             $this->assertContains(

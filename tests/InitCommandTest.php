@@ -17,8 +17,8 @@ class InitCommandTest extends TestCase
      */
     public function init_command_with_no_arguments_uses_basic_scaffold_for_site()
     {
-        $basic_scaffold = Mockery::mock(BasicScaffold::class);
-        $basic_scaffold->shouldReceive('init');
+        $basic_scaffold = Mockery::spy(BasicScaffold::class);
+        $basic_scaffold->shouldReceive('setBase')->andReturn($basic_scaffold);
         $this->app->instance(BasicScaffold::class, $basic_scaffold);
 
         $console = new CommandTester($this->app->make(InitCommand::class));
@@ -33,13 +33,14 @@ class InitCommandTest extends TestCase
      */
     public function init_command_with_argument_uses_preset_scaffold_for_site()
     {
-        $preset_scaffold = Mockery::mock(PresetScaffold::class);
-        $preset_scaffold->shouldReceive('init')->with('blog');
+        $preset_scaffold = Mockery::spy(PresetScaffold::class);
+        $preset_scaffold->shouldReceive('setBase')->andReturn($preset_scaffold);
         $this->app->instance(PresetScaffold::class, $preset_scaffold);
 
         $console = new CommandTester($this->app->make(InitCommand::class));
         $console->execute(['preset' => 'blog']);
 
+        $preset_scaffold->shouldHaveReceived('init')->with('blog');
         $this->assertEquals('blog', $console->getInput()->getArgument('preset'));
         $this->assertContains('initialized', $console->getDisplay());
     }
@@ -71,11 +72,6 @@ class InitCommandTest extends TestCase
      */
     public function init_command_displays_warning_if_source_directory_exists()
     {
-        $basic_scaffold = Mockery::mock(BasicScaffold::class);
-        $basic_scaffold->shouldReceive('init');
-        $basic_scaffold->shouldNotReceive('build');
-        $this->app->instance(BasicScaffold::class, $basic_scaffold);
-
         $vfs = vfsStream::setup('virtual', null, ['source' => []]);
         $command = $this->app->make(InitCommand::class);
         $command->setApplication(new Application());
@@ -93,11 +89,6 @@ class InitCommandTest extends TestCase
      */
     public function init_command_displays_warning_if_config_dot_php_exists()
     {
-        $basic_scaffold = Mockery::mock(BasicScaffold::class);
-        $basic_scaffold->shouldReceive('init');
-        $basic_scaffold->shouldNotReceive('build');
-        $this->app->instance(BasicScaffold::class, $basic_scaffold);
-
         $vfs = vfsStream::setup('virtual', null, ['config.php' => '']);
         $command = $this->app->make(InitCommand::class);
         $command->setApplication(new Application());
@@ -115,8 +106,8 @@ class InitCommandTest extends TestCase
      */
     public function will_not_build_scaffold_if_site_already_initialized_and_user_chooses_cancel()
     {
-        $basic_scaffold = Mockery::mock(BasicScaffold::class);
-        $basic_scaffold->shouldReceive('init');
+        $basic_scaffold = Mockery::spy(BasicScaffold::class);
+        $basic_scaffold->shouldReceive('setBase')->andReturn($basic_scaffold);
         $this->app->instance(BasicScaffold::class, $basic_scaffold);
 
         $vfs = vfsStream::setup('virtual', null, ['config.php' => '']);
@@ -128,16 +119,18 @@ class InitCommandTest extends TestCase
         $console->setInputs(['c']);
         $console->execute([]);
 
+        $basic_scaffold->shouldNotHaveReceived('archiveExistingSite');
+        $basic_scaffold->shouldNotHaveReceived('build');
         $this->assertNotContains('initialized', $console->getDisplay());
     }
 
     /**
      * @test
      */
-    public function will_build_scaffold_if_site_already_initialized_and_user_chooses_archive()
+    public function will_archive_existing_site_if_user_chooses_archive_option()
     {
-        $basic_scaffold = Mockery::mock(BasicScaffold::class);
-        $basic_scaffold->shouldReceive('init');
+        $basic_scaffold = Mockery::spy(BasicScaffold::class);
+        $basic_scaffold->shouldReceive('setBase')->andReturn($basic_scaffold);
         $this->app->instance(BasicScaffold::class, $basic_scaffold);
 
         $vfs = vfsStream::setup('virtual', null, ['config.php' => '']);
@@ -149,6 +142,29 @@ class InitCommandTest extends TestCase
         $console->setInputs(['a']);
         $console->execute([]);
 
+        $basic_scaffold->shouldHaveReceived('archiveExistingSite');
+        $this->assertContains('initialized', $console->getDisplay());
+    }
+
+    /**
+     * @test
+     */
+    public function will_build_scaffold_if_site_already_initialized_and_user_chooses_archive()
+    {
+        $basic_scaffold = Mockery::spy(BasicScaffold::class);
+        $basic_scaffold->shouldReceive('setBase')->andReturn($basic_scaffold);
+        $this->app->instance(BasicScaffold::class, $basic_scaffold);
+
+        $vfs = vfsStream::setup('virtual', null, ['config.php' => '']);
+        $command = $this->app->make(InitCommand::class);
+        $command->setApplication(new Application());
+        $command->setBase($vfs->url());
+
+        $console = new CommandTester($command);
+        $console->setInputs(['a']);
+        $console->execute([]);
+
+        $basic_scaffold->shouldHaveReceived('build');
         $this->assertContains('initialized', $console->getDisplay());
     }
 
@@ -157,8 +173,8 @@ class InitCommandTest extends TestCase
      */
     public function will_delete_existing_site_if_user_chooses_delete_option()
     {
-        $basic_scaffold = Mockery::mock(BasicScaffold::class);
-        $basic_scaffold->shouldReceive('init');
+        $basic_scaffold = Mockery::spy(BasicScaffold::class);
+        $basic_scaffold->shouldReceive('setBase')->andReturn($basic_scaffold);
         $this->app->instance(BasicScaffold::class, $basic_scaffold);
 
         $vfs = vfsStream::setup('virtual', null, ['config.php' => '']);
@@ -167,10 +183,10 @@ class InitCommandTest extends TestCase
         $command->setBase($vfs->url());
 
         $console = new CommandTester($command);
-        $console->setInputs(['d']);
-        $console->setInputs(['y']);
+        $console->setInputs(['d', 'y']);
         $console->execute([]);
 
+        $basic_scaffold->shouldHaveReceived('deleteExistingSite');
         $this->assertContains('initialized', $console->getDisplay());
     }
 
@@ -179,8 +195,8 @@ class InitCommandTest extends TestCase
      */
     public function will_build_scaffold_if_site_already_initialized_and_user_chooses_delete()
     {
-        $basic_scaffold = Mockery::mock(BasicScaffold::class);
-        $basic_scaffold->shouldReceive('init');
+        $basic_scaffold = Mockery::spy(BasicScaffold::class);
+        $basic_scaffold->shouldReceive('setBase')->andReturn($basic_scaffold);
         $this->app->instance(BasicScaffold::class, $basic_scaffold);
 
         $vfs = vfsStream::setup('virtual', null, ['config.php' => '']);
@@ -189,10 +205,10 @@ class InitCommandTest extends TestCase
         $command->setBase($vfs->url());
 
         $console = new CommandTester($command);
-        $console->setInputs(['d']);
-        $console->setInputs(['y']);
+        $console->setInputs(['d', 'y']);
         $console->execute([]);
 
+        $basic_scaffold->shouldHaveReceived('build');
         $this->assertContains('initialized', $console->getDisplay());
     }
 }

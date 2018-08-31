@@ -15,12 +15,24 @@ abstract class Scaffold
         $this->setBase();
     }
 
-    public function setBase($cwd = null)
-    {
-        $this->base = $cwd ?: getcwd();
-    }
-
     abstract public function init($preset);
 
     abstract public function build();
+
+    public function setBase($cwd = null)
+    {
+        $this->base = $cwd ?: getcwd();
+
+        return $this;
+    }
+
+    public function archiveExistingSite()
+    {
+        //
+    }
+
+    public function deleteExistingSite()
+    {
+        //
+    }
 }

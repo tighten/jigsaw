@@ -27,6 +27,8 @@ class InitCommand extends Command
     public function setBase($cwd = null)
     {
         $this->base = $cwd ?: getcwd();
+
+        return $this;
     }
 
     protected function configure()
@@ -40,14 +42,9 @@ class InitCommand extends Command
             );
     }
 
-    protected function getScaffold()
-    {
-        return $this->input->getArgument('preset') ? $this->presetScaffold : $this->basicScaffold;
-    }
-
     protected function fire()
     {
-        $scaffold = $this->getScaffold();
+        $scaffold = $this->getScaffold()->setBase($this->base);
 
         try {
             $scaffold->init($this->input->getArgument('preset'));
@@ -60,34 +57,40 @@ class InitCommand extends Command
 
         if ($this->initHasAlreadyBeenRun()) {
             $response = $this->askUserWhatToDoWithExistingSite();
+            $this->line();
 
             switch ($response) {
                 case 'a':
-                    $this->line()
-                        ->comment('Archiving your existing site...');
+                    $this->comment('Archiving your existing site...');
+                    $scaffold->archiveExistingSite();
                     break;
 
                 case 'd':
-                    $this->line();
-
-                    if ($this->confirm('<fg=red>Are you sure you want to delete your existing site?</> (y/n) ')) {
-                        $this->line()
-                            ->comment('Deleting your existing site...');
+                    if ($this->confirm(
+                        '<fg=red>Are you sure you want to delete your existing site?</> (y/n) '
+                    )) {
+                        $this->comment('Deleting your existing site...');
+                        $scaffold->deleteExistingSite();
                         break;
                     }
 
                 default:
-                    $this->line();
-
                     return;
             }
         }
+
+        $scaffold->build();
 
         $suffix = $scaffold instanceof $this->presetScaffold ?
             " using the '" . $scaffold->packageNameShort . "' preset." :
             ' successfully.';
 
         $this->info('Your new Jigsaw site was initialized' . $suffix)->line();
+    }
+
+    protected function getScaffold()
+    {
+        return $this->input->getArgument('preset') ? $this->presetScaffold : $this->basicScaffold;
     }
 
     protected function initHasAlreadyBeenRun()

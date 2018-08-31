@@ -20,6 +20,28 @@ class Scaffold extends TestCase
     /**
      * @test
      */
+    public function can_build_list_of_base_site_files()
+    {
+        $base_files = [
+            '.gitignore',
+            'bootstrap.php',
+            'config.php',
+            'gulpfile.js',
+            'package.json',
+            'source/',
+            'tasks/',
+            'webpack.mix.js',
+        ];
+        sort($base_files);
+
+        $scaffold = $this->app->make(PresetScaffold::class);
+
+        $this->assertEquals($base_files, $scaffold->getSiteFiles()->sort()->values()->toArray());
+    }
+
+    /**
+     * @test
+     */
     public function can_archive_existing_files_and_directories()
     {
         $vfs = vfsStream::setup('virtual', null, array_merge(

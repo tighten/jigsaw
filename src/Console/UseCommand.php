@@ -34,7 +34,7 @@ class UseCommand extends Command
             ->setDescription('Switch between using Mix (with Webpack) and Elixir (with Gulp) for compiling assets.')
             ->addArgument(
                 'tool',
-                InputArgument::OPTIONAL,
+                InputArgument::REQUIRED,
                 'What tool should we use to compile assets for this project?'
             );
     }

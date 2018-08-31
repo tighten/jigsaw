@@ -25,7 +25,7 @@ class InitCommandTest extends TestCase
         $console->execute([]);
 
         $this->assertEquals('', $console->getInput()->getArgument('preset'));
-        $this->assertContains('initialized successfully', $console->getDisplay());
+        $this->assertContains('initialized', $console->getDisplay());
     }
 
     /**
@@ -41,7 +41,7 @@ class InitCommandTest extends TestCase
         $console->execute(['preset' => 'blog']);
 
         $this->assertEquals('blog', $console->getInput()->getArgument('preset'));
-        $this->assertContains('initialized successfully', $console->getDisplay());
+        $this->assertContains('initialized', $console->getDisplay());
     }
 
     /**
@@ -126,7 +126,7 @@ class InitCommandTest extends TestCase
         $console->setInputs(['c']);
         $console->execute([]);
 
-        $this->assertNotContains('initialized successfully', $console->getDisplay());
+        $this->assertNotContains('initialized', $console->getDisplay());
     }
 
     /**
@@ -147,7 +147,7 @@ class InitCommandTest extends TestCase
         $console->setInputs(['a']);
         $console->execute([]);
 
-        $this->assertContains('initialized successfully', $console->getDisplay());
+        $this->assertContains('initialized', $console->getDisplay());
     }
 
     /**
@@ -166,9 +166,10 @@ class InitCommandTest extends TestCase
 
         $console = new CommandTester($command);
         $console->setInputs(['d']);
+        $console->setInputs(['y']);
         $console->execute([]);
 
-        $this->assertContains('initialized successfully', $console->getDisplay());
+        $this->assertContains('initialized', $console->getDisplay());
     }
 
     /**
@@ -187,8 +188,9 @@ class InitCommandTest extends TestCase
 
         $console = new CommandTester($command);
         $console->setInputs(['d']);
+        $console->setInputs(['y']);
         $console->execute([]);
 
-        $this->assertContains('initialized successfully', $console->getDisplay());
+        $this->assertContains('initialized', $console->getDisplay());
     }
 }

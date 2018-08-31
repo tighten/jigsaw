@@ -11,14 +11,14 @@ use TightenCo\Jigsaw\Scaffold\PresetScaffold;
 class InitCommand extends Command
 {
     private $base;
-    private $basic_scaffold;
+    private $basicScaffold;
     private $files;
-    private $preset_scaffold;
+    private $presetScaffold;
 
-    public function __construct(Filesystem $files, BasicScaffold $basic_scaffold, PresetScaffold $preset_scaffold)
+    public function __construct(Filesystem $files, BasicScaffold $basicScaffold, PresetScaffold $presetScaffold)
     {
-        $this->basic_scaffold = $basic_scaffold;
-        $this->preset_scaffold = $preset_scaffold;
+        $this->basicScaffold = $basicScaffold;
+        $this->presetScaffold = $presetScaffold;
         $this->files = $files;
         $this->setBase();
         parent::__construct();
@@ -42,7 +42,7 @@ class InitCommand extends Command
 
     protected function getScaffold()
     {
-        return $this->input->getArgument('preset') ? $this->preset_scaffold : $this->basic_scaffold;
+        return $this->input->getArgument('preset') ? $this->presetScaffold : $this->basicScaffold;
     }
 
     protected function fire()
@@ -52,26 +52,39 @@ class InitCommand extends Command
 
             switch ($response) {
                 case 'a':
-                    $this->info('archiving...');
+                    $this->line()
+                        ->comment('Archiving your existing site...');
                     break;
 
                 case 'd':
-                    $this->error('deleting...');
-                    break;
+                    $this->line();
+
+                    if ($this->confirm('<fg=red>Are you sure you want to delete your existing site?</> (y/n) ')) {
+                        $this->line()
+                            ->comment('Deleting your existing site...');
+                        break;
+                    }
 
                 default:
+                    $this->line();
+
                     return;
             }
         }
 
         try {
-            $this->getScaffold()->build($this->input->getArgument('preset'));
-            $this->line()
-                ->info('Your new Jigsaw site was initialized successfully!')
-                ->line();
+            $scaffold = $this->getScaffold();
+            $scaffold->build($this->input->getArgument('preset'));
+
+            $suffix = $scaffold instanceof $this->presetScaffold ?
+                " using the '" . $scaffold->packageNameShort . "' preset." :
+                ' successfully.';
+
+            $this->info(
+                'Your new Jigsaw site was initialized' . $suffix
+            )->line();
         } catch (Exception $e) {
-            $this->line()
-                ->error($e->getMessage())
+            $this->error($e->getMessage())
                 ->line();
         }
     }
@@ -90,9 +103,9 @@ class InitCommand extends Command
             ->line();
 
         $choices = [
-            'a' => 'archive your existing site, then initialize a new one [default]',
-            'd' => 'delete your existing site, then initialize a new one',
-            'c' => 'cancel',
+            'a' => '<info>archive</info> your existing site, then initialize a new one (default)',
+            'd' => '<info>delete</info> your existing site, then initialize a new one',
+            'c' => '<info>cancel</info>',
         ];
 
         return $this->choice('What would you like to do?', $choices, 0);

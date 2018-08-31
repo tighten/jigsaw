@@ -47,7 +47,7 @@ abstract class Command extends SymfonyCommand
 
     protected function error($string)
     {
-        $this->output->writeln("<error>{$string}</error>");
+        $this->output->writeln("<fg=red>{$string}</>");
 
         return $this;
     }

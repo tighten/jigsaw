@@ -6,11 +6,10 @@ use TightenCo\Jigsaw\File\Filesystem;
 
 abstract class Scaffold
 {
-    const ADDITIONAL_FILES_TO_RESET = [
-        'composer.json',
-        'composer.lock',
-        'package.lock',
-        'yarn.lock',
+    const IGNORE_DIRECTORIES = [
+        'archived',
+        'node_modules',
+        'vendor',
     ];
 
     public $base;
@@ -33,32 +32,24 @@ abstract class Scaffold
         return $this;
     }
 
-    public function getSiteFiles()
-    {
-        return collect(['site', 'elixir', 'mix'])
-            ->map(function ($stub) {
-                return $this->getFilesAndDirectories(__DIR__ . '/../../stubs/' . $stub);
-            })->merge(self::ADDITIONAL_FILES_TO_RESET)
-            ->flatten()
-            ->unique();
-    }
-
     public function archiveExistingSite()
     {
         $version = $this->getJigsawComposerVersion();
+        $this->createEmptyArchive();
 
-        $archivePath = $this->base . '/archived';
-        $this->files->deleteDirectory($archivePath);
-        $this->files->makeDirectory($archivePath, 0755, true);
+        collect($this->allFiles())->each(function ($file) use (&$directories) {
+            $source = $file->getPathName();
+            $destination = $this->base . '/archived/' . $file->getRelativePathName();
 
-        collect($this->getSiteFiles())->each(function ($file) use ($archivePath) {
-            $existingPath = $this->base . '/' . $file;
-
-            if ($this->files->exists($existingPath)) {
-                $this->files->move($existingPath, $archivePath . '/' . ltrim($file, '/'));
+            if ($this->files->isDirectory($file)) {
+                $directories[] = $source;
+                $this->files->makeDirectory($destination, 0755, true);
+            } else {
+                $this->files->move($source, $destination);
             }
         });
 
+        $this->deleteEmptyDirectories($directories);
         $this->restoreJigsawComposerFile($version);
     }
 
@@ -66,32 +57,42 @@ abstract class Scaffold
     {
         $version = $this->getJigsawComposerVersion();
 
-        collect($this->getSiteFiles())->each(function ($file) {
-            $existingPath = $this->base . '/' . $file;
+        collect($this->allFiles())->each(function ($file) use (&$directories) {
+            $source = $file->getPathName();
 
-            if ($this->files->isDirectory($existingPath)) {
-                $this->files->deleteDirectory($existingPath);
+            if ($this->files->isDirectory($file)) {
+                $directories[] = $source;
             } else {
-                $this->files->delete($existingPath);
+                $this->files->delete($source);
             }
         });
 
+        $this->deleteEmptyDirectories($directories);
         $this->restoreJigsawComposerFile($version);
     }
 
-    protected function getFilesAndDirectories($directory)
+    protected function createEmptyArchive()
     {
-        $directories = collect($this->files->directories($directory))
-            ->map(function ($path) {
-                return basename($path) . '/';
-            });
+        $this->files->deleteDirectory($this->base . '/archived');
+        $this->files->makeDirectory($this->base . '/archived', 0755, true);
+    }
 
-        return collect($this->files->files($directory, true))
-            ->map(function ($file) {
-                return $file->getFileName();
-            })->reject(function ($filename) {
-                return $filename == '.DS_Store';
-            })->merge($directories);
+    protected function deleteEmptyDirectories($directories)
+    {
+        collect($directories)->each(function ($directory) {
+            if ($this->files->isEmptyDirectory($directory)) {
+                $this->files->deleteDirectory($directory);
+            };
+        });
+    }
+
+    protected function allFiles()
+    {
+        return $this->files->allFilesAndDirectories(
+            $this->base,
+            $ignore_dotfiles = false,
+            self::IGNORE_DIRECTORIES
+        );
     }
 
     protected function getJigsawComposerVersion()

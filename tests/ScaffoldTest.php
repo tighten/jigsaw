@@ -8,40 +8,18 @@ use org\bovigo\vfs\vfsStream;
 
 class ScaffoldTest extends TestCase
 {
-    const EXISTING_SITE_FILES = [
+    const EXISTING_FILES = [
         '.gitignore' => '',
         'bootstrap.php' => '',
         'config.php' => '',
+        'gulpfile.js' => '',
         'source' => [
             'test-source-file.md' => '',
-            ],
+        ],
+        'tasks' => [],
+        'webpack.mix.js' => '',
+        'yarn.lock' => '',
     ];
-
-    /**
-     * @test
-     */
-    public function can_build_list_of_base_site_files()
-    {
-        $base_files = [
-            '.gitignore',
-            'bootstrap.php',
-            'composer.json',
-            'composer.lock',
-            'config.php',
-            'gulpfile.js',
-            'package.json',
-            'package.lock',
-            'source/',
-            'tasks/',
-            'webpack.mix.js',
-            'yarn.lock',
-        ];
-        sort($base_files);
-
-        $scaffold = $this->app->make(BasicScaffold::class);
-
-        $this->assertEquals($base_files, $scaffold->getSiteFiles()->sort()->values()->toArray());
-    }
 
     /**
      * @test
@@ -49,14 +27,14 @@ class ScaffoldTest extends TestCase
     public function can_archive_existing_files_and_directories()
     {
         $vfs = vfsStream::setup('virtual', null, array_merge(
-            self::EXISTING_SITE_FILES,
+            self::EXISTING_FILES,
             ['archived' => []]
         ));
         $scaffold = $this->app->make(BasicScaffold::class)->setBase($vfs->url());
 
         $scaffold->archiveExistingSite();
 
-        collect(self::EXISTING_SITE_FILES)->each(function ($file, $key) use ($vfs) {
+        collect(self::EXISTING_FILES)->each(function ($file, $key) use ($vfs) {
             $this->assertNull($vfs->getChild($key));
         })->each(function ($file, $key) use ($vfs) {
             $this->assertNotNull($vfs->getChild('archived/' . $key));
@@ -68,12 +46,12 @@ class ScaffoldTest extends TestCase
      */
     public function will_create_archived_directory_if_none_exists_when_archiving_site()
     {
-        $vfs = vfsStream::setup('virtual', null, self::EXISTING_SITE_FILES);
+        $vfs = vfsStream::setup('virtual', null, self::EXISTING_FILES);
         $scaffold = $this->app->make(BasicScaffold::class)->setBase($vfs->url());
 
         $scaffold->archiveExistingSite();
 
-        collect(self::EXISTING_SITE_FILES)->each(function ($file, $key) use ($vfs) {
+        collect(self::EXISTING_FILES)->each(function ($file, $key) use ($vfs) {
             $this->assertNull($vfs->getChild($key));
         })->each(function ($file, $key) use ($vfs) {
             $this->assertNotNull($vfs->getChild('archived/' . $key));
@@ -86,7 +64,7 @@ class ScaffoldTest extends TestCase
     public function will_erase_contents_of_archived_directory_if_it_already_exists_when_archiving_site()
     {
         $vfs = vfsStream::setup('virtual', null, array_merge(
-            self::EXISTING_SITE_FILES,
+            self::EXISTING_FILES,
             ['archived' => ['old-file.md' => '']]
         ));
         $scaffold = $this->app->make(BasicScaffold::class)->setBase($vfs->url());
@@ -102,20 +80,52 @@ class ScaffoldTest extends TestCase
     /**
      * @test
      */
-    public function will_ignore_base_files_that_do_not_exist_when_archiving_site()
+    public function will_ignore_archived_directory_when_archiving_site()
     {
-        $subset_of_base_files = self::EXISTING_SITE_FILES;
-        unset($subset_of_base_files['bootstrap.php']);
-        $vfs = vfsStream::setup('virtual', null, $subset_of_base_files);
+        $vfs = vfsStream::setup('virtual', null, array_merge(
+            self::EXISTING_FILES,
+            ['archived' => []]
+        ));
         $scaffold = $this->app->make(BasicScaffold::class)->setBase($vfs->url());
 
         $scaffold->archiveExistingSite();
 
-        collect($subset_of_base_files)->each(function ($file, $key) use ($vfs) {
-            $this->assertNull($vfs->getChild($key));
-        })->each(function ($file, $key) use ($vfs) {
-            $this->assertNotNull($vfs->getChild('archived/' . $key));
-        });
+        $this->assertNotNull($vfs->getChild('archived'));
+        $this->assertNull($vfs->getChild('archived/archived'));
+    }
+
+    /**
+     * @test
+     */
+    public function will_ignore_vendor_directory_when_archiving_site()
+    {
+        $vfs = vfsStream::setup('virtual', null, array_merge(
+            self::EXISTING_FILES,
+            ['vendor' => []]
+        ));
+        $scaffold = $this->app->make(BasicScaffold::class)->setBase($vfs->url());
+
+        $scaffold->archiveExistingSite();
+
+        $this->assertNotNull($vfs->getChild('vendor'));
+        $this->assertNull($vfs->getChild('archived/vendor'));
+    }
+
+    /**
+     * @test
+     */
+    public function will_ignore_node_modules_directory_when_archiving_site()
+    {
+        $vfs = vfsStream::setup('virtual', null, array_merge(
+            self::EXISTING_FILES,
+            ['node_modules' => []]
+        ));
+        $scaffold = $this->app->make(BasicScaffold::class)->setBase($vfs->url());
+
+        $scaffold->archiveExistingSite();
+
+        $this->assertNotNull($vfs->getChild('node_modules'));
+        $this->assertNull($vfs->getChild('archived/node_modules'));
     }
 
     /**
@@ -123,12 +133,12 @@ class ScaffoldTest extends TestCase
      */
     public function can_delete_existing_files_and_directories()
     {
-        $vfs = vfsStream::setup('virtual', null, self::EXISTING_SITE_FILES);
+        $vfs = vfsStream::setup('virtual', null, self::EXISTING_FILES);
         $scaffold = $this->app->make(BasicScaffold::class)->setBase($vfs->url());
 
         $scaffold->deleteExistingSite();
 
-        collect(self::EXISTING_SITE_FILES)->each(function ($file, $key) use ($vfs) {
+        collect(self::EXISTING_FILES)->each(function ($file, $key) use ($vfs) {
             $this->assertNull($vfs->getChild($key));
         });
     }
@@ -136,18 +146,49 @@ class ScaffoldTest extends TestCase
     /**
      * @test
      */
-    public function will_ignore_base_files_that_do_not_exist_when_deleting_site()
+    public function will_ignore_archived_directory_when_deleting_site()
     {
-        $subset_of_base_files = self::EXISTING_SITE_FILES;
-        unset($subset_of_base_files['bootstrap.php']);
-        $vfs = vfsStream::setup('virtual', null, $subset_of_base_files);
+        $vfs = vfsStream::setup('virtual', null, array_merge(
+            self::EXISTING_FILES,
+            ['archived' => []]
+        ));
         $scaffold = $this->app->make(BasicScaffold::class)->setBase($vfs->url());
 
         $scaffold->deleteExistingSite();
 
-        collect($subset_of_base_files)->each(function ($file, $key) use ($vfs) {
-            $this->assertNull($vfs->getChild($key));
-        });
+        $this->assertNotNull($vfs->getChild('archived'));
+    }
+
+    /**
+     * @test
+     */
+    public function will_ignore_vendor_directory_when_deleting_site()
+    {
+        $vfs = vfsStream::setup('virtual', null, array_merge(
+            self::EXISTING_FILES,
+            ['vendor' => []]
+        ));
+        $scaffold = $this->app->make(BasicScaffold::class)->setBase($vfs->url());
+
+        $scaffold->deleteExistingSite();
+
+        $this->assertNotNull($vfs->getChild('vendor'));
+    }
+
+    /**
+     * @test
+     */
+    public function will_ignore_node_modules_directory_when_deleting_site()
+    {
+        $vfs = vfsStream::setup('virtual', null, array_merge(
+            self::EXISTING_FILES,
+            ['node_modules' => []]
+        ));
+        $scaffold = $this->app->make(BasicScaffold::class)->setBase($vfs->url());
+
+        $scaffold->deleteExistingSite();
+
+        $this->assertNotNull($vfs->getChild('node_modules'));
     }
 
     /**
@@ -170,7 +211,7 @@ class ScaffoldTest extends TestCase
      */
     public function composer_dot_json_is_not_restored_if_it_did_not_exist_when_archiving_site()
     {
-        $vfs = vfsStream::setup('virtual', null, self::EXISTING_SITE_FILES);
+        $vfs = vfsStream::setup('virtual', null, self::EXISTING_FILES);
         $scaffold = $this->app->make(BasicScaffold::class)->setBase($vfs->url());
 
         $scaffold->archiveExistingSite();
@@ -198,7 +239,7 @@ class ScaffoldTest extends TestCase
      */
     public function composer_dot_json_is_not_restored_if_it_did_not_exist_when_deleting_site()
     {
-        $vfs = vfsStream::setup('virtual', null, self::EXISTING_SITE_FILES);
+        $vfs = vfsStream::setup('virtual', null, self::EXISTING_FILES);
         $scaffold = $this->app->make(BasicScaffold::class)->setBase($vfs->url());
 
         $scaffold->deleteExistingSite();

@@ -47,6 +47,11 @@ class Filesystem extends BaseFilesystem
         );
     }
 
+    public function isEmptyDirectory($directory)
+    {
+        return count($this->allFiles($directory)) == 0;
+    }
+
     protected function getFinder($directory, $ignore_dotfiles = false, $ignore = [])
     {
         $finder = Finder::create()

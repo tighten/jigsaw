@@ -6,7 +6,7 @@ use Symfony\Component\Console\Application;
 use TightenCo\Jigsaw\Scaffold\BasicScaffold;
 use org\bovigo\vfs\vfsStream;
 
-class Scaffold extends TestCase
+class ScaffoldTest extends TestCase
 {
     const EXISTING_SITE_FILES = [
         '.gitignore' => '',
@@ -14,7 +14,7 @@ class Scaffold extends TestCase
         'config.php' => '',
         'source' => [
             'test-source-file.md' => '',
-        ],
+            ],
     ];
 
     /**

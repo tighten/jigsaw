@@ -55,7 +55,7 @@ class Filesystem extends BaseFilesystem
             ->notName('.DS_Store');
 
         collect($ignore)->each(function ($pattern) use ($finder) {
-            $finder->notPath('#^' . str_replace('\*', '[^/]+', preg_quote(trim($pattern, '/'))) . '#');
+            $finder->notPath('#^' . str_replace('\*', '[^/]+', preg_quote(trim($pattern, '/'))) . '($|/)#');
         });
 
         return $finder;

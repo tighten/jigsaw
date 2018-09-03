@@ -23,46 +23,55 @@ class Filesystem extends BaseFilesystem
         $this->put($file_path, $contents);
     }
 
-    public function allFiles($directory, $ignore_dotfiles = false, $ignore = [])
+    public function files($directory, $match = [], $ignore = [], $ignore_dotfiles = false)
     {
         return iterator_to_array(
-            $this->getFinder($directory, $ignore_dotfiles, $ignore)->files(),
+            $this->getFinder($directory, $match, $ignore, $ignore_dotfiles)->files(),
             false
         );
     }
 
-    public function allDirectories($directory, $ignore_dotfiles = false, $ignore = [])
+    public function directories($directory, $match = [], $ignore = [], $ignore_dotfiles = false)
     {
         return iterator_to_array(
-            $this->getFinder($directory, $ignore_dotfiles, $ignore)->directories(),
+            $this->getFinder($directory, $match, $ignore, $ignore_dotfiles)->directories(),
             false
         );
     }
 
-    public function allFilesAndDirectories($directory, $ignore_dotfiles = false, $ignore = [])
+    public function filesAndDirectories($directory, $match = [], $ignore = [], $ignore_dotfiles = false)
     {
         return iterator_to_array(
-            $this->getFinder($directory, $ignore_dotfiles, $ignore),
+            $this->getFinder($directory, $match, $ignore, $ignore_dotfiles),
             false
         );
     }
 
     public function isEmptyDirectory($directory)
     {
-        return count($this->allFiles($directory)) == 0;
+        return $this->exists($directory) ? count($this->files($directory)) == 0 : false;
     }
 
-    protected function getFinder($directory, $ignore_dotfiles = false, $ignore = [])
+    protected function getFinder($directory, $match = [], $ignore = [], $ignore_dotfiles = false)
     {
         $finder = Finder::create()
             ->in($directory)
             ->ignoreDotFiles($ignore_dotfiles)
             ->notName('.DS_Store');
 
+        collect($match)->each(function ($pattern) use ($finder) {
+            $finder->path($this->getWildcardRegex($pattern));
+        });
+
         collect($ignore)->each(function ($pattern) use ($finder) {
-            $finder->notPath('#^' . str_replace('\*', '[^/]+', preg_quote(trim($pattern, '/'))) . '($|/)#');
+            $finder->notPath($this->getWildcardRegex($pattern));
         });
 
         return $finder;
+    }
+
+    protected function getWildcardRegex($pattern)
+    {
+        return '#^' . str_replace('\*', '[^/]+', preg_quote(trim($pattern, '/'))) . '($|/)#';
     }
 }

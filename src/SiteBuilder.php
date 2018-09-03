@@ -57,7 +57,7 @@ class SiteBuilder
 
     private function writeFiles($source, $destination, $siteData)
     {
-        return collect($this->files->allFiles($source))->map(function ($file) use ($source) {
+        return collect($this->files->files($source))->map(function ($file) use ($source) {
             return new InputFile($file, $source);
         })->flatMap(function ($file) use ($siteData) {
             return $this->handle($file, $siteData);

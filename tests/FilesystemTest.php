@@ -31,7 +31,7 @@ class FilesystemTest extends TestCase
         $filesystem = $this->app->make(Filesystem::class);
         $vfs = $this->setupFiles();
 
-        $files = $filesystem->allFilesAndDirectories($vfs->url());
+        $files = $filesystem->filesAndDirectories($vfs->url());
 
         $this->assertCount(11, $files);
     }
@@ -48,7 +48,7 @@ class FilesystemTest extends TestCase
         ]);
 
         $files = collect($this->app->make(Filesystem::class)
-            ->allFilesAndDirectories($vfs->url())
+            ->filesAndDirectories($vfs->url())
         )->map(function ($file) {
             return $file->getRelativePathName();
         });
@@ -194,10 +194,76 @@ class FilesystemTest extends TestCase
         $this->assertCount(9, $files);
     }
 
+    /**
+     * @test
+     */
+    public function can_return_array_of_files_and_directories_matching_a_string()
+    {
+        $filesystem = $this->app->make(Filesystem::class);
+        $vfs = $this->setupFiles();
+
+        $files = $filesystem->filesAndDirectories($vfs->url(), 'file-1.md');
+
+        $this->assertCount(1, $files);
+        $this->assertEquals('file-1.md', $files[0]->getFileName());
+    }
+
+    /**
+     * @test
+     */
+    public function can_return_array_of_files_and_directories_matching_an_array()
+    {
+        $files = $this->getFilesMatching([
+            'file-1.md',
+            'file-2.md',
+        ]);
+
+        $this->assertCount(2, $files);
+        $this->assertEquals('file-1.md', $files[0]);
+        $this->assertEquals('file-2.md', $files[1]);
+    }
+
+    /**
+     * @test
+     */
+    public function can_return_array_of_files_and_directories_matching_a_wildcard()
+    {
+        $files = $this->getFilesMatching([
+            'file-*.md',
+        ]);
+
+        $this->assertCount(2, $files);
+        $this->assertEquals('file-1.md', $files[0]);
+        $this->assertEquals('file-2.md', $files[1]);
+    }
+
+    /**
+     * @test
+     */
+    public function can_return_array_of_files_and_directories_matching_a_directory()
+    {
+        $files = $this->getFilesMatching([
+            'directory',
+        ]);
+
+        $this->assertCount(7, $files);
+        $this->assertEquals('directory', $files[0]);
+        $this->assertEquals('directory/nested-file-1.md', $files[1]);
+    }
+
+    protected function getFilesMatching($match)
+    {
+        return collect($this->app->make(Filesystem::class)
+            ->filesAndDirectories($this->setupFiles()->url(), $match)
+        )->map(function ($file) {
+            return $file->getRelativePathName();
+        });
+    }
+
     protected function getFilesExcept($ignore)
     {
         return collect($this->app->make(Filesystem::class)
-            ->allFilesAndDirectories($this->setupFiles()->url(), false, $ignore)
+            ->filesAndDirectories($this->setupFiles()->url(), null, $ignore)
         )->map(function ($file) {
             return $file->getRelativePathName();
         });

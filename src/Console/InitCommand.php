@@ -5,8 +5,8 @@ namespace TightenCo\Jigsaw\Console;
 use \Exception;
 use Symfony\Component\Console\Input\InputArgument;
 use TightenCo\Jigsaw\File\Filesystem;
-use TightenCo\Jigsaw\Scaffold\BasicScaffold;
-use TightenCo\Jigsaw\Scaffold\PresetScaffold;
+use TightenCo\Jigsaw\Scaffold\BasicScaffoldBuilder;
+use TightenCo\Jigsaw\Scaffold\PresetScaffoldBuilder;
 
 class InitCommand extends Command
 {
@@ -15,7 +15,7 @@ class InitCommand extends Command
     private $files;
     private $presetScaffold;
 
-    public function __construct(Filesystem $files, BasicScaffold $basicScaffold, PresetScaffold $presetScaffold)
+    public function __construct(Filesystem $files, BasicScaffoldBuilder $basicScaffold, PresetScaffoldBuilder $presetScaffold)
     {
         $this->basicScaffold = $basicScaffold;
         $this->presetScaffold = $presetScaffold;
@@ -49,8 +49,7 @@ class InitCommand extends Command
         try {
             $scaffold->init($this->input->getArgument('preset'));
         } catch (Exception $e) {
-            $this->error($e->getMessage())
-                ->line();
+            $this->error($e->getMessage())->line();
 
             return;
         }
@@ -80,17 +79,17 @@ class InitCommand extends Command
         }
 
         $scaffold->build();
-
-        $suffix = $scaffold instanceof $this->presetScaffold ?
-            " using the '" . $scaffold->packageNameShort . "' preset." :
+        $suffix = $scaffold instanceof $this->presetScaffold && $scaffold->package ?
+            " using the '" . $scaffold->package->nameShort . "' preset." :
             ' successfully.';
-
         $this->info('Your new Jigsaw site was initialized' . $suffix)->line();
     }
 
     protected function getScaffold()
     {
-        return $this->input->getArgument('preset') ? $this->presetScaffold : $this->basicScaffold;
+        return $this->input->getArgument('preset') ?
+            $this->presetScaffold :
+            $this->basicScaffold;
     }
 
     protected function initHasAlreadyBeenRun()

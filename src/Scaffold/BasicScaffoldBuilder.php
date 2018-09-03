@@ -2,19 +2,19 @@
 
 namespace TightenCo\Jigsaw\Scaffold;
 
-use TightenCo\Jigsaw\File\Filesystem;
-
-class BasicScaffold extends Scaffold
+class BasicScaffoldBuilder extends ScaffoldBuilder
 {
     public function init($preset = null)
     {
-        //
+        return $this;
     }
 
     public function build()
     {
         $this->scaffoldSite();
         $this->scaffoldMix();
+
+        return $this;
     }
 
     protected function scaffoldSite()

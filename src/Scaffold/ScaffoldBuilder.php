@@ -4,7 +4,7 @@ namespace TightenCo\Jigsaw\Scaffold;
 
 use TightenCo\Jigsaw\File\Filesystem;
 
-abstract class Scaffold
+abstract class ScaffoldBuilder
 {
     const IGNORE_DIRECTORIES = [
         'archived',
@@ -14,6 +14,7 @@ abstract class Scaffold
 
     public $base;
     protected $files;
+    protected $composerDependencies = ['tightenco/jigsaw'];
 
     public function __construct(Filesystem $files)
     {
@@ -34,10 +35,10 @@ abstract class Scaffold
 
     public function archiveExistingSite()
     {
-        $version = $this->getJigsawComposerVersion();
+        $versions = $this->getComposerRequireVersions();
         $this->createEmptyArchive();
 
-        collect($this->allFiles())->each(function ($file) use (&$directories) {
+        collect($this->allBaseFiles())->each(function ($file) use (&$directories) {
             $source = $file->getPathName();
             $destination = $this->base . '/archived/' . $file->getRelativePathName();
 
@@ -50,14 +51,14 @@ abstract class Scaffold
         });
 
         $this->deleteEmptyDirectories($directories);
-        $this->restoreJigsawComposerFile($version);
+        $this->restoreComposer($versions);
     }
 
     public function deleteExistingSite()
     {
-        $version = $this->getJigsawComposerVersion();
+        $versions = $this->getComposerRequireVersions();
 
-        collect($this->allFiles())->each(function ($file) use (&$directories) {
+        collect($this->allBaseFiles())->each(function ($file) use (&$directories) {
             $source = $file->getPathName();
 
             if ($this->files->isDirectory($file)) {
@@ -68,7 +69,7 @@ abstract class Scaffold
         });
 
         $this->deleteEmptyDirectories($directories);
-        $this->restoreJigsawComposerFile($version);
+        $this->restoreComposer($versions);
     }
 
     protected function createEmptyArchive()
@@ -86,35 +87,42 @@ abstract class Scaffold
         });
     }
 
-    protected function allFiles()
+    protected function allBaseFiles()
     {
-        return $this->files->allFilesAndDirectories(
+        return $this->files->filesAndDirectories(
             $this->base,
-            $ignore_dotfiles = false,
-            self::IGNORE_DIRECTORIES
+            null,
+            self::IGNORE_DIRECTORIES,
+            $ignore_dotfiles = false
         );
     }
 
-    protected function getJigsawComposerVersion()
+    protected function getComposerRequireVersions()
     {
-        if ($this->files->exists($this->base . '/composer.json')) {
-            return array_get(
-                json_decode($this->files->get($this->base . '/composer.json'), true),
-                'require.tightenco/jigsaw'
-            );
+        if (! $this->files->exists($this->base . '/composer.json')) {
+            return;
         }
+
+        $composer = json_decode($this->files->get($this->base . '/composer.json'), true);
+
+        return collect($this->composerDependencies)
+            ->mapWithKeys(function ($dependency) use ($composer) {
+                return [$dependency => array_get($composer, 'require.' . $dependency)];
+            })->filter();
     }
 
-    protected function restoreJigsawComposerFile($version = null)
+    protected function restoreComposer($versions = null)
     {
-        if ($version) {
-            $this->files->put(
-                $this->base . '/composer.json',
-                json_encode(
-                    ['require' => ['tightenco/jigsaw' => $version]],
-                    JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT
-                )
-            );
+        if (! $versions) {
+            return;
         }
+
+        $this->files->put(
+            $this->base . '/composer.json',
+            json_encode(
+                ['require' => $versions->toArray()],
+                JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT
+            )
+        );
     }
 }

@@ -2,10 +2,11 @@
 
 namespace TightenCo\Jigsaw\Console;
 
-use \Exception;
+use Exception;
 use Symfony\Component\Console\Input\InputArgument;
 use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\Scaffold\BasicScaffoldBuilder;
+use TightenCo\Jigsaw\Scaffold\InstallerCommandException;
 use TightenCo\Jigsaw\Scaffold\PresetScaffoldBuilder;
 
 class InitCommand extends Command
@@ -78,11 +79,20 @@ class InitCommand extends Command
             }
         }
 
-        $scaffold->build();
-        $suffix = $scaffold instanceof $this->presetScaffold && $scaffold->package ?
-            " using the '" . $scaffold->package->nameShort . "' preset." :
-            ' successfully.';
-        $this->info('Your new Jigsaw site was initialized' . $suffix)->line();
+        try {
+            $scaffold->build();
+
+            $suffix = $scaffold instanceof $this->presetScaffold && $scaffold->package ?
+                " using the '" . $scaffold->package->shortName . "' preset." :
+                ' successfully.';
+            $this->line()
+                ->info('Your new Jigsaw site was initialized' . $suffix)
+                ->line();
+        } catch (InstallerCommandException $e) {
+            $this->line()
+                ->error("There was an error running the command '" . $e->getMessage() . "'")
+                ->line();
+        }
     }
 
     protected function getScaffold()

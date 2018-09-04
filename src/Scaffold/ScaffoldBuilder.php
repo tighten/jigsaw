@@ -14,7 +14,10 @@ abstract class ScaffoldBuilder
 
     public $base;
     protected $files;
-    protected $composerDependencies = ['tightenco/jigsaw'];
+    protected $process;
+    protected $composerDependencies = [
+        'tightenco/jigsaw',
+    ];
 
     public function __construct(Filesystem $files)
     {
@@ -35,12 +38,12 @@ abstract class ScaffoldBuilder
 
     public function archiveExistingSite()
     {
-        $versions = $this->getComposerRequireVersions();
+        $requires = $this->getComposerRequires();
         $this->createEmptyArchive();
 
         collect($this->allBaseFiles())->each(function ($file) use (&$directories) {
             $source = $file->getPathName();
-            $destination = $this->base . '/archived/' . $file->getRelativePathName();
+            $destination = $this->base . DIRECTORY_SEPARATOR . 'archived' . DIRECTORY_SEPARATOR . $file->getRelativePathName();
 
             if ($this->files->isDirectory($file)) {
                 $directories[] = $source;
@@ -51,12 +54,15 @@ abstract class ScaffoldBuilder
         });
 
         $this->deleteEmptyDirectories($directories);
-        $this->restoreComposer($versions);
+
+        if ($requires) {
+            $this->writeComposer(['require' => $requires]);
+        }
     }
 
     public function deleteExistingSite()
     {
-        $versions = $this->getComposerRequireVersions();
+        $requires = $this->getComposerRequires();
 
         collect($this->allBaseFiles())->each(function ($file) use (&$directories) {
             $source = $file->getPathName();
@@ -69,13 +75,17 @@ abstract class ScaffoldBuilder
         });
 
         $this->deleteEmptyDirectories($directories);
-        $this->restoreComposer($versions);
+
+        if ($requires) {
+            $this->writeComposer(['require' => $requires]);
+        }
     }
 
     protected function createEmptyArchive()
     {
-        $this->files->deleteDirectory($this->base . '/archived');
-        $this->files->makeDirectory($this->base . '/archived', 0755, true);
+        $archived = $this->base . DIRECTORY_SEPARATOR . 'archived';
+        $this->files->deleteDirectory($archived);
+        $this->files->makeDirectory($archived, 0755, true);
     }
 
     protected function deleteEmptyDirectories($directories)
@@ -97,32 +107,32 @@ abstract class ScaffoldBuilder
         );
     }
 
-    protected function getComposerRequireVersions()
+    protected function getComposerRequires()
     {
-        if (! $this->files->exists($this->base . '/composer.json')) {
-            return;
+        if ($composer = $this->getComposer()) {
+            return collect($this->composerDependencies)
+                ->mapWithKeys(function ($dependency) use ($composer) {
+                    return [$dependency => array_get($composer, 'require.' . $dependency)];
+                })->filter()->toArray();
         }
-
-        $composer = json_decode($this->files->get($this->base . '/composer.json'), true);
-
-        return collect($this->composerDependencies)
-            ->mapWithKeys(function ($dependency) use ($composer) {
-                return [$dependency => array_get($composer, 'require.' . $dependency)];
-            })->filter();
     }
 
-    protected function restoreComposer($versions = null)
+    protected function getComposer()
     {
-        if (! $versions) {
-            return;
-        }
+        $composer = $this->base . DIRECTORY_SEPARATOR . 'composer.json';
 
-        $this->files->put(
-            $this->base . '/composer.json',
-            json_encode(
-                ['require' => $versions->toArray()],
-                JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT
-            )
-        );
+        if ($this->files->exists($composer)) {
+            return json_decode($this->files->get($composer), true);
+        }
+    }
+
+    protected function writeComposer($content = null)
+    {
+        if ($content) {
+            $this->files->put(
+                $this->base . DIRECTORY_SEPARATOR . 'composer.json',
+                json_encode($content, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT)
+            );
+        }
     }
 }

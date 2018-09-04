@@ -25,26 +25,26 @@ class Filesystem extends BaseFilesystem
 
     public function files($directory, $match = [], $ignore = [], $ignore_dotfiles = false)
     {
-        return iterator_to_array(
+        return $directory ? iterator_to_array(
             $this->getFinder($directory, $match, $ignore, $ignore_dotfiles)->files(),
             false
-        );
+        ) : [];
     }
 
     public function directories($directory, $match = [], $ignore = [], $ignore_dotfiles = false)
     {
-        return iterator_to_array(
+        return $directory ? iterator_to_array(
             $this->getFinder($directory, $match, $ignore, $ignore_dotfiles)->directories(),
             false
-        );
+        ) : [];
     }
 
     public function filesAndDirectories($directory, $match = [], $ignore = [], $ignore_dotfiles = false)
     {
-        return iterator_to_array(
+        return $directory ? iterator_to_array(
             $this->getFinder($directory, $match, $ignore, $ignore_dotfiles),
             false
-        );
+        ) : [];
     }
 
     public function isEmptyDirectory($directory)

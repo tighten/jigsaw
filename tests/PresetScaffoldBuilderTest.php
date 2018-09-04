@@ -6,7 +6,9 @@ use TightenCo\Jigsaw\Scaffold\CustomInstaller;
 use TightenCo\Jigsaw\Scaffold\CustomQueue;
 use TightenCo\Jigsaw\Scaffold\DefaultInstaller;
 use TightenCo\Jigsaw\Scaffold\DefaultQueue;
+use TightenCo\Jigsaw\Scaffold\PresetPackage;
 use TightenCo\Jigsaw\Scaffold\PresetScaffoldBuilder;
+use TightenCo\Jigsaw\Scaffold\ProcessRunner;
 use \Mockery;
 use org\bovigo\vfs\vfsStream;
 
@@ -61,22 +63,19 @@ class PresetScaffoldBuilderTest extends TestCase
 
     /**
      * @test
+     * @doesNotPerformAssertions
      */
-    public function exception_is_thrown_if_package_can_not_be_found()
+    public function package_is_loaded_via_composer_if_not_found_locally()
     {
+        $process = Mockery::spy(ProcessRunner::class);
+        $this->app->instance(PresetPackage::class, new PresetPackage(new DefaultInstaller, new CustomInstaller, $process));
         $preset = $this->app->make(PresetScaffoldBuilder::class);
         $vfs = vfsStream::setup('virtual', null, ['vendor' => ['test' => ['package' => []]]]);
         $preset->base = $vfs->url();
 
-        try {
-            $preset->init('test/other-package');
-            $this->fail('Exception not thrown');
-        } catch (\Exception $e) {
-            $this->assertContains(
-                "The package 'other-package' could not be found.",
-                $e->getMessage()
-            );
-        }
+        $preset->init('test/other-package');
+
+        $process->shouldHaveReceived('run')->with('composer require test/other-package');
     }
 
     /**
@@ -187,5 +186,88 @@ class PresetScaffoldBuilderTest extends TestCase
         $preset->build();
 
         $custom_installer->shouldHaveReceived('copy')->with('test');
+    }
+
+    /**
+     * @test
+     * @doesNotPerformAssertions
+     */
+    public function init_file_is_optional()
+    {
+        $default_installer = Mockery::spy(DefaultInstaller::class);
+        $this->app->instance(DefaultInstaller::class, $default_installer);
+        $preset = $this->app->make(PresetScaffoldBuilder::class);
+
+        $vfs = vfsStream::setup('virtual', null, [
+            'vendor' => [
+                'test' => [
+                    'preset' => [],
+                ],
+            ],
+        ]);
+        $preset->base = $vfs->url();
+
+        $preset->init('test/preset');
+        $preset->build();
+
+        $default_installer->shouldHaveReceived('install')->with($preset, []);
+    }
+
+    /**
+     * @test
+     */
+    public function preset_package_dependency_is_restored_to_fresh_composer_dot_json_when_archiving_site()
+    {
+        $old_composer = [
+            'require' => [
+                'tightenco/jigsaw' => '^1.2',
+                'test/preset' => '1.0',
+            ],
+        ];
+        $existing_site = [
+            'composer.json' => json_encode($old_composer),
+            'vendor' => [
+                'test' => [
+                    'preset' => [],
+                ],
+            ],
+        ];
+        $vfs = vfsStream::setup('virtual', null, $existing_site);
+        $preset = $this->app->make(PresetScaffoldBuilder::class)
+            ->setBase($vfs->url())
+            ->init('test/preset');
+
+        $preset->archiveExistingSite();
+
+        $this->assertEquals($old_composer, json_decode($vfs->getChild('composer.json')->getContent(), true));
+    }
+
+    /**
+     * @test
+     */
+    public function preset_package_dependency_is_restored_to_fresh_composer_dot_json_when_deleting_site()
+    {
+        $old_composer = [
+            'require' => [
+                'tightenco/jigsaw' => '^1.2',
+                'test/preset' => '1.0',
+            ],
+        ];
+        $existing_site = [
+            'composer.json' => json_encode($old_composer),
+            'vendor' => [
+                'test' => [
+                    'preset' => [],
+                ],
+            ],
+        ];
+        $vfs = vfsStream::setup('virtual', null, $existing_site);
+        $preset = $this->app->make(PresetScaffoldBuilder::class)
+            ->setBase($vfs->url())
+            ->init('test/preset');
+
+        $preset->deleteExistingSite();
+
+        $this->assertEquals($old_composer, json_decode($vfs->getChild('composer.json')->getContent(), true));
     }
 }

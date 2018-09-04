@@ -69,17 +69,6 @@ class InitCommandTest extends TestCase
     /**
      * @test
      */
-    public function init_command_displays_error_if_preset_package_does_not_exist()
-    {
-        $console = new CommandTester($this->app->make(InitCommand::class));
-        $console->execute(['preset' => 'invalid/package']);
-
-        $this->assertContains("The package 'package' could not be found.", $console->getDisplay());
-    }
-
-    /**
-     * @test
-     */
     public function init_command_displays_warning_if_source_directory_exists()
     {
         $vfs = vfsStream::setup('virtual', null, ['source' => []]);

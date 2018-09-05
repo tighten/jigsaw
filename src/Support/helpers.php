@@ -104,3 +104,19 @@ function mix($path, $manifestDirectory = 'assets')
 
     return new HtmlString($manifestDirectory . $manifest[$path]);
 }
+
+/**
+ * Get asset content to inline it inside HTML
+ */
+function inline($assetPath)
+{
+    preg_match('/^\/assets\/build\/(css|js)\/main\.(css|js)/', $assetPath, $matches);
+
+    if (!count($matches)) {
+        throw new InvalidArgumentException("Given asset path is not valid: {$assetPath}");
+    }
+
+    $pathParts = explode('?', $assetPath);
+
+    return new HtmlString(file_get_contents("source{$pathParts[0]}"));
+}

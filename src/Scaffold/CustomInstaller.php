@@ -19,19 +19,21 @@ class CustomInstaller
         //
     }
 
-    public function clean()
+    public function copy($files = null)
     {
-        //
-    }
+        /**
+         * @todo: cache composer before and restore after each copy call
+         */
+        $this->builder->copyPresetFiles($files, $this->ignore);
 
-    public function copy()
-    {
-        //
+        return $this;
     }
 
     public function delete($files = null)
     {
         $this->builder->deleteSiteFiles($files);
+
+        return $this;
     }
 
     public function from()
@@ -42,6 +44,8 @@ class CustomInstaller
     public function ignore($files)
     {
         $this->ignore = array_merge($this->ignore, collect($files)->toArray());
+
+        return $this;
     }
 
     public function output()
@@ -52,5 +56,12 @@ class CustomInstaller
     public function run($commands = null)
     {
         //
+    }
+
+    public function setup()
+    {
+        $this->builder->buildBasicScaffold();
+
+        return $this;
     }
 }

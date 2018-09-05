@@ -179,6 +179,34 @@ class CustomScaffoldInstallerTest extends TestCase
     /**
      * @test
      */
+    public function installer_can_copy_files_using_a_wildcard()
+    {
+        $vfs = vfsStream::setup('virtual', null, [
+            'package' => [
+                '.dotfile' => '',
+                'preset-file-1.php' => '',
+                'preset-file-2.php' => '',
+            ],
+        ]);
+        $package = Mockery::mock(PresetPackage::class);
+        $package->path = $vfs->url() . '/package';
+        $builder = new PresetScaffoldBuilder(new Filesystem, $package, new ProcessRunner);
+        $builder->setBase($vfs->url());
+
+        (new CustomInstaller())->install($builder)
+            ->setup()
+            ->copy([
+                'preset-file-*.php',
+            ]);
+
+        $this->assertNotNull($vfs->getChild('preset-file-1.php'));
+        $this->assertNotNull($vfs->getChild('preset-file-1.php'));
+        $this->assertNull($vfs->getChild('.dotfile'));
+    }
+
+    /**
+     * @test
+     */
     public function installer_can_call_copy_multiple_times()
     {
         $vfs = vfsStream::setup('virtual', null, [

@@ -86,9 +86,9 @@ class PresetScaffoldBuilder extends ScaffoldBuilder
         return $this;
     }
 
-    public function copyPresetFiles($ignore = [])
+    public function copyPresetFiles($match = [], $ignore = [])
     {
-        collect($this->getPresetDirectories(null, $ignore))
+        collect($this->getPresetDirectories($match, $ignore))
             ->each(function ($directory) {
                 $destination = $this->base . DIRECTORY_SEPARATOR . $directory->getRelativePathName();
 
@@ -97,7 +97,7 @@ class PresetScaffoldBuilder extends ScaffoldBuilder
                 }
             });
 
-        collect($this->getPresetFiles(null, $ignore))
+        collect($this->getPresetFiles($match, $ignore))
             ->each(function ($file) {
                 $source = $file->getPathName();
                 $destination = $this->base . DIRECTORY_SEPARATOR . $file->getRelativePathName();

@@ -36,7 +36,7 @@ class DefaultInstaller
             ->buildBasicScaffold()
             ->cacheComposerDotJson()
             ->deleteSiteFiles($this->delete)
-            ->copyPresetFiles($this->ignore)
+            ->copyPresetFiles(null, $this->ignore)
             ->mergeComposerDotJson()
             ->runCommands($this->commands);
     }

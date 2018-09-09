@@ -78,8 +78,9 @@ class MarkdownHandler
 
     private function renderMarkdownFile($file, $uniqueFileName, $pageData, $extends)
     {
-        $html = $this->parser->parseMarkdownWithoutFrontMatter($this->getEscapedMarkdownContent($file));
-
+        $html = $this->parser->parseMarkdownWithoutFrontMatter(
+            $this->getEscapedMarkdownContent($file)
+        );
         $wrapper = $this->view->renderString(
             "@extends('{$extends}')\n" .
             "@section('{$pageData->page->section}'){$html}@endsection"
@@ -150,7 +151,9 @@ class MarkdownHandler
 
         if (in_array($file->getFullExtension(), ['markdown', 'md', 'mdown'])) {
             $replacements = array_merge([
-                '@' => "{{'@'}}",
+                ' @' => " {{'@'}}",
+                "\n@" => "\n{{'@'}}",
+                "`@" => "`{{'@'}}",
                 '{{' => '@{{',
                 '{!!' => '@{!!',
             ], $replacements);

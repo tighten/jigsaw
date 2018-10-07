@@ -4,6 +4,7 @@ namespace TightenCo\Jigsaw;
 
 use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\File\InputFile;
+use TightenCo\Jigsaw\PathResolvers\PathResolverInterface;
 
 class SiteBuilder
 {
@@ -12,7 +13,7 @@ class SiteBuilder
     private $outputPathResolver;
     private $handlers;
 
-    public function __construct(Filesystem $files, $cachePath, $outputPathResolver, $handlers = [])
+    public function __construct(Filesystem $files, string $cachePath, PathResolverInterface $outputPathResolver, array $handlers = [])
     {
         $this->files = $files;
         $this->cachePath = $cachePath;

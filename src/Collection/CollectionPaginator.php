@@ -3,12 +3,13 @@
 namespace TightenCo\Jigsaw\Collection;
 
 use TightenCo\Jigsaw\IterableObject;
+use TightenCo\Jigsaw\PathResolvers\PathResolverInterface;
 
 class CollectionPaginator
 {
     private $outputPathResolver;
 
-    public function __construct($outputPathResolver)
+    public function __construct(PathResolverInterface $outputPathResolver)
     {
         $this->outputPathResolver = $outputPathResolver;
     }

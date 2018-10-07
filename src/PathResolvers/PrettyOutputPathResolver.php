@@ -2,7 +2,7 @@
 
 namespace TightenCo\Jigsaw\PathResolvers;
 
-class PrettyOutputPathResolver
+class PrettyOutputPathResolver implements PathResolverInterface
 {
     public function link($path, $name, $type, $page = 1)
     {

@@ -34,7 +34,7 @@ class CollectionDataLoader
 
         return $this->collectionSettings->map(function ($collectionSettings, $collectionName) {
             $collection = Collection::withSettings($collectionSettings, $collectionName);
-            $collection->loadItems($this->buildCollection($collection));
+            $collection->loadItems($this->buildCollection($collection, $this->pageSettings));
 
             return $collection->updateItems($collection->map(function ($item) {
                 return $this->addCollectionItemContent($item);
@@ -42,7 +42,7 @@ class CollectionDataLoader
         })->all();
     }
 
-    private function buildCollection($collection)
+    private function buildCollection($collection, $pageSettings)
     {
         $path = "{$this->source}/_{$collection->name}";
 
@@ -51,8 +51,9 @@ class CollectionDataLoader
         }
 
         return collect($this->filesystem->allFiles($path))
-            ->reject(function ($file) {
-                return starts_with($file->getFilename(), '_');
+            ->reject(function ($file) use ($pageSettings) {
+                return starts_with($file->getFilename(), '_')
+                 || (str_contains($file->getRelativePath(), '_drafts') && !$pageSettings->drafts);
             })->map(function ($file) {
                 return new InputFile($file, $this->source);
             })->map(function ($inputFile) use ($collection) {

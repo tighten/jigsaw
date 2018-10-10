@@ -61,6 +61,8 @@ class SiteBuilder
     {
         return collect($this->files->allFiles($source))->map(function ($file) use ($source) {
             return new InputFile($file, $source);
+        })->reject(function ($file) use ($siteData) {
+            return str_contains($file->getRelativePath(), '_drafts') && !$siteData->page->drafts;
         })->flatMap(function ($file) use ($siteData) {
             return $this->handle($file, $siteData);
         })->map(function ($file) use ($destination) {

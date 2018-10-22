@@ -91,7 +91,7 @@ class CollectionPathResolver
             $param = ltrim($param, $param[0]);
         }
 
-        $value = $this->filterInvalidCharacters(array_get($data, $param, $data->_meta->get($param)));
+        $value = array_get($data, $param, $data->_meta->get($param));
 
         if (! $value) {
             return '';
@@ -119,8 +119,9 @@ class CollectionPathResolver
     private function cleanOutputPath($path)
     {
         $removeDoubleSlashes = preg_replace('/\/\/+/', '/', $path);
+        $transliterate = $this->ascii($removeDoubleSlashes);
 
-        return $this->ensureSlashAtBeginningOnly($removeDoubleSlashes);
+        return $this->ensureSlashAtBeginningOnly($transliterate);
     }
 
     private function ensureSlashAtBeginningOnly($path)
@@ -137,10 +138,8 @@ class CollectionPathResolver
      * This is identical to Laravel's built-in `str_slug()` helper,
      * except it preserves `.` characters.
      */
-    private function slug($string, $separator = '-', $language = 'en')
+    private function slug($string, $separator = '-')
     {
-        $string = static::ascii($string, $language);
-
         // Convert all dashes/underscores into separator
         $flip = $separator == '-' ? '_' : '-';
         $string = preg_replace('![' . preg_quote($flip) . ']+!u', $separator, $string);
@@ -155,21 +154,13 @@ class CollectionPathResolver
     }
 
     /**
-     * Filter characters that are invalid in URL, like ® and ™, allowing spaces.
-     */
-    private function filterInvalidCharacters($value)
-    {
-        return is_string($value) ? preg_replace('/[^\x20-\x7E]/', '', $value) : $value;
-    }
-
-    /**
      * Transliterate a UTF-8 value to ASCII.
      *
      * @param  string  $value
      * @param  string  $language
      * @return string
      */
-    public static function ascii($value, $language = 'en')
+    private static function ascii($value, $language = 'en')
     {
         $languageSpecific = static::languageSpecificCharsArray($language);
 

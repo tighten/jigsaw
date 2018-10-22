@@ -17,7 +17,7 @@ class SnapshotTestCase extends BaseTestCase
     {
         parent::setUpBeforeClass();
 
-        echo shell_exec('./jigsaw build testing');
+        echo shell_exec('./jigsaw build testing --no-warnings');
     }
 
     public static function tearDownAfterClass()

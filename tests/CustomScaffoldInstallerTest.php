@@ -556,10 +556,8 @@ class CustomScaffoldInstallerTest extends TestCase
 
     /**
      * @test
-     * @group foo
-     * @doesNotPerformAssertions
      */
-    public function installer_can_set_config_variables()
+    public function installer_can_set_new_config_variables_in_new_config_dot_php_file()
     {
         $vfs = vfsStream::setup('virtual', null, [
             'package' => [
@@ -574,13 +572,196 @@ class CustomScaffoldInstallerTest extends TestCase
 
         (new CustomInstaller())->setConsole($console)
             ->install($builder)
-            ->setup()
-            ->confirm('True or False?');
+            ->config(['new_key' => 'new_value']);
 
-        $console->shouldHaveReceived('confirm')
-            ->with(
-                'True or False?',
-                null
-            );
+        $this->assertEquals(
+            ['new_key' => 'new_value'],
+            eval("?>" . $vfs->getChild('config.php')->getContent())
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function installer_can_set_new_config_variables_in_existing_config_dot_php_file()
+    {
+        $vfs = vfsStream::setup('virtual', null, [
+            'config.php' => "<?php return ['existing_key' => 'existing_value'];",
+            'package' => [
+                'preset-file.php' => '',
+            ],
+        ]);
+        $package = Mockery::mock(PresetPackage::class);
+        $package->path = $vfs->url() . '/package';
+        $builder = new PresetScaffoldBuilder(new Filesystem, $package, new ProcessRunner);
+        $console = Mockery::spy(ConsoleSession::class);
+        $builder->setBase($vfs->url());
+
+        (new CustomInstaller())->setConsole($console)
+            ->install($builder)
+            ->config(['new_key' => 'new_value']);
+
+        $this->assertEquals(
+            [
+                'existing_key' => 'existing_value',
+                'new_key' => 'new_value',
+            ],
+            eval("?>" . $vfs->getChild('config.php')->getContent())
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function installer_can_set_new_config_variables_in_copied_config_dot_php_file_before_copy()
+    {
+        $vfs = vfsStream::setup('virtual', null, [
+            'package' => [
+                'preset-file.php' => '',
+                'config.php' => "<?php return ['existing_key' => 'existing_value'];",
+            ],
+        ]);
+        $package = Mockery::mock(PresetPackage::class);
+        $package->path = $vfs->url() . '/package';
+        $builder = new PresetScaffoldBuilder(new Filesystem, $package, new ProcessRunner);
+        $console = Mockery::spy(ConsoleSession::class);
+        $builder->setBase($vfs->url());
+
+        (new CustomInstaller())->setConsole($console)
+            ->install($builder)
+            ->config(['new_key' => 'new_value'])
+            ->copy('config.php');
+
+        $this->assertEquals(
+            [
+                'existing_key' => 'existing_value',
+                'new_key' => 'new_value',
+            ],
+            eval("?>" . $vfs->getChild('config.php')->getContent())
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function installer_can_set_new_config_variables_in_copied_config_dot_php_file_after_copy()
+    {
+        $vfs = vfsStream::setup('virtual', null, [
+            'package' => [
+                'preset-file.php' => '',
+                'config.php' => "<?php return ['existing_key' => 'existing_value'];",
+            ],
+        ]);
+        $package = Mockery::mock(PresetPackage::class);
+        $package->path = $vfs->url() . '/package';
+        $builder = new PresetScaffoldBuilder(new Filesystem, $package, new ProcessRunner);
+        $console = Mockery::spy(ConsoleSession::class);
+        $builder->setBase($vfs->url());
+
+        (new CustomInstaller())->setConsole($console)
+            ->install($builder)
+            ->copy('config.php')
+            ->config(['new_key' => 'new_value']);
+
+        $this->assertEquals(
+            [
+                'existing_key' => 'existing_value',
+                'new_key' => 'new_value',
+            ],
+            eval("?>" . $vfs->getChild('config.php')->getContent())
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function installer_can_set_new_config_variables_in_copied_config_dot_php_file_before_and_after_copy()
+    {
+        $vfs = vfsStream::setup('virtual', null, [
+            'package' => [
+                'preset-file.php' => '',
+                'config.php' => "<?php return ['existing_key' => 'existing_value'];",
+            ],
+        ]);
+        $package = Mockery::mock(PresetPackage::class);
+        $package->path = $vfs->url() . '/package';
+        $builder = new PresetScaffoldBuilder(new Filesystem, $package, new ProcessRunner);
+        $console = Mockery::spy(ConsoleSession::class);
+        $builder->setBase($vfs->url());
+
+        (new CustomInstaller())->setConsole($console)
+            ->install($builder)
+            ->config(['new_key_1' => 'new_value_1'])
+            ->copy('config.php')
+            ->config(['new_key_2' => 'new_value_2']);
+
+        $this->assertEquals(
+            [
+                'existing_key' => 'existing_value',
+                'new_key_1' => 'new_value_1',
+                'new_key_2' => 'new_value_2',
+            ],
+            eval("?>" . $vfs->getChild('config.php')->getContent())
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function installer_can_update_existing_config_variables_in_copied_config_dot_php_file_before_copy()
+    {
+        $vfs = vfsStream::setup('virtual', null, [
+            'package' => [
+                'preset-file.php' => '',
+                'config.php' => "<?php return ['existing_key' => 'existing_value'];",
+            ],
+        ]);
+        $package = Mockery::mock(PresetPackage::class);
+        $package->path = $vfs->url() . '/package';
+        $builder = new PresetScaffoldBuilder(new Filesystem, $package, new ProcessRunner);
+        $console = Mockery::spy(ConsoleSession::class);
+        $builder->setBase($vfs->url());
+
+        (new CustomInstaller())->setConsole($console)
+            ->install($builder)
+            ->config(['existing_key' => 'new_value'])
+            ->copy('config.php');
+
+        $this->assertEquals(
+            [
+                'existing_key' => 'new_value',
+            ],
+            eval("?>" . $vfs->getChild('config.php')->getContent())
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function installer_can_update_existing_config_variables_in_copied_config_dot_php_file_after_copy()
+    {
+        $vfs = vfsStream::setup('virtual', null, [
+            'package' => [
+                'preset-file.php' => '',
+                'config.php' => "<?php return ['existing_key' => 'existing_value'];",
+            ],
+        ]);
+        $package = Mockery::mock(PresetPackage::class);
+        $package->path = $vfs->url() . '/package';
+        $builder = new PresetScaffoldBuilder(new Filesystem, $package, new ProcessRunner);
+        $console = Mockery::spy(ConsoleSession::class);
+        $builder->setBase($vfs->url());
+
+        (new CustomInstaller())->setConsole($console)
+            ->install($builder)
+            ->copy('config.php')
+            ->config(['existing_key' => 'new_value']);
+
+        $this->assertEquals(
+            [
+                'existing_key' => 'new_value',
+            ],
+            eval("?>" . $vfs->getChild('config.php')->getContent())
+        );
     }
 }

@@ -118,6 +118,13 @@ class PresetScaffoldBuilder extends ScaffoldBuilder
         return $this;
     }
 
+    public function updateConfigIfPresent($values)
+    {
+        $this->writeConfig($values, $createIfMissing = false);
+
+        return $this;
+    }
+
     protected function addPackageToCachedComposerRequires()
     {
         $this->composerDependencies[] = $this->package->vendor . DIRECTORY_SEPARATOR . $this->package->name;

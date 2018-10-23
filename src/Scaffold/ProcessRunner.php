@@ -13,17 +13,18 @@ class ProcessRunner
             $this->runCommand($command);
         });
 
+        if ($commands) {
+            echo("\n");
+        }
+
         return $this;
     }
 
     protected function runCommand($command)
     {
-        $process = new Process($command);
         echo("\n> " . $command . "\n");
-        $process->setTty(true);
-        $process->run(function ($type, $buffer) {
-            echo $buffer;
-        });
+        $process = new Process($command);
+        $process->setTty(true)->run();
 
         if (! $process->isSuccessful()) {
             throw new InstallerCommandException($command);

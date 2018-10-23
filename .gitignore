@@ -1,4 +1,3 @@
-/vendor
-.DS_Store
-composer.lock
-_tmp/
+/build_local/
+/node_modules/
+/vendor/

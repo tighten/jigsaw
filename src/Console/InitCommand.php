@@ -50,26 +50,26 @@ class InitCommand extends Command
         try {
             $scaffold->init($this->input->getArgument('preset'));
         } catch (Exception $e) {
-            $this->error($e->getMessage())->line();
+            $this->console->error($e->getMessage())->line();
 
             return;
         }
 
         if ($this->initHasAlreadyBeenRun()) {
             $response = $this->askUserWhatToDoWithExistingSite();
-            $this->line();
+            $this->console->line();
 
             switch ($response) {
                 case 'a':
-                    $this->comment('Archiving your existing site...');
+                    $this->console->comment('Archiving your existing site...');
                     $scaffold->archiveExistingSite();
                     break;
 
                 case 'd':
-                    if ($this->confirm(
-                        '<fg=red>Are you sure you want to delete your existing site?</> (y/n) '
+                    if ($this->console->confirm(
+                        '<fg=red>Are you sure you want to delete your existing site?</>'
                     )) {
-                        $this->comment('Deleting your existing site...');
+                        $this->console->comment('Deleting your existing site...');
                         $scaffold->deleteExistingSite();
                         break;
                     }
@@ -80,16 +80,19 @@ class InitCommand extends Command
         }
 
         try {
-            $scaffold->build();
+            $scaffold->setConsole($this->console)->build();
 
             $suffix = $scaffold instanceof $this->presetScaffold && $scaffold->package ?
                 " using the '" . $scaffold->package->shortName . "' preset." :
                 ' successfully.';
-            $this->line()
+
+            $this->console
+                ->line()
                 ->info('Your new Jigsaw site was initialized' . $suffix)
                 ->line();
         } catch (InstallerCommandException $e) {
-            $this->line()
+            $this->console
+                ->line()
                 ->error("There was an error running the command '" . $e->getMessage() . "'")
                 ->line();
         }
@@ -110,17 +113,18 @@ class InitCommand extends Command
 
     protected function askUserWhatToDoWithExistingSite()
     {
-        $this->line()
+        $this->console
+            ->line()
             ->comment("It looks like you've already run 'jigsaw init' on this project.")
             ->comment('Running it again will overwrite important files.')
             ->line();
 
         $choices = [
-            'a' => '<info>archive</info> your existing site, then initialize a new one (default)',
+            'a' => '<info>archive</info> your existing site, then initialize a new one',
             'd' => '<info>delete</info> your existing site, then initialize a new one',
             'c' => '<info>cancel</info>',
         ];
 
-        return $this->choice('What would you like to do?', $choices, 0);
+        return $this->console->ask('What would you like to do?', 'a', $choices);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use TightenCo\Jigsaw\Console\ConsoleSession;
 use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\Scaffold\CustomInstaller;
 use TightenCo\Jigsaw\Scaffold\PresetPackage;
@@ -236,6 +237,38 @@ class CustomScaffoldInstallerTest extends TestCase
     /**
      * @test
      */
+    public function installer_copies_from_specified_directory_to_root_if_from_is_specified()
+    {
+        $vfs = vfsStream::setup('virtual', null, [
+            'package' => [
+                'config.php' => 'config root',
+                'themes' => [
+                    'directory-1' => [
+                        'config.php' => 'config 1',
+                    ],
+                    'directory-2' => [
+                        'config.php' => 'config 2',
+                    ],
+                ],
+            ],
+        ]);
+        $package = Mockery::mock(PresetPackage::class);
+        $package->path = $vfs->url() . '/package';
+        $builder = new PresetScaffoldBuilder(new Filesystem, $package, new ProcessRunner);
+        $builder->setBase($vfs->url());
+
+        (new CustomInstaller())->install($builder)
+            ->setup()
+            ->from('themes/directory-2')
+            ->copy();
+
+        $this->assertNotNull($vfs->getChild('config.php'));
+        $this->assertEquals('config 2', $vfs->getChild('config.php')->getContent());
+    }
+
+    /**
+     * @test
+     */
     public function installer_can_ignore_preset_files_when_copying()
     {
         $vfs = vfsStream::setup('virtual', null, [
@@ -290,5 +323,264 @@ class CustomScaffoldInstallerTest extends TestCase
         $this->assertNotNull($vfs->getChild('source/source-file.md'));
         $this->assertNull($vfs->getChild('preset-file.php'));
         $this->assertNull($vfs->getChild('.dotfile'));
+    }
+
+    /**
+     * @test
+     */
+    public function original_composer_json_is_not_deleted()
+    {
+        $old_composer = [
+            'require' => [
+                'tightenco/jigsaw' => '^1.2',
+                'test/preset' => '1.0',
+            ],
+        ];
+        $vfs = vfsStream::setup('virtual', null, [
+            'composer.json' => json_encode($old_composer),
+            'package' => [
+                'preset-file.php' => '',
+            ],
+        ]);
+        $package = Mockery::mock(PresetPackage::class);
+        $package->path = $vfs->url() . '/package';
+        $builder = new PresetScaffoldBuilder(new Filesystem, $package, new ProcessRunner);
+        $builder->setBase($vfs->url());
+
+        (new CustomInstaller())->install($builder)
+            ->setup()
+            ->delete('composer.json');
+
+        $this->assertNotNull($vfs->getChild('composer.json'));
+        $this->assertEquals(
+            $old_composer,
+            json_decode($vfs->getChild('composer.json')->getContent(), true)
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function original_composer_json_is_merged_with_new_composer_json_after_copy()
+    {
+        $old_composer = [
+            'require' => [
+                'tightenco/jigsaw' => '^1.2',
+                'test/preset' => '1.0',
+            ],
+        ];
+        $vfs = vfsStream::setup('virtual', null, [
+            'composer.json' => json_encode($old_composer),
+            'package' => [
+                'composer.json' => json_encode([
+                    'require' => [
+                        'other/package' => '2.0',
+                    ],
+                ]),
+            ],
+        ]);
+        $package = Mockery::mock(PresetPackage::class);
+        $package->path = $vfs->url() . '/package';
+        $builder = new PresetScaffoldBuilder(new Filesystem, $package, new ProcessRunner);
+        $builder->setBase($vfs->url());
+
+        (new CustomInstaller())->install($builder)
+            ->setup()
+            ->copy();
+
+        $this->assertEquals(
+            [
+                'require' => [
+                    'tightenco/jigsaw' => '^1.2',
+                    'test/preset' => '1.0',
+                    'other/package' => '2.0'
+                ],
+            ],
+            json_decode($vfs->getChild('composer.json')->getContent(), true)
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function composer_json_files_are_merged_when_copying_multiple_times()
+    {
+        $old_composer = [
+            'require' => [
+                'tightenco/jigsaw' => '^1.2',
+                'test/preset' => '1.0',
+            ],
+        ];
+        $vfs = vfsStream::setup('virtual', null, [
+            'composer.json' => json_encode($old_composer),
+            'package' => [
+                'composer.json' => json_encode([
+                    'require' => [
+                        'other/package' => '2.0',
+                    ],
+                ]),
+                'theme' => [
+                    'composer.json' => json_encode([
+                        'require' => [
+                            'another/package' => '3.0',
+                        ],
+                    ]),
+                ],
+            ],
+        ]);
+        $package = Mockery::mock(PresetPackage::class);
+        $package->path = $vfs->url() . '/package';
+        $builder = new PresetScaffoldBuilder(new Filesystem, $package, new ProcessRunner);
+        $builder->setBase($vfs->url());
+
+        (new CustomInstaller())->install($builder)
+            ->setup()
+            ->copy()
+            ->from('theme')
+            ->copy();
+
+        $this->assertEquals(
+            [
+                'require' => [
+                    'tightenco/jigsaw' => '^1.2',
+                    'test/preset' => '1.0',
+                    'other/package' => '2.0',
+                    'another/package' => '3.0'
+                ],
+            ],
+            json_decode($vfs->getChild('composer.json')->getContent(), true)
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function composer_json_is_ignored_if_it_was_not_present_before_preset_was_installed()
+    {
+        $vfs = vfsStream::setup('virtual', null, [
+            'package' => [
+                'package-file.php' => '',
+            ],
+        ]);
+        $package = Mockery::mock(PresetPackage::class);
+        $package->path = $vfs->url() . '/package';
+        $builder = new PresetScaffoldBuilder(new Filesystem, $package, new ProcessRunner);
+        $builder->setBase($vfs->url());
+
+        (new CustomInstaller())->install($builder)
+            ->setup()
+            ->copy();
+
+        $this->assertNull($vfs->getChild('composer.json'));
+    }
+
+    /**
+     * @test
+     * @doesNotPerformAssertions
+     */
+    public function installer_can_ask_for_user_input()
+    {
+        $console = Mockery::spy(ConsoleSession::class);
+        $builder = Mockery::spy(PresetScaffoldBuilder::class);
+
+        (new CustomInstaller())->setConsole($console)
+            ->install($builder)
+            ->setup()
+            ->ask('What is your name?');
+
+        $console->shouldHaveReceived('ask')
+            ->with('What is your name?', null, null, null);
+    }
+
+    /**
+     * @test
+     * @doesNotPerformAssertions
+     */
+    public function installer_can_ask_for_user_input_with_choices()
+    {
+        $console = Mockery::spy(ConsoleSession::class);
+        $builder = Mockery::spy(PresetScaffoldBuilder::class);
+
+        (new CustomInstaller())->setConsole($console)
+            ->install($builder)
+            ->setup()
+            ->ask(
+                'What theme would you like to use?',
+                ['l' => 'light', 'd' => 'dark'],
+                $default = 'l'
+            );
+
+        $console->shouldHaveReceived('ask')
+            ->with(
+                'What theme would you like to use?',
+                ['l' => 'light', 'd' => 'dark'],
+                'l',
+                null
+            );
+    }
+
+    /**
+     * @test
+     * @doesNotPerformAssertions
+     */
+    public function installer_can_ask_for_user_confirmation()
+    {
+        $console = Mockery::spy(ConsoleSession::class);
+        $builder = Mockery::spy(PresetScaffoldBuilder::class);
+
+        (new CustomInstaller())->setConsole($console)
+            ->install($builder)
+            ->setup()
+            ->confirm('Continue?');
+
+        $console->shouldHaveReceived('confirm')
+            ->with('Continue?', null);
+    }
+
+    /**
+     * @test
+     * @doesNotPerformAssertions
+     */
+    public function installer_runs_specified_commands_from_init()
+    {
+        $package = Mockery::mock(PresetPackage::class);
+        $builder = Mockery::spy(PresetScaffoldBuilder::class);
+
+        (new CustomInstaller())->setConsole(null)
+            ->install($builder)
+            ->setup()
+            ->run('yarn');
+
+        $builder->shouldHaveReceived('runCommands')->with('yarn');
+    }
+
+    /**
+     * @test
+     * @group foo
+     * @doesNotPerformAssertions
+     */
+    public function installer_can_set_config_variables()
+    {
+        $vfs = vfsStream::setup('virtual', null, [
+            'package' => [
+                'preset-file.php' => '',
+            ],
+        ]);
+        $package = Mockery::mock(PresetPackage::class);
+        $package->path = $vfs->url() . '/package';
+        $builder = new PresetScaffoldBuilder(new Filesystem, $package, new ProcessRunner);
+        $console = Mockery::spy(ConsoleSession::class);
+        $builder->setBase($vfs->url());
+
+        (new CustomInstaller())->setConsole($console)
+            ->install($builder)
+            ->setup()
+            ->confirm('True or False?');
+
+        $console->shouldHaveReceived('confirm')
+            ->with(
+                'True or False?',
+                null
+            );
     }
 }

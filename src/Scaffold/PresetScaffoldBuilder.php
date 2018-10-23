@@ -10,6 +10,7 @@ class PresetScaffoldBuilder extends ScaffoldBuilder
     public $package;
     protected $files;
     protected $process;
+    protected $question;
     protected $composerCache;
 
     public function __construct(Filesystem $files, PresetPackage $package, ProcessRunner $process)
@@ -30,7 +31,7 @@ class PresetScaffoldBuilder extends ScaffoldBuilder
 
     public function build()
     {
-        $this->package->runInstaller();
+        $this->package->runInstaller($this->console);
 
         return $this;
     }
@@ -86,9 +87,12 @@ class PresetScaffoldBuilder extends ScaffoldBuilder
         return $this;
     }
 
-    public function copyPresetFiles($match = [], $ignore = [])
+    public function copyPresetFiles($match = [], $ignore = [], $directory = null)
     {
-        collect($this->getPresetDirectories($match, $ignore))
+        $source = $this->package->path .
+            ($directory ? DIRECTORY_SEPARATOR . trim($directory, '/') : '');
+
+        collect($this->getPresetDirectories($match, $ignore, $source))
             ->each(function ($directory) {
                 $destination = $this->base . DIRECTORY_SEPARATOR . $directory->getRelativePathName();
 
@@ -97,7 +101,7 @@ class PresetScaffoldBuilder extends ScaffoldBuilder
                 }
             });
 
-        collect($this->getPresetFiles($match, $ignore))
+        collect($this->getPresetFiles($match, $ignore, $source))
             ->each(function ($file) {
                 $source = $file->getPathName();
                 $destination = $this->base . DIRECTORY_SEPARATOR . $file->getRelativePathName();
@@ -133,13 +137,13 @@ class PresetScaffoldBuilder extends ScaffoldBuilder
         return $this->files->filesAndDirectories($this->base, $match, $ignore);
     }
 
-    protected function getPresetDirectories($match = [], $ignore = [])
+    protected function getPresetDirectories($match = [], $ignore = [], $source)
     {
-        return $this->files->directories($this->package->path, $match, $ignore);
+        return $this->files->directories($source, $match, $ignore);
     }
 
-    protected function getPresetFiles($match = [], $ignore = [])
+    protected function getPresetFiles($match = [], $ignore = [], $source)
     {
-        return $this->files->files($this->package->path, $match, $ignore);
+        return $this->files->files($source, $match, $ignore);
     }
 }

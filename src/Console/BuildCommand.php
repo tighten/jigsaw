@@ -35,7 +35,7 @@ class BuildCommand extends Command
         }
 
         $this->app->make(Jigsaw::class)->build($env);
-        $this->info('Site built successfully!');
+        $this->console->info('Site built successfully!');
     }
 
     private function includeEnvironmentConfig($env)

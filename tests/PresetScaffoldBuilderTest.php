@@ -167,8 +167,11 @@ class PresetScaffoldBuilderTest extends TestCase
         $this->app->instance(CustomInstaller::class, $custom_installer);
         $preset = $this->app->make(PresetScaffoldBuilder::class);
 
-        $custom_installer->shouldReceive('install')
-            ->with($preset)->andReturn($custom_installer);
+        $custom_installer->shouldReceive('setConsole')
+            ->andReturn($custom_installer)
+            ->shouldReceive('install')
+            ->with($preset)
+            ->andReturn($custom_installer);
 
         $initFile = '<?php $init->copy("test");';
         $vfs = vfsStream::setup('virtual', null, [

@@ -18,7 +18,10 @@ class InitCommandTest extends TestCase
     public function init_command_with_no_arguments_uses_basic_scaffold_for_site()
     {
         $basic_scaffold = Mockery::spy(BasicScaffoldBuilder::class);
-        $basic_scaffold->shouldReceive('setBase')->andReturn($basic_scaffold);
+        $basic_scaffold->shouldReceive('setBase')
+            ->andReturn($basic_scaffold)
+            ->shouldReceive('setConsole')
+            ->andReturn($basic_scaffold);
         $this->app->instance(BasicScaffoldBuilder::class, $basic_scaffold);
 
         $vfs = vfsStream::setup('virtual', null, []);
@@ -39,7 +42,10 @@ class InitCommandTest extends TestCase
     public function init_command_with_argument_uses_preset_scaffold_for_site()
     {
         $preset_scaffold = Mockery::spy(PresetScaffoldBuilder::class);
-        $preset_scaffold->shouldReceive('setBase')->andReturn($preset_scaffold);
+        $preset_scaffold->shouldReceive('setBase')
+            ->andReturn($preset_scaffold)
+            ->shouldReceive('setConsole')
+            ->andReturn($preset_scaffold);
         $this->app->instance(PresetScaffoldBuilder::class, $preset_scaffold);
 
         $vfs = vfsStream::setup('virtual', null, []);
@@ -60,7 +66,9 @@ class InitCommandTest extends TestCase
      */
     public function init_command_displays_error_if_preset_name_is_invalid()
     {
-        $console = new CommandTester($this->app->make(InitCommand::class));
+        $command = $this->app->make(InitCommand::class);
+        $command->setApplication(new Application());
+        $console = new CommandTester($command);
         $console->execute(['preset' => 'invalid']);
 
         $this->assertContains("'invalid' is not a valid package name.", $console->getDisplay());
@@ -106,7 +114,10 @@ class InitCommandTest extends TestCase
     public function will_not_build_scaffold_if_site_already_initialized_and_user_chooses_cancel()
     {
         $basic_scaffold = Mockery::spy(BasicScaffoldBuilder::class);
-        $basic_scaffold->shouldReceive('setBase')->andReturn($basic_scaffold);
+        $basic_scaffold->shouldReceive('setBase')
+            ->andReturn($basic_scaffold)
+            ->shouldReceive('setConsole')
+            ->andReturn($basic_scaffold);
         $this->app->instance(BasicScaffoldBuilder::class, $basic_scaffold);
 
         $vfs = vfsStream::setup('virtual', null, ['config.php' => '']);
@@ -129,7 +140,10 @@ class InitCommandTest extends TestCase
     public function will_archive_existing_site_if_user_chooses_archive_option()
     {
         $basic_scaffold = Mockery::spy(BasicScaffoldBuilder::class);
-        $basic_scaffold->shouldReceive('setBase')->andReturn($basic_scaffold);
+        $basic_scaffold->shouldReceive('setBase')
+            ->andReturn($basic_scaffold)
+            ->shouldReceive('setConsole')
+            ->andReturn($basic_scaffold);
         $this->app->instance(BasicScaffoldBuilder::class, $basic_scaffold);
 
         $vfs = vfsStream::setup('virtual', null, ['config.php' => '']);
@@ -151,7 +165,10 @@ class InitCommandTest extends TestCase
     public function will_build_scaffold_if_site_already_initialized_and_user_chooses_archive()
     {
         $basic_scaffold = Mockery::spy(BasicScaffoldBuilder::class);
-        $basic_scaffold->shouldReceive('setBase')->andReturn($basic_scaffold);
+        $basic_scaffold->shouldReceive('setBase')
+            ->andReturn($basic_scaffold)
+            ->shouldReceive('setConsole')
+            ->andReturn($basic_scaffold);
         $this->app->instance(BasicScaffoldBuilder::class, $basic_scaffold);
 
         $vfs = vfsStream::setup('virtual', null, ['config.php' => '']);
@@ -173,7 +190,10 @@ class InitCommandTest extends TestCase
     public function will_delete_existing_site_if_user_chooses_delete_option()
     {
         $basic_scaffold = Mockery::spy(BasicScaffoldBuilder::class);
-        $basic_scaffold->shouldReceive('setBase')->andReturn($basic_scaffold);
+        $basic_scaffold->shouldReceive('setBase')
+            ->andReturn($basic_scaffold)
+            ->shouldReceive('setConsole')
+            ->andReturn($basic_scaffold);
         $this->app->instance(BasicScaffoldBuilder::class, $basic_scaffold);
 
         $vfs = vfsStream::setup('virtual', null, ['config.php' => '']);
@@ -195,7 +215,10 @@ class InitCommandTest extends TestCase
     public function will_build_scaffold_if_site_already_initialized_and_user_chooses_delete()
     {
         $basic_scaffold = Mockery::spy(BasicScaffoldBuilder::class);
-        $basic_scaffold->shouldReceive('setBase')->andReturn($basic_scaffold);
+        $basic_scaffold->shouldReceive('setBase')
+            ->andReturn($basic_scaffold)
+            ->shouldReceive('setConsole')
+            ->andReturn($basic_scaffold);
         $this->app->instance(BasicScaffoldBuilder::class, $basic_scaffold);
 
         $vfs = vfsStream::setup('virtual', null, ['config.php' => '']);

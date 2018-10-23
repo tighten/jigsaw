@@ -42,14 +42,14 @@ class PresetPackage
         $this->resolvePath();
     }
 
-    public function runInstaller()
+    public function runInstaller($console)
     {
         if (! $this->files->exists($this->path . DIRECTORY_SEPARATOR . 'init.php')) {
             return $this->runDefaultInstaller();
         }
 
         try {
-            $init = $this->customInstaller->install($this->builder);
+            $init = $this->customInstaller->setConsole($console)->install($this->builder);
             $initFile = include($this->path . DIRECTORY_SEPARATOR . 'init.php');
 
             if (is_array($initFile) && count($initFile)) {

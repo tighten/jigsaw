@@ -37,7 +37,7 @@ class ServeCommand extends Command
         $env = $this->input->getArgument('environment');
         $port = $this->input->getOption('port');
 
-        $this->info("Server started on http://localhost:{$port}");
+        $this->console->info("Server started on http://localhost:{$port}");
 
         passthru("php -S localhost:{$port} -t " . escapeshellarg($this->getBuildPath($env)));
     }

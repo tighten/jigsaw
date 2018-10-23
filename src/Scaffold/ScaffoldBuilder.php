@@ -13,6 +13,7 @@ abstract class ScaffoldBuilder
     ];
 
     public $base;
+    protected $console;
     protected $files;
     protected $process;
     protected $composerDependencies = [
@@ -32,6 +33,13 @@ abstract class ScaffoldBuilder
     public function setBase($cwd = null)
     {
         $this->base = $cwd ?: getcwd();
+
+        return $this;
+    }
+
+    public function setConsole($console)
+    {
+        $this->console = $console;
 
         return $this;
     }

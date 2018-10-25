@@ -101,7 +101,7 @@ class PresetPackage
             try {
                 $this->installPackageFromComposer($package);
             } catch (Exception $e) {
-                throw new Exception("The '{$this->name}' preset could not be found. \nRun 'composer require {$package}' first.");
+                throw new Exception("The '{$package}' preset could not be found.");
             }
         }
     }

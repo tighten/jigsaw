@@ -89,35 +89,6 @@ abstract class ScaffoldBuilder
         }
     }
 
-    public function writeConfig($content, $createIfMissing = true)
-    {
-        if (! $content) {
-            return;
-        }
-
-        $config = $this->base . DIRECTORY_SEPARATOR . 'config.php';
-
-        if ($this->files->exists($config)) {
-            $existing = include($config);
-            $content = array_merge(is_array($existing) ? $existing : [], $content);
-        } else if (! $createIfMissing) {
-            return;
-        }
-
-        $this->files->put($config, $this->printConfigArray($content));
-    }
-
-    protected function printConfigArray($content)
-    {
-        $export = preg_replace("/^([ ]*)(.*)/m", '$1$1$2', var_export($content, TRUE));
-        $array = preg_split("/\r\n|\n|\r/", $export);
-        $formatted = preg_replace(["/\s*array\s\($/", "/\)(,)?$/", "/\s=>\s$/"], [NULL, ']$1', ' => ['], $array);
-
-        return '<?php' . PHP_EOL . PHP_EOL . 'return '
-            . join(PHP_EOL, array_merge(array_filter(["["] + $formatted)))
-            . ';';
-    }
-
     protected function createEmptyArchive()
     {
         $archived = $this->base . DIRECTORY_SEPARATOR . 'archived';

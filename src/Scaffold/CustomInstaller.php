@@ -5,7 +5,6 @@ namespace TightenCo\Jigsaw\Scaffold;
 class CustomInstaller
 {
     public $ignore = ['init.php'];
-    protected $config = [];
     protected $from;
     protected $builder;
     protected $console;
@@ -37,7 +36,6 @@ class CustomInstaller
         $this->builder->cacheComposerDotJson();
         $this->builder->copyPresetFiles($files, $this->ignore, $this->from);
         $this->builder->mergeComposerDotJson();
-        $this->builder->updateConfigIfPresent($this->config);
 
         return $this;
     }
@@ -61,14 +59,6 @@ class CustomInstaller
         $this->builder->cacheComposerDotJson();
         $this->builder->deleteSiteFiles($files);
         $this->builder->mergeComposerDotJson();
-
-        return $this;
-    }
-
-    public function config($values)
-    {
-        $this->config = array_merge($this->config, $values);
-        $this->builder->writeConfig($this->config);
 
         return $this;
     }

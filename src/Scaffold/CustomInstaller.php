@@ -4,7 +4,7 @@ namespace TightenCo\Jigsaw\Scaffold;
 
 class CustomInstaller
 {
-    public $ignore = [];
+    public $ignore = ['init.php'];
     protected $config = [];
     protected $from;
     protected $builder;
@@ -90,28 +90,28 @@ class CustomInstaller
         return $this->console->confirm($question, $default);
     }
 
-    public function output($text)
+    public function output($text = '')
     {
         $this->console->write($text);
 
         return $this;
     }
 
-    public function info($text)
+    public function info($text = '')
     {
         $this->console->info($text);
 
         return $this;
     }
 
-    public function error($text)
+    public function error($text = '')
     {
         $this->console->error($text);
 
         return $this;
     }
 
-    public function comment($text)
+    public function comment($text = '')
     {
         $this->console->comment($text);
 

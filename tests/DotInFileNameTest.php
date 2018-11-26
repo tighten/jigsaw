@@ -62,7 +62,7 @@ class DotInFileNameTest extends TestCase
      */
     public function dot_in_filename_is_preserved_for_collection_item_with_default_path_config()
     {
-        $this->app->instance('outputPathResolver', new PrettyOutputPathResolver);
+        $this->app->instance('outputPathResolver', new PrettyOutputPathResolver());
         $pathResolver = $this->app->make(CollectionPathResolver::class);
         $pageVariable = $this->getPageVariableDummy('collection-item-with.dot');
         $outputPath = $pathResolver->link(null, $pageVariable);
@@ -75,7 +75,7 @@ class DotInFileNameTest extends TestCase
      */
     public function dot_in_filename_is_preserved_for_collection_item_with_shorthand_path_config()
     {
-        $this->app->instance('outputPathResolver', new PrettyOutputPathResolver);
+        $this->app->instance('outputPathResolver', new PrettyOutputPathResolver());
         $pathResolver = $this->app->make(CollectionPathResolver::class);
         $pageVariable = $this->getPageVariableDummy('collection-item-with.dot');
         $outputPath = $pathResolver->link('{filename}', $pageVariable);
@@ -88,7 +88,7 @@ class DotInFileNameTest extends TestCase
      */
     public function dot_in_filename_is_preserved_for_collection_item_with_slugified_shorthand_path_config()
     {
-        $this->app->instance('outputPathResolver', new PrettyOutputPathResolver);
+        $this->app->instance('outputPathResolver', new PrettyOutputPathResolver());
         $pathResolver = $this->app->make(CollectionPathResolver::class);
         $pageVariable = $this->getPageVariableDummy('collection-item-with.dot');
         $outputPath = $pathResolver->link('{_filename}', $pageVariable);

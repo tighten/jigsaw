@@ -1,4 +1,6 @@
-<?php namespace TightenCo\Jigsaw\Console;
+<?php
+
+namespace TightenCo\Jigsaw\Console;
 
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -20,8 +22,9 @@ class BuildCommand extends Command
     {
         $this->setName('build')
             ->setDescription('Build your site.')
-            ->addArgument('env', InputArgument::OPTIONAL, "What environment should we use to build?", 'local')
-            ->addOption('pretty', null, InputOption::VALUE_REQUIRED, "Should the site use pretty URLs?", 'true');
+            ->addArgument('env', InputArgument::OPTIONAL, 'What environment should we use to build?', 'local')
+            ->addOption('pretty', null, InputOption::VALUE_REQUIRED, 'Should the site use pretty URLs?', 'true')
+            ->addOption('no-warnings', null, InputOption::VALUE_NONE, 'Should warning messages be suppressed?');
     }
 
     protected function fire()
@@ -31,11 +34,13 @@ class BuildCommand extends Command
         $this->updateBuildPaths($env);
 
         if ($this->input->getOption('pretty') === 'true') {
-            $this->app->instance('outputPathResolver', new PrettyOutputPathResolver);
+            $this->app->instance('outputPathResolver', new PrettyOutputPathResolver());
         }
 
-        $this->app->make(Jigsaw::class)->build($env);
-        $this->console->info('Site built successfully!');
+        if ($this->confirmDestination()) {
+            $this->app->make(Jigsaw::class)->build($env);
+            $this->console->info('Site built successfully!');
+        }
     }
 
     private function includeEnvironmentConfig($env)
@@ -69,5 +74,18 @@ class BuildCommand extends Command
     private function getAbsolutePath($path)
     {
         return $this->app->cwd . '/' . trimPath($path);
+    }
+
+    private function confirmDestination()
+    {
+        if (!$this->input->getOption('no-warnings')) {
+            $customPath = array_get($this->app->config, 'build.destination');
+
+            if ($customPath && strpos($customPath, 'build_') !== 0) {
+                return $this->confirm('Overwrite "' . $this->app->buildPath['destination'] . '"? ');
+            }
+        }
+
+        return true;
     }
 }

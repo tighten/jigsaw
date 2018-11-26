@@ -1,4 +1,6 @@
-<?php namespace TightenCo\Jigsaw\Handlers;
+<?php
+
+namespace TightenCo\Jigsaw\Handlers;
 
 use TightenCo\Jigsaw\File\OutputFile;
 use TightenCo\Jigsaw\PageData;
@@ -51,7 +53,7 @@ class BladeHandler
                     $this->renderWithFrontMatter($file, $pageData) :
                     $this->render($file->getPathName(), $pageData),
                 $pageData
-            )
+            ),
         ]);
     }
 

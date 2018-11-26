@@ -1,4 +1,6 @@
-<?php namespace TightenCo\Jigsaw\Loaders;
+<?php
+
+namespace TightenCo\Jigsaw\Loaders;
 
 use TightenCo\Jigsaw\SiteData;
 

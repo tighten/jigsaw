@@ -248,7 +248,7 @@ class RemoteCollectionsTest extends TestCase
                         [
                             'extends' => '_layouts.master',
                             'content' => 'item content',
-                            'variable' => 'page variable'
+                            'variable' => 'page variable',
                         ],
                     ],
                 ],
@@ -306,7 +306,7 @@ class RemoteCollectionsTest extends TestCase
             'collections' => [
                 'test' => [
                     'extends' => '_layouts.master',
-                    'items' => [ '## item content' ],
+                    'items' => ['## item content'],
                 ],
             ],
         ]);
@@ -427,7 +427,7 @@ class RemoteCollectionsTest extends TestCase
             'collections' => [
                 'test' => [
                     'extends' => '_layouts.master',
-                    'items' => function() {
+                    'items' => function () {
                         return [
                             ['content' => 'item 1'],
                             ['content' => 'item 2'],
@@ -462,7 +462,7 @@ class RemoteCollectionsTest extends TestCase
             'collections' => [
                 'test' => [
                     'extends' => '_layouts.master',
-                    'items' => function() {
+                    'items' => function () {
                         return collect([
                             ['content' => 'item 1'],
                             ['content' => 'item 2'],
@@ -497,11 +497,11 @@ class RemoteCollectionsTest extends TestCase
             'collections' => [
                 'test' => [
                     'extends' => '_layouts.master',
-                    'items' => function() {
+                    'items' => function () {
                         $remote_post = json_decode(file_get_contents('https://jsonplaceholder.typicode.com/posts/1'));
 
                         return [
-                            ['content' => $remote_post->body ],
+                            ['content' => $remote_post->body],
                         ];
                     },
                 ],

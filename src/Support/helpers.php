@@ -10,12 +10,12 @@ use Symfony\Component\VarDumper\VarDumper;
  */
 function leftTrimPath($path)
 {
-    return ltrim($path, " .\\/");
+    return ltrim($path, ' .\\/');
 }
 
 function rightTrimPath($path)
 {
-    return rtrim($path, " .\\/");
+    return rtrim($path, ' .\\/');
 }
 
 function trimPath($path)
@@ -25,13 +25,13 @@ function trimPath($path)
 
 function resolvePath($path)
 {
-    $path = str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $path);
+    $path = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
     $segments = [];
 
     collect(explode(DIRECTORY_SEPARATOR, $path))->filter()->each(function ($part) use (&$segments) {
         if ($part == '..') {
             array_pop($segments);
-        } elseif  ($part != '.') {
+        } elseif ($part != '.') {
             $segments[] = $part;
         }
     });
@@ -83,11 +83,11 @@ function mix($path, $manifestDirectory = 'assets')
         $manifestDirectory = "/{$manifestDirectory}";
     }
 
-    if (file_exists(public_path($manifestDirectory.'/hot'))) {
+    if (file_exists(public_path($manifestDirectory . '/hot'))) {
         return new HtmlString("//localhost:8080{$path}");
     }
 
-    $manifestPath = public_path($manifestDirectory.'/mix-manifest.json');
+    $manifestPath = public_path($manifestDirectory . '/mix-manifest.json');
 
     if (! isset($manifests[$manifestPath])) {
         if (! file_exists($manifestPath)) {
@@ -103,7 +103,7 @@ function mix($path, $manifestDirectory = 'assets')
         throw new InvalidArgumentException("Unable to locate Mix file: {$path}.");
     }
 
-    return new HtmlString($manifestDirectory.$manifest[$path]);
+    return new HtmlString($manifestDirectory . $manifest[$path]);
 }
 
 if (! function_exists('dd')) {

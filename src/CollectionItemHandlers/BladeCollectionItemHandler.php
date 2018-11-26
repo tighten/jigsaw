@@ -1,4 +1,6 @@
-<?php namespace TightenCo\Jigsaw\CollectionItemHandlers;
+<?php
+
+namespace TightenCo\Jigsaw\CollectionItemHandlers;
 
 use TightenCo\Jigsaw\Parsers\FrontMatterParser;
 

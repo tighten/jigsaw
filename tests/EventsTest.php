@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-use TightenCo\Jigsaw\Jigsaw;
 use org\bovigo\vfs\vfsStream;
 
 class EventsTest extends TestCase
@@ -186,7 +185,7 @@ class EventsTest extends TestCase
         });
         $this->buildSite($this->setupSource(), [
             'test_variable' => [
-                'nested' => 'original value'
+                'nested' => 'original value',
             ],
         ]);
 
@@ -474,7 +473,7 @@ class EventsTest extends TestCase
         });
         $this->buildSite($source = $this->setupSource([
             'test' => [
-                'file.blade.php' => '<h1>test</h1>'
+                'file.blade.php' => '<h1>test</h1>',
             ],
         ]));
 
@@ -505,7 +504,7 @@ class EventsTest extends TestCase
         });
         $this->buildSite($source = $this->setupSource([
             'test' => [
-                'file.blade.php' => '<h1>test</h1>'
+                'file.blade.php' => '<h1>test</h1>',
             ],
         ]));
 

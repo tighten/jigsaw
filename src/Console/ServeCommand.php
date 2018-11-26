@@ -1,4 +1,6 @@
-<?php namespace TightenCo\Jigsaw\Console;
+<?php
+
+namespace TightenCo\Jigsaw\Console;
 
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -24,6 +26,13 @@ class ServeCommand extends Command
                 'local'
             )
             ->addOption(
+                'host',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'What hostname or ip address should we use?',
+                'localhost'
+            )
+            ->addOption(
                 'port',
                 'p',
                 InputOption::VALUE_REQUIRED,
@@ -35,11 +44,12 @@ class ServeCommand extends Command
     protected function fire()
     {
         $env = $this->input->getArgument('environment');
+        $host = $this->input->getOption('host');
         $port = $this->input->getOption('port');
 
         $this->console->info("Server started on http://localhost:{$port}");
 
-        passthru("php -S localhost:{$port} -t " . escapeshellarg($this->getBuildPath($env)));
+        passthru("php -S {$host}:{$port} -t " . escapeshellarg($this->getBuildPath($env)));
     }
 
     private function getBuildPath($env)

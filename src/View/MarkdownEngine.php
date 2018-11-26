@@ -1,4 +1,6 @@
-<?php namespace TightenCo\Jigsaw\View;
+<?php
+
+namespace TightenCo\Jigsaw\View;
 
 use Exception;
 use Illuminate\Contracts\View\Engine as EngineInterface;

@@ -1,4 +1,6 @@
-<?php namespace TightenCo\Jigsaw\Collection;
+<?php
+
+namespace TightenCo\Jigsaw\Collection;
 
 use TightenCo\Jigsaw\IterableObject;
 
@@ -17,6 +19,7 @@ class CollectionPaginator
         $totalPages = $chunked->count();
         $numberedPageLinks = $chunked->map(function ($_, $i) use ($file) {
             $page = $i + 1;
+
             return ['number' => $page, 'path' => $this->getPageLink($file, $page)];
         })->pluck('path', 'number');
 

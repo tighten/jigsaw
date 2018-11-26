@@ -1,4 +1,6 @@
-<?php namespace TightenCo\Jigsaw\Console;
+<?php
+
+namespace TightenCo\Jigsaw\Console;
 
 use Symfony\Component\Console\Input\InputArgument;
 use TightenCo\Jigsaw\File\Filesystem;
@@ -44,6 +46,7 @@ class UseCommand extends Command
 
         if (! $this->console->question->confirm("Do you wish to continue? ")) {
             $this->info("\nNo changes were made.\n");
+
             return;
         }
 

@@ -178,5 +178,4 @@ class IterableObjectTest extends TestCase
 
 class ExtendsIterableObject extends IterableObject
 {
-    //
 }

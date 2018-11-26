@@ -1,4 +1,6 @@
-<?php namespace TightenCo\Jigsaw;
+<?php
+
+namespace TightenCo\Jigsaw;
 
 class PageVariable extends IterableObject
 {
@@ -30,7 +32,7 @@ class PageVariable extends IterableObject
             return $this->_meta->path->get($key ?: $this->getExtending());
         }
 
-        return (String) $this->_meta->path;
+        return (string) $this->_meta->path;
     }
 
     public function getPaths()
@@ -44,7 +46,7 @@ class PageVariable extends IterableObject
             return $this->_meta->url->get($key ?: $this->getExtending());
         }
 
-        return (String) $this->_meta->url;
+        return (string) $this->_meta->url;
     }
 
     public function getUrls()

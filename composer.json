@@ -9,6 +9,23 @@
             "email": "adam.wathan@gmail.com"
         }
     ],
+    "require": {
+        "illuminate/container": "^5.6",
+        "illuminate/support": "^5.6",
+        "illuminate/view": "^5.6",
+        "symfony/console": "~3.0|^4.0",
+        "symfony/process": "~3.0|^4.0",
+        "mockery/mockery": "^1.0.0",
+        "mnapoli/front-yaml": "^1.5",
+        "symfony/yaml": "^4.0",
+        "symfony/var-dumper": "^4.0",
+        "erusev/parsedown-extra": "^0.7.1"
+    },
+    "require-dev": {
+        "mikey179/vfsStream": "^1.6",
+        "phpunit/phpunit": "~7.0",
+        "friendsofphp/php-cs-fixer": "^2.12"
+    },
     "autoload": {
         "psr-4": {
             "TightenCo\\Jigsaw\\": "src/"
@@ -22,23 +39,17 @@
             "Tests\\": "tests/"
         }
     },
-    "require": {
-        "illuminate/container": "^5.6",
-        "illuminate/support": "^5.6",
-        "illuminate/view": "^5.6",
-        "symfony/console": "~3.0|^4.0",
-        "symfony/process": "~3.0|^4.0",
-        "mockery/mockery": "^1.0.0",
-        "mnapoli/front-yaml": "^1.5",
-        "symfony/yaml": "^4.0",
-        "symfony/var-dumper": "^4.0",
-        "erusev/parsedown-extra": "^0.7.1"
-    },
+
     "bin": [
         "jigsaw"
     ],
-    "require-dev": {
-        "mikey179/vfsStream": "^1.6",
-        "phpunit/phpunit": "~7.0"
+    "scripts": {
+        "fix" : "php vendor/bin/php-cs-fixer fix --using-cache=no"   
+    },
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true,
+        "preferred-install": "dist",
+        "optimize-autoloader": true
     }
 }

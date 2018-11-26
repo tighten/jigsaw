@@ -1,4 +1,6 @@
-<?php namespace TightenCo\Jigsaw\Collection;
+<?php
+
+namespace TightenCo\Jigsaw\Collection;
 
 use Closure;
 use Illuminate\Support\Collection as BaseCollection;
@@ -10,7 +12,7 @@ class Collection extends BaseCollection
 
     public static function withSettings($settings, $name)
     {
-        $collection = new static;
+        $collection = new static();
         $collection->settings = $settings;
         $collection->name = $name;
 
@@ -72,9 +74,9 @@ class Collection extends BaseCollection
             $value_2 = $this->getValueForSorting($item_2, array_get($setting, 'key'));
 
             if ($value_1 > $value_2) {
-               return $setting['direction'];
+                return $setting['direction'];
             } elseif ($value_1 < $value_2) {
-               return -$setting['direction'];
+                return -$setting['direction'];
             }
         }
     }

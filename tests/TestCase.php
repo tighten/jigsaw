@@ -21,13 +21,13 @@ class TestCase extends BaseTestCase
     public function setUp()
     {
         parent::setUp();
-        require('jigsaw-core.php');
+        require 'jigsaw-core.php';
         $this->app = $container;
         $this->app->buildPath = [
             'source' => $this->sourcePath,
             'destination' => $this->destinationPath,
         ];
-        $this->filesystem = new Filesystem;
+        $this->filesystem = new Filesystem();
         $this->tempPath = $cachePath;
         $this->prepareTempDirectory();
     }

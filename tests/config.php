@@ -7,7 +7,7 @@ return [
         'destination' => 'tests/build-testing',
     ],
     'baseUrl' => 'http://jigsaw-test.dev',
-    'global_array' => [ 1, 2, 3 ],
+    'global_array' => [1, 2, 3],
     'global_variable' => 'some global variable',
     'number' => '98765',
     'perPage' => 4,
@@ -81,6 +81,7 @@ return [
             'author' => 'Default Author',
             'date_formatted' => function ($post) {
                 list($year, $month, $day) = parseDate($post['date']);
+
                 return sprintf('%s/%s/%s', $month, $day, $year);
             },
             'preview' => function ($post, $characters = 75) {
@@ -104,7 +105,7 @@ return [
             'path' => [
                 'web' => 'people/web/{date|Y-m-d}/{_filename}',
                 'test' => 'people/test/{-filename}',
-                'api' => 'people/api.test/{name}/{date|Y-m-d}/{-name}'
+                'api' => 'people/api.test/{name}/{date|Y-m-d}/{-name}',
             ],
             'number_doubled' => function ($data) {
                 return $data->number * 2;

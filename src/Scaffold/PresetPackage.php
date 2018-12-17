@@ -10,8 +10,8 @@ use TightenCo\Jigsaw\Scaffold\PresetScaffoldBuilder;
 class PresetPackage
 {
     const PRESETS = [
-        'blog' => 'tightenco/jigsaw-preset-blog',
-        'docs' => 'tightenco/jigsaw-preset-docs',
+        'blog' => 'tightenco/jigsaw-blog-template',
+        'docs' => 'tightenco/jigsaw-docs-template',
     ];
 
     public $name;

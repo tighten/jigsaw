@@ -23,7 +23,7 @@ class PresetScaffoldBuilderTest extends TestCase
         $vfs = vfsStream::setup('virtual', null, [
             'vendor' => [
                 'tightenco' => [
-                    'jigsaw-preset-blog' => [
+                    'jigsaw-blog-template' => [
                         'init.php' => '',
                     ],
                 ],
@@ -34,7 +34,7 @@ class PresetScaffoldBuilderTest extends TestCase
         $preset->init('blog');
 
         $this->assertEquals(
-            $vfs->url() . '/vendor/tightenco/jigsaw-preset-blog',
+            $vfs->url() . '/vendor/tightenco/jigsaw-blog-template',
             $preset->package->path
         );
     }
@@ -219,7 +219,7 @@ class PresetScaffoldBuilderTest extends TestCase
     /**
      * @test
      */
-    public function preset_package_dependency_is_restored_to_fresh_composer_dot_json_when_archiving_site()
+    public function jigsaw_package_dependency_is_restored_to_fresh_composer_dot_json_when_archiving_site()
     {
         $old_composer = [
             'require' => [
@@ -242,13 +242,20 @@ class PresetScaffoldBuilderTest extends TestCase
 
         $preset->archiveExistingSite();
 
-        $this->assertEquals($old_composer, json_decode($vfs->getChild('composer.json')->getContent(), true));
+        $this->assertEquals(
+            [
+                'require' => [
+                    'tightenco/jigsaw' => '^1.2',
+                ],
+            ],
+            json_decode($vfs->getChild('composer.json')->getContent(), true)
+        );
     }
 
     /**
      * @test
      */
-    public function preset_package_dependency_is_restored_to_fresh_composer_dot_json_when_deleting_site()
+    public function jigsaw__package_dependency_is_restored_to_fresh_composer_dot_json_when_deleting_site()
     {
         $old_composer = [
             'require' => [
@@ -271,6 +278,13 @@ class PresetScaffoldBuilderTest extends TestCase
 
         $preset->deleteExistingSite();
 
-        $this->assertEquals($old_composer, json_decode($vfs->getChild('composer.json')->getContent(), true));
+        $this->assertEquals(
+            [
+                'require' => [
+                    'tightenco/jigsaw' => '^1.2',
+                ],
+            ],
+            json_decode($vfs->getChild('composer.json')->getContent(), true)
+        );
     }
 }

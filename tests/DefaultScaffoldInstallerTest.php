@@ -456,8 +456,8 @@ class DefaultScaffoldInstallerTest extends TestCase
                 'preset-file.php' => '',
                 'composer.json' => json_encode([
                     'require' => [
-                        'test/preset' => '0.5',
                         'tightenco/jigsaw' => '1.0',
+                        'new-package/test' => '3.0'
                     ],
                 ]),
             ],
@@ -473,12 +473,13 @@ class DefaultScaffoldInstallerTest extends TestCase
 
         $this->assertEquals('^1.2', array_get($new_composer, 'require.tightenco/jigsaw'));
         $this->assertEquals('1.0', array_get($new_composer, 'require.test/preset'));
+        $this->assertEquals('3.0', array_get($new_composer, 'require.new-package/test'));
     }
 
     /**
      * @test
      */
-    public function composer_json_is_ignored_if_it_was_not_present_before_preset_was_installed()
+    public function empty_composer_json_is_created_if_it_was_not_present_before_preset_was_installed()
     {
         $vfs = vfsStream::setup('virtual', null, [
             'package' => [
@@ -492,6 +493,11 @@ class DefaultScaffoldInstallerTest extends TestCase
 
         (new DefaultInstaller())->install($builder, ['commands' => [], 'delete' => 'composer.json']);
 
-        $this->assertNull($vfs->getChild('composer.json'));
+        $this->assertEquals(
+            [
+                'require' => [],
+            ],
+            json_decode($vfs->getChild('composer.json')->getContent(), true)
+        );
     }
 }

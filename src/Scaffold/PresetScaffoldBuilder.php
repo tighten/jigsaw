@@ -11,7 +11,6 @@ class PresetScaffoldBuilder extends ScaffoldBuilder
     protected $files;
     protected $process;
     protected $question;
-    protected $composerCache;
 
     public function __construct(Filesystem $files, PresetPackage $package, ProcessRunner $process)
     {
@@ -45,26 +44,14 @@ class PresetScaffoldBuilder extends ScaffoldBuilder
         return $this;
     }
 
-    public function cacheComposerDotJson()
-    {
-        if ($composer = $this->getComposer()) {
-            $this->composerCache = array_get($composer, 'require');
-        }
-
-        return $this;
-    }
-
     public function mergeComposerDotJson()
     {
-        if ($this->composerCache) {
-            if ($newComposer = $this->getComposer()) {
-                $newComposer['require'] = array_merge(array_get($newComposer, 'require', []), $this->composerCache);
-            } else {
-                $newComposer = ['require' => $this->composerCache];
-            }
-
-            $this->writeComposer($newComposer);
-        }
+        $newComposer = collect($this->getComposer())
+            ->forget(['name', 'type', 'version', 'description', 'keywords', 'license', 'authors'])
+            ->toArray()
+            ?? [];
+        $merged = array_merge_recursive($this->composerCache ?? [], $newComposer);
+        $this->writeComposer($this->preferVersionConstraintFromCached($merged));
 
         return $this;
     }
@@ -145,5 +132,14 @@ class PresetScaffoldBuilder extends ScaffoldBuilder
     protected function getPresetFiles($match = [], $ignore = [], $source)
     {
         return $this->files->files($source, $match, $ignore);
+    }
+
+    protected function preferVersionConstraintFromCached($composer)
+    {
+        $require = collect(array_get($composer, 'require'))->mapWithKeys(function ($version, $package) {
+            return [$package => is_array($version) ? $version[0] : $version];
+        });
+
+        return array_set($composer, 'require', $require);
     }
 }

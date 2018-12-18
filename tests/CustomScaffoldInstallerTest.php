@@ -455,7 +455,7 @@ class CustomScaffoldInstallerTest extends TestCase
     /**
      * @test
      */
-    public function composer_json_is_ignored_if_it_was_not_present_before_preset_was_installed()
+    public function empty_composer_json_is_created_if_it_was_not_present_before_preset_was_installed()
     {
         $vfs = vfsStream::setup('virtual', null, [
             'package' => [
@@ -471,7 +471,12 @@ class CustomScaffoldInstallerTest extends TestCase
             ->setup()
             ->copy();
 
-        $this->assertNull($vfs->getChild('composer.json'));
+        $this->assertEquals(
+            [
+                'require' => [],
+            ],
+            json_decode($vfs->getChild('composer.json')->getContent(), true)
+        );
     }
 
     /**

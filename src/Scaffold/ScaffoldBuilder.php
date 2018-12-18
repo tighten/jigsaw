@@ -16,9 +16,7 @@ abstract class ScaffoldBuilder
     protected $console;
     protected $files;
     protected $process;
-    protected $composerDependencies = [
-        'tightenco/jigsaw',
-    ];
+    protected $composerCache = [];
 
     public function __construct(Filesystem $files)
     {
@@ -46,7 +44,7 @@ abstract class ScaffoldBuilder
 
     public function archiveExistingSite()
     {
-        $requires = $this->getComposerRequires();
+        $this->cacheComposerDotJson();
         $this->createEmptyArchive();
 
         collect($this->allBaseFiles())->each(function ($file) use (&$directories) {
@@ -62,15 +60,12 @@ abstract class ScaffoldBuilder
         });
 
         $this->deleteEmptyDirectories($directories);
-
-        if ($requires) {
-            $this->writeComposer(['require' => $requires]);
-        }
+        $this->restoreComposerDotJson();
     }
 
     public function deleteExistingSite()
     {
-        $requires = $this->getComposerRequires();
+        $this->cacheComposerDotJson();
 
         collect($this->allBaseFiles())->each(function ($file) use (&$directories) {
             $source = $file->getPathName();
@@ -83,9 +78,22 @@ abstract class ScaffoldBuilder
         });
 
         $this->deleteEmptyDirectories($directories);
+        $this->restoreComposerDotJson();
+    }
 
-        if ($requires) {
-            $this->writeComposer(['require' => $requires]);
+    public function cacheComposerDotJson()
+    {
+        $this->composerCache = $this->getComposer() ?? [];
+
+        return $this;
+    }
+
+    public function restoreComposerDotJson()
+    {
+        $composer = collect($this->composerCache)->only(['require', 'repositories']);
+
+        if ($composer->count() && $jigsaw_require = collect($composer->get('require'))->only('tightenco/jigsaw')) {
+            $this->writeComposer($composer->put('require', $jigsaw_require));
         }
     }
 
@@ -113,16 +121,6 @@ abstract class ScaffoldBuilder
             self::IGNORE_DIRECTORIES,
             $ignore_dotfiles = false
         );
-    }
-
-    protected function getComposerRequires()
-    {
-        if ($composer = $this->getComposer()) {
-            return collect($this->composerDependencies)
-                ->mapWithKeys(function ($dependency) use ($composer) {
-                    return [$dependency => array_get($composer, 'require.' . $dependency)];
-                })->filter()->toArray();
-        }
     }
 
     protected function getComposer()

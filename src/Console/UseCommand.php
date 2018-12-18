@@ -35,7 +35,7 @@ class UseCommand extends Command
             ->setDescription('Switch between using Mix (with Webpack) and Elixir (with Gulp) for compiling assets.')
             ->addArgument(
                 'tool',
-                InputArgument::OPTIONAL,
+                InputArgument::REQUIRED,
                 'What tool should we use to compile assets for this project?'
             );
     }
@@ -44,7 +44,7 @@ class UseCommand extends Command
     {
         $this->comment("\nThis will replace your current `package.json` file, and any existing Gulp or Webpack configurations.");
 
-        if (! $this->confirm('Do you wish to continue? ')) {
+        if (! $this->console->question->confirm("Do you wish to continue? ")) {
             $this->info("\nNo changes were made.\n");
 
             return;
@@ -58,21 +58,21 @@ class UseCommand extends Command
             $this->scaffoldElixir();
         }
 
-        $this->info("Run `npm install` to update your Node.js dependencies.\n");
+        $this->console->info("Run `npm install` to update your Node.js dependencies.\n");
     }
 
     private function scaffoldMix()
     {
         $this->deleteFiles($this->elixirFiles);
         $this->files->copyDirectory(__DIR__ . '/../../stubs/mix', $this->base);
-        $this->info("\nNow using Laravel Mix and Webpack to compile assets.");
+        $this->console->info("\nNow using Laravel Mix and Webpack to compile assets.");
     }
 
     private function scaffoldElixir()
     {
         $this->deleteFiles($this->mixFiles);
         $this->files->copyDirectory(__DIR__ . '/../../stubs/elixir', $this->base);
-        $this->info("\nNow using Laravel Elixir and Gulp to compile assets.");
+        $this->console->info("\nNow using Laravel Elixir and Gulp to compile assets.");
     }
 
     private function deleteFiles($files)

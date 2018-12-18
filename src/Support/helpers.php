@@ -2,6 +2,7 @@
 
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
+use Symfony\Component\VarDumper\VarDumper;
 
 /**
  * Remove slashes (including backslashes on Windows),
@@ -103,4 +104,15 @@ function mix($path, $manifestDirectory = 'assets')
     }
 
     return new HtmlString($manifestDirectory . $manifest[$path]);
+}
+
+if (! function_exists('dd')) {
+    function dd(...$args)
+    {
+        foreach ($args as $x) {
+            (new VarDumper)->dump($x);
+        }
+
+        die(1);
+    }
 }

@@ -1,3 +1,5 @@
-/vendor
 .DS_Store
-_tmp/
+/_tmp/
+/build_local/
+/node_modules/
+/vendor/

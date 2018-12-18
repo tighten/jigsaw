@@ -50,7 +50,7 @@ class CollectionDataLoader
             return collect();
         }
 
-        return collect($this->filesystem->allFiles($path))
+        return collect($this->filesystem->files($path))
             ->reject(function ($file) {
                 return starts_with($file->getFilename(), '_');
             })->map(function ($file) {

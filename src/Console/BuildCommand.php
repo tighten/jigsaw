@@ -39,7 +39,7 @@ class BuildCommand extends Command
 
         if ($this->confirmDestination()) {
             $this->app->make(Jigsaw::class)->build($env);
-            $this->info('Site built successfully!');
+            $this->console->info('Site built successfully!');
         }
     }
 

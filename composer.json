@@ -39,12 +39,11 @@
             "Tests\\": "tests/"
         }
     },
-
     "bin": [
         "jigsaw"
     ],
     "scripts": {
-        "fix" : "php vendor/bin/php-cs-fixer fix --using-cache=no"   
+        "fix" : "php vendor/bin/php-cs-fixer fix --using-cache=no"
     },
     "prefer-stable": true,
     "config": {

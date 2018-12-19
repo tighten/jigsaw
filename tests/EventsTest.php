@@ -293,7 +293,7 @@ class EventsTest extends TestCase
         });
         $files = $this->setupSource([
             '_posts' => [
-                'post_1.md' => 'Content for post #1',
+                'post_1.md' => "---\ntitle: 'Title for post #1'\n---\nContent for post #1",
             ],
         ]);
         $config = collect([
@@ -310,9 +310,7 @@ class EventsTest extends TestCase
             ],
         ]);
         $this->buildSite($files, $config);
-
-        $this->assertEquals('<p>Content for post #1</p>', $result->post_1->getContent());
-        $this->assertEquals('<p>Content for post #2</p>', $result->post_2->getContent());
+        $this->assertEquals('Title for post #1', $result->post_1->title);
         $this->assertEquals('Title for post #2', $result->post_2->title);
     }
 

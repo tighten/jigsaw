@@ -4,12 +4,15 @@ namespace TightenCo\Jigsaw\File;
 
 use Illuminate\Filesystem\Filesystem as BaseFilesystem;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
 class Filesystem extends BaseFilesystem
 {
     public function getFile($directory, $filename)
     {
-        return iterator_to_array(Finder::create()->files()->name($filename)->in($directory), false)[0];
+        $filePath = rtrim($directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $filename;
+
+        return new SplFileInfo($filePath, $directory, $filename);
     }
 
     public function putWithDirectories($file_path, $contents)

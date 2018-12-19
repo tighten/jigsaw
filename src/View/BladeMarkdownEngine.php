@@ -39,7 +39,7 @@ class BladeMarkdownEngine implements EngineInterface
     protected function evaluateMarkdown($content)
     {
         try {
-            return $this->markdown->parseMarkdown($content)->content;
+            return $this->markdown->parseMarkdown($content);
         } catch (Exception $e) {
             $this->handleViewException($e);
         } catch (Throwable $e) {

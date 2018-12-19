@@ -3,6 +3,7 @@
 namespace TightenCo\Jigsaw\Handlers;
 
 use TightenCo\Jigsaw\File\OutputFile;
+use TightenCo\Jigsaw\File\TemporaryFilesystem;
 use TightenCo\Jigsaw\PageData;
 use TightenCo\Jigsaw\Parsers\FrontMatterParser;
 use TightenCo\Jigsaw\View\ViewRenderer;
@@ -14,7 +15,7 @@ class BladeHandler
     private $view;
     private $hasFrontMatter;
 
-    public function __construct($temporaryFilesystem, FrontMatterParser $parser, ViewRenderer $viewRenderer)
+    public function __construct(TemporaryFilesystem $temporaryFilesystem, FrontMatterParser $parser, ViewRenderer $viewRenderer)
     {
         $this->temporaryFilesystem = $temporaryFilesystem;
         $this->parser = $parser;
@@ -77,12 +78,12 @@ class BladeHandler
 
     private function renderWithFrontMatter($file, $pageData)
     {
-        return $this->temporaryFilesystem->put(
+        $bladeFilePath = $this->temporaryFilesystem->put(
             $this->parser->getBladeContent($file->getContents()),
-            function ($path) use ($pageData) {
-                return $this->render($path, $pageData);
-            },
-        '.blade.php'
+            $file->getPathname(),
+            '.blade.php'
         );
+
+        return $this->render($bladeFilePath, $pageData);
     }
 }

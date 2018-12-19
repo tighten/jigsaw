@@ -21,7 +21,7 @@ class DefaultHandler
 
     public function handle($file, $pageData)
     {
-        return [
+        return collect([
             new CopyFile(
                 $file->getPathName(),
                 $file->getRelativePath(),
@@ -29,6 +29,6 @@ class DefaultHandler
                 $file->getExtension(),
                 $pageData
             ),
-        ];
+        ]);
     }
 }

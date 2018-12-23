@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use \Mockery;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\File\InputFile;
@@ -34,6 +35,7 @@ class TestCase extends BaseTestCase
     public function tearDown()
     {
         $this->cleanupTempDirectory();
+        Mockery::close();
         parent::tearDown();
     }
 
@@ -63,6 +65,7 @@ class TestCase extends BaseTestCase
 
     protected function buildSiteData($vfs, $config = [])
     {
+        $this->app->consoleOutput->setup($verbosity = -1);
         $loader = $this->app->make(DataLoader::class);
         $siteData = $loader->loadSiteData($config);
         $collectionData = $loader->loadCollectionData($siteData, $vfs->url() . '/source');
@@ -72,15 +75,15 @@ class TestCase extends BaseTestCase
 
     public function buildSite($vfs, $config = [])
     {
+        $this->app->consoleOutput->setup($verbosity = -1);
         $this->app->config = collect($config);
         $this->app->buildPath = [
             'source' => $vfs->url() . '/source',
             'destination' => $vfs->url() . '/build',
         ];
 
-        $jigsaw = $this->app->make(Jigsaw::class);
-        $jigsaw->build('test');
-
-        return $jigsaw;
+        return $this->app
+            ->make(Jigsaw::class)
+            ->build('test');
     }
 }

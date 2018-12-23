@@ -34,9 +34,4 @@ class BladeCollectionItemHandler
     {
         return;
     }
-
-    private function getCollectionName($file)
-    {
-        return substr($file->topLevelDirectory(), 1);
-    }
 }

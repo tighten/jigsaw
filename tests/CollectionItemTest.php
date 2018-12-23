@@ -4,7 +4,10 @@ namespace Tests;
 
 class CollectionItemTest extends TestCase
 {
-    public function test_collection_item_contents_are_returned_when_item_is_referenced_as_a_string()
+    /**
+     * @test
+     */
+    public function collection_item_contents_are_returned_when_item_is_referenced_as_a_string()
     {
         $config = collect(['collections' => ['collection' => []]]);
         $yaml_header = implode("\n", ['---', 'section: content', '---']);

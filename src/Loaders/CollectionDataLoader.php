@@ -12,18 +12,20 @@ use TightenCo\Jigsaw\PageVariable;
 
 class CollectionDataLoader
 {
-    private $collectionSettings;
     private $filesystem;
-    private $handlers;
-    private $pageSettings;
+    private $consoleOutput;
     private $pathResolver;
+    private $handlers;
     private $source;
+    private $pageSettings;
+    private $collectionSettings;
 
-    public function __construct($filesystem, $pathResolver, $handlers = [])
+    public function __construct($filesystem, $consoleOutput, $pathResolver, $handlers = [])
     {
         $this->filesystem = $filesystem;
         $this->pathResolver = $pathResolver;
         $this->handlers = collect($handlers);
+        $this->consoleOutput = $consoleOutput;
     }
 
     public function load($siteData, $source)
@@ -31,15 +33,18 @@ class CollectionDataLoader
         $this->source = $source;
         $this->pageSettings = $siteData->page;
         $this->collectionSettings = collect($siteData->collections);
+        $this->consoleOutput->startProgressBar('collections');
 
-        return $this->collectionSettings->map(function ($collectionSettings, $collectionName) {
+        $collections = $this->collectionSettings->map(function ($collectionSettings, $collectionName) {
             $collection = Collection::withSettings($collectionSettings, $collectionName);
             $collection->loadItems($this->buildCollection($collection));
 
             return $collection->updateItems($collection->map(function ($item) {
                 return $this->addCollectionItemContent($item);
             }));
-        })->all();
+        });
+
+        return $collections->all();
     }
 
     private function buildCollection($collection)
@@ -50,12 +55,16 @@ class CollectionDataLoader
             return collect();
         }
 
-        return collect($this->filesystem->allFiles($path))
+        return collect($this->filesystem->files($path))
             ->reject(function ($file) {
                 return starts_with($file->getFilename(), '_');
+            })->tap(function ($files) {
+                $this->consoleOutput->progressBar('collections')->addSteps($files->count());
             })->map(function ($file) {
-                return new InputFile($file, $this->source);
+                return new InputFile($file);
             })->map(function ($inputFile) use ($collection) {
+                $this->consoleOutput->progressBar('collections')->advance();
+
                 return $this->buildCollectionItem($inputFile, $collection);
             });
     }

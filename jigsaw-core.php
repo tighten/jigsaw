@@ -12,10 +12,12 @@ use Mni\FrontYAML\Bridge\Symfony\SymfonyYAMLParser;
 use Mni\FrontYAML\Markdown\MarkdownParser;
 use Mni\FrontYAML\Parser;
 use Mni\FrontYAML\YAML\YAMLParser;
-use TightenCo\Jigsaw\Collection\CollectionPaginator;
 use TightenCo\Jigsaw\CollectionItemHandlers\BladeCollectionItemHandler;
 use TightenCo\Jigsaw\CollectionItemHandlers\MarkdownCollectionItemHandler;
+use TightenCo\Jigsaw\Collection\CollectionPaginator;
+use TightenCo\Jigsaw\Console\ConsoleOutput;
 use TightenCo\Jigsaw\Events\EventBus;
+use TightenCo\Jigsaw\Events\FakeDispatcher;
 use TightenCo\Jigsaw\File\BladeDirectivesFile;
 use TightenCo\Jigsaw\File\ConfigFile;
 use TightenCo\Jigsaw\File\Filesystem;
@@ -51,7 +53,7 @@ $container = new Container;
 
 $container->instance('cwd', getcwd());
 
-$cachePath = $container['cwd'] . '/_tmp';
+$cachePath = $container['cwd'] . '/cache';
 $bootstrapFile = $container['cwd'] . '/bootstrap.php';
 
 $container->instance('buildPath', [
@@ -61,6 +63,10 @@ $container->instance('buildPath', [
 
 $container->bind('config', function ($c) {
     return (new ConfigFile($c['cwd'] . '/config.php'))->config;
+});
+
+$container->singleton('consoleOutput', function ($c) {
+    return new ConsoleOutput();
 });
 
 $container->bind('outputPathResolver', function ($c) {
@@ -79,10 +85,11 @@ $container->bind(FrontMatterParser::class, function ($c) {
     return new FrontMatterParser($c[Parser::class]);
 });
 
-$container->bind(Factory::class, function ($c) use ($cachePath) {
+$bladeCompiler = new BladeCompiler(new Filesystem, $cachePath);
+
+$container->bind(Factory::class, function ($c) use ($cachePath, $bladeCompiler) {
     $resolver = new EngineResolver;
 
-    $bladeCompiler = new BladeCompiler(new Filesystem, $cachePath);
     $compilerEngine = new CompilerEngine($bladeCompiler, new Filesystem);
 
     $resolver->register('blade', function () use ($compilerEngine) {
@@ -105,19 +112,19 @@ $container->bind(Factory::class, function ($c) use ($cachePath) {
 
     $finder = new FileViewFinder(new Filesystem, [$cachePath, $c['buildPath']['source']]);
 
-    return new Factory($resolver, $finder, Mockery::mock(Dispatcher::class)->shouldIgnoreMissing());
+    return new Factory($resolver, $finder, new FakeDispatcher());
 });
 
-$container->bind(ViewRenderer::class, function ($c) {
-    return new ViewRenderer($c[Factory::class]);
-});
-
-$container->bind(BladeHandler::class, function ($c) {
-    return new BladeHandler($c[TemporaryFilesystem::class], $c[FrontMatterParser::class], $c[ViewRenderer::class]);
+$container->bind(ViewRenderer::class, function ($c) use ($bladeCompiler) {
+    return new ViewRenderer($c[Factory::class], $bladeCompiler);
 });
 
 $container->bind(TemporaryFilesystem::class, function ($c) use ($cachePath) {
     return new TemporaryFilesystem($cachePath);
+});
+
+$container->bind(BladeHandler::class, function ($c) {
+    return new BladeHandler($c[TemporaryFilesystem::class], $c[FrontMatterParser::class], $c[ViewRenderer::class]);
 });
 
 $container->bind(MarkdownHandler::class, function ($c) {
@@ -129,7 +136,7 @@ $container->bind(CollectionPathResolver::class, function ($c ) {
 });
 
 $container->bind(CollectionDataLoader::class, function ($c) {
-    return new CollectionDataLoader(new Filesystem, $c[CollectionPathResolver::class], [
+    return new CollectionDataLoader(new Filesystem, $c['consoleOutput'], $c[CollectionPathResolver::class], [
         $c[MarkdownCollectionItemHandler::class],
         $c[BladeCollectionItemHandler::class],
     ]);
@@ -155,7 +162,7 @@ $container->bind(PaginatedPageHandler::class, function ($c) {
 });
 
 $container->bind(SiteBuilder::class, function ($c) use ($cachePath) {
-    return new SiteBuilder(new Filesystem, $cachePath, $c['outputPathResolver'], [
+    return new SiteBuilder(new Filesystem, $cachePath, $c['outputPathResolver'], $c['consoleOutput'], [
         $c[CollectionItemHandler::class],
         new IgnoredHandler,
         $c[PaginatedPageHandler::class],

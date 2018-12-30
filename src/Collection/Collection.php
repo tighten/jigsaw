@@ -12,7 +12,7 @@ class Collection extends BaseCollection
     public $settings;
     public $name;
 
-    public static function withSettings($settings, $name)
+    public static function withSettings($settings, $name): Collection
     {
         $collection = new static();
         $collection->settings = $settings;

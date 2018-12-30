@@ -6,7 +6,7 @@ namespace TightenCo\Jigsaw;
 
 class SiteData extends IterableObject
 {
-    public static function build($config)
+    public static function build($config): SiteData
     {
         $siteData = new static();
         $siteData->putIterable('collections', $config->get('collections'));

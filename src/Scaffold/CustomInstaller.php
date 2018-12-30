@@ -12,28 +12,28 @@ class CustomInstaller
     protected $console;
     protected $question;
 
-    public function setConsole($console)
+    public function setConsole($console): CustomInstaller
     {
         $this->console = $console;
 
         return $this;
     }
 
-    public function install(ScaffoldBuilder $builder)
+    public function install(ScaffoldBuilder $builder): CustomInstaller
     {
         $this->builder = $builder;
 
         return $this;
     }
 
-    public function setup()
+    public function setup(): CustomInstaller
     {
         $this->builder->buildBasicScaffold();
 
         return $this;
     }
 
-    public function copy($files = null)
+    public function copy($files = null): CustomInstaller
     {
         $this->builder->cacheComposerDotJson();
         $this->builder->copyPresetFiles($files, $this->ignore, $this->from);
@@ -42,21 +42,21 @@ class CustomInstaller
         return $this;
     }
 
-    public function from($from = null)
+    public function from($from = null): CustomInstaller
     {
         $this->from = $from;
 
         return $this;
     }
 
-    public function ignore($files)
+    public function ignore($files): CustomInstaller
     {
         $this->ignore = array_merge($this->ignore, collect($files)->toArray());
 
         return $this;
     }
 
-    public function delete($files = null)
+    public function delete($files = null): CustomInstaller
     {
         $this->builder->cacheComposerDotJson();
         $this->builder->deleteSiteFiles($files);
@@ -65,45 +65,45 @@ class CustomInstaller
         return $this;
     }
 
-    public function run($commands = null)
+    public function run($commands = null): CustomInstaller
     {
         $this->builder->runCommands($commands);
 
         return $this;
     }
 
-    public function ask($question, $default = null, $options = null, $errorMessage = null)
+    public function ask($question, $default = null, $options = null, $errorMessage = null): string
     {
         return $this->console->ask($question, $default, $options, $errorMessage);
     }
 
-    public function confirm($question, $default = null, $errorMessage = null)
+    public function confirm($question, $default = null, $errorMessage = null): bool
     {
         return $this->console->confirm($question, $default);
     }
 
-    public function output($text = '')
+    public function output($text = ''): CustomInstaller
     {
         $this->console->write($text);
 
         return $this;
     }
 
-    public function info($text = '')
+    public function info($text = ''): CustomInstaller
     {
         $this->console->info($text);
 
         return $this;
     }
 
-    public function error($text = '')
+    public function error($text = ''): CustomInstaller
     {
         $this->console->error($text);
 
         return $this;
     }
 
-    public function comment($text = '')
+    public function comment($text = ''): CustomInstaller
     {
         $this->console->comment($text);
 

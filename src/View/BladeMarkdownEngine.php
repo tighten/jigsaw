@@ -20,14 +20,14 @@ class BladeMarkdownEngine implements EngineInterface
         $this->markdown = $markdown;
     }
 
-    public function get($path, array $data = [])
+    public function get($path, array $data = []): string
     {
         $content = $this->evaluateBlade($path, $data);
 
         return $this->evaluateMarkdown($content);
     }
 
-    protected function evaluateBlade($path, $data)
+    protected function evaluateBlade($path, $data): string
     {
         try {
             return $this->blade->get($path, $data);
@@ -38,7 +38,7 @@ class BladeMarkdownEngine implements EngineInterface
         }
     }
 
-    protected function evaluateMarkdown($content)
+    protected function evaluateMarkdown($content): string
     {
         try {
             return $this->markdown->parseMarkdown($content);
@@ -49,7 +49,7 @@ class BladeMarkdownEngine implements EngineInterface
         }
     }
 
-    protected function handleViewException(Exception $e)
+    protected function handleViewException(Exception $e): void
     {
         throw $e;
     }

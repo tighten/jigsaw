@@ -31,28 +31,28 @@ class ViewRenderer
         $this->addExtensions();
     }
 
-    public function getExtension($bladeViewPath)
+    public function getExtension($bladeViewPath): string
     {
         return strtolower(pathinfo($this->finder->find($bladeViewPath), PATHINFO_EXTENSION));
     }
 
-    public function render($path, $data)
+    public function render($path, $data): string
     {
         return $this->viewFactory->file($path, $data->all())->render();
     }
 
-    public function renderString($string)
+    public function renderString($string): string
     {
         return $this->bladeCompiler->compileString($string);
     }
 
-    private function addExtensions()
+    private function addExtensions(): void
     {
-        collect($this->extensionEngines)->each(function ($engine, $extension) {
+        collect($this->extensionEngines)->each(function ($engine, $extension): void {
             $this->viewFactory->addExtension($extension, $engine);
         });
 
-        collect($this->bladeExtensions)->each(function ($extension) {
+        collect($this->bladeExtensions)->each(function ($extension): void {
             $this->viewFactory->addExtension($extension, 'php');
             $this->viewFactory->addExtension('blade.' . $extension, 'blade');
         });

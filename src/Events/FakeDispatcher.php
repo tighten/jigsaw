@@ -8,39 +8,40 @@ use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 
  class FakeDispatcher implements DispatcherContract
  {
-     public function listen($events, $listener)
+     public function listen($events, $listener): void
      {
      }
 
-     public function hasListeners($eventName)
+     public function hasListeners($eventName): bool
      {
      }
 
-     public function subscribe($subscriber)
+     public function subscribe($subscriber): void
      {
      }
 
-     public function until($event, $payload = [])
+     public function until($event, $payload = []): ?array
+     {
+         return null;
+     }
+
+     public function dispatch($event, $payload = [], $halt = false): ?array
      {
      }
 
-     public function dispatch($event, $payload = [], $halt = false)
+     public function push($event, $payload = []): void
      {
      }
 
-     public function push($event, $payload = [])
+     public function flush($event): void
      {
      }
 
-     public function flush($event)
+     public function forget($event): void
      {
      }
 
-     public function forget($event)
-     {
-     }
-
-     public function forgetPushed()
+     public function forgetPushed(): void
      {
      }
  }

@@ -14,7 +14,7 @@ class ParsedownExtraParser implements MarkdownParser
         $this->parser = $parsedownExtra ?: new ParsedownExtra();
     }
 
-    public function parse($markdown)
+    public function parse($markdown): string
     {
         return $this->parser->parse($markdown);
     }

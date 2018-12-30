@@ -24,7 +24,7 @@ class BuildCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('build')
             ->setDescription('Build your site.')
@@ -33,7 +33,7 @@ class BuildCommand extends Command
             ->addOption('cache', 'c', InputOption::VALUE_OPTIONAL, 'Should a cache be used when building the site?', 'false');
     }
 
-    protected function fire()
+    protected function fire(): void
     {
         $startTime = microtime(true);
         $env = $this->input->getArgument('env');
@@ -65,24 +65,24 @@ class BuildCommand extends Command
         }
     }
 
-    private function useCache()
+    private function useCache(): bool
     {
         return $this->input->getOption('cache') !== 'false' || $this->app->config->get('cache');
     }
 
-    private function includeEnvironmentConfig($env)
+    private function includeEnvironmentConfig($env): void
     {
         $environmentConfigPath = $this->getAbsolutePath("config.{$env}.php");
         $environmentConfig = (new ConfigFile($environmentConfigPath))->config;
 
         $this->app->config = collect($this->app->config)
             ->merge(collect($environmentConfig))
-            ->filter(function ($item) {
+            ->filter(function ($item): bool {
                 return $item !== null;
             });
     }
 
-    private function updateBuildPaths($env)
+    private function updateBuildPaths($env): void
     {
         $this->app->buildPath = [
             'source' => $this->getBuildPath('source', $env),
@@ -90,7 +90,7 @@ class BuildCommand extends Command
         ];
     }
 
-    private function getBuildPath($pathType, $env)
+    private function getBuildPath($pathType, $env): string
     {
         $customPath = array_get($this->app->config, 'build.' . $pathType);
         $buildPath = $customPath ? $this->getAbsolutePath($customPath) : $this->app->buildPath[$pathType];
@@ -98,12 +98,12 @@ class BuildCommand extends Command
         return str_replace('{env}', $env, $buildPath);
     }
 
-    private function getAbsolutePath($path)
+    private function getAbsolutePath($path): string
     {
         return $this->app->cwd . '/' . trimPath($path);
     }
 
-    private function confirmDestination()
+    private function confirmDestination(): bool
     {
         if (! $this->input->getOption('quiet')) {
             $customPath = array_get($this->app->config, 'build.destination');

@@ -15,12 +15,12 @@ class DataLoader
         $this->collectionDataLoader = $collectionDataLoader;
     }
 
-    public function loadSiteData($config)
+    public function loadSiteData($config): SiteData
     {
         return SiteData::build($config);
     }
 
-    public function loadCollectionData($siteData, $source)
+    public function loadCollectionData($siteData, $source): array
     {
         return $this->collectionDataLoader->load($siteData, $source);
     }

@@ -10,7 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 abstract class Command extends SymfonyCommand
 {
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): ?int
     {
         $this->input = $input;
         $this->output = $output;
@@ -20,8 +20,9 @@ abstract class Command extends SymfonyCommand
             $this->getHelper('question')
         );
 
-        return (int) $this->fire();
+        $this->fire();
+        return 0;
     }
 
-    abstract protected function fire();
+    abstract protected function fire(): void;
 }

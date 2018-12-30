@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace TightenCo\Jigsaw\File;
 
+use TightenCo\Jigsaw\PageData;
+
 class OutputFile
 {
     private $path;
@@ -23,38 +25,38 @@ class OutputFile
         $this->page = $page;
     }
 
-    public function path()
+    public function path(): string
     {
         return $this->path;
     }
 
-    public function name()
+    public function name(): string
     {
         return $this->name;
     }
 
-    public function extension()
+    public function extension(): string
     {
         return $this->extension;
     }
 
-    public function contents()
+    public function contents(): string
     {
         return $this->contents;
     }
 
-    public function data()
+    public function data(): PageData
     {
         return $this->data;
     }
 
-    public function page()
+    public function page(): int
     {
         return $this->page;
     }
 
-    public function putContents($destination)
+    public function putContents($destination): bool
     {
-        return file_put_contents($destination, $this->contents);
+        return file_put_contents($destination, $this->contents) !== false;
     }
 }

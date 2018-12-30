@@ -17,17 +17,17 @@ class FrontMatterParser
         $this->parser = $parser;
     }
 
-    public function parseMarkdown($content)
+    public function parseMarkdown($content): string
     {
         return $this->parse($content, true)->content;
     }
 
-    public function parseMarkdownWithoutFrontMatter($content)
+    public function parseMarkdownWithoutFrontMatter($content): string
     {
         return $this->parser->parse($this->extractContent($content))->getContent();
     }
 
-    public function parse($content, $parseMarkdown = false)
+    public function parse($content, $parseMarkdown = false): FrontMatterParser
     {
         $document = $this->parser->parse($content, $parseMarkdown);
         $this->frontMatter = $document->getYAML() !== null ? $document->getYAML() : [];
@@ -36,17 +36,17 @@ class FrontMatterParser
         return $this;
     }
 
-    public function getFrontMatter($content)
+    public function getFrontMatter($content): array
     {
         return $this->parse($content)->frontMatter;
     }
 
-    public function getContent($content)
+    public function getContent($content): string
     {
         return $this->parse($content, false)->content;
     }
 
-    public function getBladeContent($content)
+    public function getBladeContent($content): string
     {
         $parsed = $this->parse($content);
         $extendsFromFrontMatter = array_get($parsed->frontMatter, 'extends');
@@ -56,7 +56,7 @@ class FrontMatterParser
             $parsed->content;
     }
 
-    public function getExtendsFromBladeContent($content)
+    public function getExtendsFromBladeContent($content): ?string
     {
         preg_match('/@extends\s*\(\s*[\"|\']\s*(.+?)\s*[\"|\']\s*\)/', $content, $matches);
 
@@ -66,7 +66,7 @@ class FrontMatterParser
     /**
      * Adapted from Mni\FrontYAML.
      */
-    public function extractContent($content)
+    public function extractContent($content): string
     {
         $regex = '~^('
             . '---'                                  // $matches[1] start separator
@@ -77,7 +77,7 @@ class FrontMatterParser
         return preg_match($regex, $content, $matches) === 1 ? ltrim($matches[4]) : $content;
     }
 
-    private function addExtendsToBladeContent($extends, $bladeContent)
+    private function addExtendsToBladeContent($extends, $bladeContent): string
     {
         return "@extends('$extends')\n" . $bladeContent;
     }

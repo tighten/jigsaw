@@ -22,12 +22,12 @@ class MarkdownEngine implements EngineInterface
         $this->sourcePath = $sourcePath;
     }
 
-    public function get($path, array $data = [])
+    public function get($path, array $data = []): string
     {
         return $this->evaluateMarkdown($path);
     }
 
-    protected function evaluateMarkdown($path)
+    protected function evaluateMarkdown($path): string
     {
         try {
             $file = $this->file->get($path);
@@ -42,7 +42,7 @@ class MarkdownEngine implements EngineInterface
         }
     }
 
-    protected function handleViewException(Exception $e)
+    protected function handleViewException(Exception $e): void
     {
         throw $e;
     }

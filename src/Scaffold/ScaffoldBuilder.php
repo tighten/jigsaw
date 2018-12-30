@@ -26,30 +26,30 @@ abstract class ScaffoldBuilder
         $this->setBase();
     }
 
-    abstract public function init($preset);
+    abstract public function init($preset): ScaffoldBuilder;
 
-    abstract public function build();
+    abstract public function build(): ScaffoldBuilder;
 
-    public function setBase($cwd = null)
+    public function setBase($cwd = null): ScaffoldBuilder
     {
         $this->base = $cwd ?: getcwd();
 
         return $this;
     }
 
-    public function setConsole($console)
+    public function setConsole($console): ScaffoldBuilder
     {
         $this->console = $console;
 
         return $this;
     }
 
-    public function archiveExistingSite()
+    public function archiveExistingSite(): void
     {
         $this->cacheComposerDotJson();
         $this->createEmptyArchive();
 
-        collect($this->allBaseFiles())->each(function ($file) use (&$directories) {
+        collect($this->allBaseFiles())->each(function ($file) use (&$directories): void {
             $source = $file->getPathName();
             $destination = $this->base . DIRECTORY_SEPARATOR . 'archived' . DIRECTORY_SEPARATOR . $file->getRelativePathName();
 
@@ -65,11 +65,11 @@ abstract class ScaffoldBuilder
         $this->restoreComposerDotJson();
     }
 
-    public function deleteExistingSite()
+    public function deleteExistingSite(): void
     {
         $this->cacheComposerDotJson();
 
-        collect($this->allBaseFiles())->each(function ($file) use (&$directories) {
+        collect($this->allBaseFiles())->each(function ($file) use (&$directories): void {
             $source = $file->getPathName();
 
             if ($this->files->isDirectory($file)) {
@@ -83,14 +83,14 @@ abstract class ScaffoldBuilder
         $this->restoreComposerDotJson();
     }
 
-    public function cacheComposerDotJson()
+    public function cacheComposerDotJson(): ScaffoldBuilder
     {
         $this->composerCache = $this->getComposer() ?? [];
 
         return $this;
     }
 
-    public function restoreComposerDotJson()
+    public function restoreComposerDotJson(): void
     {
         $composer = collect($this->composerCache)->only(['require', 'repositories']);
 
@@ -99,23 +99,23 @@ abstract class ScaffoldBuilder
         }
     }
 
-    protected function createEmptyArchive()
+    protected function createEmptyArchive(): void
     {
         $archived = $this->base . DIRECTORY_SEPARATOR . 'archived';
         $this->files->deleteDirectory($archived);
         $this->files->makeDirectory($archived, 0755, true);
     }
 
-    protected function deleteEmptyDirectories($directories)
+    protected function deleteEmptyDirectories($directories): void
     {
-        collect($directories)->each(function ($directory) {
+        collect($directories)->each(function ($directory): void {
             if ($this->files->isEmptyDirectory($directory)) {
                 $this->files->deleteDirectory($directory);
             }
         });
     }
 
-    protected function allBaseFiles()
+    protected function allBaseFiles(): array
     {
         return $this->files->filesAndDirectories(
             $this->base,
@@ -125,16 +125,18 @@ abstract class ScaffoldBuilder
         );
     }
 
-    protected function getComposer()
+    protected function getComposer(): ?array
     {
         $composer = $this->base . DIRECTORY_SEPARATOR . 'composer.json';
 
         if ($this->files->exists($composer)) {
             return json_decode($this->files->get($composer), true);
         }
+
+        return null;
     }
 
-    protected function writeComposer($content = null)
+    protected function writeComposer($content = null): void
     {
         if ($content) {
             $this->files->put(

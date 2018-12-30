@@ -21,39 +21,39 @@ class Collection extends BaseCollection
         return $collection;
     }
 
-    public function loadItems($items)
+    public function loadItems($items): Collection
     {
-        $sortedItems = $this->defaultSort($items)->keyBy(function ($item) {
+        $sortedItems = $this->defaultSort($items)->keyBy(function ($item): string {
             return $item->getFilename();
         });
 
         return $this->updateItems($this->addAdjacentItems($sortedItems));
     }
 
-    public function updateItems($items)
+    public function updateItems($items): Collection
     {
         $this->items = $this->getArrayableItems($items);
 
         return $this;
     }
 
-    private function addAdjacentItems($items)
+    private function addAdjacentItems($items): BaseCollection
     {
         $count = $items->count();
-        $adjacentItems = $items->map(function ($item) {
+        $adjacentItems = $items->map(function ($item): string {
             return $item->getFilename();
         });
         $previousItems = $adjacentItems->prepend(null)->take($count);
         $nextItems = $adjacentItems->push(null)->take(-$count);
 
-        return $items->each(function ($item) use ($previousItems, $nextItems) {
+        return $items->each(function ($item) use ($previousItems, $nextItems): void {
             $item->_meta->put('previousItem', $previousItems->shift())->put('nextItem', $nextItems->shift());
         });
     }
 
-    private function defaultSort($items)
+    private function defaultSort($items): BaseCollection
     {
-        $sortSettings = collect(array_get($this->settings, 'sort'))->map(function ($setting) {
+        $sortSettings = collect(array_get($this->settings, 'sort'))->map(function ($setting): array {
             return [
                 'key' => ltrim($setting, '-+'),
                 'direction' => $setting[0] === '-' ? -1 : 1,
@@ -64,12 +64,12 @@ class Collection extends BaseCollection
             return $items;
         }
 
-        return $items->sort(function ($item_1, $item_2) use ($sortSettings) {
+        return $items->sort(function ($item_1, $item_2) use ($sortSettings): int {
             return $this->compareItems($item_1, $item_2, $sortSettings);
         });
     }
 
-    private function compareItems($item_1, $item_2, $sortSettings)
+    private function compareItems($item_1, $item_2, $sortSettings): ?int
     {
         foreach ($sortSettings as $setting) {
             $value_1 = $this->getValueForSorting($item_1, array_get($setting, 'key'));
@@ -83,7 +83,7 @@ class Collection extends BaseCollection
         }
     }
 
-    private function getValueForSorting($item, $key)
+    private function getValueForSorting($item, $key): string
     {
         return strtolower($item->$key instanceof Closure ? $item->$key($item) : $item->$key);
     }

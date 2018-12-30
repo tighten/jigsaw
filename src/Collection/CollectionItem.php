@@ -18,44 +18,44 @@ class CollectionItem extends PageVariable
         return $item;
     }
 
-    public function getNext()
+    public function getNext(): ?CollectionItem
     {
         return $this->_meta->nextItem ? $this->collection->get($this->_meta->nextItem) : null;
     }
 
-    public function getPrevious()
+    public function getPrevious(): ?CollectionItem
     {
         return $this->_meta->previousItem ? $this->collection->get($this->_meta->previousItem) : null;
     }
 
-    public function getFirst()
+    public function getFirst(): CollectionItem
     {
         return $this->collection->first();
     }
 
-    public function getLast()
+    public function getLast(): CollectionItem
     {
         return $this->collection->last();
     }
 
-    public function setContent($content)
+    public function setContent($content): void
     {
         $this->_content = $content;
     }
 
-    public function getContent()
+    public function getContent(): string
     {
         return is_callable($this->_content) ?
             call_user_func($this->_content) :
             $this->_content;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return (string) $this->getContent();
     }
 
-    protected function missingHelperError($functionName)
+    protected function missingHelperError($functionName): string
     {
         return 'No function named "' . $functionName . '" for the collection "' . $this->_meta->collectionName . '" was found in the file "config.php".';
     }

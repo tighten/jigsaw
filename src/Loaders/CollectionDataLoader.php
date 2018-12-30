@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace TightenCo\Jigsaw\Loaders;
 
 use Exception;
+use Illuminate\Support\Collection as BaseCollection;
 use TightenCo\Jigsaw\Collection\Collection;
 use TightenCo\Jigsaw\Collection\CollectionItem;
 use TightenCo\Jigsaw\File\InputFile;
+use TightenCo\Jigsaw\Handlers\DefaultHandler;
 use TightenCo\Jigsaw\IterableObject;
 use TightenCo\Jigsaw\IterableObjectWithDefault;
 use TightenCo\Jigsaw\PageVariable;
@@ -30,18 +32,18 @@ class CollectionDataLoader
         $this->consoleOutput = $consoleOutput;
     }
 
-    public function load($siteData, $source)
+    public function load($siteData, $source): array
     {
         $this->source = $source;
         $this->pageSettings = $siteData->page;
         $this->collectionSettings = collect($siteData->collections);
         $this->consoleOutput->startProgressBar('collections');
 
-        $collections = $this->collectionSettings->map(function ($collectionSettings, $collectionName) {
+        $collections = $this->collectionSettings->map(function ($collectionSettings, $collectionName): BaseCollection {
             $collection = Collection::withSettings($collectionSettings, $collectionName);
             $collection->loadItems($this->buildCollection($collection));
 
-            return $collection->updateItems($collection->map(function ($item) {
+            return $collection->updateItems($collection->map(function ($item): CollectionItem {
                 return $this->addCollectionItemContent($item);
             }));
         });
@@ -49,7 +51,7 @@ class CollectionDataLoader
         return $collections->all();
     }
 
-    private function buildCollection($collection)
+    private function buildCollection($collection): BaseCollection
     {
         $path = "{$this->source}/_{$collection->name}";
 
@@ -58,20 +60,20 @@ class CollectionDataLoader
         }
 
         return collect($this->filesystem->files($path))
-            ->reject(function ($file) {
+            ->reject(function ($file): bool {
                 return starts_with($file->getFilename(), '_');
-            })->tap(function ($files) {
+            })->tap(function ($files): void {
                 $this->consoleOutput->progressBar('collections')->addSteps($files->count());
-            })->map(function ($file) {
+            })->map(function ($file): InputFile {
                 return new InputFile($file);
-            })->map(function ($inputFile) use ($collection) {
+            })->map(function ($inputFile) use ($collection): CollectionItem {
                 $this->consoleOutput->progressBar('collections')->advance();
 
                 return $this->buildCollectionItem($inputFile, $collection);
             });
     }
 
-    private function buildCollectionItem($file, $collection)
+    private function buildCollectionItem($file, $collection): CollectionItem
     {
         $data = $this->pageSettings
             ->merge(['section' => 'content'])
@@ -84,7 +86,7 @@ class CollectionDataLoader
         return CollectionItem::build($collection, $data);
     }
 
-    private function addCollectionItemContent($item)
+    private function addCollectionItemContent(CollectionItem $item): CollectionItem
     {
         $file = $this->filesystem->getFile($item->getSource(), $item->getFilename() . '.' . $item->getExtension());
 
@@ -95,9 +97,9 @@ class CollectionDataLoader
         return $item;
     }
 
-    private function getHandler($file)
+    private function getHandler($file): ?DefaultHandler // TODO use interface of class
     {
-        $handler = $this->handlers->first(function ($handler) use ($file) {
+        $handler = $this->handlers->first(function ($handler) use ($file): bool {
             return $handler->shouldHandle($file);
         });
 
@@ -108,7 +110,7 @@ class CollectionDataLoader
         return $handler;
     }
 
-    private function getMetaData($file, $collection, $data)
+    private function getMetaData($file, $collection, $data): array
     {
         $filename = $file->getFilenameWithoutExtension();
         $baseUrl = $data->baseUrl;
@@ -120,16 +122,16 @@ class CollectionDataLoader
         return compact('filename', 'baseUrl', 'extension', 'collection', 'collectionName', 'source');
     }
 
-    private function buildUrls($paths)
+    private function buildUrls($paths): ?IterableObjectWithDefault
     {
-        $urls = collect($paths)->map(function ($path) {
+        $urls = collect($paths)->map(function ($path): string {
             return rightTrimPath($this->pageSettings->get('baseUrl')) . '/' . trimPath($path);
         });
 
         return $urls->count() ? new IterableObjectWithDefault($urls) : null;
     }
 
-    private function getPath($data)
+    private function getPath($data): ?IterableObjectWithDefault
     {
         $links = $this->pathResolver->link($data->path, new PageVariable($data));
 

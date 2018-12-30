@@ -14,7 +14,7 @@ class ConfigFile
         $this->convertStringCollectionsToArray();
     }
 
-    protected function convertStringCollectionsToArray()
+    protected function convertStringCollectionsToArray(): void
     {
         $collections = array_get($this->config, 'collections');
 

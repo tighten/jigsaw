@@ -19,12 +19,12 @@ class ProgressBar
         $this->message = $message;
     }
 
-    public function getMessage()
+    public function getMessage(): ?string
     {
         return $this->message ? '<comment>' . $this->message . '</comment>' : null;
     }
 
-    public function start()
+    public function start(): ProgressBar
     {
         if ($this->consoleOutput->isVerbose()) {
             $this->progressBar->setFormat('normal');
@@ -34,14 +34,14 @@ class ProgressBar
         return $this;
     }
 
-    public function addSteps($count)
+    public function addSteps($count): ProgressBar
     {
         $this->progressBar->setMaxSteps($this->progressBar->getMaxSteps() + $count);
 
         return $this;
     }
 
-    public function advance()
+    public function advance(): ProgressBar
     {
         $this->progressBar->advance();
 

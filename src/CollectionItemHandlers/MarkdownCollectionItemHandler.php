@@ -15,19 +15,19 @@ class MarkdownCollectionItemHandler
         $this->parser = $parser;
     }
 
-    public function shouldHandle($file)
+    public function shouldHandle($file): bool
     {
         return in_array($file->getExtension(), ['markdown', 'md', 'mdown']);
     }
 
-    public function getItemVariables($file)
+    public function getItemVariables($file): array
     {
         return $this->parser->parse($file->getContents())->frontMatter;
     }
 
-    public function getItemContent($file)
+    public function getItemContent($file): callable
     {
-        return function () use ($file) {
+        return function () use ($file): string {
             return $this->parser->parseMarkdown($file->getContents());
         };
     }

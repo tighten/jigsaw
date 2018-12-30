@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TightenCo\Jigsaw\Collection;
 
+use Illuminate\Support\Collection;
 use TightenCo\Jigsaw\IterableObject;
 
 class CollectionPaginator
@@ -15,17 +16,17 @@ class CollectionPaginator
         $this->outputPathResolver = $outputPathResolver;
     }
 
-    public function paginate($file, $items, $perPage)
+    public function paginate($file, $items, $perPage): Collection
     {
         $chunked = collect($items)->chunk($perPage);
         $totalPages = $chunked->count();
-        $numberedPageLinks = $chunked->map(function ($_, $i) use ($file) {
+        $numberedPageLinks = $chunked->map(function ($_, $i) use ($file): array {
             $page = $i + 1;
 
             return ['number' => $page, 'path' => $this->getPageLink($file, $page)];
         })->pluck('path', 'number');
 
-        return $chunked->map(function ($items, $i) use ($file, $totalPages, $numberedPageLinks) {
+        return $chunked->map(function ($items, $i) use ($file, $totalPages, $numberedPageLinks): IterableObject {
             $currentPage = $i + 1;
 
             return new IterableObject([
@@ -42,7 +43,7 @@ class CollectionPaginator
         });
     }
 
-    private function getPageLink($file, $pageNumber)
+    private function getPageLink($file, $pageNumber): string
     {
         $link = $this->outputPathResolver->link(
             $file->getRelativePath(),

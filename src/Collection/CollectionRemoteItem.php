@@ -19,19 +19,19 @@ class CollectionRemoteItem
         $this->prefix = $collectionName . '_';
     }
 
-    public function getContent()
+    public function getContent(): string
     {
         return is_array($this->item) ?
             $this->getHeader() . array_get($this->item, 'content') :
             $this->item;
     }
 
-    public function getFilename()
+    public function getFilename(): string
     {
         return array_get($this->item, 'filename', $this->prefix . ($this->index + 1)) . '.md';
     }
 
-    protected function getHeader()
+    protected function getHeader(): ?string
     {
         $variables = collect($this->item)->except('content')->toArray();
 

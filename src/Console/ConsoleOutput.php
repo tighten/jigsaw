@@ -5,20 +5,21 @@ declare(strict_types=1);
 namespace TightenCo\Jigsaw\Console;
 
 use Symfony\Component\Console\Output\ConsoleOutput as SymfonyConsoleOutput;
+use Symfony\Component\Console\Output\ConsoleSectionOutput;
 
 class ConsoleOutput extends SymfonyConsoleOutput
 {
     protected $progressBars;
     protected $sections;
 
-    public function setup($verbosity)
+    public function setup($verbosity): void
     {
         $this->setVerbosity($verbosity);
         $this->setupSections();
         $this->setupProgressBars();
     }
 
-    protected function setupSections()
+    protected function setupSections(): void
     {
         $this->sections = collect([
             'footer' => $this->section(),
@@ -26,7 +27,7 @@ class ConsoleOutput extends SymfonyConsoleOutput
             'message' => $this->section(),
             'progress' => $this->section(),
             'header' => $this->section(),
-        ])->map(function ($section) {
+        ])->map(function ($section): ConsoleSectionOutput {
             return $this->section();
         });
 
@@ -34,7 +35,7 @@ class ConsoleOutput extends SymfonyConsoleOutput
         $this->sections['footer']->writeln('');
     }
 
-    protected function setupProgressBars()
+    protected function setupProgressBars(): void
     {
         $this->progressBars = [
             'collections' => $this->getProgressBar('Loading collections...'),
@@ -42,19 +43,19 @@ class ConsoleOutput extends SymfonyConsoleOutput
         ];
     }
 
-    protected function getProgressBar($message = null)
+    protected function getProgressBar($message = null): ProgressBar // TODO use interface of class
     {
         return $this->isVerbose() ?
             new ProgressBar($this, $message, $this->sections['progress']) :
             new NullProgressBar($this, $message, $this->sections['progress']);
     }
 
-    public function progressBar($name)
+    public function progressBar($name): ?ProgressBar // TODO use interface of class
     {
         return $this->progressBars[$name];
     }
 
-    public function startProgressBar($name, $steps = null)
+    public function startProgressBar($name, $steps = null): void
     {
         $this->sections['progress']->clear();
         $progressBar = $this->progressBar($name);
@@ -66,7 +67,7 @@ class ConsoleOutput extends SymfonyConsoleOutput
         $progressBar->addSteps($steps)->start();
     }
 
-    public function writeIntro($env, $useCache = false, $cacheExisted = false)
+    public function writeIntro($env, $useCache = false, $cacheExisted = false): ConsoleOutput
     {
         if ($useCache) {
             if ($cacheExisted) {
@@ -89,7 +90,7 @@ class ConsoleOutput extends SymfonyConsoleOutput
         return $this;
     }
 
-    public function writeWritingFiles()
+    public function writeWritingFiles(): ConsoleOutput
     {
         $this->sections['progress']->clear();
         $this->sections['message']->overwrite('<fg=yellow>Writing files to destination...</>');
@@ -97,7 +98,7 @@ class ConsoleOutput extends SymfonyConsoleOutput
         return $this;
     }
 
-    public function writeTime($time, $useCache = false, $cacheExisted = false)
+    public function writeTime($time, $useCache = false, $cacheExisted = false): ConsoleOutput
     {
         if ($useCache) {
             if ($cacheExisted) {
@@ -119,7 +120,7 @@ class ConsoleOutput extends SymfonyConsoleOutput
         return $this;
     }
 
-    public function writeConclusion()
+    public function writeConclusion(): ConsoleOutput
     {
         $this->sections['message']->overwrite('<fg=green>Site build successfully!</>');
 

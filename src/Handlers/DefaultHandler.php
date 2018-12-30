@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TightenCo\Jigsaw\Handlers;
 
+use Illuminate\Support\Collection;
 use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\File\CopyFile;
 
@@ -16,12 +17,12 @@ class DefaultHandler
         $this->files = $files;
     }
 
-    public function shouldHandle($file)
+    public function shouldHandle($file): bool
     {
         return true;
     }
 
-    public function handle($file, $pageData)
+    public function handle($file, $pageData): Collection
     {
         return collect([
             new CopyFile(

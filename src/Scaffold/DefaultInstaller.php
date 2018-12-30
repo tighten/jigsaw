@@ -22,7 +22,7 @@ class DefaultInstaller
     protected $ignore;
     protected $builder;
 
-    public function install(ScaffoldBuilder $builder, $settings = [])
+    public function install(ScaffoldBuilder $builder, $settings = []): void
     {
         $this->builder = $builder;
         $this->delete = array_get($settings, 'delete', []);
@@ -32,7 +32,7 @@ class DefaultInstaller
         $this->execute();
     }
 
-    public function execute()
+    public function execute(): PresetScaffoldBuilder
     {
         return $this->builder
             ->buildBasicScaffold()

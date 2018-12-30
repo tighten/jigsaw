@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TightenCo\Jigsaw;
 
+use Illuminate\Support\Collection;
 use TightenCo\Jigsaw\File\Filesystem;
 
 class Jigsaw
@@ -24,7 +25,7 @@ class Jigsaw
         $this->siteBuilder = $siteBuilder;
     }
 
-    public function build($env, $useCache = false)
+    public function build($env, $useCache = false): Jigsaw
     {
         $this->env = $env;
         $this->siteData = $this->dataLoader->loadSiteData($this->app->config);
@@ -37,7 +38,7 @@ class Jigsaw
             ->cleanup();
     }
 
-    protected function buildCollections()
+    protected function buildCollections(): Jigsaw
     {
         $this->remoteItemLoader->write($this->siteData->collections, $this->getSourcePath());
         $collectionData = $this->dataLoader->loadCollectionData($this->siteData, $this->getSourcePath());
@@ -46,7 +47,7 @@ class Jigsaw
         return $this;
     }
 
-    protected function buildSite($useCache)
+    protected function buildSite($useCache): Jigsaw
     {
         $this->outputPaths = $this->siteBuilder
             ->setUseCache($useCache)
@@ -59,48 +60,54 @@ class Jigsaw
         return $this;
     }
 
-    protected function cleanup()
+    protected function cleanup(): Jigsaw
     {
         $this->remoteItemLoader->cleanup();
 
         return $this;
     }
 
-    protected function fireEvent($event)
+    protected function fireEvent($event): Jigsaw
     {
         $this->app->events->fire($event, $this);
 
         return $this;
     }
 
-    public function getSiteData()
+    public function getSiteData(): SiteData
     {
         return $this->siteData;
     }
 
-    public function getEnvironment()
+    public function getEnvironment(): string
     {
         return $this->env;
     }
 
+    /**
+     * @return mixed
+     */
     public function getCollection($collection)
     {
         return $this->siteData->get($collection);
     }
 
-    public function getCollections()
+    public function getCollections(): Collection
     {
         return $this->siteData->get('collections') ?
             $this->siteData->get('collections')->keys() :
             $this->siteData->except('page');
     }
 
+    /**
+     * @return mixed
+     */
     public function getConfig($key = null)
     {
         return $key ? data_get($this->siteData->page, $key) : $this->siteData->page;
     }
 
-    public function setConfig($key, $value)
+    public function setConfig($key, $value): Jigsaw
     {
         $this->siteData->set($key, $value);
         $this->siteData->page->set($key, $value);
@@ -108,12 +115,12 @@ class Jigsaw
         return $this;
     }
 
-    public function getSourcePath()
+    public function getSourcePath(): string
     {
         return $this->app->buildPath['source'];
     }
 
-    public function setSourcePath($path)
+    public function setSourcePath($path): Jigsaw
     {
         $this->app->buildPath = [
             'source' => $path,
@@ -123,12 +130,12 @@ class Jigsaw
         return $this;
     }
 
-    public function getDestinationPath()
+    public function getDestinationPath(): string
     {
         return $this->app->buildPath['destination'];
     }
 
-    public function setDestinationPath($path)
+    public function setDestinationPath($path): Jigsaw
     {
         $this->app->buildPath = [
             'source' => $this->app->buildPath['source'],
@@ -138,33 +145,36 @@ class Jigsaw
         return $this;
     }
 
-    public function getFilesystem()
+    public function getFilesystem(): Filesystem
     {
         return $this->app->make(Filesystem::class);
     }
 
-    public function getOutputPaths()
+    /**
+     * @return string[]
+     */
+    public function getOutputPaths(): array
     {
         return $this->outputPaths ?: [];
     }
 
-    public function readSourceFile($fileName)
+    public function readSourceFile($fileName): string
     {
         return $this->getFilesystem()->get($this->getSourcePath() . '/' . $fileName);
     }
 
-    public function writeSourceFile($fileName, $contents)
+    public function writeSourceFile($fileName, $contents): void
     {
-        return $this->getFilesystem()->putWithDirectories($this->getSourcePath() . '/' . $fileName, $contents);
+        $this->getFilesystem()->putWithDirectories($this->getSourcePath() . '/' . $fileName, $contents);
     }
 
-    public function readOutputFile($fileName)
+    public function readOutputFile($fileName): string
     {
         return $this->getFilesystem()->get($this->getDestinationPath() . '/' . $fileName);
     }
 
-    public function writeOutputFile($fileName, $contents)
+    public function writeOutputFile($fileName, $contents): void
     {
-        return $this->getFilesystem()->putWithDirectories($this->getDestinationPath() . '/' . $fileName, $contents);
+        $this->getFilesystem()->putWithDirectories($this->getDestinationPath() . '/' . $fileName, $contents);
     }
 }

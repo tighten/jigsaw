@@ -19,22 +19,22 @@ class NullProgressBar
         }
     }
 
-    public function getMessage()
+    public function getMessage(): ?string
     {
         return $this->message ? '<comment>' . $this->message . '</comment>' : null;
     }
 
-    public function start()
+    public function start(): NullProgressBar
     {
         return $this;
     }
 
-    public function addSteps($count)
+    public function addSteps($count): NullProgressBar
     {
         return $this;
     }
 
-    public function advance()
+    public function advance(): NullProgressBar
     {
         return $this;
     }

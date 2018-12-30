@@ -14,7 +14,7 @@ class CopyFile extends OutputFile
         parent::__construct($path, $name, $extension, null, $data, $page);
     }
 
-    public function putContents($destination)
+    public function putContents($destination): bool
     {
         return copy($this->source, $destination);
     }

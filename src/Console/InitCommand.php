@@ -10,6 +10,7 @@ use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\Scaffold\BasicScaffoldBuilder;
 use TightenCo\Jigsaw\Scaffold\InstallerCommandException;
 use TightenCo\Jigsaw\Scaffold\PresetScaffoldBuilder;
+use TightenCo\Jigsaw\Scaffold\ScaffoldBuilder;
 
 class InitCommand extends Command
 {
@@ -27,14 +28,14 @@ class InitCommand extends Command
         parent::__construct();
     }
 
-    public function setBase($cwd = null)
+    public function setBase($cwd = null): InitCommand
     {
         $this->base = $cwd ?: getcwd();
 
         return $this;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('init')
             ->setDescription('Scaffold a new Jigsaw project.')
@@ -45,7 +46,7 @@ class InitCommand extends Command
             );
     }
 
-    protected function fire()
+    protected function fire(): void
     {
         $scaffold = $this->getScaffold()->setBase($this->base);
 
@@ -101,20 +102,20 @@ class InitCommand extends Command
         }
     }
 
-    protected function getScaffold()
+    protected function getScaffold(): ScaffoldBuilder
     {
         return $this->input->getArgument('preset') ?
             $this->presetScaffold :
             $this->basicScaffold;
     }
 
-    protected function initHasAlreadyBeenRun()
+    protected function initHasAlreadyBeenRun(): bool
     {
         return $this->files->exists($this->base . '/config.php') ||
             $this->files->exists($this->base . '/source');
     }
 
-    protected function askUserWhatToDoWithExistingSite()
+    protected function askUserWhatToDoWithExistingSite(): string
     {
         $this->console
             ->line()

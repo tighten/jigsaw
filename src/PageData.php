@@ -14,23 +14,23 @@ class PageData extends IterableObject
         return $page_data;
     }
 
-    public function setPageVariableToCollectionItem($collectionName, $itemName)
+    public function setPageVariableToCollectionItem($collectionName, $itemName): void
     {
         $this->put('page', $this->get($collectionName)->get($itemName));
     }
 
-    public function setExtending($templateToExtend)
+    public function setExtending($templateToExtend): void
     {
         $this->page->_meta->put('extending', $templateToExtend);
     }
 
-    public function setPagePath($path)
+    public function setPagePath($path): void
     {
         $this->page->_meta->put('path', $path);
         $this->updatePageUrl();
     }
 
-    public function updatePageUrl()
+    public function updatePageUrl(): void
     {
         $this->page->_meta->put('url', rightTrimPath($this->page->getBaseUrl()) . '/' . trimPath($this->page->getPath()));
     }

@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace TightenCo\Jigsaw;
 
+use Illuminate\Support\Collection;
+
 class PageVariable extends IterableObject
 {
-    public function addVariables($variables)
+    public function addVariables($variables): void
     {
         $this->items = collect($this->items)->merge($this->makeIterable($variables))->all();
     }
@@ -28,7 +30,7 @@ class PageVariable extends IterableObject
         }
     }
 
-    public function getPath($key = null)
+    public function getPath($key = null): string
     {
         if (($key || $this->_meta->extending) && $this->_meta->path instanceof IterableObject) {
             return $this->_meta->path->get($key ?: $this->getExtending());
@@ -37,12 +39,12 @@ class PageVariable extends IterableObject
         return (string) $this->_meta->path;
     }
 
-    public function getPaths()
+    public function getPaths(): Collection
     {
         return $this->_meta->path;
     }
 
-    public function getUrl($key = null)
+    public function getUrl($key = null): string
     {
         if (($key || $this->_meta->extending) && $this->_meta->path instanceof IterableObject) {
             return $this->_meta->url->get($key ?: $this->getExtending());
@@ -51,12 +53,12 @@ class PageVariable extends IterableObject
         return (string) $this->_meta->url;
     }
 
-    public function getUrls()
+    public function getUrls(): Collection
     {
         return $this->_meta->url;
     }
 
-    protected function missingHelperError($functionName)
+    protected function missingHelperError($functionName): string
     {
         return 'No function named "' . $functionName . '" was found in the file "config.php".';
     }

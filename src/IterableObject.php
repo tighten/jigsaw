@@ -11,6 +11,9 @@ use Illuminate\Support\HigherOrderCollectionProxy;
 
 class IterableObject extends BaseCollection implements ArrayAccess
 {
+    /**
+     * @return HigherOrderCollectionProxy|mixed
+     */
     public function __get($key)
     {
         if (! $this->offsetExists($key) && in_array($key, static::$proxies)) {
@@ -20,6 +23,9 @@ class IterableObject extends BaseCollection implements ArrayAccess
         return $this->get($key);
     }
 
+    /**
+     * @return mixed
+     */
     public function get($key, $default = null)
     {
         if ($this->offsetExists($key)) {
@@ -29,6 +35,9 @@ class IterableObject extends BaseCollection implements ArrayAccess
         return value($default);
     }
 
+    /**
+     * @return mixed
+     */
     public function offsetGet($key)
     {
         if (! isset($this->items[$key])) {
@@ -39,7 +48,7 @@ class IterableObject extends BaseCollection implements ArrayAccess
         return $this->getElement($key);
     }
 
-    public function set($key, $value)
+    public function set($key, $value): void
     {
         data_set($this->items, $key, $this->isArrayable($value) ? $this->makeIterable($value) : $value);
 
@@ -48,17 +57,20 @@ class IterableObject extends BaseCollection implements ArrayAccess
         }
     }
 
-    public function putIterable($key, $element)
+    public function putIterable($key, $element): void
     {
         $this->put($key, $this->isArrayable($element) ? $this->makeIterable($element) : $element);
     }
 
+    /**
+     * @return mixed
+     */
     protected function getElement($key)
     {
         return $this->items[$key];
     }
 
-    protected function makeIterable($items)
+    protected function makeIterable($items): IterableObject
     {
         if ($items instanceof IterableObject) {
             return $items;
@@ -69,7 +81,7 @@ class IterableObject extends BaseCollection implements ArrayAccess
         }));
     }
 
-    protected function isArrayable($element)
+    protected function isArrayable($element): bool
     {
         return is_array($element) || $element instanceof BaseCollection;
     }

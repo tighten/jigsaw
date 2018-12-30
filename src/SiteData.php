@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace TightenCo\Jigsaw;
 
+use Illuminate\Support\Collection;
+
 class SiteData extends IterableObject
 {
     public static function build($config): SiteData
@@ -15,9 +17,9 @@ class SiteData extends IterableObject
         return $siteData;
     }
 
-    public function addCollectionData($collectionData)
+    public function addCollectionData($collectionData): Collection
     {
-        collect($collectionData)->each(function ($collection, $collectionName) {
+        collect($collectionData)->each(function ($collection, $collectionName): Collection {
             return $this->put($collectionName, new PageVariable($collection));
         });
 

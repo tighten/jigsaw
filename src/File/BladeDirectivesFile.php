@@ -21,9 +21,9 @@ class BladeDirectivesFile
         }
     }
 
-    public function register()
+    public function register(): void
     {
-        collect($this->directives)->each(function ($callback, $directive) {
+        collect($this->directives)->each(function ($callback, $directive): void {
             $this->bladeCompiler->directive($directive, $callback);
         });
     }

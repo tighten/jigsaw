@@ -24,34 +24,34 @@ class ConsoleSession
         $this->question = $question;
     }
 
-    public function write($string)
+    public function write($string): ConsoleSession
     {
         $this->output->writeln($string);
 
         return $this;
     }
 
-    public function info($string)
+    public function info($string): ConsoleSession
     {
         return $this->write("<info>{$string}</info>");
     }
 
-    public function error($string)
+    public function error($string): ConsoleSession
     {
         return $this->write("<fg=red>{$string}</>");
     }
 
-    public function comment($string)
+    public function comment($string): ConsoleSession
     {
         return $this->write("<comment>{$string}</comment>");
     }
 
-    public function line()
+    public function line(): ConsoleSession
     {
         return $this->write('');
     }
 
-    public function ask($question, $default = null, $choices = null, $errorMessage = '')
+    public function ask($question, $default = null, $choices = null, $errorMessage = ''): string
     {
         $defaultPrompt = $default ? '<fg=blue>(default <fg=white>' . $default . '</>) </>' : '';
 
@@ -69,7 +69,7 @@ class ConsoleSession
         );
     }
 
-    public function confirm($question, $default = false, $errorMessage = '')
+    public function confirm($question, $default = false, $errorMessage = ''): bool
     {
         $defaultPrompt = $default ?
             ' <fg=blue>(default <fg=white>y</>)</> ' :

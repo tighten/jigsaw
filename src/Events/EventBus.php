@@ -19,14 +19,14 @@ class EventBus
         $this->afterBuild = collect();
     }
 
-    public function __call($event, $arguments)
+    public function __call($event, $arguments): void
     {
         if (isset($this->{$event})) {
             $this->{$event} = $this->{$event}->merge(collect($arguments[0]));
         }
     }
 
-    public function fire($event, Jigsaw $jigsaw)
+    public function fire($event, Jigsaw $jigsaw): void
     {
         $this->{$event}->each(function ($task) use ($jigsaw) {
             if (is_callable($task)) {

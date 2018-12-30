@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace TightenCo\Jigsaw\Scaffold;
 
 use Symfony\Component\Process\Process;
-use TightenCo\Jigsaw\Scaffold\InstallerCommandException;
 
 class ProcessRunner
 {
@@ -14,7 +15,7 @@ class ProcessRunner
         });
 
         if ($commands) {
-            echo("\n");
+            echo "\n";
         }
 
         return $this;
@@ -22,7 +23,7 @@ class ProcessRunner
 
     protected function runCommand($command)
     {
-        echo("\n> " . $command . "\n");
+        echo "\n> " . $command . "\n";
         $process = new Process($command);
         $process->setTty(true)->run();
 

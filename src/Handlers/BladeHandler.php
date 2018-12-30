@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace TightenCo\Jigsaw\Handlers;
 
 use TightenCo\Jigsaw\File\OutputFile;

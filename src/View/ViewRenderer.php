@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace TightenCo\Jigsaw\View;
 
 use Illuminate\View\Compilers\BladeCompiler;

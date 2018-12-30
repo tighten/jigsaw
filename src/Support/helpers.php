@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use Symfony\Component\VarDumper\VarDumper;
@@ -110,7 +112,7 @@ if (! function_exists('dd')) {
     function dd(...$args)
     {
         foreach ($args as $x) {
-            (new VarDumper)->dump($x);
+            (new VarDumper())->dump($x);
         }
 
         die(1);

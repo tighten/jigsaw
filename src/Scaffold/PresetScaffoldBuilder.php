@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace TightenCo\Jigsaw\Scaffold;
 
 use TightenCo\Jigsaw\File\Filesystem;
-use TightenCo\Jigsaw\Scaffold\ProcessRunner;
 
 class PresetScaffoldBuilder extends ScaffoldBuilder
 {
@@ -65,7 +66,7 @@ class PresetScaffoldBuilder extends ScaffoldBuilder
 
                     if ($this->files->isDirectory($file)) {
                         $this->files->deleteDirectory($source);
-                    } else if ($this->files->isFile($file)) {
+                    } elseif ($this->files->isFile($file)) {
                         $this->files->delete($source);
                     }
                 });
@@ -114,7 +115,7 @@ class PresetScaffoldBuilder extends ScaffoldBuilder
     {
         $path = $file->getRelativePath();
 
-        if ( $path && ! $this->files->isDirectory($path)) {
+        if ($path && ! $this->files->isDirectory($path)) {
             $this->files->makeDirectory($path, 0755, true);
         }
     }

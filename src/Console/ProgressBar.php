@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace TightenCo\Jigsaw\Console;
 
 use Symfony\Component\Console\Helper\ProgressBar as SymfonyProgressBar;

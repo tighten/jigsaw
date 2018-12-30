@@ -1,11 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace TightenCo\Jigsaw\Scaffold;
 
 use Exception;
 use TightenCo\Jigsaw\File\Filesystem;
-use TightenCo\Jigsaw\Scaffold\InstallerCommandException;
-use TightenCo\Jigsaw\Scaffold\PresetScaffoldBuilder;
 
 class PresetPackage
 {
@@ -50,7 +50,7 @@ class PresetPackage
 
         try {
             $init = $this->customInstaller->setConsole($console)->install($this->builder);
-            $initFile = include($this->path . DIRECTORY_SEPARATOR . 'init.php');
+            $initFile = include $this->path . DIRECTORY_SEPARATOR . 'init.php';
 
             if (is_array($initFile) && count($initFile)) {
                 return $this->runDefaultInstaller($initFile);

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace TightenCo\Jigsaw\File;
 
 use Illuminate\Filesystem\Filesystem as BaseFilesystem;

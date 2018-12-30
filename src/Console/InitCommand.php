@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace TightenCo\Jigsaw\Console;
 
 use Exception;
@@ -74,6 +76,7 @@ class InitCommand extends Command
                         break;
                     }
 
+                    // no break
                 default:
                     return;
             }

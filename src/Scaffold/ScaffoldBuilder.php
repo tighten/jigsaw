@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace TightenCo\Jigsaw\Scaffold;
 
 use TightenCo\Jigsaw\File\Filesystem;
@@ -109,7 +111,7 @@ abstract class ScaffoldBuilder
         collect($directories)->each(function ($directory) {
             if ($this->files->isEmptyDirectory($directory)) {
                 $this->files->deleteDirectory($directory);
-            };
+            }
         });
     }
 
@@ -137,7 +139,7 @@ abstract class ScaffoldBuilder
         if ($content) {
             $this->files->put(
                 $this->base . DIRECTORY_SEPARATOR . 'composer.json',
-                json_encode($content, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT)
+                json_encode($content, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT)
             );
         }
     }

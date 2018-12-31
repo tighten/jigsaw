@@ -4,12 +4,17 @@ declare(strict_types=1);
 
 namespace TightenCo\Jigsaw\Console;
 
+use Symfony\Component\Console\Output\ConsoleSectionOutput;
+
 class NullProgressBar
 {
+    /** @var ConsoleOutput */
     protected $consoleOutput;
+
+    /** @var ?string */
     protected $message;
 
-    public function __construct(ConsoleOutput $consoleOutput, $message = null, $section = null)
+    public function __construct(ConsoleOutput $consoleOutput, ?string $message = null, ?ConsoleSectionOutput $section = null)
     {
         $this->consoleOutput = $consoleOutput;
         $this->message = $message;

@@ -6,6 +6,9 @@ namespace TightenCo\Jigsaw;
 
 use Illuminate\Support\Collection;
 
+/**
+ * @property IterableObject _meta
+ */
 class PageVariable extends IterableObject
 {
     public function addVariables($variables): void

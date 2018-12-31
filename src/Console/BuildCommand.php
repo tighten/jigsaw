@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TightenCo\Jigsaw\Console;
 
+use Illuminate\Contracts\Container\Container;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -14,10 +15,13 @@ use TightenCo\Jigsaw\PathResolvers\PrettyOutputPathResolver;
 
 class BuildCommand extends Command
 {
+    /** @var Container */
     private $app;
+
+    /** @var ConsoleOutput */
     private $consoleOutput;
 
-    public function __construct($app)
+    public function __construct(Container $app)
     {
         $this->app = $app;
         $this->consoleOutput = $app->consoleOutput;

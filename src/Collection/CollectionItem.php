@@ -8,7 +8,11 @@ use TightenCo\Jigsaw\PageVariable;
 
 class CollectionItem extends PageVariable
 {
+    /** @var Collection */
     private $collection;
+
+    /** @var callable|string */
+    private $_content;
 
     public static function build($collection, $data): CollectionItem
     {

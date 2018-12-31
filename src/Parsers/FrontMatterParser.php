@@ -8,8 +8,13 @@ use Mni\FrontYAML\Parser;
 
 class FrontMatterParser
 {
+    /** @var Parser */
     private $parser;
+
+    /** @var array */
     public $frontMatter = [];
+
+    /** @var string */
     public $content;
 
     public function __construct(Parser $parser)

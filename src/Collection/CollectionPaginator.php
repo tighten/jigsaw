@@ -6,12 +6,14 @@ namespace TightenCo\Jigsaw\Collection;
 
 use Illuminate\Support\Collection;
 use TightenCo\Jigsaw\IterableObject;
+use TightenCo\Jigsaw\PathResolvers\BasicOutputPathResolver;
 
 class CollectionPaginator
 {
+    /** @var BasicOutputPathResolver */// TODO use interface instead of class
     private $outputPathResolver;
 
-    public function __construct($outputPathResolver)
+    public function __construct(BasicOutputPathResolver $outputPathResolver)
     {
         $this->outputPathResolver = $outputPathResolver;
     }

@@ -8,23 +8,43 @@ use Exception;
 use Illuminate\Support\Collection as BaseCollection;
 use TightenCo\Jigsaw\Collection\Collection;
 use TightenCo\Jigsaw\Collection\CollectionItem;
+use TightenCo\Jigsaw\CollectionItemHandlers\BladeCollectionItemHandler;
+use TightenCo\Jigsaw\Console\ConsoleOutput;
+use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\File\InputFile;
 use TightenCo\Jigsaw\Handlers\DefaultHandler;
 use TightenCo\Jigsaw\IterableObject;
 use TightenCo\Jigsaw\IterableObjectWithDefault;
 use TightenCo\Jigsaw\PageVariable;
+use TightenCo\Jigsaw\PathResolvers\CollectionPathResolver;
 
 class CollectionDataLoader
 {
+    /** @var Filesystem */
     private $filesystem;
+
+    /** @var ConsoleOutput */
     private $consoleOutput;
+
+    /** @var CollectionPathResolver */
     private $pathResolver;
+
+    /** @var BaseCollection */
     private $handlers;
+
+    /** @var string */
     private $source;
+
+    /** @var IterableObject */
     private $pageSettings;
+
+    /** @var Collection */
     private $collectionSettings;
 
-    public function __construct($filesystem, $consoleOutput, $pathResolver, $handlers = [])
+    /**
+     * @param BladeCollectionItemHandler[] $handlers TODO use interface instead of class
+     */
+    public function __construct(Filesystem $filesystem, ConsoleOutput $consoleOutput, CollectionPathResolver $pathResolver, array $handlers = [])
     {
         $this->filesystem = $filesystem;
         $this->pathResolver = $pathResolver;

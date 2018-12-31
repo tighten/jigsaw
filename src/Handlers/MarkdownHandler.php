@@ -14,8 +14,13 @@ use TightenCo\Jigsaw\View\ViewRenderer;
 
 class MarkdownHandler
 {
+    /** @var TemporaryFilesystem */
     private $temporaryFilesystem;
+
+    /** @var FrontMatterParser */
     private $parser;
+
+    /** @var ViewRenderer */
     private $view;
 
     public function __construct(TemporaryFilesystem $temporaryFilesystem, FrontMatterParser $parser, ViewRenderer $viewRenderer)

@@ -8,6 +8,7 @@ use TightenCo\Jigsaw\SiteData;
 
 class DataLoader
 {
+    /** @var CollectionDataLoader */
     private $collectionDataLoader;
 
     public function __construct($collectionDataLoader)

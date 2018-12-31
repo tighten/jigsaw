@@ -6,13 +6,17 @@ namespace TightenCo\Jigsaw\Collection;
 
 use Closure;
 use Illuminate\Support\Collection as BaseCollection;
+use TightenCo\Jigsaw\IterableObject;
 
 class Collection extends BaseCollection
 {
+    /** @var IterableObject */
     public $settings;
+
+    /** @var string */
     public $name;
 
-    public static function withSettings($settings, $name): Collection
+    public static function withSettings(IterableObject $settings, string $name): Collection
     {
         $collection = new static();
         $collection->settings = $settings;

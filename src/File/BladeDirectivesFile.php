@@ -8,10 +8,13 @@ use Illuminate\View\Compilers\BladeCompiler;
 
 class BladeDirectivesFile
 {
+    /** @var BladeCompiler */
     protected $bladeCompiler;
+
+    /** @var array */
     protected $directives;
 
-    public function __construct($file_path, BladeCompiler $bladeCompiler)
+    public function __construct(string $file_path, BladeCompiler $bladeCompiler)
     {
         $this->bladeCompiler = $bladeCompiler;
         $this->directives = file_exists($file_path) ? include $file_path : [];

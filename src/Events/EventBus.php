@@ -4,12 +4,18 @@ declare(strict_types=1);
 
 namespace TightenCo\Jigsaw\Events;
 
+use Illuminate\Support\Collection;
 use TightenCo\Jigsaw\Jigsaw;
 
 class EventBus
 {
+    /** @var Collection */
     public $beforeBuild;
+
+    /** @var Collection */
     public $afterCollections;
+
+    /** @var Collection */
     public $afterBuild;
 
     public function __construct()

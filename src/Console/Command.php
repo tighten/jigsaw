@@ -10,6 +10,15 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 abstract class Command extends SymfonyCommand
 {
+    /** @var InputInterface */
+    protected $input;
+
+    /** @var OutputInterface */
+    protected $output;
+
+    /** @var ConsoleSession */
+    protected $console;
+
     public function execute(InputInterface $input, OutputInterface $output): ?int
     {
         $this->input = $input;

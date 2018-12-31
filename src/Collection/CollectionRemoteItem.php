@@ -8,11 +8,19 @@ use Symfony\Component\Yaml\Yaml;
 
 class CollectionRemoteItem
 {
+    /** @var array|string */
     private $item;
+
+    /** @var int */
     private $index;
+
+    /** @var string */
     private $prefix;
 
-    public function __construct($item, $index = 0, $collectionName = null)
+    /**
+     * @param array|string $item
+     */
+    public function __construct($item, int $index = 0, ?string $collectionName = null)
     {
         $this->item = $item;
         $this->index = $index;

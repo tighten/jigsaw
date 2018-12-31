@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TightenCo\Jigsaw\Scaffold;
 
+use TightenCo\Jigsaw\Console\ConsoleSession;
 use TightenCo\Jigsaw\File\Filesystem;
 
 abstract class ScaffoldBuilder
@@ -14,10 +15,19 @@ abstract class ScaffoldBuilder
         'vendor',
     ];
 
+    /** @var string */
     public $base;
+
+    /** @var ConsoleSession */
     protected $console;
+
+    /** @var Filesystem */
     protected $files;
+
+    /** @deprecated unused */
     protected $process;
+
+    /** @var array[] */
     protected $composerCache = [];
 
     public function __construct(Filesystem $files)

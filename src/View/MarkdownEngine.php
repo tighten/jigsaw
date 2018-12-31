@@ -8,14 +8,21 @@ use Exception;
 use Illuminate\Contracts\View\Engine as EngineInterface;
 use Symfony\Component\Debug\Exception\FatalThrowableError;
 use Throwable;
+use TightenCo\Jigsaw\File\Filesystem;
+use TightenCo\Jigsaw\Parsers\FrontMatterParser;
 
 class MarkdownEngine implements EngineInterface
 {
+    /** @var FrontMatterParser */
     private $parser;
+
+    /** @var Filesystem */
     private $file;
+
+    /** @var string */
     private $sourcePath;
 
-    public function __construct($parser, $filesystem, $sourcePath)
+    public function __construct(FrontMatterParser $parser, Filesystem $filesystem, string $sourcePath)
     {
         $this->parser = $parser;
         $this->file = $filesystem;

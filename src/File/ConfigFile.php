@@ -6,9 +6,10 @@ namespace TightenCo\Jigsaw\File;
 
 class ConfigFile
 {
+    /** @var array */
     public $config;
 
-    public function __construct($file_path)
+    public function __construct(string $file_path)
     {
         $this->config = file_exists($file_path) ? include $file_path : [];
         $this->convertStringCollectionsToArray();

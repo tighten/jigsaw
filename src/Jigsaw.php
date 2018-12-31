@@ -4,20 +4,39 @@ declare(strict_types=1);
 
 namespace TightenCo\Jigsaw;
 
+use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Collection;
 use TightenCo\Jigsaw\File\Filesystem;
+use TightenCo\Jigsaw\Loaders\CollectionRemoteItemLoader;
+use TightenCo\Jigsaw\Loaders\DataLoader;
 
 class Jigsaw
 {
+    /** @var Container */
     public $app;
+
+    /** @var string */
     protected $env;
+
+    /** @var string[]|Collection */
     protected $outputPaths;
+
+    /** @var SiteData */
     protected $siteData;
+
+    /** @var DataLoader */
     protected $dataLoader;
+
+    /** @var SiteBuilder */
     protected $siteBuilder;
+
+    /** @deprecated unused */
     protected $verbose;
 
-    public function __construct($app, $dataLoader, $remoteItemLoader, $siteBuilder)
+    /** @var CollectionRemoteItemLoader */
+    protected $remoteItemLoader;
+
+    public function __construct(Container $app, DataLoader $dataLoader, CollectionRemoteItemLoader $remoteItemLoader, SiteBuilder $siteBuilder)
     {
         $this->app = $app;
         $this->dataLoader = $dataLoader;

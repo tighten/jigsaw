@@ -6,12 +6,17 @@ namespace TightenCo\Jigsaw\View;
 
 use Exception;
 use Illuminate\Contracts\View\Engine as EngineInterface;
+use Illuminate\View\Engines\CompilerEngine;
 use Symfony\Component\Debug\Exception\FatalThrowableError;
 use Throwable;
+use TightenCo\Jigsaw\Parsers\FrontMatterParser;
 
 class BladeMarkdownEngine implements EngineInterface
 {
+    /** @var CompilerEngine */
     private $blade;
+
+    /** @var FrontMatterParser */
     private $markdown;
 
     public function __construct($compilerEngine, $markdown)

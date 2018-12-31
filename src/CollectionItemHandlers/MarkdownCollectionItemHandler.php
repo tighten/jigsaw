@@ -8,6 +8,7 @@ use TightenCo\Jigsaw\Parsers\FrontMatterParser;
 
 class MarkdownCollectionItemHandler
 {
+    /** @var FrontMatterParser */
     private $parser;
 
     public function __construct(FrontMatterParser $parser)

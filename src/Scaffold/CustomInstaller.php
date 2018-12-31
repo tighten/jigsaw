@@ -4,12 +4,23 @@ declare(strict_types=1);
 
 namespace TightenCo\Jigsaw\Scaffold;
 
+use TightenCo\Jigsaw\Console\ConsoleSession;
+
 class CustomInstaller
 {
+    /** @var string[] */
     public $ignore = ['init.php'];
+
+    /** @var  ?string */
     protected $from;
+
+    /** @var ScaffoldBuilder */
     protected $builder;
+
+    /** @var ConsoleSession */
     protected $console;
+
+    /** @deprecated unused */
     protected $question;
 
     public function setConsole($console): CustomInstaller

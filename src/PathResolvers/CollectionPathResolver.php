@@ -6,13 +6,17 @@ namespace TightenCo\Jigsaw\PathResolvers;
 
 use Illuminate\Support\Collection;
 use TightenCo\Jigsaw\IterableObject;
+use TightenCo\Jigsaw\View\ViewRenderer;
 
 class CollectionPathResolver
 {
+    /** @var BasicOutputPathResolver */// TODO use interface instead of class
     private $outputPathResolver;
-    private $viewRenderer;
 
-    public function __construct($outputPathResolver, $viewRenderer)
+    /** @var ViewRenderer */
+    private $view;
+
+    public function __construct(BasicOutputPathResolver $outputPathResolver, ViewRenderer $viewRenderer)
     {
         $this->outputPathResolver = $outputPathResolver;
         $this->view = $viewRenderer;

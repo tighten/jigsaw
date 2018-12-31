@@ -9,8 +9,11 @@ use TightenCo\Jigsaw\File\Filesystem;
 
 class CollectionRemoteItemLoader
 {
+    /** @var Filesystem */
     private $files;
-    private $tempDirectories;
+
+    /** @var string[] */
+    private $tempDirectories = [];
 
     public function __construct(Filesystem $files)
     {

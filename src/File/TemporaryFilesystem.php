@@ -4,15 +4,19 @@ declare(strict_types=1);
 
 namespace TightenCo\Jigsaw\File;
 
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 use Symfony\Component\Finder\SplFileInfo;
 
 class TemporaryFilesystem
 {
+    /** @var string */
     private $tempPath;
+
+    /** @var Filesystem */
     private $filesystem;
 
-    public function __construct($tempPath, $filesystem = null)
+    public function __construct(string $tempPath, Filesystem $filesystem = null)
     {
         $this->tempPath = $tempPath;
         $this->filesystem = $filesystem ?: new Filesystem();

@@ -5,20 +5,36 @@ declare(strict_types=1);
 namespace TightenCo\Jigsaw;
 
 use Illuminate\Support\Collection;
+use TightenCo\Jigsaw\Console\ConsoleOutput;
 use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\File\InputFile;
 use TightenCo\Jigsaw\Handlers\DefaultHandler;
+use TightenCo\Jigsaw\PathResolvers\BasicOutputPathResolver;
 
 class SiteBuilder
 {
+    /** @var string */
     private $cachePath;
+
+    /** @var Filesystem */
     private $files;
+
+    /** @var DefaultHandler[] */// TODO use interface instead of class
     private $handlers;
+
+    /** @var BasicOutputPathResolver */// TODO use interface instead of class
     private $outputPathResolver;
+
+    /** @var ConsoleOutput */
     private $consoleOutput;
+
+    /** @var bool */
     private $useCache;
 
-    public function __construct(Filesystem $files, $cachePath, $outputPathResolver, $consoleOutput, $handlers = [])
+    /**
+     * @param DefaultHandler[] $handlers
+     */
+    public function __construct(Filesystem $files, string $cachePath, BasicOutputPathResolver $outputPathResolver, ConsoleOutput $consoleOutput, array $handlers = [])
     {
         $this->files = $files;
         $this->cachePath = $cachePath;

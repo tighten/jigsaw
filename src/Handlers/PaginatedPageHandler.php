@@ -5,19 +5,28 @@ declare(strict_types=1);
 namespace TightenCo\Jigsaw\Handlers;
 
 use Illuminate\Support\Collection;
+use TightenCo\Jigsaw\Collection\CollectionPaginator;
 use TightenCo\Jigsaw\File\OutputFile;
+use TightenCo\Jigsaw\File\TemporaryFilesystem;
 use TightenCo\Jigsaw\PageData;
 use TightenCo\Jigsaw\Parsers\FrontMatterParser;
 use TightenCo\Jigsaw\View\ViewRenderer;
 
 class PaginatedPageHandler
 {
+    /** @var CollectionPaginator */
     private $paginator;
+
+    /** @var FrontMatterParser */
     private $parser;
+
+    /** @var TemporaryFilesystem */
     private $temporaryFilesystem;
+
+    /** @var ViewRenderer */
     private $view;
 
-    public function __construct($paginator, FrontMatterParser $parser, $temporaryFilesystem, ViewRenderer $viewRenderer)
+    public function __construct(CollectionPaginator $paginator, FrontMatterParser $parser, TemporaryFilesystem $temporaryFilesystem, ViewRenderer $viewRenderer)
     {
         $this->paginator = $paginator;
         $this->parser = $parser;

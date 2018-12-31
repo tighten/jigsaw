@@ -9,6 +9,9 @@ use ParsedownExtra;
 
 class ParsedownExtraParser implements MarkdownParser
 {
+    /** @var ParsedownExtra */
+    protected $parser;
+
     public function __construct(ParsedownExtra $parsedownExtra = null)
     {
         $this->parser = $parsedownExtra ?: new ParsedownExtra();

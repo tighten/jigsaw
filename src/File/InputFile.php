@@ -4,14 +4,19 @@ declare(strict_types=1);
 
 namespace TightenCo\Jigsaw\File;
 
+use SplFileInfo;
+
 class InputFile
 {
+    /** @var SplFileInfo */
     protected $file;
+
+    /** @var string[] */
     protected $extraBladeExtensions = [
         'js', 'json', 'xml', 'rss', 'atom', 'txt', 'text', 'html',
     ];
 
-    public function __construct($file)
+    public function __construct(SplFileInfo $file)
     {
         $this->file = $file;
     }

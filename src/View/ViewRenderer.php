@@ -6,11 +6,17 @@ namespace TightenCo\Jigsaw\View;
 
 use Illuminate\View\Compilers\BladeCompiler;
 use Illuminate\View\Factory;
+use Illuminate\View\ViewFinderInterface;
 
 class ViewRenderer
 {
+    /** @var Factory */
     private $viewFactory;
+
+    /** @var BladeCompiler */
     private $bladeCompiler;
+
+    /** @var string[] */
     private $extensionEngines = [
         'md' => 'markdown',
         'markdown' => 'markdown',
@@ -19,9 +25,14 @@ class ViewRenderer
         'blade.mdown' => 'blade-markdown',
         'blade.markdown' => 'blade-markdown',
     ];
+
+    /** @var string[] */
     private $bladeExtensions = [
         'js', 'json', 'xml', 'rss', 'atom', 'txt', 'text', 'html',
     ];
+
+    /** @var ViewFinderInterface */
+    private $finder;
 
     public function __construct(Factory $viewFactory, BladeCompiler $bladeCompiler)
     {

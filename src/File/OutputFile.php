@@ -8,14 +8,25 @@ use TightenCo\Jigsaw\PageData;
 
 class OutputFile
 {
+    /** @var string */
     private $path;
+
+    /** @var string */
     private $name;
+
+    /** @var string */
     private $extension;
+
+    /** @var string */
     private $contents;
+
+    /** @var PageData */
     private $data;
+
+    /** @var int */
     private $page;
 
-    public function __construct($path, $name, $extension, $contents, $data, $page = 1)
+    public function __construct(string $path, string $name, string $extension, string $contents, PageData $data, int $page = 1)
     {
         $this->path = $path;
         $this->name = $name;

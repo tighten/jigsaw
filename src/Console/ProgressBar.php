@@ -5,14 +5,20 @@ declare(strict_types=1);
 namespace TightenCo\Jigsaw\Console;
 
 use Symfony\Component\Console\Helper\ProgressBar as SymfonyProgressBar;
+use Symfony\Component\Console\Output\ConsoleSectionOutput;
 
 class ProgressBar
 {
+    /** @var ConsoleOutput */
     protected $consoleOutput;
+
+    /** @var SymfonyProgressBar */
     protected $progressBar;
+
+    /** @var ?string */
     protected $message;
 
-    public function __construct(ConsoleOutput $consoleOutput, $message = null, $section = null)
+    public function __construct(ConsoleOutput $consoleOutput, ?string $message = null, ?ConsoleSectionOutput $section = null)
     {
         $this->consoleOutput = $consoleOutput;
         $this->progressBar = new SymfonyProgressBar($section ?? $consoleOutput);

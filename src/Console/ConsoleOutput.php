@@ -9,7 +9,10 @@ use Symfony\Component\Console\Output\ConsoleSectionOutput;
 
 class ConsoleOutput extends SymfonyConsoleOutput
 {
+    /** @var ProgressBar[] */// TODO use interface instead of class
     protected $progressBars;
+
+    /** @var ConsoleSectionOutput[] */
     protected $sections;
 
     public function setup($verbosity): void

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace TightenCo\Jigsaw;
 
+/**
+ * @property PageVariable page
+ */
 class PageData extends IterableObject
 {
     public static function withPageMetaData($siteData, $meta): PageData

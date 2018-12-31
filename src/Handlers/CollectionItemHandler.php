@@ -9,10 +9,16 @@ use TightenCo\Jigsaw\File\OutputFile;
 
 class CollectionItemHandler
 {
+    /** @var array */
     private $config;
+
+    /** @var Collection */
     private $handlers;
 
-    public function __construct($config, $handlers)
+    /**
+     * @param DefaultHandler[] $handlers TODO use interface instead of classys
+     */
+    public function __construct(array $config, array $handlers)
     {
         $this->config = $config;
         $this->handlers = collect($handlers);

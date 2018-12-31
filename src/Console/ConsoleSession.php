@@ -13,8 +13,13 @@ use Symfony\Component\Console\Question\Question;
 
 class ConsoleSession
 {
+    /** @var InputInterface */
     protected $input;
+
+    /** @var OutputInterface */
     protected $output;
+
+    /** @var QuestionHelper */
     protected $question;
 
     public function __construct(InputInterface $input, OutputInterface $output, QuestionHelper $question)

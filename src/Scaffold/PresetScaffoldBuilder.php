@@ -8,10 +8,20 @@ use TightenCo\Jigsaw\File\Filesystem;
 
 class PresetScaffoldBuilder extends ScaffoldBuilder
 {
+    /** @var PresetPackage */
     public $package;
+
+    /** @var Filesystem */
     protected $files;
+
+    /** @var ProcessRunner */
     protected $process;
+
+    /** @deprecated unused */
     protected $question;
+
+    /** @var string[] */
+    protected $composerDependencies = [];
 
     public function __construct(Filesystem $files, PresetPackage $package, ProcessRunner $process)
     {

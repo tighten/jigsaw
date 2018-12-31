@@ -10,6 +10,7 @@ use TightenCo\Jigsaw\File\CopyFile;
 
 class DefaultHandler
 {
+    /** @var Filesystem */
     private $files;
 
     public function __construct(Filesystem $files)

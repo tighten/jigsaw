@@ -14,17 +14,41 @@ class PresetPackage
         'docs' => 'tightenco/jigsaw-docs-template',
     ];
 
+    /** @var string */
     public $name;
+
+    /** @var string */
     public $nameShort;
+
+    /** @var string */
     public $path;
+
+    /** @var string */
     public $preset;
+
+    /** @var string */
     public $suffix;
+
+    /** @var string */
     public $vendor;
+
+    /** @var PresetScaffoldBuilder */
     protected $builder;
+
+    /** @var CustomInstaller */
     protected $customInstaller;
+
+    /** @var DefaultInstaller */
     protected $defaultInstaller;
+
+    /** @var Filesystem */
     protected $files;
+
+    /** @var ProcessRunner */
     protected $process;
+
+    /** @var string */
+    public $shortName;
 
     public function __construct(DefaultInstaller $default, CustomInstaller $custom, ProcessRunner $process)
     {

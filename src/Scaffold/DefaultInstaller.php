@@ -12,14 +12,23 @@ class DefaultInstaller
         'node_modules',
         'vendor',
     ];
+
     const DEFAULT_COMMANDS = [
         'composer install',
         'npm install',
         'npm run local',
     ];
+
+    /** @var string[] */
     protected $commands;
+
+    /** @var string[] */
     protected $delete;
+
+    /** @var string[] */
     protected $ignore;
+
+    /** @var PresetScaffoldBuilder */ // TODO type check
     protected $builder;
 
     public function install(ScaffoldBuilder $builder, $settings = []): void

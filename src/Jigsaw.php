@@ -44,7 +44,7 @@ class Jigsaw
         $this->siteBuilder = $siteBuilder;
     }
 
-    public function build($env, $useCache = false): Jigsaw
+    public function build(string $env, bool $useCache = false): Jigsaw
     {
         $this->env = $env;
         $this->siteData = $this->dataLoader->loadSiteData($this->app->config);
@@ -66,7 +66,7 @@ class Jigsaw
         return $this;
     }
 
-    protected function buildSite($useCache): Jigsaw
+    protected function buildSite(bool $useCache): Jigsaw
     {
         $this->outputPaths = $this->siteBuilder
             ->setUseCache($useCache)
@@ -86,7 +86,7 @@ class Jigsaw
         return $this;
     }
 
-    protected function fireEvent($event): Jigsaw
+    protected function fireEvent(string $event): Jigsaw
     {
         $this->app->events->fire($event, $this);
 
@@ -104,6 +104,7 @@ class Jigsaw
     }
 
     /**
+     * @param string|int $collection
      * @return mixed
      */
     public function getCollection($collection)
@@ -119,6 +120,7 @@ class Jigsaw
     }
 
     /**
+     * @param ?string|?int $key
      * @return mixed
      */
     public function getConfig($key = null)
@@ -126,6 +128,10 @@ class Jigsaw
         return $key ? data_get($this->siteData->page, $key) : $this->siteData->page;
     }
 
+    /**
+     * @param string|int $key
+     * @param ?mixed     $value
+     */
     public function setConfig($key, $value): Jigsaw
     {
         $this->siteData->set($key, $value);
@@ -139,7 +145,7 @@ class Jigsaw
         return $this->app->buildPath['source'];
     }
 
-    public function setSourcePath($path): Jigsaw
+    public function setSourcePath(string $path): Jigsaw
     {
         $this->app->buildPath = [
             'source' => $path,
@@ -154,7 +160,7 @@ class Jigsaw
         return $this->app->buildPath['destination'];
     }
 
-    public function setDestinationPath($path): Jigsaw
+    public function setDestinationPath(string $path): Jigsaw
     {
         $this->app->buildPath = [
             'source' => $this->app->buildPath['source'],
@@ -177,22 +183,22 @@ class Jigsaw
         return $this->outputPaths ?: [];
     }
 
-    public function readSourceFile($fileName): string
+    public function readSourceFile(string $fileName): string
     {
         return $this->getFilesystem()->get($this->getSourcePath() . '/' . $fileName);
     }
 
-    public function writeSourceFile($fileName, $contents): void
+    public function writeSourceFile(string $fileName, string $contents): void
     {
         $this->getFilesystem()->putWithDirectories($this->getSourcePath() . '/' . $fileName, $contents);
     }
 
-    public function readOutputFile($fileName): string
+    public function readOutputFile(string $fileName): string
     {
         return $this->getFilesystem()->get($this->getDestinationPath() . '/' . $fileName);
     }
 
-    public function writeOutputFile($fileName, $contents): void
+    public function writeOutputFile(string $fileName, string $contents): void
     {
         $this->getFilesystem()->putWithDirectories($this->getDestinationPath() . '/' . $fileName, $contents);
     }

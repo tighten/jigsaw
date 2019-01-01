@@ -6,12 +6,18 @@ namespace TightenCo\Jigsaw;
 
 use ArrayAccess;
 use Exception;
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Collection as BaseCollection;
+use Illuminate\Support\Collection;
 use Illuminate\Support\HigherOrderCollectionProxy;
+use JsonSerializable;
+use Traversable;
 
 class IterableObject extends BaseCollection implements ArrayAccess
 {
     /**
+     * @param string|int $key
      * @return HigherOrderCollectionProxy|mixed
      */
     public function __get($key)
@@ -24,6 +30,8 @@ class IterableObject extends BaseCollection implements ArrayAccess
     }
 
     /**
+     * @param string|int $key
+     * @param ?mixed     $default
      * @return mixed
      */
     public function get($key, $default = null)
@@ -36,6 +44,7 @@ class IterableObject extends BaseCollection implements ArrayAccess
     }
 
     /**
+     * @param string|int $key
      * @return mixed
      */
     public function offsetGet($key)
@@ -48,6 +57,10 @@ class IterableObject extends BaseCollection implements ArrayAccess
         return $this->getElement($key);
     }
 
+    /**
+     * @param string|int $key
+     * @param ?mixed     $value
+     */
     public function set($key, $value): void
     {
         data_set($this->items, $key, $this->isArrayable($value) ? $this->makeIterable($value) : $value);
@@ -57,12 +70,17 @@ class IterableObject extends BaseCollection implements ArrayAccess
         }
     }
 
+    /**
+     * @param string|int                      $key
+     * @param IterableObject|array|Collection $element
+     */
     public function putIterable($key, $element): void
     {
         $this->put($key, $this->isArrayable($element) ? $this->makeIterable($element) : $element);
     }
 
     /**
+     * @param string|int $key
      * @return mixed
      */
     protected function getElement($key)
@@ -70,6 +88,10 @@ class IterableObject extends BaseCollection implements ArrayAccess
         return $this->items[$key];
     }
 
+    /**
+     * @param array|BaseCollection|Arrayable|Jsonable|JsonSerializable|Traversable|IterableObject $items
+     * @return IterableObject
+     */
     protected function makeIterable($items): IterableObject
     {
         if ($items instanceof IterableObject) {
@@ -81,6 +103,9 @@ class IterableObject extends BaseCollection implements ArrayAccess
         }));
     }
 
+    /**
+     * @param array|object $element
+     */
     protected function isArrayable($element): bool
     {
         return is_array($element) || $element instanceof BaseCollection;

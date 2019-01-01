@@ -4,14 +4,19 @@ declare(strict_types=1);
 
 namespace TightenCo\Jigsaw\Scaffold;
 
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Support\Jsonable;
+use Illuminate\Support\Collection;
+use JsonSerializable;
 use TightenCo\Jigsaw\Console\ConsoleSession;
+use Traversable;
 
 class CustomInstaller
 {
     /** @var string[] */
     public $ignore = ['init.php'];
 
-    /** @var  ?string */
+    /** @var ?string */
     protected $from;
 
     /** @var ScaffoldBuilder */
@@ -23,7 +28,7 @@ class CustomInstaller
     /** @deprecated unused */
     protected $question;
 
-    public function setConsole($console): CustomInstaller
+    public function setConsole(ConsoleSession $console): CustomInstaller
     {
         $this->console = $console;
 
@@ -44,7 +49,7 @@ class CustomInstaller
         return $this;
     }
 
-    public function copy($files = null): CustomInstaller
+    public function copy(?array $files = null): CustomInstaller
     {
         $this->builder->cacheComposerDotJson();
         $this->builder->copyPresetFiles($files, $this->ignore, $this->from);
@@ -53,13 +58,16 @@ class CustomInstaller
         return $this;
     }
 
-    public function from($from = null): CustomInstaller
+    public function from(?string $from = null): CustomInstaller
     {
         $this->from = $from;
 
         return $this;
     }
 
+    /**
+     * @param array|Collection|Arrayable|Jsonable|JsonSerializable|Traversable $files
+     */
     public function ignore($files): CustomInstaller
     {
         $this->ignore = array_merge($this->ignore, collect($files)->toArray());
@@ -67,7 +75,7 @@ class CustomInstaller
         return $this;
     }
 
-    public function delete($files = null): CustomInstaller
+    public function delete(?array $files = null): CustomInstaller
     {
         $this->builder->cacheComposerDotJson();
         $this->builder->deleteSiteFiles($files);
@@ -76,45 +84,45 @@ class CustomInstaller
         return $this;
     }
 
-    public function run($commands = null): CustomInstaller
+    public function run(?array $commands = null): CustomInstaller
     {
         $this->builder->runCommands($commands);
 
         return $this;
     }
 
-    public function ask($question, $default = null, $options = null, $errorMessage = null): string
+    public function ask(string $question, ?string $default = null, ?array $options = null, ?string $errorMessage = null): string
     {
-        return $this->console->ask($question, $default, $options, $errorMessage);
+        return $this->console->ask($question, $default, $options, $errorMessage ?? '');
     }
 
-    public function confirm($question, $default = null, $errorMessage = null): bool
+    public function confirm(string $question, ?string $default = null, ?string $errorMessage = null): bool
     {
         return $this->console->confirm($question, $default);
     }
 
-    public function output($text = ''): CustomInstaller
+    public function output(string $text = ''): CustomInstaller
     {
         $this->console->write($text);
 
         return $this;
     }
 
-    public function info($text = ''): CustomInstaller
+    public function info(string $text = ''): CustomInstaller
     {
         $this->console->info($text);
 
         return $this;
     }
 
-    public function error($text = ''): CustomInstaller
+    public function error(string $text = ''): CustomInstaller
     {
         $this->console->error($text);
 
         return $this;
     }
 
-    public function comment($text = ''): CustomInstaller
+    public function comment(string $text = ''): CustomInstaller
     {
         $this->console->comment($text);
 

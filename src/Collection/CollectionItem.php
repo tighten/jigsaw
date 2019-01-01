@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TightenCo\Jigsaw\Collection;
 
+use Illuminate\Support\Collection;
 use TightenCo\Jigsaw\PageVariable;
 
 class CollectionItem extends PageVariable
@@ -14,7 +15,7 @@ class CollectionItem extends PageVariable
     /** @var callable|string */
     private $_content;
 
-    public static function build($collection, $data): CollectionItem
+    public static function build(Collection $collection, $data): CollectionItem
     {
         $item = new static($data);
         $item->collection = $collection;
@@ -42,6 +43,9 @@ class CollectionItem extends PageVariable
         return $this->collection->last();
     }
 
+    /**
+     * @param string|callable $content
+     */
     public function setContent($content): void
     {
         $this->_content = $content;
@@ -59,7 +63,7 @@ class CollectionItem extends PageVariable
         return (string) $this->getContent();
     }
 
-    protected function missingHelperError($functionName): string
+    protected function missingHelperError(string $functionName): string
     {
         return 'No function named "' . $functionName . '" for the collection "' . $this->_meta->collectionName . '" was found in the file "config.php".';
     }

@@ -10,14 +10,14 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class Filesystem extends BaseFilesystem
 {
-    public function getFile($directory, $filename): SplFileInfo
+    public function getFile(string $directory, string $filename): SplFileInfo
     {
         $filePath = rtrim($directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $filename;
 
         return new SplFileInfo($filePath, $directory, $filename);
     }
 
-    public function putWithDirectories($file_path, $contents): void
+    public function putWithDirectories(string $file_path, string $contents): void
     {
         $directory_path = collect(explode('/', $file_path));
         $directory_path->pop();
@@ -30,7 +30,7 @@ class Filesystem extends BaseFilesystem
         $this->put($file_path, $contents);
     }
 
-    public function files($directory, $match = [], $ignore = [], $ignore_dotfiles = false): array
+    public function files($directory, $match = [], array $ignore = [], bool $ignore_dotfiles = false): array
     {
         return $directory ? iterator_to_array(
             $this->getFinder($directory, $match, $ignore, $ignore_dotfiles)->files(),
@@ -38,7 +38,7 @@ class Filesystem extends BaseFilesystem
         ) : [];
     }
 
-    public function directories($directory, $match = [], $ignore = [], $ignore_dotfiles = false): array
+    public function directories($directory, $match = [], array $ignore = [], bool $ignore_dotfiles = false): array
     {
         return $directory ? iterator_to_array(
             $this->getFinder($directory, $match, $ignore, $ignore_dotfiles)->directories(),
@@ -46,7 +46,7 @@ class Filesystem extends BaseFilesystem
         ) : [];
     }
 
-    public function filesAndDirectories($directory, $match = [], $ignore = [], $ignore_dotfiles = false): array
+    public function filesAndDirectories(string $directory, array $match = [], array $ignore = [], bool $ignore_dotfiles = false): array
     {
         return $directory ? iterator_to_array(
             $this->getFinder($directory, $match, $ignore, $ignore_dotfiles),
@@ -54,30 +54,30 @@ class Filesystem extends BaseFilesystem
         ) : [];
     }
 
-    public function isEmptyDirectory($directory): bool
+    public function isEmptyDirectory(string $directory): bool
     {
         return $this->exists($directory) ? count($this->files($directory)) == 0 : false;
     }
 
-    protected function getFinder($directory, $match = [], $ignore = [], $ignore_dotfiles = false): Finder
+    protected function getFinder(string $directory, array $match = [], array $ignore = [], bool $ignore_dotfiles = false): Finder
     {
         $finder = Finder::create()
             ->in($directory)
             ->ignoreDotFiles($ignore_dotfiles)
             ->notName('.DS_Store');
 
-        collect($match)->each(function ($pattern) use ($finder): void {
+        collect($match)->each(function (string $pattern) use ($finder): void {
             $finder->path($this->getWildcardRegex($pattern));
         });
 
-        collect($ignore)->each(function ($pattern) use ($finder): void {
+        collect($ignore)->each(function (string $pattern) use ($finder): void {
             $finder->notPath($this->getWildcardRegex($pattern));
         });
 
         return $finder;
     }
 
-    protected function getWildcardRegex($pattern): string
+    protected function getWildcardRegex(string $pattern): string
     {
         return '#^' . str_replace('\*', '[^/]+', preg_quote(trim($pattern, '/'))) . '($|/)#';
     }

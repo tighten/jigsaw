@@ -30,29 +30,29 @@ class MarkdownHandler
         $this->view = $viewRenderer;
     }
 
-    public function shouldHandle($file): bool
+    public function shouldHandle(InputFile $file): bool
     {
         return in_array($file->getExtension(), ['markdown', 'md', 'mdown']);
     }
 
-    public function handleCollectionItem($file, PageData $pageData): Collection
+    public function handleCollectionItem(InputFile $file, PageData $pageData): Collection
     {
         return $this->buildOutput($file, $pageData);
     }
 
-    public function handle($file, $pageData): Collection
+    public function handle(InputFile $file, $pageData): Collection
     {
         $pageData->page->addVariables($this->getPageVariables($file));
 
         return $this->buildOutput($file, $pageData);
     }
 
-    private function getPageVariables($file): array
+    private function getPageVariables(InputFile $file): array
     {
         return array_merge(['section' => 'content'], $this->parseFrontMatter($file));
     }
 
-    private function buildOutput($file, PageData $pageData): Collection
+    private function buildOutput(InputFile $file, PageData $pageData): Collection
     {
         return collect($pageData->page->extends)
             ->map(function ($extends, $templateToExtend) use ($file, $pageData): OutputFile {
@@ -72,7 +72,7 @@ class MarkdownHandler
             });
     }
 
-    private function render($file, $pageData, $extends): string
+    private function render(InputFile $file, PageData $pageData, string $extends): string
     {
         $uniqueFileName = $file->getPathname() . $extends;
 
@@ -85,7 +85,7 @@ class MarkdownHandler
         }
     }
 
-    private function renderMarkdownFile($file, $uniqueFileName, $pageData, $extends): string
+    private function renderMarkdownFile(InputFile $file, string $uniqueFileName, PageData $pageData, string $extends): string
     {
         $html = $this->parser->parseMarkdownWithoutFrontMatter(
             $this->getEscapedMarkdownContent($file)
@@ -101,7 +101,7 @@ class MarkdownHandler
         );
     }
 
-    private function renderBladeMarkdownFile($file, $uniqueFileName, $pageData, $extends): string
+    private function renderBladeMarkdownFile(InputFile $file, string $uniqueFileName, PageData $pageData, string $extends): string
     {
         $contentPath = $this->renderMarkdownContent($file);
 
@@ -116,7 +116,7 @@ class MarkdownHandler
         );
     }
 
-    private function renderMarkdownContent($file): string
+    private function renderMarkdownContent(InputFile $file): string
     {
         return $this->temporaryFilesystem->put(
             $this->getEscapedMarkdownContent($file),
@@ -125,7 +125,7 @@ class MarkdownHandler
         );
     }
 
-    private function renderBladeWrapper($sourceFileName, $contentFileName, $pageData, $extends): string
+    private function renderBladeWrapper(string $sourceFileName, string $contentFileName, PageData $pageData, string $extends): string
     {
         return $this->temporaryFilesystem->put(
             $this->makeBladeWrapper($contentFileName, $pageData, $extends),
@@ -134,7 +134,7 @@ class MarkdownHandler
         );
     }
 
-    private function makeBladeWrapper($path, $pageData, $extends): string
+    private function makeBladeWrapper(string $path, PageData $pageData, string $extends): string
     {
         return collect([
             "@extends('{$extends}')",
@@ -144,7 +144,7 @@ class MarkdownHandler
         ])->implode("\n");
     }
 
-    private function getValidCachedFile($file, $uniqueFileName): ?InputFile
+    private function getValidCachedFile(InputFile $file, string $uniqueFileName): ?InputFile
     {
         $extension = $file->isBladeFile() ? '.blade.md' : '.php';
         $cached = $this->temporaryFilesystem->get($uniqueFileName, $extension);
@@ -156,7 +156,7 @@ class MarkdownHandler
         return null;
     }
 
-    private function getEscapedMarkdownContent($file): string
+    private function getEscapedMarkdownContent(InputFile $file): string
     {
         $replacements = ['<?php' => "<{{'?php'}}"];
 
@@ -173,7 +173,7 @@ class MarkdownHandler
         return strtr($file->getContents(), $replacements);
     }
 
-    private function parseFrontMatter($file): array
+    private function parseFrontMatter(InputFile $file): array
     {
         return $this->parser->getFrontMatter($file->getContents());
     }

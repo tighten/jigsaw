@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TightenCo\Jigsaw\CollectionItemHandlers;
 
+use TightenCo\Jigsaw\File\InputFile;
 use TightenCo\Jigsaw\Parsers\FrontMatterParser;
 
 class BladeCollectionItemHandler
@@ -16,12 +17,12 @@ class BladeCollectionItemHandler
         $this->parser = $parser;
     }
 
-    public function shouldHandle($file): bool
+    public function shouldHandle(InputFile $file): bool
     {
         return str_contains($file->getFilename(), '.blade.');
     }
 
-    public function getItemVariables($file): array
+    public function getItemVariables(InputFile $file): array
     {
         $content = $file->getContents();
         $frontMatter = $this->parser->getFrontMatter($content);
@@ -33,7 +34,7 @@ class BladeCollectionItemHandler
         );
     }
 
-    public function getItemContent($file): void
+    public function getItemContent(InputFile $file): void
     {
         return;
     }

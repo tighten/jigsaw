@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TightenCo\Jigsaw\Scaffold;
 
 use Exception;
+use TightenCo\Jigsaw\Console\ConsoleSession;
 use TightenCo\Jigsaw\File\Filesystem;
 
 class PresetPackage
@@ -58,7 +59,7 @@ class PresetPackage
         $this->files = new Filesystem();
     }
 
-    public function init($preset, PresetScaffoldBuilder $builder): void
+    public function init(string $preset, PresetScaffoldBuilder $builder): void
     {
         $this->preset = $preset;
         $this->builder = $builder;
@@ -66,7 +67,7 @@ class PresetPackage
         $this->resolvePath();
     }
 
-    public function runInstaller($console): void
+    public function runInstaller(ConsoleSession $console): void
     {
         if (! $this->files->exists($this->path . DIRECTORY_SEPARATOR . 'init.php')) {
             $this->runDefaultInstaller();
@@ -87,7 +88,7 @@ class PresetPackage
         }
     }
 
-    protected function runDefaultInstaller($settings = []): void
+    protected function runDefaultInstaller(array $settings = []): void
     {
         $this->defaultInstaller->install($this->builder, $settings);
     }
@@ -131,7 +132,7 @@ class PresetPackage
         }
     }
 
-    protected function installPackageFromComposer($package): void
+    protected function installPackageFromComposer(string $package): void
     {
         $this->process->run('composer require ' . $package);
     }

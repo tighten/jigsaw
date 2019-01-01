@@ -7,6 +7,8 @@ namespace TightenCo\Jigsaw\Handlers;
 use Illuminate\Support\Collection;
 use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\File\CopyFile;
+use TightenCo\Jigsaw\File\InputFile;
+use TightenCo\Jigsaw\PageData;
 
 class DefaultHandler
 {
@@ -18,12 +20,12 @@ class DefaultHandler
         $this->files = $files;
     }
 
-    public function shouldHandle($file): bool
+    public function shouldHandle(InputFile $file): bool
     {
         return true;
     }
 
-    public function handle($file, $pageData): Collection
+    public function handle(InputFile $file, PageData $pageData): Collection
     {
         return collect([
             new CopyFile(

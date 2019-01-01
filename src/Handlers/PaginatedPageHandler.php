@@ -6,6 +6,7 @@ namespace TightenCo\Jigsaw\Handlers;
 
 use Illuminate\Support\Collection;
 use TightenCo\Jigsaw\Collection\CollectionPaginator;
+use TightenCo\Jigsaw\File\InputFile;
 use TightenCo\Jigsaw\File\OutputFile;
 use TightenCo\Jigsaw\File\TemporaryFilesystem;
 use TightenCo\Jigsaw\PageData;
@@ -34,7 +35,7 @@ class PaginatedPageHandler
         $this->view = $viewRenderer;
     }
 
-    public function shouldHandle($file): bool
+    public function shouldHandle(InputFile $file): bool
     {
         if (! ends_with($file->getFilename(), '.blade.php')) {
             return false;
@@ -44,7 +45,7 @@ class PaginatedPageHandler
         return isset($content->frontMatter['pagination']);
     }
 
-    public function handle($file, PageData $pageData): Collection
+    public function handle(InputFile $file, PageData $pageData): Collection
     {
         $pageData->page->addVariables($this->getPageVariables($file));
 
@@ -68,12 +69,12 @@ class PaginatedPageHandler
         });
     }
 
-    private function getPageVariables($file): array
+    private function getPageVariables(InputFile $file): array
     {
         return $this->parser->getFrontMatter($file->getContents());
     }
 
-    private function render($file, $pageData): string
+    private function render(InputFile $file, PageData $pageData): string
     {
         $bladeContent = $this->parser->getBladeContent($file->getContents());
         $bladeFilePath = $this->temporaryFilesystem->put(

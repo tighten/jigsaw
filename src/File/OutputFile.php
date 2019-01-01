@@ -66,7 +66,7 @@ class OutputFile
         return $this->page;
     }
 
-    public function putContents($destination): bool
+    public function putContents(string $destination): bool
     {
         return file_put_contents($destination, $this->contents) !== false;
     }

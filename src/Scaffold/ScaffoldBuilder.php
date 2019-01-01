@@ -4,8 +4,14 @@ declare(strict_types=1);
 
 namespace TightenCo\Jigsaw\Scaffold;
 
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Support\Jsonable;
+use Illuminate\Support\Collection;
+use JsonSerializable;
+use Symfony\Component\Finder\SplFileInfo;
 use TightenCo\Jigsaw\Console\ConsoleSession;
 use TightenCo\Jigsaw\File\Filesystem;
+use Traversable;
 
 abstract class ScaffoldBuilder
 {
@@ -36,18 +42,18 @@ abstract class ScaffoldBuilder
         $this->setBase();
     }
 
-    abstract public function init($preset): ScaffoldBuilder;
+    abstract public function init(?string $preset): ScaffoldBuilder;
 
     abstract public function build(): ScaffoldBuilder;
 
-    public function setBase($cwd = null): ScaffoldBuilder
+    public function setBase(?string $cwd = null): ScaffoldBuilder
     {
         $this->base = $cwd ?: getcwd();
 
         return $this;
     }
 
-    public function setConsole($console): ScaffoldBuilder
+    public function setConsole(ConsoleSession $console): ScaffoldBuilder
     {
         $this->console = $console;
 
@@ -59,7 +65,7 @@ abstract class ScaffoldBuilder
         $this->cacheComposerDotJson();
         $this->createEmptyArchive();
 
-        collect($this->allBaseFiles())->each(function ($file) use (&$directories): void {
+        collect($this->allBaseFiles())->each(function (SplFileInfo $file) use (&$directories): void {
             $source = $file->getPathName();
             $destination = $this->base . DIRECTORY_SEPARATOR . 'archived' . DIRECTORY_SEPARATOR . $file->getRelativePathName();
 
@@ -79,7 +85,7 @@ abstract class ScaffoldBuilder
     {
         $this->cacheComposerDotJson();
 
-        collect($this->allBaseFiles())->each(function ($file) use (&$directories): void {
+        collect($this->allBaseFiles())->each(function (SplFileInfo $file) use (&$directories): void {
             $source = $file->getPathName();
 
             if ($this->files->isDirectory($file)) {
@@ -116,9 +122,12 @@ abstract class ScaffoldBuilder
         $this->files->makeDirectory($archived, 0755, true);
     }
 
+    /**
+     * @param string[]|array|Collection|Arrayable|Jsonable|JsonSerializable|Traversable $directories
+     */
     protected function deleteEmptyDirectories($directories): void
     {
-        collect($directories)->each(function ($directory): void {
+        collect($directories)->each(function (string $directory): void {
             if ($this->files->isEmptyDirectory($directory)) {
                 $this->files->deleteDirectory($directory);
             }
@@ -146,7 +155,7 @@ abstract class ScaffoldBuilder
         return null;
     }
 
-    protected function writeComposer($content = null): void
+    protected function writeComposer(?string $content = null): void
     {
         if ($content) {
             $this->files->put(

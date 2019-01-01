@@ -4,7 +4,13 @@ declare(strict_types=1);
 
 namespace TightenCo\Jigsaw\Scaffold;
 
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Support\Jsonable;
+use Illuminate\Support\Collection;
+use JsonSerializable;
+use Symfony\Component\Finder\SplFileInfo;
 use TightenCo\Jigsaw\File\Filesystem;
+use Traversable;
 
 class PresetScaffoldBuilder extends ScaffoldBuilder
 {
@@ -31,9 +37,9 @@ class PresetScaffoldBuilder extends ScaffoldBuilder
         $this->setBase();
     }
 
-    public function init($preset): ScaffoldBuilder
+    public function init(?string $preset): ScaffoldBuilder
     {
-        $this->package->init($preset, $this);
+        $this->package->init($preset ?? '', $this);
         $this->addPackageToCachedComposerRequires();
 
         return $this;
@@ -67,11 +73,14 @@ class PresetScaffoldBuilder extends ScaffoldBuilder
         return $this;
     }
 
+    /**
+     * @param array|Collection|Arrayable|Jsonable|JsonSerializable|Traversable $match
+     */
     public function deleteSiteFiles($match = []): PresetScaffoldBuilder
     {
         if (collect($match)->count()) {
             collect($this->getSiteFilesAndDirectories($match))
-                ->each(function ($file): void {
+                ->each(function (SplFileInfo $file): void {
                     $source = $file->getPathName();
 
                     if ($this->files->isDirectory($file)) {
@@ -85,13 +94,13 @@ class PresetScaffoldBuilder extends ScaffoldBuilder
         return $this;
     }
 
-    public function copyPresetFiles($match = [], $ignore = [], $directory = null): PresetScaffoldBuilder
+    public function copyPresetFiles(array $match = [], array $ignore = [], ?string $directory = null): PresetScaffoldBuilder
     {
         $source = $this->package->path .
             ($directory ? DIRECTORY_SEPARATOR . trim($directory, '/') : '');
 
         collect($this->getPresetDirectories($match, $ignore, $source))
-            ->each(function ($directory): void {
+            ->each(function (SplFileInfo $directory): void {
                 $destination = $this->base . DIRECTORY_SEPARATOR . $directory->getRelativePathName();
 
                 if (! $this->files->exists($destination)) {
@@ -100,7 +109,7 @@ class PresetScaffoldBuilder extends ScaffoldBuilder
             });
 
         collect($this->getPresetFiles($match, $ignore, $source))
-            ->each(function ($file): void {
+            ->each(function (SplFileInfo $file): void {
                 $source = $file->getPathName();
                 $destination = $this->base . DIRECTORY_SEPARATOR . $file->getRelativePathName();
                 $this->files->copy($source, $destination);
@@ -109,7 +118,7 @@ class PresetScaffoldBuilder extends ScaffoldBuilder
         return $this;
     }
 
-    public function runCommands($commands = []): PresetScaffoldBuilder
+    public function runCommands(array $commands = []): PresetScaffoldBuilder
     {
         $this->process->run($commands);
 
@@ -121,7 +130,7 @@ class PresetScaffoldBuilder extends ScaffoldBuilder
         $this->composerDependencies[] = $this->package->vendor . DIRECTORY_SEPARATOR . $this->package->name;
     }
 
-    protected function createDirectoryForFile($file): void
+    protected function createDirectoryForFile(SplFileInfo $file): void
     {
         $path = $file->getRelativePath();
 
@@ -130,22 +139,22 @@ class PresetScaffoldBuilder extends ScaffoldBuilder
         }
     }
 
-    protected function getSiteFilesAndDirectories($match = [], $ignore = []): array
+    protected function getSiteFilesAndDirectories(array $match = [], array $ignore = []): array
     {
         return $this->files->filesAndDirectories($this->base, $match, $ignore);
     }
 
-    protected function getPresetDirectories($match = [], $ignore = [], $source): array
+    protected function getPresetDirectories(array $match, array $ignore, string $source): array
     {
         return $this->files->directories($source, $match, $ignore);
     }
 
-    protected function getPresetFiles($match = [], $ignore = [], $source): array
+    protected function getPresetFiles(array $match, array $ignore, string $source): array
     {
         return $this->files->files($source, $match, $ignore);
     }
 
-    protected function preferVersionConstraintFromCached($composer): array
+    protected function preferVersionConstraintFromCached(array $composer): array
     {
         $require = collect(array_get($composer, 'require'))->mapWithKeys(function ($version, $package): array {
             return [$package => is_array($version) ? $version[0] : $version];

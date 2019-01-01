@@ -40,7 +40,7 @@ class ProgressBar
         return $this;
     }
 
-    public function addSteps($count): ProgressBar
+    public function addSteps(int $count): ProgressBar
     {
         $this->progressBar->setMaxSteps($this->progressBar->getMaxSteps() + $count);
 

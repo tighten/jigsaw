@@ -15,7 +15,7 @@ class ConsoleOutput extends SymfonyConsoleOutput
     /** @var ConsoleSectionOutput[] */
     protected $sections;
 
-    public function setup($verbosity): void
+    public function setup(int $verbosity): void
     {
         $this->setVerbosity($verbosity);
         $this->setupSections();
@@ -46,19 +46,19 @@ class ConsoleOutput extends SymfonyConsoleOutput
         ];
     }
 
-    protected function getProgressBar($message = null): ProgressBar // TODO use interface of class
+    protected function getProgressBar(?string $message = null): ProgressBar // TODO use interface of class
     {
         return $this->isVerbose() ?
             new ProgressBar($this, $message, $this->sections['progress']) :
             new NullProgressBar($this, $message, $this->sections['progress']);
     }
 
-    public function progressBar($name): ?ProgressBar // TODO use interface of class
+    public function progressBar(string $name): ?ProgressBar // TODO use interface of class
     {
         return $this->progressBars[$name];
     }
 
-    public function startProgressBar($name, $steps = null): void
+    public function startProgressBar(string $name, ?int $steps = null): void
     {
         $this->sections['progress']->clear();
         $progressBar = $this->progressBar($name);
@@ -67,10 +67,10 @@ class ConsoleOutput extends SymfonyConsoleOutput
             $this->sections['message']->overwrite($progressBar->getMessage());
         }
 
-        $progressBar->addSteps($steps)->start();
+        $progressBar->addSteps($steps ?? 0)->start();
     }
 
-    public function writeIntro($env, $useCache = false, $cacheExisted = false): ConsoleOutput
+    public function writeIntro(string $env, bool $useCache = false, bool $cacheExisted = false): ConsoleOutput
     {
         if ($useCache) {
             if ($cacheExisted) {
@@ -101,7 +101,7 @@ class ConsoleOutput extends SymfonyConsoleOutput
         return $this;
     }
 
-    public function writeTime($time, $useCache = false, $cacheExisted = false): ConsoleOutput
+    public function writeTime(int $time, bool $useCache = false, bool $cacheExisted = false): ConsoleOutput
     {
         if ($useCache) {
             if ($cacheExisted) {

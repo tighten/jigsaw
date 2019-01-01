@@ -7,6 +7,7 @@ namespace TightenCo\Jigsaw\View;
 use Illuminate\View\Compilers\BladeCompiler;
 use Illuminate\View\Factory;
 use Illuminate\View\ViewFinderInterface;
+use TightenCo\Jigsaw\PageData;
 
 class ViewRenderer
 {
@@ -42,17 +43,17 @@ class ViewRenderer
         $this->addExtensions();
     }
 
-    public function getExtension($bladeViewPath): string
+    public function getExtension(string $bladeViewPath): string
     {
         return strtolower(pathinfo($this->finder->find($bladeViewPath), PATHINFO_EXTENSION));
     }
 
-    public function render($path, $data): string
+    public function render(string $path, PageData $data): string
     {
         return $this->viewFactory->file($path, $data->all())->render();
     }
 
-    public function renderString($string): string
+    public function renderString(string $string): string
     {
         return $this->bladeCompiler->compileString($string);
     }

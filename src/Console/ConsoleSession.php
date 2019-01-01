@@ -29,24 +29,24 @@ class ConsoleSession
         $this->question = $question;
     }
 
-    public function write($string): ConsoleSession
+    public function write(string $string): ConsoleSession
     {
         $this->output->writeln($string);
 
         return $this;
     }
 
-    public function info($string): ConsoleSession
+    public function info(string $string): ConsoleSession
     {
         return $this->write("<info>{$string}</info>");
     }
 
-    public function error($string): ConsoleSession
+    public function error(string $string): ConsoleSession
     {
         return $this->write("<fg=red>{$string}</>");
     }
 
-    public function comment($string): ConsoleSession
+    public function comment(string $string): ConsoleSession
     {
         return $this->write("<comment>{$string}</comment>");
     }
@@ -56,7 +56,7 @@ class ConsoleSession
         return $this->write('');
     }
 
-    public function ask($question, $default = null, $choices = null, $errorMessage = ''): string
+    public function ask(string $question, ?string $default = null, ?array $choices = null, string $errorMessage = ''): string
     {
         $defaultPrompt = $default ? '<fg=blue>(default <fg=white>' . $default . '</>) </>' : '';
 
@@ -74,7 +74,7 @@ class ConsoleSession
         );
     }
 
-    public function confirm($question, $default = false, $errorMessage = ''): bool
+    public function confirm(string $question, bool $default = false, string $errorMessage = ''): bool
     {
         $defaultPrompt = $default ?
             ' <fg=blue>(default <fg=white>y</>)</> ' :

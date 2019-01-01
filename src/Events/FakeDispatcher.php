@@ -12,7 +12,7 @@ use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
      {
      }
 
-     public function hasListeners($eventName): bool
+     public function hasListeners(string $eventName): bool
      {
      }
 
@@ -25,7 +25,7 @@ use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
          return null;
      }
 
-     public function dispatch($event, $payload = [], $halt = false): ?array
+     public function dispatch($event, $payload = [], bool $halt = false): ?array
      {
      }
 

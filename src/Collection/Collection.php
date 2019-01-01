@@ -5,8 +5,13 @@ declare(strict_types=1);
 namespace TightenCo\Jigsaw\Collection;
 
 use Closure;
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Collection as BaseCollection;
+use JsonSerializable;
+use TightenCo\Jigsaw\File\InputFile;
 use TightenCo\Jigsaw\IterableObject;
+use Traversable;
 
 class Collection extends BaseCollection
 {
@@ -25,15 +30,18 @@ class Collection extends BaseCollection
         return $collection;
     }
 
-    public function loadItems($items): Collection
+    public function loadItems(BaseCollection $items): Collection
     {
-        $sortedItems = $this->defaultSort($items)->keyBy(function ($item): string {
+        $sortedItems = $this->defaultSort($items)->keyBy(function (InputFile $item): string {
             return $item->getFilename();
         });
 
         return $this->updateItems($this->addAdjacentItems($sortedItems));
     }
 
+    /**
+     * @param array|Collection|Arrayable|Jsonable|JsonSerializable|Traversable $items
+     */
     public function updateItems($items): Collection
     {
         $this->items = $this->getArrayableItems($items);
@@ -41,10 +49,10 @@ class Collection extends BaseCollection
         return $this;
     }
 
-    private function addAdjacentItems($items): BaseCollection
+    private function addAdjacentItems(BaseCollection $items): BaseCollection
     {
         $count = $items->count();
-        $adjacentItems = $items->map(function ($item): string {
+        $adjacentItems = $items->map(function (InputFile $item): string {
             return $item->getFilename();
         });
         $previousItems = $adjacentItems->prepend(null)->take($count);
@@ -55,9 +63,9 @@ class Collection extends BaseCollection
         });
     }
 
-    private function defaultSort($items): BaseCollection
+    private function defaultSort(BaseCollection $items): BaseCollection
     {
-        $sortSettings = collect(array_get($this->settings, 'sort'))->map(function ($setting): array {
+        $sortSettings = collect(array_get($this->settings, 'sort'))->map(function (string $setting): array {
             return [
                 'key' => ltrim($setting, '-+'),
                 'direction' => $setting[0] === '-' ? -1 : 1,
@@ -68,7 +76,7 @@ class Collection extends BaseCollection
             return $items;
         }
 
-        return $items->sort(function ($item_1, $item_2) use ($sortSettings): int {
+        return $items->sort(function ($item_1, array $item_2) use ($sortSettings): int {
             return $this->compareItems($item_1, $item_2, $sortSettings);
         });
     }
@@ -85,9 +93,14 @@ class Collection extends BaseCollection
                 return -$setting['direction'];
             }
         }
+
+        return null;
     }
 
-    private function getValueForSorting($item, $key): string
+    /**
+     * @param object $item
+     */
+    private function getValueForSorting($item, string $key): string
     {
         return strtolower($item->$key instanceof Closure ? $item->$key($item) : $item->$key);
     }

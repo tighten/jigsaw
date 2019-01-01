@@ -4,11 +4,16 @@ declare(strict_types=1);
 
 namespace TightenCo\Jigsaw\Collection;
 
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Support\Jsonable;
+use Illuminate\Support\Collection;
+use JsonSerializable;
 use Symfony\Component\Yaml\Yaml;
+use Traversable;
 
 class CollectionRemoteItem
 {
-    /** @var array|string */
+    /** @var array|Collection|Arrayable|Jsonable|JsonSerializable|Traversable|string */
     private $item;
 
     /** @var int */
@@ -18,7 +23,7 @@ class CollectionRemoteItem
     private $prefix;
 
     /**
-     * @param array|string $item
+     * @param array|Collection|Arrayable|Jsonable|JsonSerializable|Traversable|string $item
      */
     public function __construct($item, int $index = 0, ?string $collectionName = null)
     {

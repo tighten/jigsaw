@@ -74,7 +74,7 @@ class BuildCommand extends Command
         return $this->input->getOption('cache') !== 'false' || $this->app->config->get('cache');
     }
 
-    private function includeEnvironmentConfig($env): void
+    private function includeEnvironmentConfig(string $env): void
     {
         $environmentConfigPath = $this->getAbsolutePath("config.{$env}.php");
         $environmentConfig = (new ConfigFile($environmentConfigPath))->config;
@@ -86,7 +86,7 @@ class BuildCommand extends Command
             });
     }
 
-    private function updateBuildPaths($env): void
+    private function updateBuildPaths(string $env): void
     {
         $this->app->buildPath = [
             'source' => $this->getBuildPath('source', $env),
@@ -94,7 +94,7 @@ class BuildCommand extends Command
         ];
     }
 
-    private function getBuildPath($pathType, $env): string
+    private function getBuildPath(string $pathType, string $env): string
     {
         $customPath = array_get($this->app->config, 'build.' . $pathType);
         $buildPath = $customPath ? $this->getAbsolutePath($customPath) : $this->app->buildPath[$pathType];
@@ -102,7 +102,7 @@ class BuildCommand extends Command
         return str_replace('{env}', $env, $buildPath);
     }
 
-    private function getAbsolutePath($path): string
+    private function getAbsolutePath(string $path): string
     {
         return $this->app->cwd . '/' . trimPath($path);
     }

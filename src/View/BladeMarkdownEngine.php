@@ -32,7 +32,7 @@ class BladeMarkdownEngine implements EngineInterface
         return $this->evaluateMarkdown($content);
     }
 
-    protected function evaluateBlade($path, $data): string
+    protected function evaluateBlade(string $path, array $data): string
     {
         try {
             return $this->blade->get($path, $data);
@@ -43,7 +43,7 @@ class BladeMarkdownEngine implements EngineInterface
         }
     }
 
-    protected function evaluateMarkdown($content): string
+    protected function evaluateMarkdown(string $content): string
     {
         try {
             return $this->markdown->parseMarkdown($content);

@@ -35,7 +35,7 @@ class InitCommand extends Command
         parent::__construct();
     }
 
-    public function setBase($cwd = null): InitCommand
+    public function setBase(?string $cwd = null): InitCommand
     {
         $this->base = $cwd ?: getcwd();
 

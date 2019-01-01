@@ -34,7 +34,7 @@ class MarkdownEngine implements EngineInterface
         return $this->evaluateMarkdown($path);
     }
 
-    protected function evaluateMarkdown($path): string
+    protected function evaluateMarkdown(string $path): string
     {
         try {
             $file = $this->file->get($path);

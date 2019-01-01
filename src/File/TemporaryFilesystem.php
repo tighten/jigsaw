@@ -22,14 +22,14 @@ class TemporaryFilesystem
         $this->filesystem = $filesystem ?: new Filesystem();
     }
 
-    public function buildTempPath($filename, $extension): string
+    public function buildTempPath(string $filename, string $extension): string
     {
         return $this->tempPath . DIRECTORY_SEPARATOR .
             ($filename ? sha1($filename) : Str::random(32)) .
             $extension;
     }
 
-    public function get($originalFilename, $extension): ?InputFile
+    public function get(string $originalFilename, string $extension): ?InputFile
     {
         $file = new SplFileInfo(
             $this->buildTempPath($originalFilename, $extension),
@@ -40,7 +40,7 @@ class TemporaryFilesystem
         return $file->isReadable() ? new InputFile($file) : null;
     }
 
-    public function put($contents, $filename, $extension): string
+    public function put(string $contents, string $filename, string $extension): string
     {
         $path = $this->buildTempPath($filename, $extension);
         $this->filesystem->put($path, $contents);
@@ -53,7 +53,7 @@ class TemporaryFilesystem
         return $this->filesystem->exists($this->tempPath);
     }
 
-    private function delete($path): void
+    private function delete(string $path): void
     {
         $this->filesystem->delete($path);
     }

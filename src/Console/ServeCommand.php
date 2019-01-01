@@ -56,7 +56,7 @@ class ServeCommand extends Command
         passthru("php -S {$host}:{$port} -t " . escapeshellarg($this->getBuildPath($env)));
     }
 
-    private function getBuildPath($env): string
+    private function getBuildPath(string $env): string
     {
         $environmentConfigPath = $this->getAbsolutePath("config.{$env}.php");
         $environmentConfig = file_exists($environmentConfigPath) ? include $environmentConfigPath : [];
@@ -72,7 +72,7 @@ class ServeCommand extends Command
         return str_replace('{env}', $env, $buildPath);
     }
 
-    private function getAbsolutePath($path): string
+    private function getAbsolutePath(string $path): string
     {
         return $this->app->cwd . '/' . trimPath($path);
     }

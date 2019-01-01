@@ -32,7 +32,7 @@ class EventBus
         }
     }
 
-    public function fire($event, Jigsaw $jigsaw): void
+    public function fire(string $event, Jigsaw $jigsaw): void
     {
         $this->{$event}->each(function ($task) use ($jigsaw) {
             if (is_callable($task)) {

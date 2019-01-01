@@ -34,7 +34,7 @@ class NullProgressBar
         return $this;
     }
 
-    public function addSteps($count): NullProgressBar
+    public function addSteps(int $count): NullProgressBar
     {
         return $this;
     }

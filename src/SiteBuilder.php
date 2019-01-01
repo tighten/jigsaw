@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace TightenCo\Jigsaw;
 
 use Illuminate\Support\Collection;
+use Symfony\Component\Finder\SplFileInfo;
 use TightenCo\Jigsaw\Console\ConsoleOutput;
 use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\File\InputFile;
+use TightenCo\Jigsaw\File\OutputFile;
 use TightenCo\Jigsaw\Handlers\DefaultHandler;
 use TightenCo\Jigsaw\PathResolvers\BasicOutputPathResolver;
 
@@ -43,14 +45,14 @@ class SiteBuilder
         $this->handlers = $handlers;
     }
 
-    public function setUseCache($useCache): SiteBuilder
+    public function setUseCache(bool $useCache): SiteBuilder
     {
         $this->useCache = $useCache;
 
         return $this;
     }
 
-    public function build($source, $destination, $siteData): Collection
+    public function build(string $source, string $destination, SiteData $siteData): Collection
     {
         $this->prepareDirectory($this->cachePath, ! $this->useCache);
         $generatedFiles = $this->generateFiles($source, $siteData);
@@ -61,19 +63,22 @@ class SiteBuilder
         return $outputFiles;
     }
 
-    public function registerHandler($handler): void
+    public function registerHandler(DefaultHandler $handler): void // TODO use interface instead of class
     {
         $this->handlers[] = $handler;
     }
 
-    private function prepareDirectories($directories): void
+    /**
+     * @param string[] $directories
+     */
+    private function prepareDirectories(array $directories): void
     {
         foreach ($directories as $directory) {
             $this->prepareDirectory($directory, true);
         }
     }
 
-    private function prepareDirectory($directory, $clean = false): void
+    private function prepareDirectory(string $directory, bool $clean = false): void
     {
         if (! $this->files->isDirectory($directory)) {
             $this->files->makeDirectory($directory, 0755, true);
@@ -91,14 +96,14 @@ class SiteBuilder
         }
     }
 
-    private function generateFiles($source, $siteData): Collection
+    private function generateFiles(string $source, SiteData $siteData): Collection
     {
         $files = collect($this->files->allFiles($source));
         $this->consoleOutput->startProgressBar('build', $files->count());
 
-        $files = $files->map(function ($file): InputFile {
+        $files = $files->map(function (SplFileInfo $file): InputFile {
             return new InputFile($file);
-        })->flatMap(function ($file) use ($siteData): Collection {
+        })->flatMap(function (InputFile $file) use ($siteData): Collection {
             $this->consoleOutput->progressBar('build')->advance();
 
             return $this->handle($file, $siteData);
@@ -107,16 +112,16 @@ class SiteBuilder
         return $files;
     }
 
-    private function writeFiles($files, $destination): Collection
+    private function writeFiles(Collection $files, $destination): Collection
     {
         $this->consoleOutput->writeWritingFiles();
 
-        return $files->map(function ($file) use ($destination): string {
+        return $files->map(function (OutputFile $file) use ($destination): string {
             return $this->writeFile($file, $destination);
         });
     }
 
-    private function writeFile($file, $destination): string
+    private function writeFile(OutputFile $file, $destination): string
     {
         $directory = $this->getOutputDirectory($file);
         $this->prepareDirectory("{$destination}/{$directory}");
@@ -125,21 +130,21 @@ class SiteBuilder
         return $this->getOutputLink($file);
     }
 
-    private function handle($file, $siteData): Collection
+    private function handle(InputFile $file, SiteData $siteData): Collection
     {
         $meta = $this->getMetaData($file, $siteData->page->baseUrl);
 
         return $this->getHandler($file)->handle($file, PageData::withPageMetaData($siteData, $meta));
     }
 
-    private function getHandler($file): ?DefaultHandler // TODO improve return type by using interface
+    private function getHandler(InputFile $file): ?DefaultHandler // TODO improve return type by using interface
     {
-        return collect($this->handlers)->first(function ($handler) use ($file): bool {
+        return collect($this->handlers)->first(function (DefaultHandler $handler /* TODO use interface instead of class */) use ($file): bool {
             return $handler->shouldHandle($file);
         });
     }
 
-    private function getMetaData($file, $baseUrl): array
+    private function getMetaData(InputFile $file, string $baseUrl): array
     {
         $filename = $file->getFilenameWithoutExtension();
         $extension = $file->getFullExtension();
@@ -149,7 +154,7 @@ class SiteBuilder
         return compact('filename', 'baseUrl', 'path', 'extension', 'url');
     }
 
-    private function getOutputDirectory($file): string
+    private function getOutputDirectory(OutputFile $file): string
     {
         if ($permalink = $this->getFilePermalink($file)) {
             return urldecode(dirname($permalink));
@@ -158,7 +163,7 @@ class SiteBuilder
         return urldecode($this->outputPathResolver->directory($file->path(), $file->name(), $file->extension(), $file->page()));
     }
 
-    private function getOutputPath($file): string
+    private function getOutputPath(OutputFile $file): string
     {
         if ($permalink = $this->getFilePermalink($file)) {
             return $permalink;
@@ -172,7 +177,7 @@ class SiteBuilder
         )));
     }
 
-    private function getOutputLink($file): string
+    private function getOutputLink(OutputFile $file): string
     {
         if ($permalink = $this->getFilePermalink($file)) {
             return $permalink;
@@ -186,7 +191,7 @@ class SiteBuilder
         )));
     }
 
-    private function getFilePermalink($file): ?string
+    private function getFilePermalink(OutputFile $file): ?string
     {
         return $file->data()->page->permalink ? resolvePath(urldecode($file->data()->page->permalink)) : null;
     }

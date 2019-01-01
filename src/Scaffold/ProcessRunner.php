@@ -4,13 +4,21 @@ declare(strict_types=1);
 
 namespace TightenCo\Jigsaw\Scaffold;
 
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Support\Jsonable;
+use Illuminate\Support\Collection;
+use JsonSerializable;
 use Symfony\Component\Process\Process;
+use Traversable;
 
 class ProcessRunner
 {
+    /**
+     * @param array|Collection|Arrayable|Jsonable|JsonSerializable|Traversable $commands
+     */
     public function run($commands = []): ProcessRunner
     {
-        collect($commands)->each(function ($command): void {
+        collect($commands)->each(function (string $command): void {
             $this->runCommand($command);
         });
 
@@ -21,7 +29,7 @@ class ProcessRunner
         return $this;
     }
 
-    protected function runCommand($command): ProcessRunner
+    protected function runCommand(string $command): ProcessRunner
     {
         echo "\n> " . $command . "\n";
         $process = new Process($command);

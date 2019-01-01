@@ -4,8 +4,14 @@ declare(strict_types=1);
 
 namespace TightenCo\Jigsaw\Loaders;
 
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Support\Jsonable;
+use Illuminate\Support\Collection as BaseCollection;
+use JsonSerializable;
+use TightenCo\Jigsaw\Collection\Collection;
 use TightenCo\Jigsaw\Collection\CollectionRemoteItem;
 use TightenCo\Jigsaw\File\Filesystem;
+use Traversable;
 
 class CollectionRemoteItemLoader
 {
@@ -20,9 +26,12 @@ class CollectionRemoteItemLoader
         $this->files = $files;
     }
 
-    public function write($collections, $source): void
+    /**
+     * @param array|BaseCollection|Arrayable|Jsonable|JsonSerializable|Traversable $collections
+     */
+    public function write($collections, string $source): void
     {
-        collect($collections)->each(function ($collection, $collectionName) use ($source): void {
+        collect($collections)->each(function ($collection, string $collectionName) use ($source): void {
             $items = $this->getItems($collection);
 
             if (collect($items)->count()) {
@@ -31,7 +40,7 @@ class CollectionRemoteItemLoader
         });
     }
 
-    private function createTempDirectory($source, $collectionName): string
+    private function createTempDirectory(string $source, string $collectionName): string
     {
         $tempDirectory = $source . '/_' . $collectionName . '/_tmp';
         $this->prepareDirectory($tempDirectory, true);
@@ -42,12 +51,12 @@ class CollectionRemoteItemLoader
 
     public function cleanup(): void
     {
-        collect($this->tempDirectories)->each(function ($path): void {
+        collect($this->tempDirectories)->each(function (string $path): void {
             $this->files->deleteDirectory($path);
         });
     }
 
-    private function getItems($collection): array
+    private function getItems(Collection $collection): array
     {
         if (! $collection->items) {
             return [];
@@ -58,7 +67,7 @@ class CollectionRemoteItemLoader
             $collection->items->toArray();
     }
 
-    private function prepareDirectory($directory, $clean = false): void
+    private function prepareDirectory(string $directory, bool $clean = false): void
     {
         if (! $this->files->isDirectory($directory)) {
             $this->files->makeDirectory($directory, 0755, true);
@@ -69,14 +78,17 @@ class CollectionRemoteItemLoader
         }
     }
 
-    private function writeTempFiles($items, $directory, $collectionName): void
+    /**
+     * @param array|Collection|Arrayable|Jsonable|JsonSerializable|Traversable $items
+     */
+    private function writeTempFiles($items, string $directory, string $collectionName): void
     {
-        collect($items)->each(function ($item, $index) use ($directory, $collectionName): void {
+        collect($items)->each(function ($item, int $index) use ($directory, $collectionName): void {
             $this->writeFile(new CollectionRemoteItem($item, $index, $collectionName), $directory);
         });
     }
 
-    private function writeFile($remoteFile, $directory): void
+    private function writeFile(CollectionRemoteItem $remoteFile, string $directory): void
     {
         $this->files->put($directory . '/' . $remoteFile->getFilename(), $remoteFile->getContent());
     }

@@ -31,7 +31,7 @@ class DefaultInstaller
     /** @var PresetScaffoldBuilder */ // TODO type check
     protected $builder;
 
-    public function install(ScaffoldBuilder $builder, $settings = []): void
+    public function install(ScaffoldBuilder $builder, array $settings = []): void
     {
         $this->builder = $builder;
         $this->delete = array_get($settings, 'delete', []);

@@ -5,7 +5,11 @@ declare(strict_types=1);
 namespace TightenCo\Jigsaw\Loaders;
 
 use Exception;
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Collection as BaseCollection;
+use JsonSerializable;
+use Symfony\Component\Finder\SplFileInfo;
 use TightenCo\Jigsaw\Collection\Collection;
 use TightenCo\Jigsaw\Collection\CollectionItem;
 use TightenCo\Jigsaw\CollectionItemHandlers\BladeCollectionItemHandler;
@@ -17,6 +21,8 @@ use TightenCo\Jigsaw\IterableObject;
 use TightenCo\Jigsaw\IterableObjectWithDefault;
 use TightenCo\Jigsaw\PageVariable;
 use TightenCo\Jigsaw\PathResolvers\CollectionPathResolver;
+use TightenCo\Jigsaw\SiteData;
+use Traversable;
 
 class CollectionDataLoader
 {
@@ -52,7 +58,7 @@ class CollectionDataLoader
         $this->consoleOutput = $consoleOutput;
     }
 
-    public function load($siteData, $source): array
+    public function load(SiteData $siteData, string $source): array
     {
         $this->source = $source;
         $this->pageSettings = $siteData->page;
@@ -71,7 +77,7 @@ class CollectionDataLoader
         return $collections->all();
     }
 
-    private function buildCollection($collection): BaseCollection
+    private function buildCollection(Collection $collection): BaseCollection
     {
         $path = "{$this->source}/_{$collection->name}";
 
@@ -80,20 +86,20 @@ class CollectionDataLoader
         }
 
         return collect($this->filesystem->files($path))
-            ->reject(function ($file): bool {
+            ->reject(function (SplFileInfo $file): bool {
                 return starts_with($file->getFilename(), '_');
-            })->tap(function ($files): void {
+            })->tap(function (BaseCollection $files): void {
                 $this->consoleOutput->progressBar('collections')->addSteps($files->count());
-            })->map(function ($file): InputFile {
+            })->map(function (SplFileInfo $file): InputFile {
                 return new InputFile($file);
-            })->map(function ($inputFile) use ($collection): CollectionItem {
+            })->map(function (InputFile $inputFile) use ($collection): CollectionItem {
                 $this->consoleOutput->progressBar('collections')->advance();
 
                 return $this->buildCollectionItem($inputFile, $collection);
             });
     }
 
-    private function buildCollectionItem($file, $collection): CollectionItem
+    private function buildCollectionItem(InputFile $file, Collection $collection): CollectionItem
     {
         $data = $this->pageSettings
             ->merge(['section' => 'content'])
@@ -117,9 +123,9 @@ class CollectionDataLoader
         return $item;
     }
 
-    private function getHandler($file): ?DefaultHandler // TODO use interface of class
+    private function getHandler(InputFile $file): ?DefaultHandler // TODO use interface of class
     {
-        $handler = $this->handlers->first(function ($handler) use ($file): bool {
+        $handler = $this->handlers->first(function (DefaultHandler $handler/* TODO use interface instead of class */) use ($file): bool {
             return $handler->shouldHandle($file);
         });
 
@@ -130,7 +136,7 @@ class CollectionDataLoader
         return $handler;
     }
 
-    private function getMetaData($file, $collection, $data): array
+    private function getMetaData(InputFile $file, Collection $collection, $data): array
     {
         $filename = $file->getFilenameWithoutExtension();
         $baseUrl = $data->baseUrl;
@@ -142,6 +148,10 @@ class CollectionDataLoader
         return compact('filename', 'baseUrl', 'extension', 'collection', 'collectionName', 'source');
     }
 
+
+    /**
+     * @param array|Collection|Arrayable|Jsonable|JsonSerializable|Traversable $paths
+     */
     private function buildUrls($paths): ?IterableObjectWithDefault
     {
         $urls = collect($paths)->map(function ($path): string {
@@ -151,9 +161,9 @@ class CollectionDataLoader
         return $urls->count() ? new IterableObjectWithDefault($urls) : null;
     }
 
-    private function getPath($data): ?IterableObjectWithDefault
+    private function getPath(IterableObject $data): ?IterableObjectWithDefault
     {
-        $links = $this->pathResolver->link($data->path, new PageVariable($data));
+        $links = $this->pathResolver->link((string) $data->path, new PageVariable($data));
 
         return $links->count() ? new IterableObjectWithDefault($links) : null;
     }

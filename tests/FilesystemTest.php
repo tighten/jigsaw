@@ -28,6 +28,7 @@ class FilesystemTest extends TestCase
      */
     public function can_return_array_of_all_files_and_directories()
     {
+        /** @var Filesystem $filesystem */
         $filesystem = $this->app->make(Filesystem::class);
         $vfs = $this->setupFiles();
 
@@ -47,9 +48,9 @@ class FilesystemTest extends TestCase
             '.DS_Store' => '',
         ]);
 
-        $files = collect($this->app->make(Filesystem::class)
-            ->filesAndDirectories($vfs->url())
-        )->map(function ($file) {
+        /** @var Filesystem $filesystem */
+        $filesystem = $this->app->make(Filesystem::class);
+        $files = collect($filesystem->filesAndDirectories($vfs->url()))->map(function ($file) {
             return $file->getRelativePathName();
         });
 
@@ -199,6 +200,7 @@ class FilesystemTest extends TestCase
      */
     public function can_return_array_of_files_and_directories_matching_a_string()
     {
+        /** @var Filesystem $filesystem */
         $filesystem = $this->app->make(Filesystem::class);
         $vfs = $this->setupFiles();
 
@@ -253,9 +255,9 @@ class FilesystemTest extends TestCase
 
     protected function getFilesMatching($match)
     {
-        return collect($this->app->make(Filesystem::class)
-            ->filesAndDirectories($this->setupFiles()->url(), $match)
-        )->map(function ($file) {
+        /** @var Filesystem $filesystem */
+        $filesystem = $this->app->make(Filesystem::class);
+        return collect($filesystem->filesAndDirectories($this->setupFiles()->url(), $match))->map(function ($file) {
             return $file->getRelativePathName();
         });
     }

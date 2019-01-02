@@ -12,6 +12,7 @@ class FilePathTest extends TestCase
     public function test_accented_character_in_filename_is_replaced_with_unaccented_character_when_using_default_path_config()
     {
         $this->app->instance('outputPathResolver', new PrettyOutputPathResolver());
+        /** @var CollectionPathResolver $pathResolver */
         $pathResolver = $this->app->make(CollectionPathResolver::class);
         $pageVariable = $this->getPageVariableDummy('Fútbol solidario');
         $outputPath = $pathResolver->link('', $pageVariable);
@@ -22,6 +23,7 @@ class FilePathTest extends TestCase
     public function test_accented_character_in_filename_is_replaced_with_unaccented_character_when_using_shorthand_path_config()
     {
         $this->app->instance('outputPathResolver', new PrettyOutputPathResolver());
+        /** @var CollectionPathResolver $pathResolver */
         $pathResolver = $this->app->make(CollectionPathResolver::class);
         $pageVariable = $this->getPageVariableDummy('Fútbol solidario');
         $outputPath = $pathResolver->link('{filename}', $pageVariable);
@@ -32,6 +34,7 @@ class FilePathTest extends TestCase
     public function test_accented_character_in_filename_is_replaced_with_unaccented_character_when_using_slugified_shorthand_path_config()
     {
         $this->app->instance('outputPathResolver', new PrettyOutputPathResolver());
+        /** @var CollectionPathResolver $pathResolver */
         $pathResolver = $this->app->make(CollectionPathResolver::class);
         $pageVariable = $this->getPageVariableDummy('Fútbol solidario');
         $outputPath = $pathResolver->link('{_filename}', $pageVariable);
@@ -42,6 +45,7 @@ class FilePathTest extends TestCase
     public function test_invalid_characters_in_filename_are_removed_when_using_default_path_config()
     {
         $this->app->instance('outputPathResolver', new PrettyOutputPathResolver());
+        /** @var CollectionPathResolver $pathResolver */
         $pathResolver = $this->app->make(CollectionPathResolver::class);
         $pageVariable = $this->getPageVariableDummy('Has® Invalid™ Characters');
         $outputPath = $pathResolver->link('', $pageVariable);
@@ -52,6 +56,7 @@ class FilePathTest extends TestCase
     public function test_invalid_characters_in_filename_are_removed_when_using_shorthand_path_config()
     {
         $this->app->instance('outputPathResolver', new PrettyOutputPathResolver());
+        /** @var CollectionPathResolver $pathResolver */
         $pathResolver = $this->app->make(CollectionPathResolver::class);
         $pageVariable = $this->getPageVariableDummy('Has® Invalid™ Characters');
         $outputPath = $pathResolver->link('{filename}', $pageVariable);
@@ -62,6 +67,7 @@ class FilePathTest extends TestCase
     public function test_invalid_characters_in_filename_are_removed_when_using_slugified_shorthand_path_config()
     {
         $this->app->instance('outputPathResolver', new PrettyOutputPathResolver());
+        /** @var CollectionPathResolver $pathResolver */
         $pathResolver = $this->app->make(CollectionPathResolver::class);
         $pageVariable = $this->getPageVariableDummy('Has® Invalid™ Characters');
         $outputPath = $pathResolver->link('{_filename}', $pageVariable);

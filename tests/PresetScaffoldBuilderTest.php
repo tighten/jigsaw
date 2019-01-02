@@ -19,6 +19,7 @@ class PresetScaffoldBuilderTest extends TestCase
      */
     public function named_preset_resolves_to_predefined_package_path()
     {
+        /** @var PresetScaffoldBuilder $preset */
         $preset = $this->app->make(PresetScaffoldBuilder::class);
         $vfs = vfsStream::setup('virtual', null, [
             'vendor' => [
@@ -44,6 +45,7 @@ class PresetScaffoldBuilderTest extends TestCase
      */
     public function named_preset_resolves_to_vendor_package_path_if_not_predefined()
     {
+        /** @var PresetScaffoldBuilder $preset */
         $preset = $this->app->make(PresetScaffoldBuilder::class);
         $vfs = vfsStream::setup('virtual', null, [
             'vendor' => [
@@ -69,6 +71,7 @@ class PresetScaffoldBuilderTest extends TestCase
     {
         $process = Mockery::spy(ProcessRunner::class);
         $this->app->instance(PresetPackage::class, new PresetPackage(new DefaultInstaller, new CustomInstaller, $process));
+        /** @var PresetScaffoldBuilder $preset */
         $preset = $this->app->make(PresetScaffoldBuilder::class);
         $vfs = vfsStream::setup('virtual', null, ['vendor' => ['test' => ['package' => []]]]);
         $preset->base = $vfs->url();
@@ -83,6 +86,7 @@ class PresetScaffoldBuilderTest extends TestCase
      */
     public function exception_is_thrown_if_package_is_missing_a_slash()
     {
+        /** @var PresetScaffoldBuilder $preset */
         $preset = $this->app->make(PresetScaffoldBuilder::class);
         $vfs = vfsStream::setup('virtual', null, ['vendor' => ['test' => ['package' => []]]]);
         $preset->base = $vfs->url();
@@ -103,6 +107,7 @@ class PresetScaffoldBuilderTest extends TestCase
      */
     public function exception_is_thrown_if_package_init_file_contains_errors()
     {
+        /** @var PresetScaffoldBuilder $preset */
         $preset = $this->app->make(PresetScaffoldBuilder::class);
         $initFile = '<?php contains-an-error;';
         $vfs = vfsStream::setup('virtual', null, [
@@ -134,6 +139,7 @@ class PresetScaffoldBuilderTest extends TestCase
     {
         $default_installer = Mockery::spy(DefaultInstaller::class);
         $this->app->instance(DefaultInstaller::class, $default_installer);
+        /** @var PresetScaffoldBuilder $preset */
         $preset = $this->app->make(PresetScaffoldBuilder::class);
 
         $initFile = '<?php return [
@@ -165,6 +171,7 @@ class PresetScaffoldBuilderTest extends TestCase
     {
         $custom_installer = Mockery::spy(CustomInstaller::class);
         $this->app->instance(CustomInstaller::class, $custom_installer);
+        /** @var PresetScaffoldBuilder $preset */
         $preset = $this->app->make(PresetScaffoldBuilder::class);
 
         $custom_installer->shouldReceive('setConsole')
@@ -199,6 +206,7 @@ class PresetScaffoldBuilderTest extends TestCase
     {
         $default_installer = Mockery::spy(DefaultInstaller::class);
         $this->app->instance(DefaultInstaller::class, $default_installer);
+        /** @var PresetScaffoldBuilder $preset */
         $preset = $this->app->make(PresetScaffoldBuilder::class);
 
         $vfs = vfsStream::setup('virtual', null, [
@@ -236,6 +244,7 @@ class PresetScaffoldBuilderTest extends TestCase
             ],
         ];
         $vfs = vfsStream::setup('virtual', null, $existing_site);
+        /** @var PresetScaffoldBuilder $preset */
         $preset = $this->app->make(PresetScaffoldBuilder::class)
             ->setBase($vfs->url())
             ->init('test/preset');
@@ -272,6 +281,7 @@ class PresetScaffoldBuilderTest extends TestCase
             ],
         ];
         $vfs = vfsStream::setup('virtual', null, $existing_site);
+        /** @var PresetScaffoldBuilder $preset */
         $preset = $this->app->make(PresetScaffoldBuilder::class)
             ->setBase($vfs->url())
             ->init('test/preset');

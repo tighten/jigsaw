@@ -30,7 +30,9 @@ class ScaffoldTest extends TestCase
             self::EXISTING_FILES,
             ['archived' => []]
         ));
-        $scaffold = $this->app->make(BasicScaffoldBuilder::class)->setBase($vfs->url());
+        /** @var BasicScaffoldBuilder $scaffold */
+        $scaffold = $this->app->make(BasicScaffoldBuilder::class);
+        $scaffold->setBase($vfs->url());
 
         $scaffold->archiveExistingSite();
 
@@ -47,7 +49,9 @@ class ScaffoldTest extends TestCase
     public function will_create_archived_directory_if_none_exists_when_archiving_site()
     {
         $vfs = vfsStream::setup('virtual', null, self::EXISTING_FILES);
-        $scaffold = $this->app->make(BasicScaffoldBuilder::class)->setBase($vfs->url());
+        /** @var BasicScaffoldBuilder $scaffold */
+        $scaffold = $this->app->make(BasicScaffoldBuilder::class);
+        $scaffold->setBase($vfs->url());
 
         $scaffold->archiveExistingSite();
 
@@ -67,7 +71,9 @@ class ScaffoldTest extends TestCase
             self::EXISTING_FILES,
             ['archived' => ['old-file.md' => '']]
         ));
-        $scaffold = $this->app->make(BasicScaffoldBuilder::class)->setBase($vfs->url());
+        /** @var BasicScaffoldBuilder $scaffold */
+        $scaffold = $this->app->make(BasicScaffoldBuilder::class);
+        $scaffold->setBase($vfs->url());
 
         $this->assertNotNull($vfs->getChild('config.php'));
         $this->assertNotNull($vfs->getChild('archived/old-file.md'));
@@ -86,7 +92,9 @@ class ScaffoldTest extends TestCase
             self::EXISTING_FILES,
             ['archived' => []]
         ));
-        $scaffold = $this->app->make(BasicScaffoldBuilder::class)->setBase($vfs->url());
+        /** @var BasicScaffoldBuilder $scaffold */
+        $scaffold = $this->app->make(BasicScaffoldBuilder::class);
+        $scaffold->setBase($vfs->url());
 
         $scaffold->archiveExistingSite();
 
@@ -103,7 +111,9 @@ class ScaffoldTest extends TestCase
             self::EXISTING_FILES,
             ['vendor' => []]
         ));
-        $scaffold = $this->app->make(BasicScaffoldBuilder::class)->setBase($vfs->url());
+        /** @var BasicScaffoldBuilder $scaffold */
+        $scaffold = $this->app->make(BasicScaffoldBuilder::class);
+        $scaffold->setBase($vfs->url());
 
         $scaffold->archiveExistingSite();
 
@@ -120,7 +130,9 @@ class ScaffoldTest extends TestCase
             self::EXISTING_FILES,
             ['node_modules' => []]
         ));
-        $scaffold = $this->app->make(BasicScaffoldBuilder::class)->setBase($vfs->url());
+        /** @var BasicScaffoldBuilder $scaffold */
+        $scaffold = $this->app->make(BasicScaffoldBuilder::class);
+        $scaffold->setBase($vfs->url());
 
         $scaffold->archiveExistingSite();
 
@@ -134,7 +146,9 @@ class ScaffoldTest extends TestCase
     public function can_delete_existing_files_and_directories()
     {
         $vfs = vfsStream::setup('virtual', null, self::EXISTING_FILES);
-        $scaffold = $this->app->make(BasicScaffoldBuilder::class)->setBase($vfs->url());
+        /** @var BasicScaffoldBuilder $scaffold */
+        $scaffold = $this->app->make(BasicScaffoldBuilder::class);
+        $scaffold->setBase($vfs->url());
 
         $scaffold->deleteExistingSite();
 
@@ -152,7 +166,9 @@ class ScaffoldTest extends TestCase
             self::EXISTING_FILES,
             ['archived' => []]
         ));
-        $scaffold = $this->app->make(BasicScaffoldBuilder::class)->setBase($vfs->url());
+        /** @var BasicScaffoldBuilder $scaffold */
+        $scaffold = $this->app->make(BasicScaffoldBuilder::class);
+        $scaffold->setBase($vfs->url());
 
         $scaffold->deleteExistingSite();
 
@@ -168,7 +184,9 @@ class ScaffoldTest extends TestCase
             self::EXISTING_FILES,
             ['vendor' => []]
         ));
-        $scaffold = $this->app->make(BasicScaffoldBuilder::class)->setBase($vfs->url());
+        /** @var BasicScaffoldBuilder $scaffold */
+        $scaffold = $this->app->make(BasicScaffoldBuilder::class);
+        $scaffold->setBase($vfs->url());
 
         $scaffold->deleteExistingSite();
 
@@ -184,7 +202,9 @@ class ScaffoldTest extends TestCase
             self::EXISTING_FILES,
             ['node_modules' => []]
         ));
-        $scaffold = $this->app->make(BasicScaffoldBuilder::class)->setBase($vfs->url());
+        /** @var BasicScaffoldBuilder $scaffold */
+        $scaffold = $this->app->make(BasicScaffoldBuilder::class);
+        $scaffold->setBase($vfs->url());
 
         $scaffold->deleteExistingSite();
 
@@ -199,7 +219,9 @@ class ScaffoldTest extends TestCase
         $old_composer = ['require' => ['tightenco/jigsaw' => '^1.2']];
         $existing_site = ['composer.json' => json_encode($old_composer)];
         $vfs = vfsStream::setup('virtual', null, $existing_site);
-        $scaffold = $this->app->make(BasicScaffoldBuilder::class)->setBase($vfs->url());
+        /** @var BasicScaffoldBuilder $scaffold */
+        $scaffold = $this->app->make(BasicScaffoldBuilder::class);
+        $scaffold->setBase($vfs->url());
 
         $scaffold->archiveExistingSite();
 
@@ -212,7 +234,9 @@ class ScaffoldTest extends TestCase
     public function composer_dot_json_is_not_restored_if_it_did_not_exist_when_archiving_site()
     {
         $vfs = vfsStream::setup('virtual', null, self::EXISTING_FILES);
-        $scaffold = $this->app->make(BasicScaffoldBuilder::class)->setBase($vfs->url());
+        /** @var BasicScaffoldBuilder $scaffold */
+        $scaffold = $this->app->make(BasicScaffoldBuilder::class);
+        $scaffold->setBase($vfs->url());
 
         $scaffold->archiveExistingSite();
 
@@ -227,7 +251,9 @@ class ScaffoldTest extends TestCase
         $old_composer = ['require' => ['tightenco/jigsaw' => '^1.2']];
         $existing_site = ['composer.json' => json_encode($old_composer)];
         $vfs = vfsStream::setup('virtual', null, $existing_site);
-        $scaffold = $this->app->make(BasicScaffoldBuilder::class)->setBase($vfs->url());
+        /** @var BasicScaffoldBuilder $scaffold */
+        $scaffold = $this->app->make(BasicScaffoldBuilder::class);
+        $scaffold->setBase($vfs->url());
 
         $scaffold->deleteExistingSite();
 
@@ -240,7 +266,9 @@ class ScaffoldTest extends TestCase
     public function composer_dot_json_is_not_restored_if_it_did_not_exist_when_deleting_site()
     {
         $vfs = vfsStream::setup('virtual', null, self::EXISTING_FILES);
-        $scaffold = $this->app->make(BasicScaffoldBuilder::class)->setBase($vfs->url());
+        /** @var BasicScaffoldBuilder $scaffold */
+        $scaffold = $this->app->make(BasicScaffoldBuilder::class);
+        $scaffold->setBase($vfs->url());
 
         $scaffold->deleteExistingSite();
 

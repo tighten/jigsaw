@@ -25,6 +25,7 @@ class InitCommandTest extends TestCase
         $this->app->instance(BasicScaffoldBuilder::class, $basic_scaffold);
 
         $vfs = vfsStream::setup('virtual', null, []);
+        /** @var InitCommand $command */
         $command = $this->app->make(InitCommand::class);
         $command->setApplication(new Application());
         $command->setBase($vfs->url());
@@ -49,6 +50,7 @@ class InitCommandTest extends TestCase
         $this->app->instance(PresetScaffoldBuilder::class, $preset_scaffold);
 
         $vfs = vfsStream::setup('virtual', null, []);
+        /** @var InitCommand $command */
         $command = $this->app->make(InitCommand::class);
         $command->setApplication(new Application());
         $command->setBase($vfs->url());
@@ -66,6 +68,7 @@ class InitCommandTest extends TestCase
      */
     public function init_command_displays_error_if_preset_name_is_invalid()
     {
+        /** @var InitCommand $command */
         $command = $this->app->make(InitCommand::class);
         $command->setApplication(new Application());
         $console = new CommandTester($command);
@@ -80,6 +83,7 @@ class InitCommandTest extends TestCase
     public function init_command_displays_warning_if_source_directory_exists()
     {
         $vfs = vfsStream::setup('virtual', null, ['source' => []]);
+        /** @var InitCommand $command */
         $command = $this->app->make(InitCommand::class);
         $command->setApplication(new Application());
         $command->setBase($vfs->url());
@@ -97,6 +101,7 @@ class InitCommandTest extends TestCase
     public function init_command_displays_warning_if_config_dot_php_exists()
     {
         $vfs = vfsStream::setup('virtual', null, ['config.php' => '']);
+        /** @var InitCommand $command */
         $command = $this->app->make(InitCommand::class);
         $command->setApplication(new Application());
         $command->setBase($vfs->url());
@@ -121,6 +126,7 @@ class InitCommandTest extends TestCase
         $this->app->instance(BasicScaffoldBuilder::class, $basic_scaffold);
 
         $vfs = vfsStream::setup('virtual', null, ['config.php' => '']);
+        /** @var InitCommand $command */
         $command = $this->app->make(InitCommand::class);
         $command->setApplication(new Application());
         $command->setBase($vfs->url());
@@ -147,6 +153,7 @@ class InitCommandTest extends TestCase
         $this->app->instance(BasicScaffoldBuilder::class, $basic_scaffold);
 
         $vfs = vfsStream::setup('virtual', null, ['config.php' => '']);
+        /** @var InitCommand $command */
         $command = $this->app->make(InitCommand::class);
         $command->setApplication(new Application());
         $command->setBase($vfs->url());
@@ -172,6 +179,7 @@ class InitCommandTest extends TestCase
         $this->app->instance(BasicScaffoldBuilder::class, $basic_scaffold);
 
         $vfs = vfsStream::setup('virtual', null, ['config.php' => '']);
+        /** @var InitCommand $command */
         $command = $this->app->make(InitCommand::class);
         $command->setApplication(new Application());
         $command->setBase($vfs->url());
@@ -197,6 +205,7 @@ class InitCommandTest extends TestCase
         $this->app->instance(BasicScaffoldBuilder::class, $basic_scaffold);
 
         $vfs = vfsStream::setup('virtual', null, ['config.php' => '']);
+        /** @var InitCommand $command */
         $command = $this->app->make(InitCommand::class);
         $command->setApplication(new Application());
         $command->setBase($vfs->url());
@@ -222,6 +231,7 @@ class InitCommandTest extends TestCase
         $this->app->instance(BasicScaffoldBuilder::class, $basic_scaffold);
 
         $vfs = vfsStream::setup('virtual', null, ['config.php' => '']);
+        /** @var InitCommand $command */
         $command = $this->app->make(InitCommand::class);
         $command->setApplication(new Application());
         $command->setBase($vfs->url());

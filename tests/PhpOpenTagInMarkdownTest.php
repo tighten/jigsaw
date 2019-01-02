@@ -14,6 +14,7 @@ class PhpOpenTagInMarkdown extends TestCase
     public function md_files_containing_php_open_tag_are_processed()
     {
         $inputFile = $this->getInputFile('php-tag/php-tag-markdown.md');
+        /** @var MarkdownHandler $handler */
         $handler = $this->app->make(MarkdownHandler::class);
         $outputFile = $handler->handle($inputFile, $this->getPageDataDummy());
 
@@ -29,6 +30,7 @@ class PhpOpenTagInMarkdown extends TestCase
     public function blade_md_hybrid_files_containing_php_open_tag_are_processed()
     {
         $inputFile = $this->getInputFile('php-tag/php-tag-blade-markdown.blade.md');
+        /** @var MarkdownHandler $handler */
         $handler = $this->app->make(MarkdownHandler::class);
         $outputFile = $handler->handle($inputFile, $this->getPageDataDummy());
 

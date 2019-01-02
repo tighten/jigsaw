@@ -96,7 +96,7 @@ class PresetPackage
             ->implode('/');
 
         if (! $this->files->exists($this->path)) {
-            $package = $this->vendor . DIRECTORY_SEPARATOR . $this->name;
+            $package = $this->vendor . '/' . $this->name;
 
             try {
                 $this->installPackageFromComposer($package);

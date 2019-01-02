@@ -49,7 +49,7 @@ class DefaultInstaller
 
         return $this->builder
             ->deleteSiteFiles($this->delete)
-            ->copyPresetFiles(null, $this->ignore)
+            ->copyPresetFiles([], $this->ignore)
             ->mergeComposerDotJson()
             ->runCommands($this->commands);
     }

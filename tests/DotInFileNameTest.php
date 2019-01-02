@@ -65,7 +65,7 @@ class DotInFileNameTest extends TestCase
         $this->app->instance('outputPathResolver', new PrettyOutputPathResolver());
         $pathResolver = $this->app->make(CollectionPathResolver::class);
         $pageVariable = $this->getPageVariableDummy('collection-item-with.dot');
-        $outputPath = $pathResolver->link(null, $pageVariable);
+        $outputPath = $pathResolver->link(null ?? '', $pageVariable);
 
         $this->assertEquals('/collection-item-with.dot', $outputPath[0]);
     }

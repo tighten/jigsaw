@@ -111,7 +111,7 @@ abstract class ScaffoldBuilder
         $composer = collect($this->composerCache)->only(['require', 'repositories']);
 
         if ($composer->count() && $jigsaw_require = collect($composer->get('require'))->only('tightenco/jigsaw')) {
-            $this->writeComposer($composer->put('require', $jigsaw_require));
+            $this->writeComposer($composer->put('require', $jigsaw_require)->toArray());
         }
     }
 
@@ -138,7 +138,7 @@ abstract class ScaffoldBuilder
     {
         return $this->files->filesAndDirectories(
             $this->base,
-            null,
+            [],
             self::IGNORE_DIRECTORIES,
             $ignore_dotfiles = false
         );
@@ -155,7 +155,7 @@ abstract class ScaffoldBuilder
         return null;
     }
 
-    protected function writeComposer(?string $content = null): void
+    protected function writeComposer(?array $content = null): void
     {
         if ($content) {
             $this->files->put(

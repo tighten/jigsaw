@@ -78,8 +78,10 @@ class PresetScaffoldBuilder extends ScaffoldBuilder
      */
     public function deleteSiteFiles($match = []): PresetScaffoldBuilder
     {
-        if (collect($match)->count()) {
-            collect($this->getSiteFilesAndDirectories($match))
+        $matchCollection = collect($match);
+
+        if ($matchCollection->count()) {
+            collect($this->getSiteFilesAndDirectories($matchCollection->toArray()))
                 ->each(function (SplFileInfo $file): void {
                     $source = $file->getPathName();
 

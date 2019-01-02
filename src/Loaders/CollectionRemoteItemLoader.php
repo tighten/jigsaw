@@ -11,6 +11,7 @@ use JsonSerializable;
 use TightenCo\Jigsaw\Collection\Collection;
 use TightenCo\Jigsaw\Collection\CollectionRemoteItem;
 use TightenCo\Jigsaw\File\Filesystem;
+use TightenCo\Jigsaw\IterableObject;
 use Traversable;
 
 class CollectionRemoteItemLoader
@@ -34,7 +35,7 @@ class CollectionRemoteItemLoader
         collect($collections)->each(function ($collection, string $collectionName) use ($source): void {
             $items = $this->getItems($collection);
 
-            if (collect($items)->count()) {
+            if ($items->count()) {
                 $this->writeTempFiles($items, $this->createTempDirectory($source, $collectionName), $collectionName);
             }
         });
@@ -56,15 +57,17 @@ class CollectionRemoteItemLoader
         });
     }
 
-    private function getItems(Collection $collection): array
+    private function getItems(IterableObject $collection): BaseCollection
     {
         if (! $collection->items) {
-            return [];
+            return collect();
         }
 
-        return is_callable($collection->items) ?
+        return collect(
+            is_callable($collection->items) ?
             $collection->items->__invoke() :
-            $collection->items->toArray();
+            $collection->items
+        );
     }
 
     private function prepareDirectory(string $directory, bool $clean = false): void

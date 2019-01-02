@@ -45,7 +45,7 @@ class CustomScaffoldInstallerTest extends TestCase
 
         (new CustomInstaller())->install($builder)
             ->setup()
-            ->delete('config.php');
+            ->delete(['config.php']);
 
         $this->assertNull($vfs->getChild('config.php'));
         $this->assertNotNull($vfs->getChild('source'));
@@ -139,7 +139,7 @@ class CustomScaffoldInstallerTest extends TestCase
 
         (new CustomInstaller())->install($builder)
             ->setup()
-            ->copy('preset-file.php');
+            ->copy(['preset-file.php']);
 
         $this->assertNotNull($vfs->getChild('preset-file.php'));
         $this->assertNull($vfs->getChild('.dotfile'));
@@ -226,8 +226,8 @@ class CustomScaffoldInstallerTest extends TestCase
 
         (new CustomInstaller())->install($builder)
             ->setup()
-            ->copy('.dotfile')
-            ->copy('source');
+            ->copy(['.dotfile'])
+            ->copy(['source']);
 
         $this->assertNotNull($vfs->getChild('.dotfile'));
         $this->assertNotNull($vfs->getChild('source/source-file.md'));
@@ -349,7 +349,7 @@ class CustomScaffoldInstallerTest extends TestCase
 
         (new CustomInstaller())->install($builder)
             ->setup()
-            ->delete('composer.json');
+            ->delete(['composer.json']);
 
         $this->assertNotNull($vfs->getChild('composer.json'));
         $this->assertEquals(
@@ -511,15 +511,15 @@ class CustomScaffoldInstallerTest extends TestCase
             ->setup()
             ->ask(
                 'What theme would you like to use?',
-                ['l' => 'light', 'd' => 'dark'],
-                $default = 'l'
+                $default = 'l',
+                ['l' => 'light', 'd' => 'dark']
             );
 
         $console->shouldHaveReceived('ask')
             ->with(
                 'What theme would you like to use?',
-                ['l' => 'light', 'd' => 'dark'],
                 'l',
+                ['l' => 'light', 'd' => 'dark'],
                 null
             );
     }
@@ -554,8 +554,8 @@ class CustomScaffoldInstallerTest extends TestCase
         (new CustomInstaller())->setConsole(null)
             ->install($builder)
             ->setup()
-            ->run('yarn');
+            ->run(['yarn']);
 
-        $builder->shouldHaveReceived('runCommands')->with('yarn');
+        $builder->shouldHaveReceived('runCommands')->with(['yarn']);
     }
 }

@@ -132,7 +132,7 @@ class SiteBuilder
 
     private function handle(InputFile $file, SiteData $siteData): Collection
     {
-        $meta = $this->getMetaData($file, $siteData->page->baseUrl);
+        $meta = $this->getMetaData($file, $siteData->page->baseUrl ?? 'y');
 
         return $this->getHandler($file)->handle($file, PageData::withPageMetaData($siteData, $meta));
     }

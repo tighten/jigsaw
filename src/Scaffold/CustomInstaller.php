@@ -22,13 +22,13 @@ class CustomInstaller
     /** @var ScaffoldBuilder */
     protected $builder;
 
-    /** @var ConsoleSession */
+    /** @var ?ConsoleSession */
     protected $console;
 
     /** @deprecated unused */
     protected $question;
 
-    public function setConsole(ConsoleSession $console): CustomInstaller
+    public function setConsole(?ConsoleSession $console): CustomInstaller
     {
         $this->console = $console;
 
@@ -52,7 +52,7 @@ class CustomInstaller
     public function copy(?array $files = null): CustomInstaller
     {
         $this->builder->cacheComposerDotJson();
-        $this->builder->copyPresetFiles($files, $this->ignore, $this->from);
+        $this->builder->copyPresetFiles($files ?? [], $this->ignore, $this->from);
         $this->builder->mergeComposerDotJson();
 
         return $this;
@@ -96,7 +96,7 @@ class CustomInstaller
         return $this->console->ask($question, $default, $options, $errorMessage ?? '');
     }
 
-    public function confirm(string $question, ?string $default = null, ?string $errorMessage = null): bool
+    public function confirm(string $question, bool $default = false, ?string $errorMessage = null): bool
     {
         return $this->console->confirm($question, $default);
     }

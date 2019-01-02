@@ -32,7 +32,7 @@ class Collection extends BaseCollection
 
     public function loadItems(BaseCollection $items): Collection
     {
-        $sortedItems = $this->defaultSort($items)->keyBy(function (InputFile $item): string {
+        $sortedItems = $this->defaultSort($items)->keyBy(function (CollectionItem $item): string {
             return $item->getFilename();
         });
 
@@ -52,7 +52,7 @@ class Collection extends BaseCollection
     private function addAdjacentItems(BaseCollection $items): BaseCollection
     {
         $count = $items->count();
-        $adjacentItems = $items->map(function (InputFile $item): string {
+        $adjacentItems = $items->map(function (CollectionItem $item): string {
             return $item->getFilename();
         });
         $previousItems = $adjacentItems->prepend(null)->take($count);

@@ -25,7 +25,7 @@ class PageVariable extends IterableObject
         $this->items = collect($this->items)->merge($this->makeIterable($variables))->all();
     }
 
-    public function __call(string $method, array $args)
+    public function __call($method, $args)
     {
         $helper = $this->get($method);
 

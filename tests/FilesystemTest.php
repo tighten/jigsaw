@@ -64,7 +64,7 @@ class FilesystemTest extends TestCase
      */
     public function can_ignore_a_file_when_retrieving_all_files_and_directories()
     {
-        $files = $this->getFilesExcept('file-1.md');
+        $files = $this->getFilesExcept(['file-1.md']);
 
         $this->assertNotContains('file-1.md', $files);
         $this->assertCount(10, $files);
@@ -202,7 +202,7 @@ class FilesystemTest extends TestCase
         $filesystem = $this->app->make(Filesystem::class);
         $vfs = $this->setupFiles();
 
-        $files = $filesystem->filesAndDirectories($vfs->url(), 'file-1.md');
+        $files = $filesystem->filesAndDirectories($vfs->url(), ['file-1.md']);
 
         $this->assertCount(1, $files);
         $this->assertEquals('file-1.md', $files[0]->getFileName());
@@ -262,9 +262,9 @@ class FilesystemTest extends TestCase
 
     protected function getFilesExcept($ignore)
     {
-        return collect($this->app->make(Filesystem::class)
-            ->filesAndDirectories($this->setupFiles()->url(), null, $ignore)
-        )->map(function ($file) {
+        /** @var Filesystem $filesystem */
+        $filesystem = $this->app->make(Filesystem::class);
+        return collect($filesystem->filesAndDirectories($this->setupFiles()->url(), [], $ignore))->map(function ($file) {
             return $file->getRelativePathName();
         });
     }

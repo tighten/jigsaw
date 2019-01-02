@@ -155,7 +155,7 @@ class CollectionDataLoader
     private function buildUrls($paths): ?IterableObjectWithDefault
     {
         $urls = collect($paths)->map(function ($path): string {
-            return rightTrimPath($this->pageSettings->get('baseUrl')) . '/' . trimPath($path);
+            return rightTrimPath($this->pageSettings->get('baseUrl') ?? '') . '/' . trimPath($path);
         });
 
         return $urls->count() ? new IterableObjectWithDefault($urls) : null;

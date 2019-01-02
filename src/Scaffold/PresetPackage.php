@@ -67,7 +67,7 @@ class PresetPackage
         $this->resolvePath();
     }
 
-    public function runInstaller(ConsoleSession $console): void
+    public function runInstaller(?ConsoleSession $console): void
     {
         if (! $this->files->exists($this->path . DIRECTORY_SEPARATOR . 'init.php')) {
             $this->runDefaultInstaller();

@@ -173,7 +173,7 @@ class PresetScaffoldBuilderTest extends TestCase
             ->with($preset)
             ->andReturn($custom_installer);
 
-        $initFile = '<?php $init->copy("test");';
+        $initFile = '<?php $init->copy(["test"]);';
         $vfs = vfsStream::setup('virtual', null, [
             'vendor' => [
                 'test' => [
@@ -188,7 +188,7 @@ class PresetScaffoldBuilderTest extends TestCase
         $preset->init('test/preset');
         $preset->build();
 
-        $custom_installer->shouldHaveReceived('copy')->with('test');
+        $custom_installer->shouldHaveReceived('copy')->with(['test']);
     }
 
     /**

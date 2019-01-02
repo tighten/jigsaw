@@ -14,7 +14,7 @@ class FilePathTest extends TestCase
         $this->app->instance('outputPathResolver', new PrettyOutputPathResolver());
         $pathResolver = $this->app->make(CollectionPathResolver::class);
         $pageVariable = $this->getPageVariableDummy('Fútbol solidario');
-        $outputPath = $pathResolver->link(null, $pageVariable);
+        $outputPath = $pathResolver->link('', $pageVariable);
 
         $this->assertEquals('/futbol-solidario', $outputPath[0]);
     }
@@ -44,7 +44,7 @@ class FilePathTest extends TestCase
         $this->app->instance('outputPathResolver', new PrettyOutputPathResolver());
         $pathResolver = $this->app->make(CollectionPathResolver::class);
         $pageVariable = $this->getPageVariableDummy('Has® Invalid™ Characters');
-        $outputPath = $pathResolver->link(null, $pageVariable);
+        $outputPath = $pathResolver->link('', $pageVariable);
 
         $this->assertEquals('/has-invalid-characters', $outputPath[0]);
     }

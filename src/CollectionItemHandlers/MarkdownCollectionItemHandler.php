@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace TightenCo\Jigsaw\CollectionItemHandlers;
 
+use TightenCo\Jigsaw\Contracts\CollectionItemHandler;
 use TightenCo\Jigsaw\File\InputFile;
 use TightenCo\Jigsaw\Parsers\FrontMatterParser;
 
-class MarkdownCollectionItemHandler
+class MarkdownCollectionItemHandler implements CollectionItemHandler
 {
     /** @var FrontMatterParser */
     private $parser;

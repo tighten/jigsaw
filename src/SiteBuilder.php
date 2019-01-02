@@ -7,11 +7,11 @@ namespace TightenCo\Jigsaw;
 use Illuminate\Support\Collection;
 use Symfony\Component\Finder\SplFileInfo;
 use TightenCo\Jigsaw\Console\ConsoleOutput;
+use TightenCo\Jigsaw\Contracts\ItemHandler;
+use TightenCo\Jigsaw\Contracts\PathResolver;
 use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\File\InputFile;
 use TightenCo\Jigsaw\File\OutputFile;
-use TightenCo\Jigsaw\Handlers\DefaultHandler;
-use TightenCo\Jigsaw\PathResolvers\BasicOutputPathResolver;
 
 class SiteBuilder
 {
@@ -21,10 +21,10 @@ class SiteBuilder
     /** @var Filesystem */
     private $files;
 
-    /** @var DefaultHandler[] */// TODO use interface instead of class
+    /** @var ItemHandler[] */
     private $handlers;
 
-    /** @var BasicOutputPathResolver */// TODO use interface instead of class
+    /** @var PathResolver */
     private $outputPathResolver;
 
     /** @var ConsoleOutput */
@@ -34,9 +34,9 @@ class SiteBuilder
     private $useCache;
 
     /**
-     * @param DefaultHandler[] $handlers
+     * @param ItemHandler[] $handlers
      */
-    public function __construct(Filesystem $files, string $cachePath, BasicOutputPathResolver $outputPathResolver, ConsoleOutput $consoleOutput, array $handlers = [])
+    public function __construct(Filesystem $files, string $cachePath, PathResolver $outputPathResolver, ConsoleOutput $consoleOutput, array $handlers = [])
     {
         $this->files = $files;
         $this->cachePath = $cachePath;
@@ -63,7 +63,7 @@ class SiteBuilder
         return $outputFiles;
     }
 
-    public function registerHandler(DefaultHandler $handler): void // TODO use interface instead of class
+    public function registerHandler(ItemHandler $handler): void
     {
         $this->handlers[] = $handler;
     }
@@ -137,9 +137,9 @@ class SiteBuilder
         return $this->getHandler($file)->handle($file, PageData::withPageMetaData($siteData, $meta));
     }
 
-    private function getHandler(InputFile $file): ?DefaultHandler // TODO improve return type by using interface
+    private function getHandler(InputFile $file): ?ItemHandler
     {
-        return collect($this->handlers)->first(function (DefaultHandler $handler /* TODO use interface instead of class */) use ($file): bool {
+        return collect($this->handlers)->first(function (ItemHandler $handler) use ($file): bool {
             return $handler->shouldHandle($file);
         });
     }

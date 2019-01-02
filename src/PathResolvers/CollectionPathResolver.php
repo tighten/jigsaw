@@ -5,19 +5,20 @@ declare(strict_types=1);
 namespace TightenCo\Jigsaw\PathResolvers;
 
 use Illuminate\Support\Collection;
+use TightenCo\Jigsaw\Contracts\PathResolver;
 use TightenCo\Jigsaw\IterableObject;
 use TightenCo\Jigsaw\PageVariable;
 use TightenCo\Jigsaw\View\ViewRenderer;
 
 class CollectionPathResolver
 {
-    /** @var BasicOutputPathResolver */// TODO use interface instead of class
+    /** @var PathResolver */
     private $outputPathResolver;
 
     /** @var ViewRenderer */
     private $view;
 
-    public function __construct(BasicOutputPathResolver $outputPathResolver, ViewRenderer $viewRenderer)
+    public function __construct(PathResolver $outputPathResolver, ViewRenderer $viewRenderer)
     {
         $this->outputPathResolver = $outputPathResolver;
         $this->view = $viewRenderer;

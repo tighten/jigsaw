@@ -28,7 +28,7 @@ class DefaultInstaller
     /** @var string[] */
     protected $ignore;
 
-    /** @var PresetScaffoldBuilder */ // TODO type check
+    /** @var PresetScaffoldBuilder */
     protected $builder;
 
     public function install(ScaffoldBuilder $builder, array $settings = []): void
@@ -43,9 +43,11 @@ class DefaultInstaller
 
     public function execute(): PresetScaffoldBuilder
     {
-        return $this->builder
+        $this->builder
             ->buildBasicScaffold()
-            ->cacheComposerDotJson()
+            ->cacheComposerDotJson();
+
+        return $this->builder
             ->deleteSiteFiles($this->delete)
             ->copyPresetFiles(null, $this->ignore)
             ->mergeComposerDotJson()

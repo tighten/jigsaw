@@ -12,11 +12,10 @@ use JsonSerializable;
 use Symfony\Component\Finder\SplFileInfo;
 use TightenCo\Jigsaw\Collection\Collection;
 use TightenCo\Jigsaw\Collection\CollectionItem;
-use TightenCo\Jigsaw\CollectionItemHandlers\BladeCollectionItemHandler;
 use TightenCo\Jigsaw\Console\ConsoleOutput;
+use TightenCo\Jigsaw\Contracts\CollectionItemHandler;
 use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\File\InputFile;
-use TightenCo\Jigsaw\Handlers\DefaultHandler;
 use TightenCo\Jigsaw\IterableObject;
 use TightenCo\Jigsaw\IterableObjectWithDefault;
 use TightenCo\Jigsaw\PageVariable;
@@ -35,7 +34,7 @@ class CollectionDataLoader
     /** @var CollectionPathResolver */
     private $pathResolver;
 
-    /** @var BaseCollection */
+    /** @var CollectionItemHandler[]|BaseCollection */
     private $handlers;
 
     /** @var string */
@@ -48,7 +47,7 @@ class CollectionDataLoader
     private $collectionSettings;
 
     /**
-     * @param BladeCollectionItemHandler[] $handlers TODO use interface instead of class
+     * @param CollectionItemHandler[] $handlers
      */
     public function __construct(Filesystem $filesystem, ConsoleOutput $consoleOutput, CollectionPathResolver $pathResolver, array $handlers = [])
     {
@@ -117,15 +116,16 @@ class CollectionDataLoader
         $file = $this->filesystem->getFile($item->getSource(), $item->getFilename() . '.' . $item->getExtension());
 
         if ($file) {
-            $item->setContent($this->getHandler($file)->getItemContent($file));
+            $inputFile = new InputFile($file);
+            $item->setContent($this->getHandler($inputFile)->getItemContent($inputFile));
         }
 
         return $item;
     }
 
-    private function getHandler(InputFile $file): ?DefaultHandler // TODO use interface of class
+    private function getHandler(InputFile $file): ?CollectionItemHandler
     {
-        $handler = $this->handlers->first(function (DefaultHandler $handler/* TODO use interface instead of class */) use ($file): bool {
+        $handler = $this->handlers->first(function (CollectionItemHandler $handler) use ($file): bool {
             return $handler->shouldHandle($file);
         });
 

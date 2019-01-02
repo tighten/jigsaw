@@ -8,17 +8,17 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Collection;
 use JsonSerializable;
+use TightenCo\Jigsaw\Contracts\PathResolver;
 use TightenCo\Jigsaw\File\InputFile;
 use TightenCo\Jigsaw\IterableObject;
-use TightenCo\Jigsaw\PathResolvers\BasicOutputPathResolver;
 use Traversable;
 
 class CollectionPaginator
 {
-    /** @var BasicOutputPathResolver */// TODO use interface instead of class
+    /** @var PathResolver */
     private $outputPathResolver;
 
-    public function __construct(BasicOutputPathResolver $outputPathResolver)
+    public function __construct(PathResolver $outputPathResolver)
     {
         $this->outputPathResolver = $outputPathResolver;
     }

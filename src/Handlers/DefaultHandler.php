@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace TightenCo\Jigsaw\Handlers;
 
 use Illuminate\Support\Collection;
+use TightenCo\Jigsaw\Contracts\ItemHandler;
 use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\File\CopyFile;
 use TightenCo\Jigsaw\File\InputFile;
 use TightenCo\Jigsaw\PageData;
 
-class DefaultHandler
+class DefaultHandler implements ItemHandler
 {
     /** @var Filesystem */
     private $files;

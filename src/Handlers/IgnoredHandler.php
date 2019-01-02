@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace TightenCo\Jigsaw\Handlers;
 
 use Illuminate\Support\Collection;
+use TightenCo\Jigsaw\Contracts\ItemHandler;
 use TightenCo\Jigsaw\File\InputFile;
 use TightenCo\Jigsaw\PageData;
 
-class IgnoredHandler
+class IgnoredHandler implements ItemHandler
 {
     public function shouldHandle(InputFile $file): bool
     {

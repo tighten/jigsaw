@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TightenCo\Jigsaw\Handlers;
 
 use Illuminate\Support\Collection;
+use TightenCo\Jigsaw\Contracts\ItemHandler;
 use TightenCo\Jigsaw\File\InputFile;
 use TightenCo\Jigsaw\File\OutputFile;
 use TightenCo\Jigsaw\File\TemporaryFilesystem;
@@ -12,7 +13,7 @@ use TightenCo\Jigsaw\PageData;
 use TightenCo\Jigsaw\Parsers\FrontMatterParser;
 use TightenCo\Jigsaw\View\ViewRenderer;
 
-class MarkdownHandler
+class MarkdownHandler implements ItemHandler
 {
     /** @var TemporaryFilesystem */
     private $temporaryFilesystem;
@@ -40,7 +41,7 @@ class MarkdownHandler
         return $this->buildOutput($file, $pageData);
     }
 
-    public function handle(InputFile $file, $pageData): Collection
+    public function handle(InputFile $file, PageData $pageData): Collection
     {
         $pageData->page->addVariables($this->getPageVariables($file));
 

@@ -5,22 +5,23 @@ declare(strict_types=1);
 namespace TightenCo\Jigsaw\Handlers;
 
 use Illuminate\Support\Collection;
+use TightenCo\Jigsaw\Contracts\ItemHandler;
 use TightenCo\Jigsaw\File\InputFile;
 use TightenCo\Jigsaw\File\OutputFile;
 use TightenCo\Jigsaw\PageData;
 
-class CollectionItemHandler
+class CollectionItemHandler implements ItemHandler
 {
-    /** @var array */
+    /** @var Collection */
     private $config;
 
-    /** @var Collection */
+    /** @var ItemHandler[]|Collection */
     private $handlers;
 
     /**
-     * @param DefaultHandler[] $handlers TODO use interface instead of classys
+     * @param ItemHandler[] $handlers
      */
-    public function __construct(array $config, array $handlers)
+    public function __construct(Collection $config, array $handlers)
     {
         $this->config = $config;
         $this->handlers = collect($handlers);
@@ -51,7 +52,7 @@ class CollectionItemHandler
 
     public function handle(InputFile $file, PageData $pageData): Collection
     {
-        $handler = $this->handlers->first(function (DefaultHandler $handler/* TODO use interface instead of class */) use ($file): bool {
+        $handler = $this->handlers->first(function (ItemHandler $handler) use ($file): bool {
             return $handler->shouldHandle($file);
         });
         $pageData->setPageVariableToCollectionItem($this->getCollectionName($file), $file->getFilenameWithoutExtension());

@@ -13,7 +13,7 @@ use Traversable;
 
 class CollectionRemoteItem
 {
-    /** @var array|Collection|Arrayable|Jsonable|JsonSerializable|Traversable|string */
+    /** @var array|string */
     private $item;
 
     /** @var int */
@@ -27,7 +27,7 @@ class CollectionRemoteItem
      */
     public function __construct($item, int $index = 0, ?string $collectionName = null)
     {
-        $this->item = $item;
+        $this->item = is_string($item) ? $item : collect($item)->toArray();
         $this->index = $index;
         $this->prefix = $collectionName . '_';
     }

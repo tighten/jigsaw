@@ -6,8 +6,9 @@ namespace TightenCo\Jigsaw\Console;
 
 use Symfony\Component\Console\Helper\ProgressBar as SymfonyProgressBar;
 use Symfony\Component\Console\Output\ConsoleSectionOutput;
+use TightenCo\Jigsaw\Contracts\ProgressBar as ProgressBarContract;
 
-class ProgressBar
+class ProgressBar implements ProgressBarContract
 {
     /** @var ConsoleOutput */
     protected $consoleOutput;
@@ -30,7 +31,7 @@ class ProgressBar
         return $this->message ? '<comment>' . $this->message . '</comment>' : null;
     }
 
-    public function start(): ProgressBar
+    public function start(): ProgressBarContract
     {
         if ($this->consoleOutput->isVerbose()) {
             $this->progressBar->setFormat('normal');
@@ -40,14 +41,14 @@ class ProgressBar
         return $this;
     }
 
-    public function addSteps(int $count): ProgressBar
+    public function addSteps(int $count): ProgressBarContract
     {
         $this->progressBar->setMaxSteps($this->progressBar->getMaxSteps() + $count);
 
         return $this;
     }
 
-    public function advance(): ProgressBar
+    public function advance(): ProgressBarContract
     {
         $this->progressBar->advance();
 

@@ -6,10 +6,11 @@ namespace TightenCo\Jigsaw\Console;
 
 use Symfony\Component\Console\Output\ConsoleOutput as SymfonyConsoleOutput;
 use Symfony\Component\Console\Output\ConsoleSectionOutput;
+use TightenCo\Jigsaw\Contracts\ProgressBar as ProgressBarContract;
 
 class ConsoleOutput extends SymfonyConsoleOutput
 {
-    /** @var ProgressBar[] */// TODO use interface instead of class
+    /** @var ProgressBarContract[] */
     protected $progressBars;
 
     /** @var ConsoleSectionOutput[] */
@@ -46,14 +47,14 @@ class ConsoleOutput extends SymfonyConsoleOutput
         ];
     }
 
-    protected function getProgressBar(?string $message = null): ProgressBar // TODO use interface of class
+    protected function getProgressBar(?string $message = null): ProgressBarContract
     {
         return $this->isVerbose() ?
             new ProgressBar($this, $message, $this->sections['progress']) :
             new NullProgressBar($this, $message, $this->sections['progress']);
     }
 
-    public function progressBar(string $name): ?ProgressBar // TODO use interface of class
+    public function progressBar(string $name): ?ProgressBarContract
     {
         return $this->progressBars[$name];
     }

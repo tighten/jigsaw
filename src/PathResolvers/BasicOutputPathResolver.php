@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace TightenCo\Jigsaw\PathResolvers;
 
-class BasicOutputPathResolver
+use TightenCo\Jigsaw\Contracts\PathResolver;
+
+class BasicOutputPathResolver implements PathResolver
 {
     public function link(string $path, string $name, string $type, int $page = 1): string
     {

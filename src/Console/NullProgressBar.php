@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace TightenCo\Jigsaw\Console;
 
 use Symfony\Component\Console\Output\ConsoleSectionOutput;
+use TightenCo\Jigsaw\Contracts\ProgressBar;
 
-class NullProgressBar
+class NullProgressBar implements ProgressBar
 {
     /** @var ConsoleOutput */
     protected $consoleOutput;
@@ -29,17 +30,17 @@ class NullProgressBar
         return $this->message ? '<comment>' . $this->message . '</comment>' : null;
     }
 
-    public function start(): NullProgressBar
+    public function start(): ProgressBar
     {
         return $this;
     }
 
-    public function addSteps(int $count): NullProgressBar
+    public function addSteps(int $count): ProgressBar
     {
         return $this;
     }
 
-    public function advance(): NullProgressBar
+    public function advance(): ProgressBar
     {
         return $this;
     }

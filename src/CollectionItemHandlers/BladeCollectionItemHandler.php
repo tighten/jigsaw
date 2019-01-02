@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace TightenCo\Jigsaw\CollectionItemHandlers;
 
+use TightenCo\Jigsaw\Contracts\CollectionItemHandler;
 use TightenCo\Jigsaw\File\InputFile;
 use TightenCo\Jigsaw\Parsers\FrontMatterParser;
 
-class BladeCollectionItemHandler
+class BladeCollectionItemHandler implements CollectionItemHandler
 {
     /** @var FrontMatterParser */
     private $parser;
@@ -34,8 +35,8 @@ class BladeCollectionItemHandler
         );
     }
 
-    public function getItemContent(InputFile $file): void
+    public function getItemContent(InputFile $file): callable
     {
-        return;
+        return function (): string { return ''; };
     }
 }

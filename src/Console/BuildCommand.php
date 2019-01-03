@@ -107,7 +107,7 @@ class BuildCommand extends Command
             $customPath = array_get($this->app->config, 'build.destination');
 
             if ($customPath && strpos($customPath, 'build_') !== 0) {
-                return $this->confirm('Overwrite "' . $this->app->buildPath['destination'] . '"? ');
+                return $this->console->confirm('Overwrite "' . $this->app->buildPath['destination'] . '"? ');
             }
         }
 

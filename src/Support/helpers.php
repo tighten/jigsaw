@@ -119,7 +119,7 @@ if (! function_exists('dd')) {
 
 function inline($assetPath)
 {
-    preg_match('/^\/assets\/build\/(css|js)\/main\.(css|js)/', $assetPath, $matches);
+    preg_match('/^\/assets\/build\/(css|js)\/.*\.(css|js)/', $assetPath, $matches);
 
     if (!count($matches)) {
         throw new InvalidArgumentException("Given asset path is not valid: {$assetPath}");

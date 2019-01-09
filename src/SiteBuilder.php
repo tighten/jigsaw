@@ -168,6 +168,6 @@ class SiteBuilder
 
     private function getFilePermalink($file)
     {
-        return $file->data()->page->permalink ? resolvePath(urldecode($file->data()->page->permalink)) : null;
+        return $file->data()->page->permalink ? '/' . resolvePath(urldecode($file->data()->page->permalink)) : null;
     }
 }

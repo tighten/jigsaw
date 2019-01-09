@@ -2,12 +2,13 @@
 
 namespace Tests;
 
-use \Mockery;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\File\InputFile;
 use TightenCo\Jigsaw\Jigsaw;
 use TightenCo\Jigsaw\Loaders\DataLoader;
+use TightenCo\Jigsaw\PathResolvers\PrettyOutputPathResolver;
+use \Mockery;
 use org\bovigo\vfs\vfsStream;
 
 class TestCase extends BaseTestCase
@@ -73,7 +74,7 @@ class TestCase extends BaseTestCase
         return $siteData->addCollectionData($collectionData);
     }
 
-    public function buildSite($vfs, $config = [])
+    public function buildSite($vfs, $config = [], $pretty = false)
     {
         $this->app->consoleOutput->setup($verbosity = -1);
         $this->app->config = collect($config);
@@ -81,6 +82,10 @@ class TestCase extends BaseTestCase
             'source' => $vfs->url() . '/source',
             'destination' => $vfs->url() . '/build',
         ];
+
+        if ($pretty) {
+            $this->app->instance('outputPathResolver', new PrettyOutputPathResolver());
+        }
 
         return $this->app
             ->make(Jigsaw::class)

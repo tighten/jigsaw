@@ -29,6 +29,7 @@ return [
             'value' => 3,
         ],
     ],
+    'envVariable' => env('JIGSAW_TEST_VAR', false),
     'globalPreview' => function ($data, $characters = 100) {
         return substr(strip_tags($data->getContent()), 0, $characters);
     },

@@ -16,6 +16,7 @@ use TightenCo\Jigsaw\CollectionItemHandlers\BladeCollectionItemHandler;
 use TightenCo\Jigsaw\CollectionItemHandlers\MarkdownCollectionItemHandler;
 use TightenCo\Jigsaw\Collection\CollectionPaginator;
 use TightenCo\Jigsaw\Console\ConsoleOutput;
+use Symfony\Component\Dotenv\Dotenv;
 use TightenCo\Jigsaw\Events\EventBus;
 use TightenCo\Jigsaw\Events\FakeDispatcher;
 use TightenCo\Jigsaw\File\BladeDirectivesFile;
@@ -52,6 +53,10 @@ setlocale(LC_ALL, 'en_US.UTF8');
 $container = new Container;
 
 $container->instance('cwd', getcwd());
+
+if (file_exists($envPath = $container['cwd'] . '/.env')) {
+    (new Dotenv())->load($envPath);
+}
 
 $cachePath = $container['cwd'] . '/cache';
 $bootstrapFile = $container['cwd'] . '/bootstrap.php';

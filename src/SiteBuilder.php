@@ -34,7 +34,7 @@ class SiteBuilder
     {
         $this->prepareDirectory($this->cachePath, ! $this->useCache);
         $generatedFiles = $this->generateFiles($source, $siteData);
-        $this->prepareDirectory($destination);
+        $this->prepareDirectory($destination, true);
         $outputFiles = $this->writeFiles($generatedFiles, $destination);
         $this->cleanup();
 

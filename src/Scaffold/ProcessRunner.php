@@ -2,6 +2,7 @@
 
 namespace TightenCo\Jigsaw\Scaffold;
 
+use Symfony\Component\Process\Exception\RuntimeException;
 use Symfony\Component\Process\Process;
 use TightenCo\Jigsaw\Scaffold\InstallerCommandException;
 
@@ -24,7 +25,16 @@ class ProcessRunner
     {
         echo("\n> " . $command . "\n");
         $process = new Process($command);
-        $process->setTty(true)->run();
+        $process->setTimeout(3600);
+        $process->setIdleTimeout(120);
+
+        try {
+            $process->setTty(true)->run();
+        } catch (RuntimeException $e) {
+            $process->run(function ($type, $buffer) {
+                echo $buffer;
+            });
+        }
 
         if (! $process->isSuccessful()) {
             throw new InstallerCommandException($command);

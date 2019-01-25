@@ -93,7 +93,7 @@ class PresetPackage
     {
         $this->path = collect([$this->builder->base, 'vendor', $this->vendor, $this->name, $this->suffix])
             ->filter()
-            ->implode('/');
+            ->implode(DIRECTORY_SEPARATOR);
 
         if (! $this->files->exists($this->path)) {
             $package = $this->vendor . '/' . $this->name;

@@ -2,6 +2,8 @@
 
 namespace Tests;
 
+use TightenCo\Jigsaw\File\ConfigFile;
+
 class ConfigVariableTest extends TestCase
 {
     /**
@@ -21,6 +23,18 @@ class ConfigVariableTest extends TestCase
             $files->getChild('build/variable-test.html')->getContent()
         );
     }
+
+    /**
+     * @test
+     */
+    public function config_variables_are_loaded_from_dotenv_if_present()
+    {
+        putenv('JIGSAW_TEST_VAR=true');
+        $config = (new ConfigFile($this->app['cwd'] . '/tests/config.php'))->config;
+
+        $this->assertTrue($config['envVariable']);
+    }
+
     /**
      * @test
      */

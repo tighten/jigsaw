@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Container\Container;
+use Illuminate\Support\Arr;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use Symfony\Component\VarDumper\VarDumper;
@@ -44,7 +46,10 @@ function resolvePath($path)
  */
 function public_path($path = '')
 {
-    return 'source' . ($path ? '/' . $path : $path);
+    $c = Container::getInstance();
+    $source = Arr::get($c['config'], 'build.source', 'source');
+    
+    return $source . ($path ? '/' . leftTrimPath($path) : $path);
 }
 
 /**

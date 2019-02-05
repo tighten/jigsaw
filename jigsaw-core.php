@@ -52,6 +52,8 @@ setlocale(LC_ALL, 'en_US.UTF8');
 
 $container = new Container;
 
+$container->setInstance($container);
+
 $container->instance('cwd', getcwd());
 
 if (file_exists($envPath = $container['cwd'] . '/.env')) {

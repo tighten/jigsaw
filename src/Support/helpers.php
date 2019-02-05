@@ -49,7 +49,7 @@ function public_path($path = '')
     $c = Container::getInstance();
     $source = Arr::get($c['config'], 'build.source', 'source');
     
-    return $source . ($path ? '/' . leftTrimPath($path) : $path);
+    return $source . ($path ? '/' . ltrim($path, '/') : $path);
 }
 
 /**

@@ -7,6 +7,8 @@ use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\File\InputFile;
 use TightenCo\Jigsaw\Jigsaw;
 use TightenCo\Jigsaw\Loaders\DataLoader;
+use TightenCo\Jigsaw\PathResolvers\PrettyOutputPathResolver;
+use \Mockery;
 use org\bovigo\vfs\vfsStream;
 
 class TestCase extends BaseTestCase
@@ -34,6 +36,7 @@ class TestCase extends BaseTestCase
     public function tearDown()
     {
         $this->cleanupTempDirectory();
+        Mockery::close();
         parent::tearDown();
     }
 
@@ -63,6 +66,7 @@ class TestCase extends BaseTestCase
 
     protected function buildSiteData($vfs, $config = [])
     {
+        $this->app->consoleOutput->setup($verbosity = -1);
         $loader = $this->app->make(DataLoader::class);
         $siteData = $loader->loadSiteData($config);
         $collectionData = $loader->loadCollectionData($siteData, $vfs->url() . '/source');
@@ -70,17 +74,21 @@ class TestCase extends BaseTestCase
         return $siteData->addCollectionData($collectionData);
     }
 
-    public function buildSite($vfs, $config = [])
+    public function buildSite($vfs, $config = [], $pretty = false)
     {
+        $this->app->consoleOutput->setup($verbosity = -1);
         $this->app->config = collect($config);
         $this->app->buildPath = [
             'source' => $vfs->url() . '/source',
             'destination' => $vfs->url() . '/build',
         ];
 
-        $jigsaw = $this->app->make(Jigsaw::class);
-        $jigsaw->build('test');
+        if ($pretty) {
+            $this->app->instance('outputPathResolver', new PrettyOutputPathResolver());
+        }
 
-        return $jigsaw;
+        return $this->app
+            ->make(Jigsaw::class)
+            ->build('test');
     }
 }

@@ -6,7 +6,7 @@ return [
         'source' => 'tests/source',
         'destination' => 'tests/build-testing',
     ],
-    'baseUrl' => 'http://jigsaw-test.dev',
+    'baseUrl' => 'http://jigsaw.test',
     'global_array' => [1, 2, 3],
     'global_variable' => 'some global variable',
     'number' => '98765',
@@ -29,6 +29,7 @@ return [
             'value' => 3,
         ],
     ],
+    'envVariable' => env('JIGSAW_TEST_VAR', false),
     'globalPreview' => function ($data, $characters = 100) {
         return substr(strip_tags($data->getContent()), 0, $characters);
     },

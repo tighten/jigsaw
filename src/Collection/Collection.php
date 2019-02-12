@@ -59,7 +59,7 @@ class Collection extends BaseCollection
         });
 
         if (! $sortSettings->count()) {
-            return $items;
+            $sortSettings = [['key' => 'filename', 'direction' => 1]];
         }
 
         return $items->sort(function ($item_1, $item_2) use ($sortSettings) {
@@ -83,6 +83,6 @@ class Collection extends BaseCollection
 
     private function getValueForSorting($item, $key)
     {
-        return strtolower($item->$key instanceof Closure ? $item->$key($item) : $item->$key);
+        return strtolower($item->$key instanceof Closure ? $item->$key($item) : $item->get($key) ?? $item->_meta->get($key));
     }
 }

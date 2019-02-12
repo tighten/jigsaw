@@ -17,7 +17,12 @@ class FrontMatterParser
 
     public function parseMarkdown($content)
     {
-        return $this->parse($content, true);
+        return $this->parse($content, true)->content;
+    }
+
+    public function parseMarkdownWithoutFrontMatter($content)
+    {
+        return $this->parser->parse($this->extractContent($content))->getContent();
     }
 
     public function parse($content, $parseMarkdown = false)
@@ -54,6 +59,20 @@ class FrontMatterParser
         preg_match('/@extends\s*\(\s*[\"|\']\s*(.+?)\s*[\"|\']\s*\)/', $content, $matches);
 
         return isset($matches[1]) ? $matches[1] : null;
+    }
+
+    /**
+     * Adapted from Mni\FrontYAML.
+     */
+    public function extractContent($content)
+    {
+        $regex = '~^('
+            . '---'                                  // $matches[1] start separator
+            . "){1}[\r\n|\n]*(.*?)[\r\n|\n]+("       // $matches[2] front matter
+            . '---'                                  // $matches[3] end separator
+            . "){1}[\r\n|\n]*(.*)$~s";               // $matches[4] document content
+
+        return preg_match($regex, $content, $matches) === 1 ? ltrim($matches[4]) : $content;
     }
 
     private function addExtendsToBladeContent($extends, $bladeContent)

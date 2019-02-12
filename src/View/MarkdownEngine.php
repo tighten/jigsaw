@@ -31,7 +31,7 @@ class MarkdownEngine implements EngineInterface
             $file = $this->file->get($path);
 
             if ($file) {
-                return $this->parser->parseMarkdown($file)->content;
+                return $this->parser->parseMarkdown($file);
             }
         } catch (Exception $e) {
             $this->handleViewException($e);

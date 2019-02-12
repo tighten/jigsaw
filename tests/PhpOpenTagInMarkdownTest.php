@@ -8,7 +8,10 @@ use TightenCo\Jigsaw\PageData;
 
 class PhpOpenTagInMarkdown extends TestCase
 {
-    public function test_md_files_containing_php_open_tag_are_processed()
+    /**
+     * @test
+     */
+    public function md_files_containing_php_open_tag_are_processed()
     {
         $inputFile = $this->getInputFile('php-tag/php-tag-markdown.md');
         $handler = $this->app->make(MarkdownHandler::class);
@@ -20,7 +23,10 @@ class PhpOpenTagInMarkdown extends TestCase
         $this->assertContains('<code>&lt;?php', $outputFile[0]->contents());
     }
 
-    public function test_blade_md_hybrid_files_containing_php_open_tag_are_processed()
+    /**
+     * @test
+     */
+    public function blade_md_hybrid_files_containing_php_open_tag_are_processed()
     {
         $inputFile = $this->getInputFile('php-tag/php-tag-blade-markdown.blade.md');
         $handler = $this->app->make(MarkdownHandler::class);

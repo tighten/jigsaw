@@ -3,6 +3,7 @@
 namespace TightenCo\Jigsaw\File;
 
 use Illuminate\Support\Str;
+use Symfony\Component\Finder\SplFileInfo;
 
 class TemporaryFilesystem
 {
@@ -15,24 +16,39 @@ class TemporaryFilesystem
         $this->filesystem = $filesystem ?: new Filesystem();
     }
 
-    public function put($contents, $callback, $extension = '')
+    public function buildTempPath($filename, $extension)
     {
-        $path = $this->buildTempPath($extension);
+        return $this->tempPath . DIRECTORY_SEPARATOR .
+            ($filename ? sha1($filename) : Str::random(32)) .
+            $extension;
+    }
+
+    public function get($originalFilename, $extension)
+    {
+        $file = new SplFileInfo(
+            $this->buildTempPath($originalFilename, $extension),
+            $this->tempPath,
+            $originalFilename . $extension
+        );
+
+        return $file->isReadable() ? new InputFile($file) : null;
+    }
+
+    public function put($contents, $filename, $extension)
+    {
+        $path = $this->buildTempPath($filename, $extension);
         $this->filesystem->put($path, $contents);
 
-        return $this->cleanup($path, $callback);
+        return $path;
     }
 
-    private function buildTempPath($extension)
+    public function hasTempDirectory()
     {
-        return $this->tempPath . '/' . Str::random(32) . $extension;
+        return $this->filesystem->exists($this->tempPath);
     }
 
-    private function cleanup($path, $callback)
+    private function delete($path)
     {
-        $result = $callback($path);
         $this->filesystem->delete($path);
-
-        return $result;
     }
 }

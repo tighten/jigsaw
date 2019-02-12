@@ -4,7 +4,10 @@ namespace Tests;
 
 class MarkdownExtraTest extends TestCase
 {
-    public function test_parse_markdown_inside_html_blocks()
+    /**
+     * @test
+     */
+    public function parse_markdown_inside_html_blocks()
     {
         $files = $this->setupSource([
             '_layouts' => [
@@ -20,7 +23,10 @@ class MarkdownExtraTest extends TestCase
         );
     }
 
-    public function test_can_specify_id_in_markdown()
+    /**
+     * @test
+     */
+    public function can_specify_id_in_markdown()
     {
         $files = $this->setupSource([
             '_layouts' => [
@@ -36,7 +42,10 @@ class MarkdownExtraTest extends TestCase
         );
     }
 
-    public function test_can_specify_internal_anchor_links_in_markdown()
+    /**
+     * @test
+     */
+    public function can_specify_internal_anchor_links_in_markdown()
     {
         $files = $this->setupSource([
             '_layouts' => [
@@ -52,7 +61,10 @@ class MarkdownExtraTest extends TestCase
         );
     }
 
-    public function test_can_specify_class_name_in_markdown()
+    /**
+     * @test
+     */
+    public function can_specify_class_name_in_markdown()
     {
         $files = $this->setupSource([
             '_layouts' => [

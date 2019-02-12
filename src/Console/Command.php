@@ -5,7 +5,7 @@ namespace TightenCo\Jigsaw\Console;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
+use TightenCo\Jigsaw\Console\ConsoleSession;
 
 abstract class Command extends SymfonyCommand
 {
@@ -13,34 +13,13 @@ abstract class Command extends SymfonyCommand
     {
         $this->input = $input;
         $this->output = $output;
-
-        return (int) $this->fire();
-    }
-
-    protected function confirm($question, $default = false)
-    {
-        if ($this->getHelper('question')->ask(
+        $this->console = new ConsoleSession(
             $this->input,
             $this->output,
-            new ConfirmationQuestion($question, $default)
-        )) {
-            return true;
-        }
-    }
+            $this->getHelper('question')
+        );
 
-    protected function info($string)
-    {
-        $this->output->writeln("<info>{$string}</info>");
-    }
-
-    protected function error($string)
-    {
-        $this->output->writeln("<error>{$string}</error>");
-    }
-
-    protected function comment($string)
-    {
-        $this->output->writeln("<comment>{$string}</comment>");
+        return (int) $this->fire();
     }
 
     abstract protected function fire();

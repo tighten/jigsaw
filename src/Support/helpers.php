@@ -1,7 +1,10 @@
 <?php
 
+use Illuminate\Container\Container;
+use Illuminate\Support\Arr;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
+use Symfony\Component\VarDumper\VarDumper;
 
 /**
  * Remove slashes (including backslashes on Windows),
@@ -43,7 +46,10 @@ function resolvePath($path)
  */
 function public_path($path = '')
 {
-    return 'source' . ($path ? '/' . $path : $path);
+    $c = Container::getInstance();
+    $source = Arr::get($c['config'], 'build.source', 'source');
+    
+    return $source . ($path ? '/' . ltrim($path, '/') : $path);
 }
 
 /**
@@ -103,4 +109,15 @@ function mix($path, $manifestDirectory = 'assets')
     }
 
     return new HtmlString($manifestDirectory . $manifest[$path]);
+}
+
+if (! function_exists('dd')) {
+    function dd(...$args)
+    {
+        foreach ($args as $x) {
+            (new VarDumper)->dump($x);
+        }
+
+        die(1);
+    }
 }

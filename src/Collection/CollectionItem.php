@@ -43,7 +43,9 @@ class CollectionItem extends PageVariable
 
     public function getContent()
     {
-        return $this->_content;
+        return is_callable($this->_content) ?
+            call_user_func($this->_content) :
+            $this->_content;
     }
 
     public function __toString()

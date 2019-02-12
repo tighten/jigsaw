@@ -2,19 +2,34 @@
 
 namespace TightenCo\Jigsaw\Console;
 
+use Exception;
 use Symfony\Component\Console\Input\InputArgument;
 use TightenCo\Jigsaw\File\Filesystem;
+use TightenCo\Jigsaw\Scaffold\BasicScaffoldBuilder;
+use TightenCo\Jigsaw\Scaffold\InstallerCommandException;
+use TightenCo\Jigsaw\Scaffold\PresetScaffoldBuilder;
 
 class InitCommand extends Command
 {
-    private $files;
     private $base;
+    private $basicScaffold;
+    private $files;
+    private $presetScaffold;
 
-    public function __construct(Filesystem $files)
+    public function __construct(Filesystem $files, BasicScaffoldBuilder $basicScaffold, PresetScaffoldBuilder $presetScaffold)
     {
+        $this->basicScaffold = $basicScaffold;
+        $this->presetScaffold = $presetScaffold;
         $this->files = $files;
-        $this->base = getcwd();
+        $this->setBase();
         parent::__construct();
+    }
+
+    public function setBase($cwd = null)
+    {
+        $this->base = $cwd ?: getcwd();
+
+        return $this;
     }
 
     protected function configure()
@@ -22,47 +37,94 @@ class InitCommand extends Command
         $this->setName('init')
             ->setDescription('Scaffold a new Jigsaw project.')
             ->addArgument(
-                'name',
+                'preset',
                 InputArgument::OPTIONAL,
-                'Where should we initialize this project?'
+                'Which preset should we use to initialize this project?'
             );
     }
 
     protected function fire()
     {
-        if ($base = $this->input->getArgument('name')) {
-            $this->base .= '/' . $base;
+        $scaffold = $this->getScaffold()->setBase($this->base);
+
+        try {
+            $scaffold->init($this->input->getArgument('preset'));
+        } catch (Exception $e) {
+            $this->console->error($e->getMessage())->line();
+
+            return;
         }
 
-        $this->ifAlreadyScaffoldedWarnBeforeDoingTheFollowing(function () {
-            $this->scaffoldSite();
-            $this->scaffoldMix();
-            $this->info('Site initialized successfully!');
-        });
-    }
+        if ($this->initHasAlreadyBeenRun()) {
+            $response = $this->askUserWhatToDoWithExistingSite();
+            $this->console->line();
 
-    private function ifAlreadyScaffoldedWarnBeforeDoingTheFollowing($callback)
-    {
-        if ($this->files->exists($this->base . '/config.php')) {
-            $this->info('It looks like you\'ve already run "jigsaw init" on this project.');
-            $this->info('Running it again may overwrite important files.');
-            $this->info('');
+            switch ($response) {
+                case 'a':
+                    $this->console->comment('Archiving your existing site...');
+                    $scaffold->archiveExistingSite();
+                    break;
 
-            if (! $this->confirm('Do you wish to continue? ')) {
-                return;
+                case 'd':
+                    if ($this->console->confirm(
+                        '<fg=red>Are you sure you want to delete your existing site?</>'
+                    )) {
+                        $this->console->comment('Deleting your existing site...');
+                        $scaffold->deleteExistingSite();
+                        break;
+                    }
+
+                default:
+                    return;
             }
         }
 
-        $callback();
+        try {
+            $scaffold->setConsole($this->console)->build();
+
+            $suffix = $scaffold instanceof $this->presetScaffold && $scaffold->package ?
+                " using the '" . $scaffold->package->shortName . "' preset." :
+                ' successfully.';
+
+            $this->console
+                ->line()
+                ->info('Your new Jigsaw site was initialized' . $suffix)
+                ->line();
+        } catch (InstallerCommandException $e) {
+            $this->console
+                ->line()
+                ->error("There was an error running the command '" . $e->getMessage() . "'")
+                ->line();
+        }
     }
 
-    private function scaffoldSite()
+    protected function getScaffold()
     {
-        $this->files->copyDirectory(__DIR__ . '/../../stubs/site', $this->base);
+        return $this->input->getArgument('preset') ?
+            $this->presetScaffold :
+            $this->basicScaffold;
     }
 
-    private function scaffoldMix()
+    protected function initHasAlreadyBeenRun()
     {
-        $this->files->copyDirectory(__DIR__ . '/../../stubs/mix', $this->base);
+        return $this->files->exists($this->base . '/config.php') ||
+            $this->files->exists($this->base . '/source');
+    }
+
+    protected function askUserWhatToDoWithExistingSite()
+    {
+        $this->console
+            ->line()
+            ->comment("It looks like you've already run 'jigsaw init' on this project.")
+            ->comment('Running it again will overwrite important files.')
+            ->line();
+
+        $choices = [
+            'a' => '<info>archive</info> your existing site, then initialize a new one',
+            'd' => '<info>delete</info> your existing site, then initialize a new one',
+            'c' => '<info>cancel</info>',
+        ];
+
+        return $this->console->ask('What would you like to do?', 'a', $choices);
     }
 }

@@ -19,7 +19,7 @@ class Filesystem extends BaseFilesystem
     {
         $directory_path = collect(explode('/', $file_path));
         $directory_path->pop();
-        $directory_path = trimPath($directory_path->implode('/'));
+        $directory_path = rightTrimPath($directory_path->implode('/'));
 
         if (! $this->isDirectory($directory_path)) {
             $this->makeDirectory($directory_path, 0755, true);

@@ -2,8 +2,8 @@
 
 namespace TightenCo\Jigsaw\PathResolvers;
 
-use TightenCo\Jigsaw\IterableObject;
 use Illuminate\Support\Arr;
+use TightenCo\Jigsaw\IterableObject;
 
 class CollectionPathResolver
 {

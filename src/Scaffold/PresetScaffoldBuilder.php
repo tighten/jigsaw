@@ -2,8 +2,8 @@
 
 namespace TightenCo\Jigsaw\Scaffold;
 
-use TightenCo\Jigsaw\File\Filesystem;
 use Illuminate\Support\Arr;
+use TightenCo\Jigsaw\File\Filesystem;
 
 class PresetScaffoldBuilder extends ScaffoldBuilder
 {

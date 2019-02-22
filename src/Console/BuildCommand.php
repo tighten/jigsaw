@@ -2,14 +2,14 @@
 
 namespace TightenCo\Jigsaw\Console;
 
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
+use Illuminate\Support\Arr;
+use TightenCo\Jigsaw\Jigsaw;
 use TightenCo\Jigsaw\File\ConfigFile;
 use TightenCo\Jigsaw\File\TemporaryFilesystem;
-use TightenCo\Jigsaw\Jigsaw;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Output\OutputInterface;
 use TightenCo\Jigsaw\PathResolvers\PrettyOutputPathResolver;
-use Illuminate\Support\Arr;
 
 class BuildCommand extends Command
 {

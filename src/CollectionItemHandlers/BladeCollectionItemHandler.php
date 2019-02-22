@@ -2,9 +2,9 @@
 
 namespace TightenCo\Jigsaw\CollectionItemHandlers;
 
-use TightenCo\Jigsaw\Parsers\FrontMatterParser;
-use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use TightenCo\Jigsaw\Parsers\FrontMatterParser;
 
 class BladeCollectionItemHandler
 {

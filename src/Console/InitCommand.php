@@ -3,11 +3,11 @@
 namespace TightenCo\Jigsaw\Console;
 
 use Exception;
-use Symfony\Component\Console\Input\InputArgument;
 use TightenCo\Jigsaw\File\Filesystem;
+use Symfony\Component\Console\Input\InputArgument;
 use TightenCo\Jigsaw\Scaffold\BasicScaffoldBuilder;
-use TightenCo\Jigsaw\Scaffold\InstallerCommandException;
 use TightenCo\Jigsaw\Scaffold\PresetScaffoldBuilder;
+use TightenCo\Jigsaw\Scaffold\InstallerCommandException;
 
 class InitCommand extends Command
 {
@@ -74,6 +74,7 @@ class InitCommand extends Command
                         break;
                     }
 
+                    // no break
                 default:
                     return;
             }

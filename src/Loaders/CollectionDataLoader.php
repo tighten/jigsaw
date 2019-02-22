@@ -9,6 +9,7 @@ use TightenCo\Jigsaw\File\InputFile;
 use TightenCo\Jigsaw\IterableObject;
 use TightenCo\Jigsaw\IterableObjectWithDefault;
 use TightenCo\Jigsaw\PageVariable;
+use Illuminate\Support\Str;
 
 class CollectionDataLoader
 {
@@ -57,7 +58,7 @@ class CollectionDataLoader
 
         return collect($this->filesystem->files($path))
             ->reject(function ($file) {
-                return starts_with($file->getFilename(), '_');
+                return Str::startsWith($file->getFilename(), '_');
             })->tap(function ($files) {
                 $this->consoleOutput->progressBar('collections')->addSteps($files->count());
             })->map(function ($file) {

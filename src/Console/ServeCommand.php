@@ -4,6 +4,7 @@ namespace TightenCo\Jigsaw\Console;
 
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
+use Illuminate\Support\Arr;
 
 class ServeCommand extends Command
 {
@@ -57,10 +58,10 @@ class ServeCommand extends Command
         $environmentConfigPath = $this->getAbsolutePath("config.{$env}.php");
         $environmentConfig = file_exists($environmentConfigPath) ? include $environmentConfigPath : [];
 
-        $customBuildPath = array_get(
+        $customBuildPath = Arr::get(
             $environmentConfig,
             'build.destination',
-            array_get($this->app->config, 'build.destination')
+            Arr::get($this->app->config, 'build.destination')
         );
 
         $buildPath = $customBuildPath ? $this->getAbsolutePath($customBuildPath) : $this->app->buildPath['destination'];

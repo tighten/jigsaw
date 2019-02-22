@@ -2,6 +2,8 @@
 
 namespace TightenCo\Jigsaw\File;
 
+use Illuminate\Support\Str;
+
 class InputFile
 {
     protected $file;
@@ -28,7 +30,7 @@ class InputFile
 
     public function getExtension()
     {
-        if (! starts_with($this->getFilename(), '.')) {
+        if (! Str::startsWith($this->getFilename(), '.')) {
             return $this->file->getExtension();
         }
     }

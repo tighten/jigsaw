@@ -3,6 +3,7 @@
 namespace TightenCo\Jigsaw\Parsers;
 
 use Mni\FrontYAML\Parser;
+use Illuminate\Support\Arr;
 
 class FrontMatterParser
 {
@@ -47,7 +48,7 @@ class FrontMatterParser
     public function getBladeContent($content)
     {
         $parsed = $this->parse($content);
-        $extendsFromFrontMatter = array_get($parsed->frontMatter, 'extends');
+        $extendsFromFrontMatter = Arr::get($parsed->frontMatter, 'extends');
 
         return (! $this->getExtendsFromBladeContent($parsed->content) && $extendsFromFrontMatter) ?
             $this->addExtendsToBladeContent($extendsFromFrontMatter, $parsed->content) :

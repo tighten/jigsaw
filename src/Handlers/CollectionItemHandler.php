@@ -2,7 +2,9 @@
 
 namespace TightenCo\Jigsaw\Handlers;
 
+use Illuminate\Support\Str;
 use TightenCo\Jigsaw\File\OutputFile;
+use Illuminate\Support\Arr;
 
 class CollectionItemHandler
 {
@@ -18,19 +20,19 @@ class CollectionItemHandler
     public function shouldHandle($file)
     {
         return $this->isInCollectionDirectory($file)
-            && ! starts_with($file->getFilename(), ['.', '_']);
+            && ! Str::startsWith($file->getFilename(), ['.', '_']);
     }
 
     private function isInCollectionDirectory($file)
     {
         $base = $file->topLevelDirectory();
 
-        return starts_with($base, '_') && $this->hasCollectionNamed($this->getCollectionName($file));
+        return Str::startsWith($base, '_') && $this->hasCollectionNamed($this->getCollectionName($file));
     }
 
     private function hasCollectionNamed($candidate)
     {
-        return array_get($this->config, 'collections.' . $candidate) !== null;
+        return Arr::get($this->config, 'collections.' . $candidate) !== null;
     }
 
     private function getCollectionName($file)

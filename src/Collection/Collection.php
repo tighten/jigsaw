@@ -4,6 +4,7 @@ namespace TightenCo\Jigsaw\Collection;
 
 use Closure;
 use Illuminate\Support\Collection as BaseCollection;
+use Illuminate\Support\Arr;
 
 class Collection extends BaseCollection
 {
@@ -51,7 +52,7 @@ class Collection extends BaseCollection
 
     private function defaultSort($items)
     {
-        $sortSettings = collect(array_get($this->settings, 'sort'))->map(function ($setting) {
+        $sortSettings = collect(Arr::get($this->settings, 'sort'))->map(function ($setting) {
             return [
                 'key' => ltrim($setting, '-+'),
                 'direction' => $setting[0] === '-' ? -1 : 1,
@@ -70,8 +71,8 @@ class Collection extends BaseCollection
     private function compareItems($item_1, $item_2, $sortSettings)
     {
         foreach ($sortSettings as $setting) {
-            $value_1 = $this->getValueForSorting($item_1, array_get($setting, 'key'));
-            $value_2 = $this->getValueForSorting($item_2, array_get($setting, 'key'));
+            $value_1 = $this->getValueForSorting($item_1, Arr::get($setting, 'key'));
+            $value_2 = $this->getValueForSorting($item_2, Arr::get($setting, 'key'));
 
             if ($value_1 > $value_2) {
                 return $setting['direction'];

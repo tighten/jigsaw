@@ -2,6 +2,8 @@
 
 namespace TightenCo\Jigsaw;
 
+use Illuminate\Support\Str;
+
 class PageVariable extends IterableObject
 {
     public function addVariables($variables)
@@ -13,8 +15,8 @@ class PageVariable extends IterableObject
     {
         $helper = $this->get($method);
 
-        if (! $helper && starts_with($method, 'get')) {
-            return $this->_meta->get(camel_case(substr($method, 3)), function () use ($method) {
+        if (! $helper && Str::startsWith($method, 'get')) {
+            return $this->_meta->get(Str::camel(substr($method, 3)), function () use ($method) {
                 throw new \Exception($this->missingHelperError($method));
             });
         }

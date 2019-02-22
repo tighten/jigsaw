@@ -9,6 +9,7 @@ use TightenCo\Jigsaw\File\ConfigFile;
 use TightenCo\Jigsaw\File\TemporaryFilesystem;
 use TightenCo\Jigsaw\Jigsaw;
 use TightenCo\Jigsaw\PathResolvers\PrettyOutputPathResolver;
+use Illuminate\Support\Arr;
 
 class BuildCommand extends Command
 {
@@ -90,7 +91,7 @@ class BuildCommand extends Command
 
     private function getBuildPath($pathType, $env)
     {
-        $customPath = array_get($this->app->config, 'build.' . $pathType);
+        $customPath = Arr::get($this->app->config, 'build.' . $pathType);
         $buildPath = $customPath ? $this->getAbsolutePath($customPath) : $this->app->buildPath[$pathType];
 
         return str_replace('{env}', $env, $buildPath);
@@ -104,7 +105,7 @@ class BuildCommand extends Command
     private function confirmDestination()
     {
         if (! $this->input->getOption('quiet')) {
-            $customPath = array_get($this->app->config, 'build.destination');
+            $customPath = Arr::get($this->app->config, 'build.destination');
 
             if ($customPath && strpos($customPath, 'build_') !== 0) {
                 return $this->console->confirm('Overwrite "' . $this->app->buildPath['destination'] . '"? ');

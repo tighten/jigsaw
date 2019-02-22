@@ -4,8 +4,8 @@ namespace TightenCo\Jigsaw\Scaffold;
 
 use Exception;
 use TightenCo\Jigsaw\File\Filesystem;
-use TightenCo\Jigsaw\Scaffold\InstallerCommandException;
-use TightenCo\Jigsaw\Scaffold\PresetScaffoldBuilder;
+use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
 
 class PresetPackage
 {
@@ -50,7 +50,7 @@ class PresetPackage
 
         try {
             $init = $this->customInstaller->setConsole($console)->install($this->builder);
-            $initFile = include($this->path . DIRECTORY_SEPARATOR . 'init.php');
+            $initFile = include $this->path . DIRECTORY_SEPARATOR . 'init.php';
 
             if (is_array($initFile) && count($initFile)) {
                 return $this->runDefaultInstaller($initFile);
@@ -69,22 +69,22 @@ class PresetPackage
 
     protected function resolveNames()
     {
-        $name = array_get(self::PRESETS, $this->preset, $this->preset);
+        $name = Arr::get(self::PRESETS, $this->preset, $this->preset);
 
-        if (! str_contains($name, '/')) {
+        if (! Str::contains($name, '/')) {
             throw new Exception("'{$name}' is not a valid package name.");
         }
 
         $parts = explode('/', $name, 3);
-        $this->vendor = array_get($parts, 0);
-        $this->name = array_get($parts, 1);
-        $this->suffix = array_get($parts, 2);
+        $this->vendor = Arr::get($parts, 0);
+        $this->name = Arr::get($parts, 1);
+        $this->suffix = Arr::get($parts, 2);
         $this->shortName = $this->getShortName();
     }
 
     protected function getShortName()
     {
-        return str_contains($this->preset, '/') ?
+        return Str::contains($this->preset, '/') ?
             explode('/', $this->preset)[1] :
             $this->preset;
     }

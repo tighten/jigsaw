@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Str;
+
 return [
     'environment' => 'testing',
     'build' => [
@@ -90,7 +92,7 @@ return [
             },
             'api' => function ($post) {
                 return [
-                    'slug' => str_slug($post->title),
+                    'slug' => Str::slug($post->title),
                     'title' => $post->title,
                     'author' => $post->author,
                     'date' => $post->date,

@@ -3,6 +3,7 @@
 namespace TightenCo\Jigsaw\Collection;
 
 use Symfony\Component\Yaml\Yaml;
+use Illuminate\Support\Arr;
 
 class CollectionRemoteItem
 {
@@ -20,13 +21,13 @@ class CollectionRemoteItem
     public function getContent()
     {
         return is_array($this->item) ?
-            $this->getHeader() . array_get($this->item, 'content') :
+            $this->getHeader() . Arr::get($this->item, 'content') :
             $this->item;
     }
 
     public function getFilename()
     {
-        return array_get($this->item, 'filename', $this->prefix . ($this->index + 1)) . '.md';
+        return Arr::get($this->item, 'filename', $this->prefix . ($this->index + 1)) . '.md';
     }
 
     protected function getHeader()

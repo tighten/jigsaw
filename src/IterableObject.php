@@ -6,6 +6,7 @@ use ArrayAccess;
 use Exception;
 use Illuminate\Support\Collection as BaseCollection;
 use Illuminate\Support\HigherOrderCollectionProxy;
+use Illuminate\Support\Arr;
 
 class IterableObject extends BaseCollection implements ArrayAccess
 {
@@ -41,7 +42,7 @@ class IterableObject extends BaseCollection implements ArrayAccess
     {
         data_set($this->items, $key, $this->isArrayable($value) ? $this->makeIterable($value) : $value);
 
-        if ($first_key = array_get(explode('.', $key), 0)) {
+        if ($first_key = Arr::get(explode('.', $key), 0)) {
             $this->putIterable($first_key, $this->get($first_key));
         }
     }

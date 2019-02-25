@@ -2,9 +2,9 @@
 
 namespace TightenCo\Jigsaw\File;
 
+use Illuminate\Filesystem\Filesystem as BaseFilesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
-use Illuminate\Filesystem\Filesystem as BaseFilesystem;
 
 class Filesystem extends BaseFilesystem
 {

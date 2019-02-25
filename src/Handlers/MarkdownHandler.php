@@ -2,11 +2,11 @@
 
 namespace TightenCo\Jigsaw\Handlers;
 
-use TightenCo\Jigsaw\PageData;
 use TightenCo\Jigsaw\File\OutputFile;
-use TightenCo\Jigsaw\View\ViewRenderer;
 use TightenCo\Jigsaw\File\TemporaryFilesystem;
+use TightenCo\Jigsaw\PageData;
 use TightenCo\Jigsaw\Parsers\FrontMatterParser;
+use TightenCo\Jigsaw\View\ViewRenderer;
 
 class MarkdownHandler
 {
@@ -153,7 +153,7 @@ class MarkdownHandler
             $replacements = array_merge([
                 ' @' => " {{'@'}}",
                 "\n@" => "\n{{'@'}}",
-                '`@' => "`{{'@'}}",
+                "`@" => "`{{'@'}}",
                 '{{' => '@{{',
                 '{!!' => '@{!!',
             ], $replacements);

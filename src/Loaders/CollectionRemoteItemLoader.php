@@ -2,8 +2,8 @@
 
 namespace TightenCo\Jigsaw\Loaders;
 
-use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\Collection\CollectionRemoteItem;
+use TightenCo\Jigsaw\File\Filesystem;
 
 class CollectionRemoteItemLoader
 {

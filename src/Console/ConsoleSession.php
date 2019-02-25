@@ -2,12 +2,12 @@
 
 namespace TightenCo\Jigsaw\Console;
 
-use Symfony\Component\Console\Question\Question;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Helper\QuestionHelper;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Console\Question\Question;
 
 class ConsoleSession
 {
@@ -51,10 +51,10 @@ class ConsoleSession
 
     public function ask($question, $default = null, $choices = null, $errorMessage = '')
     {
-        $defaultPrompt = $default ? '<fg=blue>(default <fg=white>' . $default . '</>) </>' : '';
+        $defaultPrompt = $default ? "<fg=blue>(default <fg=white>" . $default . "</>) </>" : '';
 
         if ($choices) {
-            $question = new ChoiceQuestion($question . ' ' . $defaultPrompt, $choices ?? [], $default ?? false);
+            $question = new ChoiceQuestion($question . ' ' . $defaultPrompt, $choices, $default ?? false);
             $question->setErrorMessage($errorMessage ?: 'Selection "%s" is invalid.');
         } else {
             $question = new Question($question . ' ' . $defaultPrompt, $default ?? '');
@@ -70,10 +70,10 @@ class ConsoleSession
     public function confirm($question, $default = false, $errorMessage = '')
     {
         $defaultPrompt = $default ?
-            ' <fg=blue>(default <fg=white>y</>)</> ' :
-            ' <fg=blue>(default <fg=white>n</>)</> ';
+            " <fg=blue>(default <fg=white>y</>)</> " :
+            " <fg=blue>(default <fg=white>n</>)</> ";
 
-        return (bool) $this->question->ask(
+        return (boolean) $this->question->ask(
             $this->input,
             $this->output,
             new ConfirmationQuestion($question . $defaultPrompt, $default ?? false)

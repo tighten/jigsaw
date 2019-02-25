@@ -3,9 +3,9 @@
 namespace TightenCo\Jigsaw\Scaffold;
 
 use Exception;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use TightenCo\Jigsaw\File\Filesystem;
+use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
 
 class PresetPackage
 {

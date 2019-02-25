@@ -2,9 +2,9 @@
 
 namespace TightenCo\Jigsaw\Handlers;
 
-use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use TightenCo\Jigsaw\File\OutputFile;
+use Illuminate\Support\Arr;
 
 class CollectionItemHandler
 {

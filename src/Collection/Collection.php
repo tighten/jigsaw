@@ -3,8 +3,8 @@
 namespace TightenCo\Jigsaw\Collection;
 
 use Closure;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection as BaseCollection;
+use Illuminate\Support\Arr;
 
 class Collection extends BaseCollection
 {

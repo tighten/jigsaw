@@ -2,8 +2,8 @@
 
 namespace TightenCo\Jigsaw\Handlers;
 
-use TightenCo\Jigsaw\File\CopyFile;
 use TightenCo\Jigsaw\File\Filesystem;
+use TightenCo\Jigsaw\File\CopyFile;
 
 class DefaultHandler
 {

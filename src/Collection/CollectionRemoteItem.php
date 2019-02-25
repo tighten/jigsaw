@@ -2,8 +2,8 @@
 
 namespace TightenCo\Jigsaw\Collection;
 
-use Illuminate\Support\Arr;
 use Symfony\Component\Yaml\Yaml;
+use Illuminate\Support\Arr;
 
 class CollectionRemoteItem
 {

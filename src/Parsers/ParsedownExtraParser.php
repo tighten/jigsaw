@@ -2,8 +2,8 @@
 
 namespace TightenCo\Jigsaw\Parsers;
 
-use ParsedownExtra;
 use Mni\FrontYAML\Markdown\MarkdownParser;
+use ParsedownExtra;
 
 class ParsedownExtraParser implements MarkdownParser
 {

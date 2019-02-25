@@ -2,12 +2,12 @@
 
 namespace TightenCo\Jigsaw\Handlers;
 
-use Illuminate\Support\Str;
-use TightenCo\Jigsaw\PageData;
 use TightenCo\Jigsaw\File\OutputFile;
-use TightenCo\Jigsaw\View\ViewRenderer;
 use TightenCo\Jigsaw\File\TemporaryFilesystem;
+use TightenCo\Jigsaw\PageData;
 use TightenCo\Jigsaw\Parsers\FrontMatterParser;
+use TightenCo\Jigsaw\View\ViewRenderer;
+use Illuminate\Support\Str;
 
 class BladeHandler
 {

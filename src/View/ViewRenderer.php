@@ -2,8 +2,8 @@
 
 namespace TightenCo\Jigsaw\View;
 
-use Illuminate\View\Factory;
 use Illuminate\View\Compilers\BladeCompiler;
+use Illuminate\View\Factory;
 
 class ViewRenderer
 {

@@ -2,8 +2,8 @@
 
 namespace TightenCo\Jigsaw;
 
-use TightenCo\Jigsaw\File\InputFile;
 use TightenCo\Jigsaw\File\Filesystem;
+use TightenCo\Jigsaw\File\InputFile;
 
 class SiteBuilder
 {

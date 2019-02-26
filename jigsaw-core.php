@@ -1,5 +1,6 @@
 <?php
 
+use Dotenv\Dotenv;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\View\Compilers\BladeCompiler;
@@ -16,7 +17,6 @@ use TightenCo\Jigsaw\CollectionItemHandlers\BladeCollectionItemHandler;
 use TightenCo\Jigsaw\CollectionItemHandlers\MarkdownCollectionItemHandler;
 use TightenCo\Jigsaw\Collection\CollectionPaginator;
 use TightenCo\Jigsaw\Console\ConsoleOutput;
-use Symfony\Component\Dotenv\Dotenv;
 use TightenCo\Jigsaw\Events\EventBus;
 use TightenCo\Jigsaw\Events\FakeDispatcher;
 use TightenCo\Jigsaw\File\BladeDirectivesFile;
@@ -57,7 +57,7 @@ $container->setInstance($container);
 $container->instance('cwd', getcwd());
 
 if (file_exists($envPath = $container['cwd'] . '/.env')) {
-    (new Dotenv())->load($envPath);
+    (Dotenv::create($container['cwd']))->load();
 }
 
 $cachePath = $container['cwd'] . '/cache';

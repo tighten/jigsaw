@@ -29,7 +29,7 @@ class ConfigVariableTest extends TestCase
      */
     public function config_variables_are_loaded_from_dotenv_if_present()
     {
-        putenv('JIGSAW_TEST_VAR=true');
+        $_ENV['JIGSAW_TEST_VAR'] = true;
         $config = (new ConfigFile($this->app['cwd'] . '/tests/config.php'))->config;
 
         $this->assertTrue($config['envVariable']);

@@ -3,6 +3,8 @@
 namespace TightenCo\Jigsaw\CollectionItemHandlers;
 
 use TightenCo\Jigsaw\Parsers\FrontMatterParser;
+use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
 
 class BladeCollectionItemHandler
 {
@@ -15,7 +17,7 @@ class BladeCollectionItemHandler
 
     public function shouldHandle($file)
     {
-        return str_contains($file->getFilename(), '.blade.');
+        return Str::contains($file->getFilename(), '.blade.');
     }
 
     public function getItemVariables($file)
@@ -26,7 +28,7 @@ class BladeCollectionItemHandler
 
         return array_merge(
             $frontMatter,
-            ['extends' => $extendsFromBladeContent ?: array_get($frontMatter, 'extends')]
+            ['extends' => $extendsFromBladeContent ?: Arr::get($frontMatter, 'extends')]
         );
     }
 

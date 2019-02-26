@@ -7,6 +7,7 @@ use TightenCo\Jigsaw\File\TemporaryFilesystem;
 use TightenCo\Jigsaw\PageData;
 use TightenCo\Jigsaw\Parsers\FrontMatterParser;
 use TightenCo\Jigsaw\View\ViewRenderer;
+use Illuminate\Support\Str;
 
 class BladeHandler
 {
@@ -24,7 +25,7 @@ class BladeHandler
 
     public function shouldHandle($file)
     {
-        return str_contains($file->getFilename(), '.blade.');
+        return Str::contains($file->getFilename(), '.blade.');
     }
 
     public function handleCollectionItem($file, PageData $pageData)

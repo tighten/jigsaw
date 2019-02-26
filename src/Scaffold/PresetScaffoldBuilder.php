@@ -3,7 +3,7 @@
 namespace TightenCo\Jigsaw\Scaffold;
 
 use TightenCo\Jigsaw\File\Filesystem;
-use TightenCo\Jigsaw\Scaffold\ProcessRunner;
+use Illuminate\Support\Arr;
 
 class PresetScaffoldBuilder extends ScaffoldBuilder
 {
@@ -65,7 +65,7 @@ class PresetScaffoldBuilder extends ScaffoldBuilder
 
                     if ($this->files->isDirectory($file)) {
                         $this->files->deleteDirectory($source);
-                    } else if ($this->files->isFile($file)) {
+                    } elseif ($this->files->isFile($file)) {
                         $this->files->delete($source);
                     }
                 });
@@ -114,7 +114,7 @@ class PresetScaffoldBuilder extends ScaffoldBuilder
     {
         $path = $file->getRelativePath();
 
-        if ( $path && ! $this->files->isDirectory($path)) {
+        if ($path && ! $this->files->isDirectory($path)) {
             $this->files->makeDirectory($path, 0755, true);
         }
     }
@@ -136,10 +136,10 @@ class PresetScaffoldBuilder extends ScaffoldBuilder
 
     protected function preferVersionConstraintFromCached($composer)
     {
-        $require = collect(array_get($composer, 'require'))->mapWithKeys(function ($version, $package) {
+        $require = collect(Arr::get($composer, 'require'))->mapWithKeys(function ($version, $package) {
             return [$package => is_array($version) ? $version[0] : $version];
         });
 
-        return array_set($composer, 'require', $require);
+        return Arr::set($composer, 'require', $require);
     }
 }

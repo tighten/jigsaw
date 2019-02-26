@@ -2,6 +2,8 @@
 
 namespace TightenCo\Jigsaw\Scaffold;
 
+use Illuminate\Support\Arr;
+
 class DefaultInstaller
 {
     const ALWAYS_IGNORE = [
@@ -23,9 +25,9 @@ class DefaultInstaller
     public function install(ScaffoldBuilder $builder, $settings = [])
     {
         $this->builder = $builder;
-        $this->delete = array_get($settings, 'delete', []);
-        $this->ignore = array_merge(self::ALWAYS_IGNORE, array_get($settings, 'ignore', []));
-        $commands = array_get($settings, 'commands');
+        $this->delete = Arr::get($settings, 'delete', []);
+        $this->ignore = array_merge(self::ALWAYS_IGNORE, Arr::get($settings, 'ignore', []));
+        $commands = Arr::get($settings, 'commands');
         $this->commands = $commands !== null ? $commands : self::DEFAULT_COMMANDS;
         $this->execute();
     }

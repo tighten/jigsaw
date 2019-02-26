@@ -2,6 +2,8 @@
 
 namespace TightenCo\Jigsaw\File;
 
+use Illuminate\Support\Arr;
+
 class ConfigFile
 {
     public $config;
@@ -14,7 +16,7 @@ class ConfigFile
 
     protected function convertStringCollectionsToArray()
     {
-        $collections = array_get($this->config, 'collections');
+        $collections = Arr::get($this->config, 'collections');
 
         if ($collections) {
             $this->config['collections'] = collect($collections)->flatMap(function ($value, $key) {

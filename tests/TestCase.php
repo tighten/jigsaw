@@ -8,8 +8,9 @@ use TightenCo\Jigsaw\File\InputFile;
 use TightenCo\Jigsaw\Jigsaw;
 use TightenCo\Jigsaw\Loaders\DataLoader;
 use TightenCo\Jigsaw\PathResolvers\PrettyOutputPathResolver;
-use \Mockery;
+use Mockery;
 use org\bovigo\vfs\vfsStream;
+use Illuminate\Support\Str;
 
 class TestCase extends BaseTestCase
 {
@@ -54,7 +55,7 @@ class TestCase extends BaseTestCase
 
     public function getInputFile($filename)
     {
-        $sourceFile = $this->filesystem->getFile(str_finish($this->sourcePath, '/') . pathinfo($filename)['dirname'], basename($filename));
+        $sourceFile = $this->filesystem->getFile(Str::finish($this->sourcePath, '/') . pathinfo($filename)['dirname'], basename($filename));
 
         return new InputFile($sourceFile, $this->sourcePath);
     }

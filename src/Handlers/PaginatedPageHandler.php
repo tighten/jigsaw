@@ -6,6 +6,7 @@ use TightenCo\Jigsaw\File\OutputFile;
 use TightenCo\Jigsaw\PageData;
 use TightenCo\Jigsaw\Parsers\FrontMatterParser;
 use TightenCo\Jigsaw\View\ViewRenderer;
+use Illuminate\Support\Str;
 
 class PaginatedPageHandler
 {
@@ -24,7 +25,7 @@ class PaginatedPageHandler
 
     public function shouldHandle($file)
     {
-        if (! ends_with($file->getFilename(), '.blade.php')) {
+        if (! Str::endsWith($file->getFilename(), '.blade.php')) {
             return false;
         }
         $content = $this->parser->parse($file->getContents());

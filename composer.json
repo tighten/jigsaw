@@ -10,9 +10,9 @@
         }
     ],
     "require": {
-        "illuminate/container": "^5.6",
-        "illuminate/support": "^5.6",
-        "illuminate/view": "^5.6",
+        "illuminate/container": "^5.7",
+        "illuminate/support": "^5.7",
+        "illuminate/view": "^5.7",
         "symfony/console": "~3.0|^4.0",
         "symfony/dotenv": "^4.2",
         "symfony/process": "~3.0|^4.0",

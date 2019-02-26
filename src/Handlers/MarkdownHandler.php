@@ -153,7 +153,7 @@ class MarkdownHandler
             $replacements = array_merge([
                 ' @' => " {{'@'}}",
                 "\n@" => "\n{{'@'}}",
-                "`@" => "`{{'@'}}",
+                '`@' => "`{{'@'}}",
                 '{{' => '@{{',
                 '{!!' => '@{!!',
             ], $replacements);

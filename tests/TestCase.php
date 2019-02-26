@@ -2,15 +2,15 @@
 
 namespace Tests;
 
+use Illuminate\Support\Str;
+use Mockery;
+use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\File\InputFile;
 use TightenCo\Jigsaw\Jigsaw;
 use TightenCo\Jigsaw\Loaders\DataLoader;
 use TightenCo\Jigsaw\PathResolvers\PrettyOutputPathResolver;
-use Mockery;
-use org\bovigo\vfs\vfsStream;
-use Illuminate\Support\Str;
 
 class TestCase extends BaseTestCase
 {

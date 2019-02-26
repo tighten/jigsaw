@@ -2,8 +2,8 @@
 
 namespace Tests;
 
-use TightenCo\Jigsaw\File\Filesystem;
 use org\bovigo\vfs\vfsStream;
+use TightenCo\Jigsaw\File\Filesystem;
 
 class FilesystemTest extends TestCase
 {
@@ -47,7 +47,8 @@ class FilesystemTest extends TestCase
             '.DS_Store' => '',
         ]);
 
-        $files = collect($this->app->make(Filesystem::class)
+        $files = collect(
+            $this->app->make(Filesystem::class)
             ->filesAndDirectories($vfs->url())
         )->map(function ($file) {
             return $file->getRelativePathName();
@@ -77,7 +78,7 @@ class FilesystemTest extends TestCase
     {
         $files = $this->getFilesExcept([
             'file-1.md',
-            'file-2.md'
+            'file-2.md',
         ]);
 
         $this->assertNotContains('file-1.md', $files);
@@ -253,7 +254,8 @@ class FilesystemTest extends TestCase
 
     protected function getFilesMatching($match)
     {
-        return collect($this->app->make(Filesystem::class)
+        return collect(
+            $this->app->make(Filesystem::class)
             ->filesAndDirectories($this->setupFiles()->url(), $match)
         )->map(function ($file) {
             return $file->getRelativePathName();
@@ -262,7 +264,8 @@ class FilesystemTest extends TestCase
 
     protected function getFilesExcept($ignore)
     {
-        return collect($this->app->make(Filesystem::class)
+        return collect(
+            $this->app->make(Filesystem::class)
             ->filesAndDirectories($this->setupFiles()->url(), null, $ignore)
         )->map(function ($file) {
             return $file->getRelativePathName();

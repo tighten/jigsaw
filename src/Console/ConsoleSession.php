@@ -51,7 +51,7 @@ class ConsoleSession
 
     public function ask($question, $default = null, $choices = null, $errorMessage = '')
     {
-        $defaultPrompt = $default ? "<fg=blue>(default <fg=white>" . $default . "</>) </>" : '';
+        $defaultPrompt = $default ? '<fg=blue>(default <fg=white>' . $default . '</>) </>' : '';
 
         if ($choices) {
             $question = new ChoiceQuestion($question . ' ' . $defaultPrompt, $choices, $default ?? false);
@@ -70,10 +70,10 @@ class ConsoleSession
     public function confirm($question, $default = false, $errorMessage = '')
     {
         $defaultPrompt = $default ?
-            " <fg=blue>(default <fg=white>y</>)</> " :
-            " <fg=blue>(default <fg=white>n</>)</> ";
+            ' <fg=blue>(default <fg=white>y</>)</> ' :
+            ' <fg=blue>(default <fg=white>n</>)</> ';
 
-        return (boolean) $this->question->ask(
+        return (bool) $this->question->ask(
             $this->input,
             $this->output,
             new ConfirmationQuestion($question . $defaultPrompt, $default ?? false)

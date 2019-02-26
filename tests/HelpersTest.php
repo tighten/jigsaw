@@ -20,7 +20,7 @@ class HelpersTest extends TestCase
         $this->app->config = collect([
             'build' => [
                 'source' => 'src',
-            ]
+            ],
         ]);
 
         $this->assertEquals('src/some-file.md', public_path('some-file.md'));

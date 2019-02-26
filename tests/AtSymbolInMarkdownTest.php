@@ -2,8 +2,6 @@
 
 namespace Tests;
 
-use TightenCo\Jigsaw\IterableObject;
-
 class AtSymbolInMarkdownTest extends TestCase
 {
     /**

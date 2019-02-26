@@ -2,9 +2,8 @@
 
 namespace Tests;
 
-use Symfony\Component\Console\Application;
-use TightenCo\Jigsaw\Scaffold\BasicScaffoldBuilder;
 use org\bovigo\vfs\vfsStream;
+use TightenCo\Jigsaw\Scaffold\BasicScaffoldBuilder;
 
 class ScaffoldTest extends TestCase
 {

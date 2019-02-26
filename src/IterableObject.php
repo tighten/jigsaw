@@ -4,9 +4,9 @@ namespace TightenCo\Jigsaw;
 
 use ArrayAccess;
 use Exception;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection as BaseCollection;
 use Illuminate\Support\HigherOrderCollectionProxy;
-use Illuminate\Support\Arr;
 
 class IterableObject extends BaseCollection implements ArrayAccess
 {

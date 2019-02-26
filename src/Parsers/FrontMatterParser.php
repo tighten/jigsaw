@@ -2,8 +2,8 @@
 
 namespace TightenCo\Jigsaw\Parsers;
 
-use Mni\FrontYAML\Parser;
 use Illuminate\Support\Arr;
+use Mni\FrontYAML\Parser;
 
 class FrontMatterParser
 {

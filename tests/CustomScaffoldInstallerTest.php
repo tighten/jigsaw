@@ -2,14 +2,14 @@
 
 namespace Tests;
 
+use Mockery;
+use org\bovigo\vfs\vfsStream;
 use TightenCo\Jigsaw\Console\ConsoleSession;
 use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\Scaffold\CustomInstaller;
 use TightenCo\Jigsaw\Scaffold\PresetPackage;
 use TightenCo\Jigsaw\Scaffold\PresetScaffoldBuilder;
 use TightenCo\Jigsaw\Scaffold\ProcessRunner;
-use \Mockery;
-use org\bovigo\vfs\vfsStream;
 
 class CustomScaffoldInstallerTest extends TestCase
 {
@@ -19,7 +19,7 @@ class CustomScaffoldInstallerTest extends TestCase
     public function custom_installer_installs_basic_scaffold_files()
     {
         $vfs = vfsStream::setup('virtual', null, []);
-        $builder = new PresetScaffoldBuilder(new Filesystem, Mockery::mock(PresetPackage::class), new ProcessRunner);
+        $builder = new PresetScaffoldBuilder(new Filesystem(), Mockery::mock(PresetPackage::class), new ProcessRunner());
         $builder->setBase($vfs->url());
 
         $this->assertCount(0, $vfs->getChildren());
@@ -40,7 +40,7 @@ class CustomScaffoldInstallerTest extends TestCase
     public function installer_deletes_single_base_file_specified_in_delete_array()
     {
         $vfs = vfsStream::setup('virtual', null, []);
-        $builder = new PresetScaffoldBuilder(new Filesystem, Mockery::mock(PresetPackage::class), new ProcessRunner);
+        $builder = new PresetScaffoldBuilder(new Filesystem(), Mockery::mock(PresetPackage::class), new ProcessRunner());
         $builder->setBase($vfs->url());
 
         (new CustomInstaller())->install($builder)
@@ -57,14 +57,14 @@ class CustomScaffoldInstallerTest extends TestCase
     public function installer_deletes_multiple_base_files_specified_in_delete_array()
     {
         $vfs = vfsStream::setup('virtual', null, []);
-        $builder = new PresetScaffoldBuilder(new Filesystem, Mockery::mock(PresetPackage::class), new ProcessRunner);
+        $builder = new PresetScaffoldBuilder(new Filesystem(), Mockery::mock(PresetPackage::class), new ProcessRunner());
         $builder->setBase($vfs->url());
 
         (new CustomInstaller())->install($builder)
             ->setup()
             ->delete([
                 'config.php',
-                'package.json'
+                'package.json',
             ]);
 
         $this->assertNull($vfs->getChild('config.php'));
@@ -78,7 +78,7 @@ class CustomScaffoldInstallerTest extends TestCase
     public function installer_deletes_base_directories_specified_in_delete_array()
     {
         $vfs = vfsStream::setup('virtual', null, []);
-        $builder = new PresetScaffoldBuilder(new Filesystem, Mockery::mock(PresetPackage::class), new ProcessRunner);
+        $builder = new PresetScaffoldBuilder(new Filesystem(), Mockery::mock(PresetPackage::class), new ProcessRunner());
         $builder->setBase($vfs->url());
 
         (new CustomInstaller())->install($builder)
@@ -106,7 +106,7 @@ class CustomScaffoldInstallerTest extends TestCase
         ]);
         $package = Mockery::mock(PresetPackage::class);
         $package->path = $vfs->url() . '/package';
-        $builder = new PresetScaffoldBuilder(new Filesystem, $package, new ProcessRunner);
+        $builder = new PresetScaffoldBuilder(new Filesystem(), $package, new ProcessRunner());
         $builder->setBase($vfs->url());
 
         (new CustomInstaller())->install($builder)
@@ -134,7 +134,7 @@ class CustomScaffoldInstallerTest extends TestCase
         ]);
         $package = Mockery::mock(PresetPackage::class);
         $package->path = $vfs->url() . '/package';
-        $builder = new PresetScaffoldBuilder(new Filesystem, $package, new ProcessRunner);
+        $builder = new PresetScaffoldBuilder(new Filesystem(), $package, new ProcessRunner());
         $builder->setBase($vfs->url());
 
         (new CustomInstaller())->install($builder)
@@ -162,7 +162,7 @@ class CustomScaffoldInstallerTest extends TestCase
         ]);
         $package = Mockery::mock(PresetPackage::class);
         $package->path = $vfs->url() . '/package';
-        $builder = new PresetScaffoldBuilder(new Filesystem, $package, new ProcessRunner);
+        $builder = new PresetScaffoldBuilder(new Filesystem(), $package, new ProcessRunner());
         $builder->setBase($vfs->url());
 
         (new CustomInstaller())->install($builder)
@@ -191,7 +191,7 @@ class CustomScaffoldInstallerTest extends TestCase
         ]);
         $package = Mockery::mock(PresetPackage::class);
         $package->path = $vfs->url() . '/package';
-        $builder = new PresetScaffoldBuilder(new Filesystem, $package, new ProcessRunner);
+        $builder = new PresetScaffoldBuilder(new Filesystem(), $package, new ProcessRunner());
         $builder->setBase($vfs->url());
 
         (new CustomInstaller())->install($builder)
@@ -221,7 +221,7 @@ class CustomScaffoldInstallerTest extends TestCase
         ]);
         $package = Mockery::mock(PresetPackage::class);
         $package->path = $vfs->url() . '/package';
-        $builder = new PresetScaffoldBuilder(new Filesystem, $package, new ProcessRunner);
+        $builder = new PresetScaffoldBuilder(new Filesystem(), $package, new ProcessRunner());
         $builder->setBase($vfs->url());
 
         (new CustomInstaller())->install($builder)
@@ -254,7 +254,7 @@ class CustomScaffoldInstallerTest extends TestCase
         ]);
         $package = Mockery::mock(PresetPackage::class);
         $package->path = $vfs->url() . '/package';
-        $builder = new PresetScaffoldBuilder(new Filesystem, $package, new ProcessRunner);
+        $builder = new PresetScaffoldBuilder(new Filesystem(), $package, new ProcessRunner());
         $builder->setBase($vfs->url());
 
         (new CustomInstaller())->install($builder)
@@ -282,7 +282,7 @@ class CustomScaffoldInstallerTest extends TestCase
         ]);
         $package = Mockery::mock(PresetPackage::class);
         $package->path = $vfs->url() . '/package';
-        $builder = new PresetScaffoldBuilder(new Filesystem, $package, new ProcessRunner);
+        $builder = new PresetScaffoldBuilder(new Filesystem(), $package, new ProcessRunner());
         $builder->setBase($vfs->url());
 
         (new CustomInstaller())->install($builder)
@@ -311,7 +311,7 @@ class CustomScaffoldInstallerTest extends TestCase
         ]);
         $package = Mockery::mock(PresetPackage::class);
         $package->path = $vfs->url() . '/package';
-        $builder = new PresetScaffoldBuilder(new Filesystem, $package, new ProcessRunner);
+        $builder = new PresetScaffoldBuilder(new Filesystem(), $package, new ProcessRunner());
         $builder->setBase($vfs->url());
 
         (new CustomInstaller())->install($builder)
@@ -344,7 +344,7 @@ class CustomScaffoldInstallerTest extends TestCase
         ]);
         $package = Mockery::mock(PresetPackage::class);
         $package->path = $vfs->url() . '/package';
-        $builder = new PresetScaffoldBuilder(new Filesystem, $package, new ProcessRunner);
+        $builder = new PresetScaffoldBuilder(new Filesystem(), $package, new ProcessRunner());
         $builder->setBase($vfs->url());
 
         (new CustomInstaller())->install($builder)
@@ -381,7 +381,7 @@ class CustomScaffoldInstallerTest extends TestCase
         ]);
         $package = Mockery::mock(PresetPackage::class);
         $package->path = $vfs->url() . '/package';
-        $builder = new PresetScaffoldBuilder(new Filesystem, $package, new ProcessRunner);
+        $builder = new PresetScaffoldBuilder(new Filesystem(), $package, new ProcessRunner());
         $builder->setBase($vfs->url());
 
         (new CustomInstaller())->install($builder)
@@ -393,7 +393,7 @@ class CustomScaffoldInstallerTest extends TestCase
                 'require' => [
                     'tightenco/jigsaw' => '^1.2',
                     'test/preset' => '1.0',
-                    'other/package' => '2.0'
+                    'other/package' => '2.0',
                 ],
             ],
             json_decode($vfs->getChild('composer.json')->getContent(), true)
@@ -430,7 +430,7 @@ class CustomScaffoldInstallerTest extends TestCase
         ]);
         $package = Mockery::mock(PresetPackage::class);
         $package->path = $vfs->url() . '/package';
-        $builder = new PresetScaffoldBuilder(new Filesystem, $package, new ProcessRunner);
+        $builder = new PresetScaffoldBuilder(new Filesystem(), $package, new ProcessRunner());
         $builder->setBase($vfs->url());
 
         (new CustomInstaller())->install($builder)
@@ -445,7 +445,7 @@ class CustomScaffoldInstallerTest extends TestCase
                     'tightenco/jigsaw' => '^1.2',
                     'test/preset' => '1.0',
                     'other/package' => '2.0',
-                    'another/package' => '3.0'
+                    'another/package' => '3.0',
                 ],
             ],
             json_decode($vfs->getChild('composer.json')->getContent(), true)
@@ -464,7 +464,7 @@ class CustomScaffoldInstallerTest extends TestCase
         ]);
         $package = Mockery::mock(PresetPackage::class);
         $package->path = $vfs->url() . '/package';
-        $builder = new PresetScaffoldBuilder(new Filesystem, $package, new ProcessRunner);
+        $builder = new PresetScaffoldBuilder(new Filesystem(), $package, new ProcessRunner());
         $builder->setBase($vfs->url());
 
         (new CustomInstaller())->install($builder)

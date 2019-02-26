@@ -2,13 +2,13 @@
 
 namespace Tests;
 
+use Mockery;
+use org\bovigo\vfs\vfsStream;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 use TightenCo\Jigsaw\Console\InitCommand;
 use TightenCo\Jigsaw\Scaffold\BasicScaffoldBuilder;
 use TightenCo\Jigsaw\Scaffold\PresetScaffoldBuilder;
-use \Mockery;
-use org\bovigo\vfs\vfsStream;
 
 class InitCommandTest extends TestCase
 {

@@ -74,6 +74,7 @@ class InitCommand extends Command
                         break;
                     }
 
+                    // no break
                 default:
                     return;
             }

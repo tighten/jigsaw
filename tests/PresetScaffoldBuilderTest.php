@@ -2,15 +2,13 @@
 
 namespace Tests;
 
+use Mockery;
+use org\bovigo\vfs\vfsStream;
 use TightenCo\Jigsaw\Scaffold\CustomInstaller;
-use TightenCo\Jigsaw\Scaffold\CustomQueue;
 use TightenCo\Jigsaw\Scaffold\DefaultInstaller;
-use TightenCo\Jigsaw\Scaffold\DefaultQueue;
 use TightenCo\Jigsaw\Scaffold\PresetPackage;
 use TightenCo\Jigsaw\Scaffold\PresetScaffoldBuilder;
 use TightenCo\Jigsaw\Scaffold\ProcessRunner;
-use \Mockery;
-use org\bovigo\vfs\vfsStream;
 
 class PresetScaffoldBuilderTest extends TestCase
 {
@@ -68,7 +66,7 @@ class PresetScaffoldBuilderTest extends TestCase
     public function package_is_loaded_via_composer_if_not_found_locally()
     {
         $process = Mockery::spy(ProcessRunner::class);
-        $this->app->instance(PresetPackage::class, new PresetPackage(new DefaultInstaller, new CustomInstaller, $process));
+        $this->app->instance(PresetPackage::class, new PresetPackage(new DefaultInstaller(), new CustomInstaller(), $process));
         $preset = $this->app->make(PresetScaffoldBuilder::class);
         $vfs = vfsStream::setup('virtual', null, ['vendor' => ['test' => ['package' => []]]]);
         $preset->base = $vfs->url();
@@ -122,7 +120,7 @@ class PresetScaffoldBuilderTest extends TestCase
 
             $this->fail('Exception not thrown');
         } catch (\Exception $e) {
-            $this->assertContains("contains errors", $e->getMessage());
+            $this->assertContains('contains errors', $e->getMessage());
         }
     }
 

@@ -2,9 +2,9 @@
 
 namespace TightenCo\Jigsaw\Console;
 
+use Illuminate\Support\Arr;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-use Illuminate\Support\Arr;
 
 class ServeCommand extends Command
 {

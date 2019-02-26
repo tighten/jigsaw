@@ -14,6 +14,7 @@
         'concat_space' => ['spacing' => 'one'],
         'method_argument_space' => ['on_multiline' => 'ensure_fully_multiline'],
         'not_operator_with_successor_space' => true,
+        'ordered_imports' => ['sort_algorithm' => 'alpha'],
         'phpdoc_annotation_without_dot' => true,
         'phpdoc_order' => true,
         'trailing_comma_in_multiline_array' => true,

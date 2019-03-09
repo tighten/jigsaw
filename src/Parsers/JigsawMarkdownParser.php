@@ -8,12 +8,12 @@ use ParsedownExtra;
 
 class JigsawMarkdownParser extends ParsedownExtra
 {
-    // This extention of ParsedownExtra is intended to deal with parsing errors
-    // that arise from single-line markup that appears in markdown, e.g.
+    // This extension of ParsedownExtra is intended to deal with parsing errors
+    // that arise from single-line markup that appears in markdown, e.g.:
     //
     // <h1>Some heading</h1><p>Some content</p>
     //
-    // Only the first node, <h1> in this example, is maintained.
+    // Without this fix, only the first node (<h1> in this example) is maintained.
     //
     // This fix comes largely from Adam Mitchell in this PR to ParsedownExtra:
     // https://github.com/erusev/parsedown-extra/pull/58

@@ -1,5 +1,4 @@
 <?php
-
 $finder = PhpCsFixer\Finder::create()
     ->name('*.php')
     ->in(__DIR__ . DIRECTORY_SEPARATOR . 'src')

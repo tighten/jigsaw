@@ -80,6 +80,48 @@ class MarkdownExtraTest extends TestCase
         );
     }
 
+    /**
+     * @test
+     */
+    public function correctly_parse_single_line_html_markup_in_markdown_file()
+    {
+        $files = $this->setupSource([
+            '_layouts' => [
+                'master.blade.php' => "<div>@yield('content')</div>",
+            ],
+            'multi-line.md' => $this->getYamlHeader() .
+                '<h1>Header 1</h1>' . "\n" . '<h2>Header 2</h2>',
+            'single-line.md' => $this->getYamlHeader() .
+                '<h1>Header 1</h1><h2>Header 2</h2>',
+            'single-line-with-space.md' => $this->getYamlHeader() .
+                '<h1>Header 1</h1> <h2>Header 2</h2>',
+            'nested.md' => $this->getYamlHeader() .
+                '<p><strong>Contact Method:</strong> email</p><p>Test</p><p><em>Some italic text.</em></p>',
+        ]);
+
+        $this->buildSite($files);
+
+        $this->assertEquals(
+            "<div><h1>Header 1</h1>\n<h2>Header 2</h2></div>",
+            $files->getChild('build/multi-line.html')->getContent()
+        );
+
+        $this->assertEquals(
+            "<div><h1>Header 1</h1>\n<h2>Header 2</h2></div>",
+            $files->getChild('build/single-line.html')->getContent()
+        );
+
+        $this->assertEquals(
+            "<div><h1>Header 1</h1> <h2>Header 2</h2></div>",
+            $files->getChild('build/single-line-with-space.html')->getContent()
+        );
+
+        $this->assertEquals(
+            "<div><p><strong>Contact Method:</strong> email</p>\n<p>Test</p>\n<p><em>Some italic text.</em></p></div>",
+            $files->getChild('build/nested.html')->getContent()
+        );
+    }
+
     public function getYamlHeader()
     {
         return implode("\n", ['---', 'extends: _layouts.master', 'section: content', '---']);

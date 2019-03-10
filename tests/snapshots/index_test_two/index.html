@@ -96,9 +96,15 @@
                         <h2>Features</h2>
     <h3>Enhanced permalink support</h3>
 <ul>
-<li>Permalinks for collection items can be configured with the optional <code>path</code> key in <code>collections.php</code></li>
-<li>If <code>path</code> is not specified, permalinks will default to slugified filename</li>
-<li>Global <code>slugify()</code> helper added for easy use in permalink or helper functions</li>
+<li>
+<p>Permalinks for collection items can be configured with the optional <code>path</code> key in <code>collections.php</code></p>
+</li>
+<li>
+<p>If <code>path</code> is not specified, permalinks will default to slugified filename</p>
+</li>
+<li>
+<p>Global <code>slugify()</code> helper added for easy use in permalink or helper functions</p>
+</li>
 <li>
 <p>Shorthand for easily specifying common permalink structures:</p>
 <ul>
@@ -116,18 +122,12 @@
 </li>
 <li>
 <p><strong>Examples of</strong> <code>path</code> <strong>shorthand syntax:</strong></p>
-</li>
-<li>
-<p><code>'people'</code> yields <code>/people/the-slugified-filename</code></p>
-</li>
-<li>
-<p><code>'people/{+filename}'</code> yields <code>./people/the+slugified+filename</code></p>
-</li>
-<li>
-<p><code>'{collection}/{date|Y}/{title}'</code> yields <code>./people/2016/The Item Title</code></p>
-</li>
-<li>
-<p><code>'{collection}/{date|Y/m/d}/{+title}'</code> yields <code>./people/2016/08/29/the+item+title</code></p>
+<ul>
+<li><code>'people'</code> yields <code>/people/the-slugified-filename</code></li>
+<li><code>'people/{+filename}'</code> yields <code>./people/the+slugified+filename</code></li>
+<li><code>'{collection}/{date|Y}/{title}'</code> yields <code>./people/2016/The Item Title</code></li>
+<li><code>'{collection}/{date|Y/m/d}/{+title}'</code> yields <code>./people/2016/08/29/the+item+title</code></li>
+</ul>
 </li>
 </ul>
 </li>
@@ -135,12 +135,12 @@
 <hr />
 <h3>Default frontmatter variables</h3>
 <ul>
-<li>Default frontmatter variables at the collection level can be specified with the <code>variables</code> key in <code>collections.php</code>:
-<pre><code>'posts' =&gt; [
-'variables' =&gt; [
-    'author' =&gt; 'Editorial Staff'
-],
-...</code></pre></li>
+<li>Default frontmatter variables at the collection level can be specified with the <code>variables</code> key in <code>collections.php</code>:<pre><code>'posts' =&gt; [
+  'variables' =&gt; [
+      'author' =&gt; 'Editorial Staff'
+  ],
+...</code></pre>
+</li>
 </ul>
 <hr />
 <h3>Sorting collections</h3>
@@ -148,14 +148,14 @@
 <li>Collections can be sorted by one or more criteria specified in <code>collections.php</code>.</li>
 <li><code>sort</code> can contain a single variable name, or an array of multiple variables for a hierarchical sort.</li>
 <li>Sort order defaults to ascending; variable names can optionally be prepended with <code>+</code>.</li>
-<li>Variable names can be prepended with <code>-</code> for a descending sort order.
-<pre><code>'posts' =&gt; [
-'sort' =&gt; '-date',
+<li>Variable names can be prepended with <code>-</code> for a descending sort order.<pre><code>'posts' =&gt; [
+  'sort' =&gt; '-date',
 ...</code></pre>
 <p>or</p>
 <pre><code>'posts' =&gt; [
-'sort' =&gt; ['-date', '+author'],
-...</code></pre></li>
+  'sort' =&gt; ['-date', '+author'],
+...</code></pre>
+</li>
 </ul>
 <hr />
 <h3>Collection items contain a reference to other collection items</h3>
@@ -167,14 +167,14 @@
 <hr />
 <h3>Collections can exist without templates</h3>
 <ul>
-<li>The <code>extends</code> directive can be omitted from the YAML front matter of a collection's items, allowing for collections that aren't tied to a particular template. See the &quot;People&quot; collection for an example.</li>
+<li>The <code>extends</code> directive can be omitted from the YAML front matter of a collection's items, allowing for collections that aren't tied to a particular template. See the "People" collection for an example.</li>
 </ul>
 <hr />
 <h3>Access Jigsaw collections as Illuminate collections</h3>
 <ul>
 <li>For example, <code>@foreach ($people-&gt;sortBy('age') as $person)</code> or <code>$products-&gt;sum('price')</code></li>
-<li>Can even use helper functions defined in <code>config.php</code> or <code>collections.php</code>:
-<pre><code>@foreach ($products-&gt;sortByDesc(function ($data) { return $data-&gt;priceWithTax(); })</code></pre></li>
+<li>Can even use helper functions defined in <code>config.php</code> or <code>collections.php</code>:<pre><code>@foreach ($products-&gt;sortByDesc(function ($data) { return $data-&gt;priceWithTax(); })</code></pre>
+</li>
 <li>Content of a collection item can be referenced with <code>getContent()</code>.</li>
 </ul>
 <hr />

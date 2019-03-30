@@ -30,4 +30,52 @@ class CollectionItemTest extends TestCase
             $files->getChild('build/test_to_string.html')->getContent()
         );
     }
+
+    /**
+     * @test
+     */
+    public function collection_item_can_be_filtered()
+    {
+        $config = collect(['collections' =>
+            [
+                'collection' => [
+                    'path' => 'collection/{filename}',
+                    'filter' => function ($item) {
+                        return $item->published;
+                    }
+                ]
+            ]
+        ]);
+        $builtHeader = implode("\n", [
+            '---',
+            'extends: _layouts.collection_item',
+            'published: true',
+            'section: content',
+            '---'
+        ]);
+        $filteredHeader = implode("\n", [
+            '---',
+            'extends: _layouts.collection_item',
+            'published: false',
+            'section: content',
+            '---'
+        ]);
+        $files = $this->setupSource([
+            '_layouts' => [
+                'collection_item.blade.php' => '@section(\'content\') @endsection'
+            ],
+            '_collection' => [
+                'item.md' => implode("\n", [$builtHeader, '### Collection Item Content']),
+                'filtered.md' => implode("\n", [$filteredHeader, '### Filtered Item Content']),
+            ],
+        ]);
+
+        $jigsaw = $this->buildSite($files, $config);
+
+        $this->assertNull($jigsaw->getSiteData()->collection->filtered);
+        $this->assertNotNull($jigsaw->getSiteData()->collection->item);
+
+        $this->assertNull($files->getChild('build/collection/filtered.html'));
+        $this->assertNotNull($files->getChild('build/collection/item.html'));
+    }
 }

@@ -22,9 +22,12 @@ class Collection extends BaseCollection
 
     public function loadItems($items)
     {
-        $sortedItems = $this->defaultSort($items)->keyBy(function ($item) {
-            return $item->getFilename();
-        });
+        $sortedItems = $this
+            ->defaultSort($items)
+            ->filter($this->getFilter())
+            ->keyBy(function ($item) {
+                return $item->getFilename();
+            });
 
         return $this->updateItems($this->addAdjacentItems($sortedItems));
     }
@@ -48,6 +51,19 @@ class Collection extends BaseCollection
         return $items->each(function ($item) use ($previousItems, $nextItems) {
             $item->_meta->put('previousItem', $previousItems->shift())->put('nextItem', $nextItems->shift());
         });
+    }
+
+    private function getFilter()
+    {
+        $filter = Arr::get($this->settings, 'filter');
+
+        if ($filter) {
+            return $filter;
+        }
+
+        return function ($item) {
+            return true;
+        };
     }
 
     private function defaultSort($items)

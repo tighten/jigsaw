@@ -47,6 +47,10 @@ class CollectionItemHandler
         });
         $pageData->setPageVariableToCollectionItem($this->getCollectionName($file), $file->getFilenameWithoutExtension());
 
+        if ($pageData->page === null) {
+            return null;
+        }
+
         return $handler->handleCollectionItem($file, $pageData)
             ->map(function ($outputFile, $templateToExtend) {
                 if ($templateToExtend) {

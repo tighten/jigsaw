@@ -69,6 +69,36 @@ class FilePathTest extends TestCase
         $this->assertEquals('/has_invalid_characters', $outputPath[0]);
     }
 
+    public function test_international_characters_in_filename_are_allowed_when_using_default_path_config()
+    {
+        $this->app->instance('outputPathResolver', new PrettyOutputPathResolver());
+        $pathResolver = $this->app->make(CollectionPathResolver::class);
+        $pageVariable = $this->getPageVariableDummy('테스트-파일-이름');
+        $outputPath = $pathResolver->link(null, $pageVariable);
+
+        $this->assertEquals('/테스트-파일-이름', $outputPath[0]);
+    }
+
+    public function test_international_characters_in_filename_are_allowed_when_using_shorthand_path_config()
+    {
+        $this->app->instance('outputPathResolver', new PrettyOutputPathResolver());
+        $pathResolver = $this->app->make(CollectionPathResolver::class);
+        $pageVariable = $this->getPageVariableDummy('테스트-파일-이름');
+        $outputPath = $pathResolver->link('{filename}', $pageVariable);
+
+        $this->assertEquals('/테스트-파일-이름', $outputPath[0]);
+    }
+
+    public function test_international_characters_in_filename_are_allowed_when_using_slugified_shorthand_path_config()
+    {
+        $this->app->instance('outputPathResolver', new PrettyOutputPathResolver());
+        $pathResolver = $this->app->make(CollectionPathResolver::class);
+        $pageVariable = $this->getPageVariableDummy('테스트-파일-이름');
+        $outputPath = $pathResolver->link('{_filename}', $pageVariable);
+
+        $this->assertEquals('/테스트_파일_이름', $outputPath[0]);
+    }
+
     protected function getPageVariableDummy($filename)
     {
         return new PageVariable([

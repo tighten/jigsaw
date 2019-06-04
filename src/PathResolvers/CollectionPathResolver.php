@@ -174,7 +174,7 @@ class CollectionPathResolver
             $value = str_replace($val, $key, $value);
         }
 
-        return preg_replace('/[^\x20-\x7E]/u', '', $value);
+        return preg_replace('/[\x{00a1}-\x{00bf}|\x{2120}\x{2122}]/u', '', $value);
     }
 
     /**

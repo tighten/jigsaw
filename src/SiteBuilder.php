@@ -73,7 +73,7 @@ class SiteBuilder
 
     private function generateFiles($source, $siteData)
     {
-        $files = collect($this->files->allFiles($source));
+        $files = collect($this->files->files($source));
         $this->consoleOutput->startProgressBar('build', $files->count());
 
         $files = $files->map(function ($file) {

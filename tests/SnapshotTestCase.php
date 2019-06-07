@@ -32,13 +32,13 @@ class SnapshotTestCase extends BaseTestCase
     {
         try {
             $this->filesystem = new Filesystem();
-            $this->build_files = $this->filesystem->allFiles('tests/build-testing');
+            $this->build_files = $this->filesystem->files('tests/build-testing');
         } catch (\Exception $e) {
             die("Error: Jigsaw test site was not built.\r\n");
         }
 
         try {
-            $this->snapshot_files = $this->filesystem->allFiles('tests/snapshots');
+            $this->snapshot_files = $this->filesystem->files('tests/snapshots');
         } catch (\Exception $e) {
             die("Error: Snapshot files are missing.\r\n");
         }

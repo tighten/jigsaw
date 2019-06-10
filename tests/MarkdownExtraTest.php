@@ -112,7 +112,7 @@ class MarkdownExtraTest extends TestCase
         );
 
         $this->assertEquals(
-            "<div><h1>Header 1</h1> <h2>Header 2</h2></div>",
+            '<div><h1>Header 1</h1> <h2>Header 2</h2></div>',
             $files->getChild('build/single-line-with-space.html')->getContent()
         );
 

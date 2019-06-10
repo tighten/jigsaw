@@ -28,7 +28,6 @@ class SnapshotTest extends SnapshotTestCase
         $this->assertFileNotExists('tests/build-testing/.DS_Store', 'DS_Store was built');
     }
 
-
     /**
      * @test
      */

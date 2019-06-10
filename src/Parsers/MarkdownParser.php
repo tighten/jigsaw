@@ -3,8 +3,6 @@
 namespace TightenCo\Jigsaw\Parsers;
 
 use Mni\FrontYAML\Markdown\MarkdownParser as FrontYAMLMarkdownParser;
-use TightenCo\Jigsaw\Parsers\JigsawMarkdownParser;
-use ParsedownExtra;
 
 class MarkdownParser implements FrontYAMLMarkdownParser
 {

@@ -7,7 +7,7 @@ use TightenCo\Jigsaw\Console\ServeCommand;
 
 require_once(__DIR__ . '/jigsaw-core.php');
 
-$app = new Symfony\Component\Console\Application('Jigsaw', '1.3.0');
+$app = new Symfony\Component\Console\Application('Jigsaw', '1.3.10');
 $app->add($container[InitCommand::class]);
 $app->add(new BuildCommand($container));
 $app->add(new ServeCommand($container));

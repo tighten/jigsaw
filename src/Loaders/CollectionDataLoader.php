@@ -115,8 +115,9 @@ class CollectionDataLoader
         $collectionName = $collection->name;
         $collection = $collectionName;
         $source = $file->getPath();
+        $modifiedTime = $file->getLastModifiedTime();
 
-        return compact('filename', 'baseUrl', 'extension', 'collection', 'collectionName', 'source');
+        return compact('filename', 'baseUrl', 'extension', 'collection', 'collectionName', 'source', 'modifiedTime');
     }
 
     private function buildUrls($paths)

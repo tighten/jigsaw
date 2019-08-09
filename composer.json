@@ -7,6 +7,10 @@
         {
             "name": "Adam Wathan",
             "email": "adam.wathan@gmail.com"
+        },
+        {
+            "name": "Keith Damiani",
+            "email": "keith@tighten.co"
         }
     ],
     "require": {
@@ -25,7 +29,7 @@
         "vlucas/phpdotenv": "^3.3"
     },
     "require-dev": {
-        "mikey179/vfsStream": "^1.6",
+        "mikey179/vfsstream": "^1.6",
         "phpunit/phpunit": "~7.0",
         "friendsofphp/php-cs-fixer": "^2.12"
     },

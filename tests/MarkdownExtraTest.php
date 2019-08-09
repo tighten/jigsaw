@@ -107,7 +107,7 @@ class MarkdownExtraTest extends TestCase
         );
 
         $this->assertEquals(
-            "<div><h1>Header 1</h1>\n<h2>Header 2</h2></div>",
+            "<div><h1>Header 1</h1><h2>Header 2</h2></div>",
             $files->getChild('build/single-line.html')->getContent()
         );
 
@@ -117,7 +117,7 @@ class MarkdownExtraTest extends TestCase
         );
 
         $this->assertEquals(
-            "<div><p><strong>Contact Method:</strong> email</p>\n<p>Test</p>\n<p><em>Some italic text.</em></p></div>",
+            "<div><p><strong>Contact Method:</strong> email</p><p>Test</p><p><em>Some italic text.</em></p></div>",
             $files->getChild('build/nested.html')->getContent()
         );
     }

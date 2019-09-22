@@ -119,7 +119,7 @@ class ConsoleOutput extends SymfonyConsoleOutput
 
     public function writeConclusion()
     {
-        $this->sections['message']->overwrite('<fg=green>Site build successfully!</>');
+        $this->sections['message']->overwrite('<fg=green>Site built successfully!</>');
 
         return $this;
     }

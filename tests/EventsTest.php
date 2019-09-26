@@ -522,6 +522,17 @@ class EventsTest extends TestCase
 
         $this->assertEquals('test', $source->getChild('build/new_directory/file.html')->getContent());
     }
+
+    /** @test */
+    public function user_can_write_a_new_output_file_in_a_new_directory_in_after_build_event_listener_when_path_begins_with_slash()
+    {
+        $this->app['events']->afterBuild(function ($jigsaw) use (&$result) {
+            $result = $jigsaw->writeOutputFile('/new_directory/file.html', 'test');
+        });
+        $this->buildSite($source = $this->setupSource());
+
+        $this->assertEquals('test', $source->getChild('build/new_directory/file.html')->getContent());
+    }
 }
 
 class TestListener

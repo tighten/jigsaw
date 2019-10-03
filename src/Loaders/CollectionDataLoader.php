@@ -101,7 +101,8 @@ class CollectionDataLoader
         });
 
         if (! $handler) {
-            throw new Exception('No matching collection item handler');
+            throw new Exception('No matching collection item handler for file: ' 
+                                . $file->getFilenameWithoutExtension() . "." . $file->getExtension() );
         }
 
         return $handler;

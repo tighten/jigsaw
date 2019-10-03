@@ -8,9 +8,12 @@ class ConfigFile
 {
     public $config;
 
-    public function __construct($file_path)
+    public function __construct($config_path, $helpers_path = '')
     {
-        $this->config = file_exists($file_path) ? include $file_path : [];
+        $config = file_exists($config_path) ? include $config_path : [];
+        $helpers = file_exists($helpers_path) ? include $helpers_path : [];
+
+        $this->config = array_merge($config, $helpers);
         $this->convertStringCollectionsToArray();
     }
 

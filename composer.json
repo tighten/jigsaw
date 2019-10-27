@@ -52,6 +52,7 @@
     "scripts": {
         "fix" : "php vendor/bin/php-cs-fixer fix --using-cache=no"
     },
+    "minimum-stability": "beta",
     "prefer-stable": true,
     "config": {
         "sort-packages": true,

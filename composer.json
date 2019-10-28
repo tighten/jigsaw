@@ -14,8 +14,8 @@
         }
     ],
     "require": {
-        "erusev/parsedown-extra": "^0.8.0@beta",
-        "erusev/parsedown": "^1.8.0@beta",
+        "erusev/parsedown-extra": "^0.7",
+        "erusev/parsedown": "^1.7",
         "illuminate/container": "^5.8",
         "illuminate/support": "^5.8",
         "illuminate/view": "^5.8",
@@ -52,7 +52,6 @@
     "scripts": {
         "fix" : "php vendor/bin/php-cs-fixer fix --using-cache=no"
     },
-    "minimum-stability": "beta",
     "prefer-stable": true,
     "config": {
         "sort-packages": true,

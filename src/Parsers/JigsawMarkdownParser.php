@@ -18,18 +18,13 @@ class JigsawMarkdownParser extends ParsedownExtra
     // This fix comes largely from Adam Mitchell in this PR to ParsedownExtra:
     // https://github.com/erusev/parsedown-extra/pull/58
     // ...which has been around since 2015, but has not been merged into the package.
-    //
-    // It has been updated here to work correctly with changes that were made
-    // to Parsedown and Parsedown Extra in the interim. If that PR gets merged someday,
-    // we can probably safely remove this, so long as all tests in MarkdownExtraPass
-    // continue to pass.
 
     protected $document;
 
     protected function blockMarkupComplete($Block)
     {
         if (! isset($Block['void'])) {
-            $Block['element']['rawHtml'] = $this->processTags($Block['element']['rawHtml']);
+            $Block['markup'] = $this->processTags($Block['markup']);
         }
 
         return $Block;
@@ -84,7 +79,7 @@ class JigsawMarkdownParser extends ParsedownExtra
                     $elementText .= $this->processText($node, $document);
                 }
             } else {
-                $elementText = $this->processText($element, $document);
+                $elementText =  $this->processText($element, $document);
             }
         }
 

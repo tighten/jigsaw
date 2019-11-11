@@ -125,7 +125,7 @@ $container->bind(Factory::class, function ($c) use ($cachePath, $bladeCompiler) 
 });
 
 $container->bind(ViewRenderer::class, function ($c) use ($bladeCompiler) {
-    return new ViewRenderer($c[Factory::class], $bladeCompiler);
+    return new ViewRenderer($c[Factory::class], $bladeCompiler, $c['config']);
 });
 
 $container->bind(TemporaryFilesystem::class, function ($c) use ($cachePath) {

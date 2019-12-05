@@ -21,12 +21,14 @@ class ViewRenderer
         'js', 'json', 'xml', 'rss', 'atom', 'txt', 'text', 'html',
     ];
 
-    public function __construct(Factory $viewFactory, BladeCompiler $bladeCompiler)
+    public function __construct(Factory $viewFactory, BladeCompiler $bladeCompiler, $config = [])
     {
+        $this->config = collect($config);
         $this->viewFactory = $viewFactory;
         $this->bladeCompiler = $bladeCompiler;
         $this->finder = $this->viewFactory->getFinder();
         $this->addExtensions();
+        $this->addHintpaths();
     }
 
     public function getExtension($bladeViewPath)
@@ -43,6 +45,19 @@ class ViewRenderer
     {
         return $this->bladeCompiler->compileString($string);
     }
+
+    private function addHintpaths()
+    {
+        collect($this->config->get('viewHintPaths'))->each(function ($path, $hint) {
+            $this->addHintpath($hint, $path);
+        });
+    }
+
+    private function addHintPath($hint, $path)
+    {
+        $this->viewFactory->addNamespace($hint, $path);
+    }
+
 
     private function addExtensions()
     {

@@ -13,6 +13,7 @@ return [
     'global_variable' => 'some global variable',
     'number' => '98765',
     'perPage' => 4,
+    'viewHintPaths' => [],
     'php' => '<?php',
     'nested_array' => [
         [

@@ -520,4 +520,30 @@ class RemoteCollectionsTest extends TestCase
             $files->getChild('build/test/test-1.html')->getContent()
         );
     }
+
+    /**
+     * @test
+     */
+    public function blade_directives_in_remote_content_get_parsed()
+    {
+        $config = collect([
+            'collections' => [
+                'collection' => [],
+            ],
+        ]);
+
+        $files = $this->setupSource([
+            '_collection' => [
+                'file_1.blade.md' => 'Test blade file #1',
+                'file_2.blade.md' => 'Test blade file #2',
+            ],
+        ]);
+      
+ 
+        $siteData = $this->buildSiteData($files, $config);
+
+        $this->assertCount(2, $siteData->collection);
+        $this->assertEquals('<p>Test blade file #1</p>', $siteData->collection->file_1->getContent());
+        $this->assertEquals('<p>Test blade file #2</p>', $siteData->collection->file_2->getContent());
+    }
 }

@@ -58,7 +58,6 @@ class ViewRenderer
         $this->viewFactory->addNamespace($hint, $path);
     }
 
-
     private function addExtensions()
     {
         collect($this->extensionEngines)->each(function ($engine, $extension) {

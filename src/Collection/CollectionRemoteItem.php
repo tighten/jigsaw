@@ -27,7 +27,7 @@ class CollectionRemoteItem
 
     public function getFilename()
     {
-        return Arr::get($this->item, 'filename', $this->prefix . ($this->index + 1)) . '.md';
+        return Arr::get($this->item, 'filename', $this->prefix . ($this->index + 1)) . '.blade.md';
     }
 
     protected function getHeader()

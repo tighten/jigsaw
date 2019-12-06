@@ -520,4 +520,30 @@ class RemoteCollectionsTest extends TestCase
             $files->getChild('build/test/test-1.html')->getContent()
         );
     }
+
+    /**
+     * @test
+     */
+    public function blade_directives_in_remote_content_get_parsed()
+    {
+        $config = collect([
+            'collections' => [
+                'test' => [
+                    'extends' => '_layouts.master',
+                    'items' => ["Hey {{ 'there' }}"],
+                ],
+            ],
+        ]);
+        $files = $this->setupSource([
+            '_layouts' => [
+                'master.blade.php' => "<div>@yield('content')</div>",
+            ],
+        ]);
+        $this->buildSite($files, $config);
+
+        $this->assertEquals(
+            '<div><p>Hey there</p></div>',
+            $files->getChild('build/test/test-1.html')->getContent()
+        );
+    }
 }

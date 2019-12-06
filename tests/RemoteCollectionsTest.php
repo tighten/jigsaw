@@ -528,22 +528,22 @@ class RemoteCollectionsTest extends TestCase
     {
         $config = collect([
             'collections' => [
-                'collection' => [],
+                'test' => [
+                    'extends' => '_layouts.master',
+                    'items' => ["Hey {{ 'there' }}"],
+                ],
             ],
         ]);
-
         $files = $this->setupSource([
-            '_collection' => [
-                'file_1.blade.md' => 'Test blade file #1',
-                'file_2.blade.md' => 'Test blade file #2',
+            '_layouts' => [
+                'master.blade.php' => "<div>@yield('content')</div>",
             ],
         ]);
-      
- 
-        $siteData = $this->buildSiteData($files, $config);
+        $this->buildSite($files, $config);
 
-        $this->assertCount(2, $siteData->collection);
-        $this->assertEquals('<p>Test blade file #1</p>', $siteData->collection->file_1->getContent());
-        $this->assertEquals('<p>Test blade file #2</p>', $siteData->collection->file_2->getContent());
+        $this->assertEquals(
+            '<div><p>Hey there</p></div>',
+            $files->getChild('build/test/test-1.html')->getContent()
+        );
     }
 }

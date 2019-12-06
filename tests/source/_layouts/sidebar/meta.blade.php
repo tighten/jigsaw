@@ -29,11 +29,6 @@
             <p class="p-xs-l-2 text-sm">{{ $page->getUrl() }}</p>
         </div>
 
-        <div class="p-xs-y-4 border-b">
-            <p class="text-xs text-dark-soft text-uppercase">Modified Time:</p>
-            <p class="p-xs-l-2 text-sm">{{ date('F d Y, H:i:s', $page->getModifiedTime()) }}</p>
-        </div>
-
         <div class="p-xs-t-4">
             <p class="text-xs text-dark-soft text-uppercase">Global Variable:</p>
             <p class="p-xs-l-2 text-sm">{{ $page->global_variable }}</p>

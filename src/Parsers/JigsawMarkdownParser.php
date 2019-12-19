@@ -115,9 +115,8 @@ class JigsawMarkdownParser extends ParsedownExtra
     }
 
     /** 
-     * @todo remove method after the following PR has been merged
-     * https://github.com/erusev/parsedown-extra/pull/135 gets merged
-     * This will resolve the issue where Jigsaw will not work with PHP 7.4
+     * @todo remove after the following PR has been merged
+     * https://github.com/erusev/parsedown-extra/pull/135
      */
     protected function blockHeader($Line)
     {
@@ -136,9 +135,8 @@ class JigsawMarkdownParser extends ParsedownExtra
     }
 
     /** 
-     * @todo remove method after the following PR has been merged
-     * https://github.com/erusev/parsedown-extra/pull/135 gets merged
-     * This will resolve the issue where Jigsaw will not work with PHP 7.4
+     * @todo remove after the following PR has been merged
+     * https://github.com/erusev/parsedown-extra/pull/135
      */
     protected function blockSetextHeader($Line, array $Block = null)
     {
@@ -157,9 +155,8 @@ class JigsawMarkdownParser extends ParsedownExtra
     }
 
     /** 
-     * @todo remove method after the following PR has been merged
-     * https://github.com/erusev/parsedown-extra/pull/135 gets merged
-     * This will resolve the issue where Jigsaw will not work with PHP 7.4
+     * @todo remove after the following PR has been merged
+     * https://github.com/erusev/parsedown-extra/pull/135
      */
     protected function inlineLink($Excerpt)
     {

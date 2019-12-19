@@ -5,6 +5,7 @@ namespace TightenCo\Jigsaw\Parsers;
 use DOMDocument;
 use DOMElement;
 use ParsedownExtra;
+use Parsedown;
 
 class JigsawMarkdownParser extends ParsedownExtra
 {
@@ -112,4 +113,68 @@ class JigsawMarkdownParser extends ParsedownExtra
 
         return $text;
     }
+
+    /** 
+     * @todo remove method after the following PR has been merged
+     * https://github.com/erusev/parsedown-extra/pull/135 gets merged
+     * This will resolve the issue where Jigsaw will not work with PHP 7.4
+     */
+    protected function blockHeader($Line)
+    {
+        $Block = Parsedown::blockHeader($Line);
+
+        if ($Block !== null && preg_match('/[ #]*{('.$this->regexAttribute.'+)}[ ]*$/', $Block['element']['text'], $matches, PREG_OFFSET_CAPTURE))
+        {
+            $attributeString = $matches[1][0];
+
+            $Block['element']['attributes'] = $this->parseAttributeData($attributeString);
+
+            $Block['element']['text'] = substr($Block['element']['text'], 0, $matches[0][1]);
+        }
+
+        return $Block;
+    }
+
+    /** 
+     * @todo remove method after the following PR has been merged
+     * https://github.com/erusev/parsedown-extra/pull/135 gets merged
+     * This will resolve the issue where Jigsaw will not work with PHP 7.4
+     */
+    protected function blockSetextHeader($Line, array $Block = null)
+    {
+        $Block = Parsedown::blockSetextHeader($Line, $Block);
+
+        if ($Block !== null && preg_match('/[ ]*{('.$this->regexAttribute.'+)}[ ]*$/', $Block['element']['text'], $matches, PREG_OFFSET_CAPTURE))
+        {
+            $attributeString = $matches[1][0];
+
+            $Block['element']['attributes'] = $this->parseAttributeData($attributeString);
+
+            $Block['element']['text'] = substr($Block['element']['text'], 0, $matches[0][1]);
+        }
+
+        return $Block;
+    }
+
+    /** 
+     * @todo remove method after the following PR has been merged
+     * https://github.com/erusev/parsedown-extra/pull/135 gets merged
+     * This will resolve the issue where Jigsaw will not work with PHP 7.4
+     */
+    protected function inlineLink($Excerpt)
+    {
+        $Link = Parsedown::inlineLink($Excerpt);
+
+        $remainder = $Link !== null ? substr($Excerpt['text'], $Link['extent']) : '';
+
+        if (preg_match('/^[ ]*{('.$this->regexAttribute.'+)}/', $remainder, $matches))
+        {
+            $Link['element']['attributes'] += $this->parseAttributeData($matches[1]);
+
+            $Link['extent'] += strlen($matches[0]);
+        }
+
+        return $Link;
+    }
+
 }

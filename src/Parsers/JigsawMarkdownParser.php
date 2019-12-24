@@ -4,8 +4,8 @@ namespace TightenCo\Jigsaw\Parsers;
 
 use DOMDocument;
 use DOMElement;
-use ParsedownExtra;
 use Parsedown;
+use ParsedownExtra;
 
 class JigsawMarkdownParser extends ParsedownExtra
 {

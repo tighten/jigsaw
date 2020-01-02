@@ -14,7 +14,7 @@
         }
     ],
     "require": {
-        "erusev/parsedown-extra": "^0.7",
+        "erusev/parsedown-extra": "^0.8",
         "erusev/parsedown": "^1.7",
         "illuminate/container": "^5.8",
         "illuminate/support": "^5.8",

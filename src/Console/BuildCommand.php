@@ -74,11 +74,9 @@ class BuildCommand extends Command
         $environmentConfigPath = $this->getAbsolutePath("config.{$env}.php");
         $environmentConfig = (new ConfigFile($environmentConfigPath))->config;
 
-        $this->app->config = collect($this->app->config)
-            ->merge(collect($environmentConfig))
-            ->filter(function ($item) {
-                return $item !== null;
-            });
+        $this->app->config = collect(
+            ConfigFile::mergeConfigs($this->app->config, $environmentConfig)
+        );
     }
 
     private function updateBuildPaths($env)

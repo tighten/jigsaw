@@ -13,18 +13,33 @@ class ConfigFile
         $config = file_exists($config_path) ? include $config_path : [];
         $helpers = file_exists($helpers_path) ? include $helpers_path : [];
 
-        $this->config = array_merge($config, $helpers);
-        $this->convertStringCollectionsToArray();
+        $this->config = $this->convertStringCollectionsToArray(
+            array_merge($config, $helpers)
+        );
     }
 
-    protected function convertStringCollectionsToArray()
+    protected function convertStringCollectionsToArray($config)
     {
-        $collections = Arr::get($this->config, 'collections');
+        $collections = Arr::get($config, 'collections');
 
         if ($collections) {
-            $this->config['collections'] = collect($collections)->flatMap(function ($value, $key) {
+            $config['collections'] = collect($collections)->flatMap(function ($value, $key) {
                 return is_array($value) ? [$key => $value] : [$value => []];
             });
         }
+
+        return $config;
+    }
+
+    public static function mergeConfigs($baseConfig, $configToMerge)
+    {
+        return (new static(''))->convertStringCollectionsToArray(
+            array_filter(
+                array_replace_recursive(
+                    collect($baseConfig)->toArray(),
+                    collect($configToMerge)->toArray()
+                )
+            )
+        );
     }
 }

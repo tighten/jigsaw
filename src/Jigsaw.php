@@ -13,6 +13,7 @@ class Jigsaw
     protected $dataLoader;
     protected $siteBuilder;
     protected $verbose;
+    protected static $commands = [];
 
     public function __construct($app, $dataLoader, $remoteItemLoader, $siteBuilder)
     {
@@ -33,6 +34,18 @@ class Jigsaw
             ->buildSite($useCache)
             ->fireEvent('afterBuild')
             ->cleanup();
+    }
+
+    public static function registerCommand($command)
+    {
+        self::$commands[] = $command;
+    }
+
+    public static function addUserCommands($app, $container)
+    {
+        foreach (self::$commands as $command) {
+            $app->add(new $command($container));
+        }
     }
 
     protected function buildCollections()

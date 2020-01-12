@@ -2,10 +2,13 @@
 
 namespace TightenCo\Jigsaw;
 
+use Illuminate\Support\Traits\Macroable;
 use TightenCo\Jigsaw\File\Filesystem;
 
 class Jigsaw
 {
+    use Macroable;
+
     public $app;
     protected $env;
     protected $outputPaths;

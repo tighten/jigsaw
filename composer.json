@@ -14,11 +14,10 @@
         }
     ],
     "require": {
-        "erusev/parsedown-extra": "^0.8",
-        "erusev/parsedown": "^1.7",
         "illuminate/container": "^5.8",
         "illuminate/support": "^5.8",
         "illuminate/view": "^5.8",
+        "jampire/toc-markdown-extra": "^1.0",
         "mnapoli/front-yaml": "^1.5",
         "mockery/mockery": "^1.0.0",
         "php": "^7.1.3",

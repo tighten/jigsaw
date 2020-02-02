@@ -4,7 +4,7 @@ namespace TightenCo\Jigsaw;
 
 class PageData extends IterableObject
 {
-    public static function withPageMetaData($siteData, $meta)
+    public static function withPageMetaData(IterableObject $siteData, array $meta)
     {
         $page_data = new static($siteData->except('page'));
         $page_data->put('page', (new PageVariable($siteData->page))->put('_meta', new IterableObject($meta)));

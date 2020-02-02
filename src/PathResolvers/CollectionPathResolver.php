@@ -8,7 +8,7 @@ use TightenCo\Jigsaw\IterableObject;
 class CollectionPathResolver
 {
     private $outputPathResolver;
-    private $viewRenderer;
+    private $view;
 
     public function __construct($outputPathResolver, $viewRenderer)
     {

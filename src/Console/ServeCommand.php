@@ -2,6 +2,7 @@
 
 namespace TightenCo\Jigsaw\Console;
 
+use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Arr;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -10,7 +11,7 @@ class ServeCommand extends Command
 {
     private $app;
 
-    public function __construct($app)
+    public function __construct(Container $app)
     {
         $this->app = $app;
         parent::__construct();

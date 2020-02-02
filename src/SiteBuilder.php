@@ -2,8 +2,9 @@
 
 namespace TightenCo\Jigsaw;
 
-use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\File\InputFile;
+use TightenCo\Jigsaw\File\Filesystem;
+use TightenCo\Jigsaw\Console\ConsoleOutput;
 
 class SiteBuilder
 {
@@ -14,8 +15,13 @@ class SiteBuilder
     private $consoleOutput;
     private $useCache;
 
-    public function __construct(Filesystem $files, $cachePath, $outputPathResolver, $consoleOutput, $handlers = [])
-    {
+    public function __construct(
+        Filesystem $files,
+        $cachePath,
+        $outputPathResolver,
+        ConsoleOutput $consoleOutput,
+        $handlers = []
+    ) {
         $this->files = $files;
         $this->cachePath = $cachePath;
         $this->outputPathResolver = $outputPathResolver;

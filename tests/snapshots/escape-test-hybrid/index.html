@@ -95,16 +95,30 @@
                 <div class="col-xs-8 demo-page">
                         <h2>Testing Escaping</h2>
     <h3>escape-test-hybrid</h3>
+
 <p>Can we have php opening tags here?</p>
+
 <pre><code>&amp;lt;?php
 @if('something')
-@endif</code></pre>
-<pre><code>&lt;?php</code></pre>
+@endif
+</code></pre>
+
+<pre><code>&lt;?php
+</code></pre>
+
 <hr>
+
 <p>Start...</p>
+
 <hr>
-<p>This works: <p>&lt;?php</p> (where _php is a .md file)</p>
-<pre><code class="language-php">ok
+
+<p>This works:</p>
+
+<p>&lt;?php</p>
+
+<p>(where _php is a .md file)</p>
+
+<pre><code class="php">ok
 
 Only an issue with blade.md files:
 
@@ -119,15 +133,22 @@ This works: &lt;?.php
 
 // Test comment...
 
+
 stuff in here is rendered verbatim
+
 
 public function store()
 {
     $test = true;
-}</code></pre>
+}
+</code></pre>
+
 <hr>
+
 <p>End.</p>
-<hr>                </div>
+
+<hr>
+                </div>
             </div>
         </div>
     </body>

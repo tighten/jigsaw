@@ -139,26 +139,24 @@
         <div class="p-xs-b-6 border-b"><div class="panel p-xs-4 m-xs-y-4">
     <h4>A Blade/Markdown hybrid.</h4>
 </div>
+
 <p>This filename ends with <code>blade.md</code> and is processed by both the Blade parser (first) and then the Markdown parser (second).</p>
+
 <p>So you can mix <code>{{ strtoupper($page-&gt;some_variable) }}</code> and <code>Markdown</code> directives in the same file.</p>
+
 <blockquote>
-<p>Note that in <code>blade.md</code> files, <code>section</code> can be omitted (as it can in any <code>.md</code> file).</p>
+  <p>Note that in <code>blade.md</code> files, <code>section</code> can be omitted (as it can in any <code>.md</code> file).</p>
 </blockquote>
+
 <p>You can also <strong>include</strong> any type of file, which will get parsed based on its own file type:</p>
+
 <ul>
-<li>
-<p>@include('include-test-markdown')</p>
-</li>
-<li>
-<p>@include('include-test-blade')</p>
-</li>
-<li>
-<p>@include('include-test-both')</p>
-</li>
-<li>
-<p>@include('include-test-text')</p>
-</li>
-</ul></div>
+<li><p>@include('include-test-markdown')</p></li>
+<li><p>@include('include-test-blade')</p></li>
+<li><p>@include('include-test-both')</p></li>
+<li><p>@include('include-test-text')</p></li>
+</ul>
+</div>
     </div>
 </div>
 

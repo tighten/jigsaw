@@ -221,7 +221,7 @@ class EventsTest extends TestCase
         $this->assertCount(1, $files->getChild('build/posts')->getChildren());
         $this->assertEquals(
             '<div><p>Content for post #1</p></div>',
-            $files->getChild('build/posts/post-1.html')->getContent()
+            $this->clean($files->getChild('build/posts/post-1.html')->getContent())
         );
     }
 
@@ -257,11 +257,11 @@ class EventsTest extends TestCase
         $this->assertCount(2, $files->getChild('build/posts')->getChildren());
         $this->assertEquals(
             '<div><p>Content for post #1</p></div>',
-            $files->getChild('build/posts/post-1.html')->getContent()
+            $this->clean($files->getChild('build/posts/post-1.html')->getContent())
         );
         $this->assertEquals(
             '<div><p>Content for post #2</p></div>',
-            $files->getChild('build/posts/post-2.html')->getContent()
+            $this->clean($files->getChild('build/posts/post-2.html')->getContent())
         );
     }
 

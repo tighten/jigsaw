@@ -2,6 +2,7 @@
 
 namespace TightenCo\Jigsaw;
 
+use Illuminate\Support\Traits\Macroable;
 use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\Loaders\DataLoader;
 use TightenCo\Jigsaw\Loaders\CollectionRemoteItemLoader;
@@ -9,6 +10,8 @@ use Illuminate\Contracts\Container\Container;
 
 class Jigsaw
 {
+    use Macroable;
+
     public $app;
     protected $env;
     protected $outputPaths;

@@ -2,7 +2,7 @@
 
 namespace TightenCo\Jigsaw\Parsers;
 
-use Jampire\Markdown\Toc\MarkdownExtra;
+use Michelf\MarkdownExtra;
 
 class JigsawMarkdownParser extends MarkdownExtra
 {

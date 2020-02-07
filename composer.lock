@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7219ef4cd268832cfe667a0e5931cd6c",
+    "content-hash": "a695d040b31e31c315c99c40e68cce8a",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -462,70 +462,6 @@
             "description": "The Illuminate View package.",
             "homepage": "https://laravel.com",
             "time": "2019-06-20T13:13:59+00:00"
-        },
-        {
-            "name": "jampire/toc-markdown-extra",
-            "version": "v1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Jampire/toc-markdown-extra.git",
-                "reference": "0597f6f98ff9561eea71f4a56fe2640890a9e194"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Jampire/toc-markdown-extra/zipball/0597f6f98ff9561eea71f4a56fe2640890a9e194",
-                "reference": "0597f6f98ff9561eea71f4a56fe2640890a9e194",
-                "shasum": ""
-            },
-            "require": {
-                "michelf/php-markdown": "^1.9",
-                "php": ">=5.3.0"
-            },
-            "require-dev": {
-                "jakub-onderka/php-console-highlighter": "^0.4.0",
-                "jakub-onderka/php-parallel-lint": "^1.0",
-                "phpunit/phpunit": "^5.7|^6.0|^8.4",
-                "roave/security-advisories": "dev-master",
-                "squizlabs/php_codesniffer": "^2.3|^3.5"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Jampire\\Markdown\\Toc\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Dzianis Kotau",
-                    "email": "jampire.blr@gmail.com",
-                    "homepage": "https://github.com/Jampire",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Dragonfly Development Inc.",
-                    "email": "info@dflydev.com",
-                    "homepage": "http://dflydev.com"
-                },
-                {
-                    "name": "Beau Simensen",
-                    "email": "beau@dflydev.com",
-                    "homepage": "http://beausimensen.com"
-                }
-            ],
-            "description": "Adds Table of Contents capability to PHP Markdown Extra package",
-            "homepage": "https://github.com/Jampire/toc-markdown-extra",
-            "keywords": [
-                "PHP Markdown Extra",
-                "TOC",
-                "extra",
-                "markdown",
-                "table of contents"
-            ],
-            "time": "2020-01-24T12:36:02+00:00"
         },
         {
             "name": "michelf/php-markdown",

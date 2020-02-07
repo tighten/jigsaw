@@ -27,7 +27,7 @@ class CollectionItemTest extends TestCase
         );
         $this->assertEquals(
             '<div><h3>Collection Item Content</h3></div>',
-            $files->getChild('build/test_to_string.html')->getContent()
+            $this->clean($files->getChild('build/test_to_string.html')->getContent())
         );
     }
 

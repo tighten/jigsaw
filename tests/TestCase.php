@@ -92,4 +92,9 @@ class TestCase extends BaseTestCase
             ->make(Jigsaw::class)
             ->build('test');
     }
+
+    public function clean($output)
+    {
+        return str_replace("\n", "", $output);
+    }
 }

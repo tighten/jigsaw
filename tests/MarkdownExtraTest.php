@@ -18,8 +18,8 @@ class MarkdownExtraTest extends TestCase
         $this->buildSite($files);
 
         $this->assertEquals(
-            "<div><div>\n<p>This is <em>true</em> markdown text.</p>\n</div></div>",
-            $files->getChild('build/test.html')->getContent()
+            "<div><div><p>This is <em>true</em> markdown text.</p></div></div>",
+            $this->clean($files->getChild('build/test.html')->getContent())
         );
     }
 
@@ -38,7 +38,7 @@ class MarkdownExtraTest extends TestCase
 
         $this->assertEquals(
             '<div><h3 id="test-id">Testing ID</h3></div>',
-            $files->getChild('build/test.html')->getContent()
+            $this->clean($files->getChild('build/test.html')->getContent())
         );
     }
 
@@ -57,7 +57,7 @@ class MarkdownExtraTest extends TestCase
 
         $this->assertEquals(
             '<div><p><a href="#header1">Link back to header 1</a></p></div>',
-            $files->getChild('build/test.html')->getContent()
+            $this->clean($files->getChild('build/test.html')->getContent())
         );
     }
 
@@ -76,7 +76,7 @@ class MarkdownExtraTest extends TestCase
 
         $this->assertEquals(
             '<div><h3 class="test-class">Testing class</h3></div>',
-            $files->getChild('build/test.html')->getContent()
+            $this->clean($files->getChild('build/test.html')->getContent())
         );
     }
 
@@ -102,23 +102,23 @@ class MarkdownExtraTest extends TestCase
         $this->buildSite($files);
 
         $this->assertEquals(
-            "<div><h1>Header 1</h1>\n<h2>Header 2</h2></div>",
-            $files->getChild('build/multi-line.html')->getContent()
+            "<div><h1>Header 1</h1><h2>Header 2</h2></div>",
+            $this->clean($files->getChild('build/multi-line.html')->getContent())
         );
 
         $this->assertEquals(
             "<div><h1>Header 1</h1><h2>Header 2</h2></div>",
-            $files->getChild('build/single-line.html')->getContent()
+            $this->clean($files->getChild('build/single-line.html')->getContent())
         );
 
         $this->assertEquals(
-            '<div><h1>Header 1</h1> <h2>Header 2</h2></div>',
-            $files->getChild('build/single-line-with-space.html')->getContent()
+            '<div><h1>Header 1</h1><h2>Header 2</h2></div>',
+            $this->clean($files->getChild('build/single-line-with-space.html')->getContent())
         );
 
         $this->assertEquals(
             "<div><p><strong>Contact Method:</strong> email</p><p>Test</p><p><em>Some italic text.</em></p></div>",
-            $files->getChild('build/nested.html')->getContent()
+            $this->clean($files->getChild('build/nested.html')->getContent())
         );
     }
 

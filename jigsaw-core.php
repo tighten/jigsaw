@@ -189,11 +189,11 @@ $container->singleton('events', function ($c) {
     return new EventBus();
 });
 
+$container->bind(Jigsaw::class, function ($c) {
+    return new Jigsaw($c, $c[DataLoader::class], $c[CollectionRemoteItemLoader::class], $c[SiteBuilder::class]);
+});
+
 if (file_exists($bootstrapFile)) {
     $events = $container->events;
     include $bootstrapFile;
 }
-
-$container->bind(Jigsaw::class, function ($c) {
-    return new Jigsaw($c, $c[DataLoader::class], $c[CollectionRemoteItemLoader::class], $c[SiteBuilder::class]);
-});

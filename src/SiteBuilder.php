@@ -166,7 +166,7 @@ class SiteBuilder
         }
 
         return rightTrimPath(urldecode($this->outputPathResolver->link(
-            $file->path(),
+            str_replace('\\', '/', $file->path()),
             $file->name(),
             $file->extension(),
             $file->page()

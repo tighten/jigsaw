@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use Illuminate\Support\Arr;
 use Mockery;
 use org\bovigo\vfs\vfsStream;
 use TightenCo\Jigsaw\File\Filesystem;
@@ -434,9 +435,9 @@ class DefaultScaffoldInstallerTest extends TestCase
 
         $new_composer = json_decode($vfs->getChild('composer.json')->getContent(), true);
 
-        $this->assertEquals('^1.2', array_get($new_composer, 'require.tightenco/jigsaw'));
-        $this->assertEquals('5.1', array_get($new_composer, 'require.other/dependency'));
-        $this->assertEquals('setting', array_get($new_composer, 'repository'));
+        $this->assertEquals('^1.2', Arr::get($new_composer, 'require.tightenco/jigsaw'));
+        $this->assertEquals('5.1', Arr::get($new_composer, 'require.other/dependency'));
+        $this->assertEquals('setting', Arr::get($new_composer, 'repository'));
     }
 
     /**
@@ -471,9 +472,9 @@ class DefaultScaffoldInstallerTest extends TestCase
 
         $new_composer = json_decode($vfs->getChild('composer.json')->getContent(), true);
 
-        $this->assertEquals('^1.2', array_get($new_composer, 'require.tightenco/jigsaw'));
-        $this->assertEquals('1.0', array_get($new_composer, 'require.test/preset'));
-        $this->assertEquals('3.0', array_get($new_composer, 'require.new-package/test'));
+        $this->assertEquals('^1.2', Arr::get($new_composer, 'require.tightenco/jigsaw'));
+        $this->assertEquals('1.0', Arr::get($new_composer, 'require.test/preset'));
+        $this->assertEquals('3.0', Arr::get($new_composer, 'require.new-package/test'));
     }
 
     /**

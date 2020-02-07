@@ -95,10 +95,14 @@
                 <div class="col-xs-8 demo-page">
                         <h2>Testing Escaping</h2>
     <p>Can we have php opening tags here?</p>
+
 <hr>
+
 <p>Start...</p>
+
 <hr>
-<pre><code class="language-php">&lt;?php
+
+<pre><code class="php">&lt;?php
 // Test comment...
 
 public function store()
@@ -106,10 +110,15 @@ public function store()
     $test = true;
     {{ a-blade-echo-that-should-remain-in-markdown }}
     {!! a-blade-danger-echo-that-should-remain-in-markdown !!}
-}</code></pre>
+}
+</code></pre>
+
 <hr>
+
 <p>End.</p>
-<hr>                </div>
+
+<hr>
+                </div>
             </div>
         </div>
     </body>

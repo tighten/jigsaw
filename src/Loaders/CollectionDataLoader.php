@@ -3,9 +3,11 @@
 namespace TightenCo\Jigsaw\Loaders;
 
 use Exception;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 use TightenCo\Jigsaw\Collection\Collection;
 use TightenCo\Jigsaw\Collection\CollectionItem;
+use TightenCo\Jigsaw\Console\ConsoleOutput;
 use TightenCo\Jigsaw\File\InputFile;
 use TightenCo\Jigsaw\IterableObject;
 use TightenCo\Jigsaw\IterableObjectWithDefault;
@@ -21,7 +23,7 @@ class CollectionDataLoader
     private $pageSettings;
     private $collectionSettings;
 
-    public function __construct($filesystem, $consoleOutput, $pathResolver, $handlers = [])
+    public function __construct(Filesystem $filesystem, ConsoleOutput $consoleOutput, $pathResolver, $handlers = [])
     {
         $this->filesystem = $filesystem;
         $this->pathResolver = $pathResolver;

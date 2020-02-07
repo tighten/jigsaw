@@ -4,7 +4,7 @@ namespace TightenCo\Jigsaw\Scaffold;
 
 class BasicScaffoldBuilder extends ScaffoldBuilder
 {
-    public function init($preset = null, $question = null)
+    public function init(ScaffoldBuilder $preset = null, ScaffoldBuilder $question = null)
     {
         return $this;
     }

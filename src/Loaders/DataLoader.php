@@ -8,7 +8,7 @@ class DataLoader
 {
     private $collectionDataLoader;
 
-    public function __construct($collectionDataLoader)
+    public function __construct(CollectionDataLoader $collectionDataLoader)
     {
         $this->collectionDataLoader = $collectionDataLoader;
     }

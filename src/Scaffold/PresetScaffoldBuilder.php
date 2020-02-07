@@ -14,10 +14,10 @@ class PresetScaffoldBuilder extends ScaffoldBuilder
 
     public function __construct(Filesystem $files, PresetPackage $package, ProcessRunner $process)
     {
-        $this->files = $files;
+        parent::__construct($files);
+
         $this->package = $package;
         $this->process = $process;
-        $this->setBase();
     }
 
     public function init($preset)

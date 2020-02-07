@@ -3,7 +3,9 @@
 namespace TightenCo\Jigsaw\Handlers;
 
 use Illuminate\Support\Str;
+use TightenCo\Jigsaw\Collection\CollectionPaginator;
 use TightenCo\Jigsaw\File\OutputFile;
+use TightenCo\Jigsaw\File\TemporaryFilesystem;
 use TightenCo\Jigsaw\PageData;
 use TightenCo\Jigsaw\Parsers\FrontMatterParser;
 use TightenCo\Jigsaw\View\ViewRenderer;
@@ -15,8 +17,12 @@ class PaginatedPageHandler
     private $temporaryFilesystem;
     private $view;
 
-    public function __construct($paginator, FrontMatterParser $parser, $temporaryFilesystem, ViewRenderer $viewRenderer)
-    {
+    public function __construct(
+        CollectionPaginator $paginator,
+        FrontMatterParser $parser,
+        TemporaryFilesystem $temporaryFilesystem,
+        ViewRenderer $viewRenderer
+    ) {
         $this->paginator = $paginator;
         $this->parser = $parser;
         $this->temporaryFilesystem = $temporaryFilesystem;

@@ -3,6 +3,9 @@
 namespace TightenCo\Jigsaw;
 
 use TightenCo\Jigsaw\File\Filesystem;
+use TightenCo\Jigsaw\Loaders\DataLoader;
+use TightenCo\Jigsaw\Loaders\CollectionRemoteItemLoader;
+use Illuminate\Contracts\Container\Container;
 
 class Jigsaw
 {
@@ -11,11 +14,16 @@ class Jigsaw
     protected $outputPaths;
     protected $siteData;
     protected $dataLoader;
+    protected $remoteItemLoader;
     protected $siteBuilder;
     protected $verbose;
 
-    public function __construct($app, $dataLoader, $remoteItemLoader, $siteBuilder)
-    {
+    public function __construct(
+        Container $app,
+        DataLoader $dataLoader,
+        CollectionRemoteItemLoader $remoteItemLoader,
+        SiteBuilder $siteBuilder
+    ) {
         $this->app = $app;
         $this->dataLoader = $dataLoader;
         $this->remoteItemLoader = $remoteItemLoader;

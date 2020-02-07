@@ -8,7 +8,7 @@ class CollectionItem extends PageVariable
 {
     private $collection;
 
-    public static function build($collection, $data)
+    public static function build(Collection $collection, $data)
     {
         $item = new static($data);
         $item->collection = $collection;

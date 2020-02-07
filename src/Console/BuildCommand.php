@@ -2,6 +2,7 @@
 
 namespace TightenCo\Jigsaw\Console;
 
+use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Arr;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -16,7 +17,7 @@ class BuildCommand extends Command
     private $app;
     private $consoleOutput;
 
-    public function __construct($app)
+    public function __construct(Container $app)
     {
         $this->app = $app;
         $this->consoleOutput = $app->consoleOutput;

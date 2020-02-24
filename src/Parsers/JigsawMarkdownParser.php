@@ -9,7 +9,7 @@ class JigsawMarkdownParser extends MarkdownExtra
     public function __construct()
     {
         parent::__construct();
-            $this->code_class_prefix = 'language_';
+            $this->code_class_prefix = 'language-';
     }
 
     public function text($text)

@@ -84,7 +84,13 @@ $container->bind('outputPathResolver', function ($c) {
 
 $container->bind(YAMLParser::class, SymfonyYAMLParser::class);
 
-$container->bind(FrontYAMLMarkdownParser::class, MarkdownParser::class);
+$container->singleton('markdownParser', function ($c) {
+    return new MarkdownParser;
+});
+
+$container->bind(FrontYAMLMarkdownParser::class, function ($c) {
+    return $c['markdownParser'];
+});
 
 $container->bind(Parser::class, function ($c) {
     return new Parser($c[YAMLParser::class], $c[FrontYAMLMarkdownParser::class]);

@@ -8,7 +8,7 @@ class JigsawMarkdownParser extends MarkdownExtra
 {
     public function text($text)
     {
-        return self::defaultTransform($text);
+        return $this->transform($text);
     }
 
     public function parse($text)

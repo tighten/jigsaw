@@ -6,9 +6,15 @@ use Michelf\MarkdownExtra;
 
 class JigsawMarkdownParser extends MarkdownExtra
 {
+    public function __construct()
+    {
+        parent::__construct();
+            $this->code_class_prefix = 'language-';
+    }
+
     public function text($text)
     {
-        return self::defaultTransform($text);
+        return $this->transform($text);
     }
 
     public function parse($text)

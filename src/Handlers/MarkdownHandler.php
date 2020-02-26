@@ -151,9 +151,7 @@ class MarkdownHandler
 
         if (in_array($file->getFullExtension(), ['markdown', 'md', 'mdown'])) {
             $replacements = array_merge([
-                ' @' => " {{'@'}}",
-                "\n@" => "\n{{'@'}}",
-                '`@' => "`{{'@'}}",
+                '@' => "{{'@'}}",
                 '{{' => '@{{',
                 '{!!' => '@{!!',
             ], $replacements);

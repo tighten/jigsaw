@@ -44,6 +44,66 @@ class AtSymbolInMarkdownTest extends TestCase
         );
     }
 
+    /**
+     * @test
+     */
+    public function at_symbol_after_closing_bracket_is_unchanged_in_markdown()
+    {
+        $files = $this->setupSource([
+            '_layouts' => [
+                'master.blade.php' => "<div>@yield('content')</div>",
+            ],
+            'test.md' => $this->getYamlHeader() .
+                "<p>@include('foo')</p>"
+        ]);
+        $this->buildSite($files);
+
+        $this->assertEquals(
+            "<div><p>@include('foo')</p></div>",
+            $this->clean($files->getChild('build/test.html')->getContent())
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function double_at_symbol_in_fenced_code_block_is_parsed_to_single_at_symbol_in_blade_markdown()
+    {
+        $files = $this->setupSource([
+            '_layouts' => [
+                'master.blade.php' => "<div>@yield('content')</div>",
+            ],
+            'test.blade.md' => $this->getYamlHeader() .
+                "```\n@@if(true)<h1>Foo</h1>@@endif\n```"
+        ]);
+        $this->buildSite($files);
+
+        $this->assertEquals(
+            '<div><pre><code>@if(true)&lt;h1&gt;Foo&lt;/h1&gt;@endif</code></pre></div>',
+            $this->clean($files->getChild('build/test.html')->getContent())
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function double_at_symbol_in_inline_code_block_is_parsed_to_single_at_symbol_in_blade_markdown()
+    {
+        $files = $this->setupSource([
+            '_layouts' => [
+                'master.blade.php' => "<div>@yield('content')</div>",
+            ],
+            'test.blade.md' => $this->getYamlHeader() .
+                "`@@if(true)<h1>Foo</h1>@@endif`"
+        ]);
+        $this->buildSite($files);
+
+        $this->assertEquals(
+            '<div><p><code>@if(true)&lt;h1&gt;Foo&lt;/h1&gt;@endif</code></p></div>',
+            $this->clean($files->getChild('build/test.html')->getContent())
+        );
+    }
+
     public function getYamlHeader()
     {
         return implode("\n", ['---', 'extends: _layouts.master', 'section: content', '---', '']);

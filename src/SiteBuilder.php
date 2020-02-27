@@ -132,8 +132,9 @@ class SiteBuilder
         $path = rightTrimPath($this->outputPathResolver->link($file->getRelativePath(), $filename, $file->getExtraBladeExtension() ?: 'html'));
         $url = rightTrimPath($baseUrl) . '/' . trimPath($path);
         $modifiedTime = $file->getLastModifiedTime();
+        $relativePath = $file->getRelativePath();
 
-        return compact('filename', 'baseUrl', 'path', 'extension', 'url', 'modifiedTime');
+        return compact('filename', 'baseUrl', 'path', 'extension', 'url', 'modifiedTime', 'relativePath');
     }
 
     private function getOutputDirectory($file)

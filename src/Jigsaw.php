@@ -70,13 +70,15 @@ class Jigsaw
 
     protected function buildSite($useCache)
     {
-        $this->outputPaths = $this->siteBuilder
+        $output = $this->siteBuilder
             ->setUseCache($useCache)
             ->build(
                 $this->getSourcePath(),
                 $this->getDestinationPath(),
                 $this->siteData
             );
+
+        $this->outputPaths = $output->keys();
 
         return $this;
     }

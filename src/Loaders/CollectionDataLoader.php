@@ -103,7 +103,7 @@ class CollectionDataLoader
         });
 
         if (! $handler) {
-            throw new Exception('No matching collection item handler for file: ' 
+            throw new Exception('No matching collection item handler for file: '
                                 . $file->getFilenameWithoutExtension() . "." . $file->getExtension() );
         }
 
@@ -114,14 +114,14 @@ class CollectionDataLoader
     {
         $filename = $file->getFilenameWithoutExtension();
         $baseUrl = $data->baseUrl;
+        $relativePath = $file->getRelativePath();
         $extension = $file->getFullExtension();
         $collectionName = $collection->name;
         $collection = $collectionName;
         $source = $file->getPath();
         $modifiedTime = $file->getLastModifiedTime();
-        $relativePath = $file->getRelativePath();
 
-        return compact('filename', 'baseUrl', 'extension', 'collection', 'collectionName', 'source', 'modifiedTime', 'relativePath');
+        return compact('filename', 'baseUrl', 'relativePath', 'extension', 'collection', 'collectionName', 'source', 'modifiedTime');
     }
 
     private function buildUrls($paths)

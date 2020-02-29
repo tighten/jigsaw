@@ -219,7 +219,7 @@ class CollectionItemTest extends TestCase
         $this->buildSite($files, $config, $pretty = true);
 
         $this->assertEquals(
-            $this->clean($files->getChild('build/collection/page/index.html')->filemtime()),
+            $files->getChild('build/collection/page/index.html')->filemtime(),
             $this->clean($files->getChild('build/collection/page/index.html')->getContent())
         );
     }

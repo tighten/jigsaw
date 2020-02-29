@@ -6,10 +6,10 @@ class CopyFile extends OutputFile
 {
     protected $source;
 
-    public function __construct($source, $path, $name, $extension, $data, $page = 1)
+    public function __construct($file, $source, $path, $name, $extension, $data, $page = 1)
     {
         $this->source = $source;
-        parent::__construct($path, $name, $extension, null, $data, $page);
+        parent::__construct($file, $path, $name, $extension, null, $data, $page);
     }
 
     public function putContents($destination)

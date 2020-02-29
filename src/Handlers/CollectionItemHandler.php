@@ -53,7 +53,7 @@ class CollectionItemHandler
         }
 
         return $handler->handleCollectionItem($file, $pageData)
-            ->map(function ($outputFile, $templateToExtend) {
+            ->map(function ($outputFile, $templateToExtend) use ($file) {
                 if ($templateToExtend) {
                     $outputFile->data()->setExtending($templateToExtend);
                 }
@@ -61,6 +61,7 @@ class CollectionItemHandler
                 $path = $outputFile->data()->page->getPath();
 
                 return new OutputFile(
+                    $file,
                     dirname($path),
                     basename($path, '.' . $outputFile->extension()),
                     $outputFile->extension(),

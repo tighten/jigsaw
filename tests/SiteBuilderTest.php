@@ -160,32 +160,33 @@ class SiteBuilderTest extends TestCase
     /**
      * @test
      */
-    public function can_get_source_file_info_after_building_site()
+    public function can_get_collection_of_page_info_after_building_site()
     {
         $files = $this->setupSource([
             'page1.blade.php' => 'Page 1',
             'nested' => [
-                'page2.blade.php' => 'Page Two',
+                'page2.blade.php' => "---\nfoo: bar\n---\nPage Two",
             ],
         ]);
         $jigsaw = $this->buildSite($files, [], $pretty = true);
 
-        $source1 = $jigsaw->getSourceFileInfo()->get('/page1');
+        $source1 = $jigsaw->getPages()->get('/page1');
         $this->assertEquals(
             $files->getChild('build/page1/index.html')->filemtime(),
-            $source1->getLastModifiedTime()
+            $source1->getModifiedTime()
         );
-        $this->assertEquals('page1.blade.php', $source1->getFilename());
-        $this->assertTrue($source1->isBladeFile());
-        $this->assertEquals(6, $source1->getSize());
+        $this->assertEquals('page1', $source1->getFilename());
+        $this->assertEquals('/page1', $source1->getPath());
+        $this->assertEquals('blade.php', $source1->getExtension());
 
-        $source2 = $jigsaw->getSourceFileInfo()->get('/nested/page2');
+        $source2 = $jigsaw->getPages()->get('/nested/page2');
         $this->assertEquals(
             $files->getChild('build/nested/page2/index.html')->filemtime(),
-            $source2->getLastModifiedTime()
+            $source2->getModifiedTime()
         );
-        $this->assertEquals('page2.blade.php', $source2->getFilename());
-        $this->assertTrue($source2->isBladeFile());
-        $this->assertEquals(8, $source2->getSize());
+        $this->assertEquals('page2', $source2->getFilename());
+        $this->assertEquals('/nested/page2', $source2->getPath());
+        $this->assertEquals('blade.php', $source2->getExtension());
+        $this->assertEquals('bar', $source2->foo);
     }
 }

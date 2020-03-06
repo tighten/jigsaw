@@ -100,7 +100,7 @@ class SiteBuilder
         return $files->mapWithKeys(function ($file) use ($destination) {
             $outputLink = $this->writeFile($file, $destination);
 
-            return [$outputLink => $file->inputFile()];
+            return [$outputLink => $file->inputFile()->getPageData()];
         });
     }
 

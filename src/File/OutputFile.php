@@ -3,6 +3,7 @@
 namespace TightenCo\Jigsaw\File;
 
 use TightenCo\Jigsaw\File\InputFile;
+use TightenCo\Jigsaw\PageData;
 
 class OutputFile
 {
@@ -16,13 +17,19 @@ class OutputFile
 
     public function __construct(InputFile $inputFile, $path, $name, $extension, $contents, $data, $page = 1)
     {
-        $this->inputFile = $inputFile;
+        $this->setInputFile($inputFile, $data);
         $this->path = $path;
         $this->name = $name;
         $this->extension = $extension;
         $this->contents = $contents;
         $this->data = $data;
         $this->page = $page;
+    }
+
+    public function setInputFile(InputFile $inputFile, PageData $data)
+    {
+        $this->inputFile = $inputFile;
+        $this->inputFile->setPageData($data);
     }
 
     public function inputFile()

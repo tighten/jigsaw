@@ -23,6 +23,7 @@ class DefaultHandler
     {
         return collect([
             new CopyFile(
+                $file,
                 $file->getPathName(),
                 $file->getRelativePath(),
                 $file->getBasename('.' . $file->getExtension()),

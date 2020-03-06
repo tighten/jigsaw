@@ -14,6 +14,7 @@ class Jigsaw
 
     public $app;
     protected $env;
+    protected $sourceFileInfo;
     protected $outputPaths;
     protected $siteData;
     protected $dataLoader;
@@ -70,13 +71,14 @@ class Jigsaw
 
     protected function buildSite($useCache)
     {
-        $this->outputPaths = $this->siteBuilder
+        $this->sourceFileInfo = $this->siteBuilder
             ->setUseCache($useCache)
             ->build(
                 $this->getSourcePath(),
                 $this->getDestinationPath(),
                 $this->siteData
             );
+        $this->outputPaths = $this->sourceFileInfo->keys();
 
         return $this;
     }
@@ -165,9 +167,14 @@ class Jigsaw
         return $this->app->make(Filesystem::class);
     }
 
+    public function getSourceFileInfo()
+    {
+        return $this->sourceFileInfo ?: collect();
+    }
+
     public function getOutputPaths()
     {
-        return $this->outputPaths ?: [];
+        return $this->outputPaths ?: collect();
     }
 
     public function readSourceFile($fileName)

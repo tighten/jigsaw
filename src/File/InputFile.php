@@ -16,6 +16,11 @@ class InputFile
         $this->file = $file;
     }
 
+    public function getFileInfo()
+    {
+        return $this->file;
+    }
+
     public function topLevelDirectory()
     {
         $parts = explode(DIRECTORY_SEPARATOR, $this->file->getRelativePathName());

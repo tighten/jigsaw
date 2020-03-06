@@ -97,8 +97,10 @@ class SiteBuilder
     {
         $this->consoleOutput->writeWritingFiles();
 
-        return $files->map(function ($file) use ($destination) {
-            return $this->writeFile($file, $destination);
+        return $files->mapWithKeys(function ($file) use ($destination) {
+            $outputLink = $this->writeFile($file, $destination);
+
+            return [$outputLink => $file->inputFile()];
         });
     }
 

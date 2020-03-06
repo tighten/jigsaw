@@ -53,6 +53,7 @@ class PaginatedPageHandler
             $extension = strtolower($file->getExtension());
 
             return new OutputFile(
+                $file,
                 $file->getRelativePath(),
                 $file->getFilenameWithoutExtension(),
                 $extension == 'php' ? 'html' : $extension,

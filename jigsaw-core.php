@@ -3,7 +3,6 @@
 use Dotenv\Dotenv;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Events\Dispatcher;
-use Illuminate\View\Compilers\BladeCompiler;
 use Illuminate\View\Engines\CompilerEngine;
 use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Engines\PhpEngine;
@@ -38,6 +37,7 @@ use TightenCo\Jigsaw\Parsers\MarkdownParser;
 use TightenCo\Jigsaw\PathResolvers\BasicOutputPathResolver;
 use TightenCo\Jigsaw\PathResolvers\CollectionPathResolver;
 use TightenCo\Jigsaw\SiteBuilder;
+use TightenCo\Jigsaw\View\BladeCompiler;
 use TightenCo\Jigsaw\View\BladeMarkdownEngine;
 use TightenCo\Jigsaw\View\MarkdownEngine;
 use TightenCo\Jigsaw\View\ViewRenderer;
@@ -102,7 +102,10 @@ $container->bind(FrontMatterParser::class, function ($c) {
 
 $bladeCompiler = new BladeCompiler(new Filesystem, $cachePath);
 
-$container->bind(Factory::class, function ($c) use ($cachePath, $bladeCompiler) {
+$container->bind('bladeCompiler', function ($c) use ($bladeCompiler) {
+    return $bladeCompiler;
+});
+
     $resolver = new EngineResolver;
 
     $compilerEngine = new CompilerEngine($bladeCompiler, new Filesystem);

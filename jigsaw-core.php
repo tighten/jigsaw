@@ -106,6 +106,7 @@ $container->bind('bladeCompiler', function ($c) use ($bladeCompiler) {
     return $bladeCompiler;
 });
 
+$container->singleton(Factory::class, function ($c) use ($cachePath, $bladeCompiler) {
     $resolver = new EngineResolver;
 
     $compilerEngine = new CompilerEngine($bladeCompiler, new Filesystem);
@@ -130,7 +131,14 @@ $container->bind('bladeCompiler', function ($c) use ($bladeCompiler) {
 
     $finder = new FileViewFinder(new Filesystem, [$cachePath, $c['buildPath']['source']]);
 
-    return new Factory($resolver, $finder, new FakeDispatcher());
+    $factory = new Factory($resolver, $finder, new FakeDispatcher());
+    $factory->setContainer($c);
+
+    return $factory;
+});
+
+$container->bind('view', function ($c) {
+    return $c[Factory::class];
 });
 
 $container->bind(ViewRenderer::class, function ($c) use ($bladeCompiler) {

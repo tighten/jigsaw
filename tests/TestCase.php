@@ -78,7 +78,7 @@ class TestCase extends BaseTestCase
     public function buildSite($vfs, $config = [], $pretty = false)
     {
         $this->app->consoleOutput->setup($verbosity = -1);
-        $this->app->config = collect($config);
+        $this->app->config = collect($this->app->config)->merge($config);
         $this->app->buildPath = [
             'source' => $vfs->url() . '/source',
             'destination' => $vfs->url() . '/build',

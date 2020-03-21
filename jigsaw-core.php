@@ -70,8 +70,11 @@ $container->instance('buildPath', [
     'destination' => $container['cwd'] . '/build_{env}',
 ]);
 
-$container->bind('config', function ($c) {
-    return (new ConfigFile($c['cwd'] . '/config.php', $c['cwd'] . '/helpers.php'))->config;
+$container->bind('config', function ($c) use ($cachePath) {
+    $config = (new ConfigFile($c['cwd'] . '/config.php', $c['cwd'] . '/helpers.php'))->config;
+    $config['view.compiled'] = $cachePath;
+
+    return $config;
 });
 
 $container->singleton('consoleOutput', function ($c) {

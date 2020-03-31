@@ -49,6 +49,16 @@ class FilePathTest extends TestCase
         $this->assertEquals('/has-invalid-characters', $outputPath[0]);
     }
 
+    public function test_leading_periods_are_not_removed()
+    {
+        $this->app->instance('outputPathResolver', new PrettyOutputPathResolver());
+        $pathResolver = $this->app->make(CollectionPathResolver::class);
+        $pageVariable = $this->getPageVariableDummy('.well-known');
+        $outputPath = $pathResolver->link(null, $pageVariable);
+
+        $this->assertEquals('/.well-known', $outputPath[0]);
+    }
+
     public function test_invalid_characters_in_filename_are_removed_when_using_shorthand_path_config()
     {
         $this->app->instance('outputPathResolver', new PrettyOutputPathResolver());

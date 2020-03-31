@@ -12,7 +12,7 @@ use Symfony\Component\VarDumper\VarDumper;
  */
 function leftTrimPath($path)
 {
-    return ltrim($path, ' .\\/');
+    return ltrim($path, ' \\/');
 }
 
 function rightTrimPath($path)

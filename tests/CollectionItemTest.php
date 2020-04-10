@@ -2,6 +2,8 @@
 
 namespace Tests;
 
+use TightenCo\Jigsaw\Collection\CollectionItem;
+
 class CollectionItemTest extends TestCase
 {
     /**
@@ -77,6 +79,47 @@ class CollectionItemTest extends TestCase
 
         $this->assertNull($files->getChild('build/collection/filtered.html'));
         $this->assertNotNull($files->getChild('build/collection/item.html'));
+    }
+
+    /**
+     * @test
+     */
+    public function collection_item_can_be_mapped()
+    {
+        $config = collect(['collections' =>
+            [
+                'collection' => [
+                    'path' => 'collection/{filename}',
+                    'map' => function ($item) {
+                        return new MappedItem($item);
+                    }
+                ]
+            ]
+        ]);
+        $itemHeader = implode("\n", [
+            '---',
+            'number: 111',
+            '---',
+        ]);
+        $files = $this->setupSource([
+            '_layouts' => [
+                'item.blade.php' => '@section(\'content\') @endsection',
+            ],
+            '_collection' => [
+                'item.blade.php' => implode("\n", [
+                    $itemHeader,
+                    "@extends('_layouts.item')",
+                    '{{ $page->number }}-{{ $page->doubleNumber() }}',
+                ]),
+            ],
+        ]);
+
+        $jigsaw = $this->buildSite($files, $config);
+
+        $this->assertEquals(
+            '111-222',
+            $this->clean($files->getChild('build/collection/item.html')->getContent())
+        );
     }
 
     /**
@@ -222,5 +265,13 @@ class CollectionItemTest extends TestCase
             $files->getChild('build/collection/page/index.html')->filemtime(),
             $this->clean($files->getChild('build/collection/page/index.html')->getContent())
         );
+    }
+}
+
+class MappedItem extends CollectionItem
+{
+    public function doubleNumber()
+    {
+        return $this->number * 2;
     }
 }

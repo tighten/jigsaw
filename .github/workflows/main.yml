@@ -1,0 +1,30 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: Test (PHP ${{ matrix.php }})
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php: ['7.1', '7.2', '7.3', '7.4']
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Cache dependencies
+        uses: actions/cache@v1
+        with:
+          path: ~/.composer/cache/files
+          key: php-${{ matrix.php }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: php-${{ matrix.php }}-composer-
+
+      - name: Install dependencies
+        run: composer install --no-interaction --no-suggest
+
+      - name: Run PHPUnit tests
+        run: vendor/bin/phpunit --testdox --colors=always

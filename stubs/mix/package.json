@@ -11,7 +11,7 @@
     "devDependencies": {
         "cross-env": "^3.2.3",
         "laravel-mix": "^4.0.0",
-        "laravel-mix-jigsaw": "^1.0.0",
+        "laravel-mix-jigsaw": "^1.1.0",
         "sass": "^1.15.2",
         "sass-loader": "^7.1.0"
     }

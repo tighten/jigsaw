@@ -177,8 +177,34 @@ class RemoteCollectionsTest extends TestCase
         ]);
         $this->buildSite($files, $config);
 
-        $this->assertCount(0, $files->getChild('source/_test')->getChildren());
         $this->assertNull($files->getChild('source/_test/_tmp'));
+    }
+
+    /**
+     * @test
+     */
+    public function temporary_parent_directory_for_remote_items_is_removed_if_empty_after_build_is_complete()
+    {
+        $config = collect([
+            'collections' => [
+                'test' => [
+                    'items' => [
+                        [
+                            'extends' => '_layouts.master',
+                            'content' => 'item content',
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+        $files = $this->setupSource([
+            '_layouts' => [
+                'master.blade.php' => "<div>@yield('content')</div>",
+            ],
+        ]);
+        $this->buildSite($files, $config);
+
+        $this->assertNull($files->getChild('source/_test'));
     }
 
     /**

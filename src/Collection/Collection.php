@@ -25,8 +25,8 @@ class Collection extends BaseCollection
     {
         $sortedItems = $this
             ->defaultSort($items)
-            ->filter($this->getFilter())
             ->map($this->getMap())
+            ->filter($this->getFilter())
             ->keyBy(function ($item) {
                 return $item->getFilename();
             });

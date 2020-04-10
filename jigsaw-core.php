@@ -202,7 +202,7 @@ $container->bind(SiteBuilder::class, function ($c) use ($cachePath) {
 });
 
 $container->bind(CollectionRemoteItemLoader::class, function ($c) {
-    return new CollectionRemoteItemLoader(new Filesystem);
+    return new CollectionRemoteItemLoader($c['config'], new Filesystem);
 });
 
 $container->singleton('events', function ($c) {

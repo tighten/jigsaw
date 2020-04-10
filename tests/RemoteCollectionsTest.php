@@ -488,6 +488,37 @@ class RemoteCollectionsTest extends TestCase
     /**
      * @test
      */
+    public function items_function_can_access_other_config_variables()
+    {
+        $config = collect([
+            'collections' => [
+                'test' => [
+                    'extends' => '_layouts.master',
+                    'items' => function ($config) {
+                        return [
+                            ['content' => $config['remote_url']],
+                        ];
+                    },
+                ],
+            ],
+            'remote_url' => 'https://example.com/api',
+        ]);
+        $files = $this->setupSource([
+            '_layouts' => [
+                'master.blade.php' => "<div>@yield('content')</div>",
+            ],
+        ]);
+        $this->buildSite($files, $config);
+
+        $this->assertEquals(
+            '<div><p>https://example.com/api</p></div>',
+            $this->clean($files->getChild('build/test/test-1.html')->getContent())
+        );
+    }
+
+    /**
+     * @test
+     */
     public function items_key_in_config_can_be_a_function_that_returns_a_collection()
     {
         $config = collect([

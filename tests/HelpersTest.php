@@ -25,4 +25,12 @@ class HelpersTest extends TestCase
 
         $this->assertEquals('src/some-file.md', public_path('some-file.md'));
     }
+
+    /**
+     * @test
+     */
+    public function leftTrimPath_leaves_leading_periods()
+    {
+        $this->assertEquals('.well-known', leftTrimPath('.well-known'));
+    }
 }

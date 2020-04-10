@@ -25,6 +25,7 @@ class Collection extends BaseCollection
     {
         $sortedItems = $this
             ->defaultSort($items)
+            ->map($this->getMap())
             ->filter($this->getFilter())
             ->keyBy(function ($item) {
                 return $item->getFilename();
@@ -64,6 +65,19 @@ class Collection extends BaseCollection
 
         return function ($item) {
             return true;
+        };
+    }
+
+    private function getMap()
+    {
+        $map = Arr::get($this->settings, 'map');
+
+        if ($map) {
+            return $map;
+        }
+
+        return function ($item) {
+            return $item;
         };
     }
 

@@ -39,6 +39,10 @@ class CollectionRemoteItemLoader
     {
         collect($this->tempDirectories)->each(function ($path) {
             $this->files->deleteDirectory($path);
+
+            if ($this->files->isEmptyDirectory($parent = $this->files->dirname($path))) {
+                $this->files->deleteDirectory($parent);
+            }
         });
     }
 

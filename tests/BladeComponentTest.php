@@ -18,17 +18,17 @@ class BladeComponentTest extends TestCase
             'page.blade.php' => implode("\n", [
                 "@component('_components.alert')",
                 "@slot('title') Title test @endslot",
-                "<h1>Default content</h1>",
-                "@endcomponent"
+                '<h1>Default content</h1>',
+                '@endcomponent',
             ]),
             '_components' => [
-                'alert.blade.php' => <<<'component'
-                <div>
-                    <h3>This is the component</h3>
-                    <h4>Named title slot: {{ $title }}</h4>
-                    {{ $slot }}
-                </div>
-                component,
+                'alert.blade.php' => implode("\n", [
+                '<div>',
+                '<h3>This is the component</h3>',
+                '<h4>Named title slot: {{ $title }}</h4>',
+                '{{ $slot }}',
+                '</div>',
+                ]),
             ],
         ]);
 
@@ -38,9 +38,9 @@ class BladeComponentTest extends TestCase
 
         $this->assertEquals(
             "<div>\n" .
-            "    <h3>This is the component</h3>\n" .
-            "    <h4>Named title slot: Title test</h4>\n" .
-            "    <h1>Default content</h1>\n" .
+            "<h3>This is the component</h3>\n" .
+            "<h4>Named title slot: Title test</h4>\n" .
+            "<h1>Default content</h1>\n" .
             "</div>",
             $built
         );

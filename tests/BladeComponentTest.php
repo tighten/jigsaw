@@ -15,14 +15,12 @@ class BladeComponentTest extends TestCase
     public function can_include_blade_component_with_at_syntax()
     {
         $files = $this->setupSource([
-            'page.blade.php' => <<<'blade'
-            @component('_components.alert')
-                @slot('title')
-                    Title test
-                @endslot
-                <h1>Default content</h1>
-            @endcomponent
-            blade,
+            'page.blade.php' => implode("\n", [
+                "@component('_components.alert')",
+                "@slot('title') Title test @endslot",
+                "<h1>Default content</h1>",
+                "@endcomponent"
+            ]),
             '_components' => [
                 'alert.blade.php' => <<<'component'
                 <div>

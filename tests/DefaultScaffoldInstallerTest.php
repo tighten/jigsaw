@@ -27,7 +27,6 @@ class DefaultScaffoldInstallerTest extends TestCase
         (new DefaultInstaller())->install($builder, ['commands' => []]);
 
         $this->assertNotNull($vfs->getChild('source'));
-        $this->assertNotNull($vfs->getChild('tasks'));
         $this->assertNotNull($vfs->getChild('package.json'));
         $this->assertNotNull($vfs->getChild('webpack.mix.js'));
         $this->assertNotNull($vfs->getChild('config.php'));

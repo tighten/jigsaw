@@ -59,7 +59,6 @@ class ServeCommand extends Command
         if (! $this->input->getOption('no-build')) {
             $buildCmd = $this->getApplication()->find('build');
             $buildArgs = new ArrayInput(['env' => $env]);
-
             $buildCmd->run($buildArgs, $this->output);
         }
 

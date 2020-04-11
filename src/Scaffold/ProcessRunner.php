@@ -23,7 +23,7 @@ class ProcessRunner
     protected function runCommand($command)
     {
         echo "\n> " . $command . "\n";
-        $process = new Process($command);
+        $process = Process::fromShellCommandline($command);
         $process->setTimeout(3600);
         $process->setIdleTimeout(120);
 

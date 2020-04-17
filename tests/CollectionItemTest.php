@@ -91,7 +91,7 @@ class CollectionItemTest extends TestCase
                 'collection' => [
                     'path' => 'collection/{filename}',
                     'map' => function ($item) {
-                        return new MappedItem($item);
+                        return MappedItem::fromItem($item);
                     }
                 ]
             ]

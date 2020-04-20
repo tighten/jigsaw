@@ -59,7 +59,7 @@ $container->setInstance($container);
 $container->instance('cwd', getcwd());
 
 if (file_exists($envPath = $container['cwd'] . '/.env')) {
-    (Dotenv::create($container['cwd']))->load();
+    (Dotenv::createImmutable($container['cwd']))->load();
 }
 
 $cachePath = $container['cwd'] . '/cache';

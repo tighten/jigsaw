@@ -74,7 +74,7 @@ $container->bind('config', function ($c) use ($cachePath) {
     $config = (new ConfigFile($c['cwd'] . '/config.php', $c['cwd'] . '/helpers.php'))->config;
     $config['view.compiled'] = $cachePath;
 
-    return $config;
+    return collect($config);
 });
 
 $container->singleton('consoleOutput', function ($c) {

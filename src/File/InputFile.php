@@ -9,7 +9,7 @@ class InputFile
 {
     protected $file;
     protected $extraBladeExtensions = [
-        'js', 'json', 'xml', 'rss', 'atom', 'txt', 'text', 'html',
+        'js', 'json', 'xml', 'yml', 'rss', 'atom', 'txt', 'text', 'html',
     ];
     protected $pageData;
 

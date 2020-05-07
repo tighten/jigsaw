@@ -12,7 +12,7 @@ class CollectionItemHandler
     private $config;
     private $handlers;
 
-    public function __construct($config, $handlers)
+    public function __construct(Collection $config, $handlers)
     {
         $this->config = $config;
         $this->handlers = collect($handlers);

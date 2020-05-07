@@ -2,6 +2,7 @@
 
 namespace TightenCo\Jigsaw\View;
 
+use Illuminate\Support\Collection;
 use Illuminate\View\Compilers\BladeCompiler;
 use Illuminate\View\Factory;
 
@@ -21,9 +22,9 @@ class ViewRenderer
         'js', 'json', 'xml', 'rss', 'atom', 'txt', 'text', 'html',
     ];
 
-    public function __construct(Factory $viewFactory, BladeCompiler $bladeCompiler, $config = [])
+    public function __construct(Factory $viewFactory, BladeCompiler $bladeCompiler, Collection $config = null)
     {
-        $this->config = collect($config);
+        $this->config = $config ?? collect();
         $this->viewFactory = $viewFactory;
         $this->bladeCompiler = $bladeCompiler;
         $this->finder = $this->viewFactory->getFinder();

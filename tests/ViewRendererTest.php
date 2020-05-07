@@ -18,11 +18,11 @@ class ViewRendererTest extends TestCase
         $mock->shouldReceive('getFinder');
         $mock->shouldReceive('addNamespace')->with('view::hint', 'path');
         $mock->shouldReceive('addExtension');
-        new ViewRenderer($mock, Mockery::mock(BladeCompiler::class), [
+        new ViewRenderer($mock, Mockery::mock(BladeCompiler::class), collect([
             'viewHintPaths' => [
                 'view::hint' => 'path'
             ]
-        ]);
+        ]));
 
         $this->addToAssertionCount(
             Mockery::getContainer()->mockery_getExpectationCount()
@@ -54,9 +54,9 @@ class ViewRendererTest extends TestCase
         $mock->shouldReceive('getFinder');
         $mock->shouldNotReceive('addNamespace')->with('view::hint', 'path');
         $mock->shouldReceive('addExtension');
-        new ViewRenderer($mock, Mockery::mock(BladeCompiler::class), [
+        new ViewRenderer($mock, Mockery::mock(BladeCompiler::class), collect([
             'viewHintPaths' => []
-        ]);
+        ]));
 
         $this->addToAssertionCount(
             Mockery::getContainer()->mockery_getExpectationCount()

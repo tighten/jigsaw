@@ -2,6 +2,7 @@
 
 namespace TightenCo\Jigsaw\Loaders;
 
+use Illuminate\Support\Collection;
 use TightenCo\Jigsaw\SiteData;
 
 class DataLoader
@@ -13,7 +14,7 @@ class DataLoader
         $this->collectionDataLoader = $collectionDataLoader;
     }
 
-    public function loadSiteData($config)
+    public function loadSiteData(Collection $config)
     {
         return SiteData::build($config);
     }

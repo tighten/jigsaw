@@ -31,7 +31,7 @@ class PaginatedPageHandler
 
     public function shouldHandle($file)
     {
-        if (! Str::endsWith($file->getFilename(), '.blade.php')) {
+        if (! Str::endsWith($file->getFilename(), ['.blade.md', '.blade.php'])) {
             return false;
         }
         $content = $this->parser->parse($file->getContents());
@@ -56,7 +56,7 @@ class PaginatedPageHandler
                 $file,
                 $file->getRelativePath(),
                 $file->getFilenameWithoutExtension(),
-                $extension == 'php' ? 'html' : $extension,
+                ($extension == 'php' || $extension == 'md') ? 'html' : $extension,
                 $this->render($file, $pageData),
                 $pageData,
                 $page->currentPage

@@ -24,7 +24,7 @@ abstract class ScaffoldBuilder
         $this->setBase();
     }
 
-    abstract public function init(ScaffoldBuilder $preset);
+    abstract public function init($preset);
 
     abstract public function build();
 

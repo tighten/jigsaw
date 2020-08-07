@@ -60,7 +60,7 @@ class CollectionDataLoader
 
         return collect($this->filesystem->files($path))
             ->reject(function ($file) {
-                return Str::startsWith($file->getFilename(), '_');
+                return Str::startsWith($file->getFilename(), '_') || Str::startsWith($file->getFilename(), '.git');
             })->tap(function ($files) {
                 $this->consoleOutput->progressBar('collections')->addSteps($files->count());
             })->map(function ($file) {

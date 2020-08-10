@@ -32,7 +32,7 @@ class PresetScaffoldBuilderTest extends TestCase
         $preset->init('blog');
 
         $this->assertEquals(
-            $vfs->url() . '/vendor/tightenco/jigsaw-blog-template',
+            $vfs->url() . $this->fixDirSlashes('/vendor/tightenco/jigsaw-blog-template'),
             $preset->package->path
         );
     }
@@ -56,7 +56,7 @@ class PresetScaffoldBuilderTest extends TestCase
 
         $preset->init('test/package');
 
-        $this->assertEquals($vfs->url() . '/vendor/' . 'test/package', $preset->package->path);
+        $this->assertEquals($vfs->url() . $this->fixDirSlashes('/vendor/' . 'test/package'), $preset->package->path);
     }
 
     /**

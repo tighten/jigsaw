@@ -36,8 +36,8 @@ class SnapshotTest extends SnapshotTestCase
         collect($this->build_files)->each(function ($file) {
             echo "\r\nChecking " . $file->getRelativePathname();
             $this->assertEquals(
-                file_get_contents('tests/snapshots/' . $file->getRelativePathname()),
-                $file->getContents(),
+                str_replace("\r", '', file_get_contents('tests/snapshots/' . $file->getRelativePathname())),
+                str_replace("\r", '', $file->getContents()),
                 'File contents do not match: ' . $file->getRelativePathname()
             );
         });

@@ -97,4 +97,9 @@ class TestCase extends BaseTestCase
     {
         return str_replace("\n", "", $output);
     }
+
+    protected function fixDirectorySlashes(string $path): string
+    {
+        return str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
+    }
 }

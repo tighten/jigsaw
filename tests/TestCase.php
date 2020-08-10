@@ -98,13 +98,8 @@ class TestCase extends BaseTestCase
         return str_replace("\n", "", $output);
     }
 
-    protected function fixDirSlashes(string $path): string
+    protected function fixDirectorySlashes(string $path): string
     {
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
-        {
-            return str_replace('/', '\\', $path);
-        }
-
-        return $path;
+        return str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
     }
 }

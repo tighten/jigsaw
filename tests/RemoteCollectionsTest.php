@@ -49,6 +49,22 @@ class RemoteCollectionsTest extends TestCase
         );
     }
 
+    /** @test */
+    public function collection_items_without_matching_handler_throw_exception()
+    {
+        $config = collect(['collections' => ['collection' => []]]);
+        $files = $this->setupSource([
+            '_collection' => [
+                '.git' => '-',
+                'file.md' => 'Test markdown file',
+            ],
+        ]);
+
+        $this->expectExceptionObject(new \Exception('No matching collection item handler for file: .git'));
+
+        $siteData = $this->buildSiteData($files, $config);
+    }
+
     /**
      * @test
      */

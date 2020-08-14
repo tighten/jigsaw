@@ -50,7 +50,7 @@ class RemoteCollectionsTest extends TestCase
     }
 
     /** @test */
-    public function collection_items_without_matching_handler_throw_exception()
+    public function collection_items_without_matching_handler_are_ignored()
     {
         $config = collect(['collections' => ['collection' => []]]);
         $files = $this->setupSource([
@@ -60,9 +60,10 @@ class RemoteCollectionsTest extends TestCase
             ],
         ]);
 
-        $this->expectExceptionObject(new \Exception('No matching collection item handler for file: .git'));
+        $siteData = $this->buildSiteData($files, $config, 3);
 
-        $siteData = $this->buildSiteData($files, $config);
+        $this->assertTrue($siteData->has('collection'));
+        $this->assertCount(1, $siteData->collection);
     }
 
     /**

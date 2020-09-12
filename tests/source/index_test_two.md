@@ -102,13 +102,13 @@ or
 - Collection items can now be Blade files, in addition to Markdown
 - Blade files (whether they are items in a collection, or not) can include YAML frontmatter variables
 - Markdown files can use Blade syntax in them—for displaying data, control structures, etc. Files with a `.blade.md` extension will be processed first by Blade, before the markdown is parsed.
-- Blade templates can `@include` markdown files as partials (which will be parsed). Addresses feature request https://github.com/tightenco/jigsaw/issues/62
+- Blade templates can `@include` markdown files as partials (which will be parsed). Addresses feature request https://github.com/tighten/jigsaw/issues/62
 
 ---
 
 ### Blade support for other file types
 - Like the `.blade.md` support described above, other non-HTML, text-type files can be processed with Blade first, including `.blade.js`, `.blade.json`, `.blade.xml`, `.blade.rss`, `.blade.txt`, and `.blade.text`. After the file is first processed by Blade, the resulting file will maintain its filetype extension in the URL (e.g. `some-file.blade.xml` will become the URL `/some-file.xml`).
-- Addresses feature request https://github.com/tightenco/jigsaw/issues/56
+- Addresses feature request https://github.com/tighten/jigsaw/issues/56
 
 ---
 
@@ -135,4 +135,4 @@ or
 
 ### 5.3 Update
 - Illuminate dependencies have been updated to version 5.3
-- The code for allowing a custom `bootstrap.php` file, providing the ability to customize bindings (for extending the markdown parser, for instance) has been updated (from https://github.com/tightenco/jigsaw/pull/68)
+- The code for allowing a custom `bootstrap.php` file, providing the ability to customize bindings (for extending the markdown parser, for instance) has been updated (from https://github.com/tighten/jigsaw/pull/68)

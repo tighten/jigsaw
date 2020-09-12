@@ -1,4 +1,4 @@
-![Jigsaw logo](https://raw.githubusercontent.com/tightenco/jigsaw/master/jigsaw-banner.png)
+![Jigsaw logo](https://raw.githubusercontent.com/tighten/jigsaw/master/jigsaw-banner.png)
 
 Simple static sites with Laravel's [Blade](https://laravel.com/docs/blade).
 

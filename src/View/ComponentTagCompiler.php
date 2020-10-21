@@ -4,6 +4,7 @@ namespace TightenCo\Jigsaw\View;
 
 use Exception;
 use Illuminate\Container\Container;
+use Illuminate\Support\Str;
 use Illuminate\View\Compilers\ComponentTagCompiler as BaseComponentTagCompiler;
 use Illuminate\View\Factory;
 
@@ -28,8 +29,20 @@ class ComponentTagCompiler extends BaseComponentTagCompiler
             return $view;
         }
 
+        if (class_exists($class = $this->guessClassName($component))) {
+            return $class;
+        }
+
         throw new Exception(
             "Unable to locate a class or view for component [{$component}]."
         );
+    }
+
+    public function guessClassName(string $component)
+    {
+        $componentPieces = array_map(function ($componentPiece) {
+            return ucfirst(Str::camel($componentPiece));
+        }, explode('.', $component));
+        return 'Components\\'.implode('\\', $componentPieces);
     }
 }

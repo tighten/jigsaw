@@ -61,6 +61,8 @@ class CollectionDataLoader
         return collect($this->filesystem->files($path))
             ->reject(function ($file) {
                 return Str::startsWith($file->getFilename(), '_');
+            })->filter(function ($file) {
+                return $this->hasHandler($file);
             })->tap(function ($files) {
                 $this->consoleOutput->progressBar('collections')->addSteps($files->count());
             })->map(function ($file) {
@@ -96,18 +98,18 @@ class CollectionDataLoader
         return $item;
     }
 
-    private function getHandler($file)
+    private function hasHandler($file): bool
     {
-        $handler = $this->handlers->first(function ($handler) use ($file) {
+        return $this->handlers->contains(function ($handler) use ($file) {
             return $handler->shouldHandle($file);
         });
+    }
 
-        if (! $handler) {
-            throw new Exception('No matching collection item handler for file: '
-                                . $file->getFilenameWithoutExtension() . "." . $file->getExtension() );
-        }
-
-        return $handler;
+    private function getHandler($file)
+    {
+        return $this->handlers->first(function ($handler) use ($file) {
+            return $handler->shouldHandle($file);
+        });
     }
 
     private function getMetaData($file, $collection, $data)

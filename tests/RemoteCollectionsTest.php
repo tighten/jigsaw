@@ -49,6 +49,23 @@ class RemoteCollectionsTest extends TestCase
         );
     }
 
+    /** @test */
+    public function collection_items_without_matching_handler_are_ignored()
+    {
+        $config = collect(['collections' => ['collection' => []]]);
+        $files = $this->setupSource([
+            '_collection' => [
+                '.git' => '-',
+                'file.md' => 'Test markdown file',
+            ],
+        ]);
+
+        $siteData = $this->buildSiteData($files, $config, 3);
+
+        $this->assertTrue($siteData->has('collection'));
+        $this->assertCount(1, $siteData->collection);
+    }
+
     /**
      * @test
      */

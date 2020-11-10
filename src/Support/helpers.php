@@ -107,6 +107,15 @@ function mix($path, $manifestDirectory = 'assets')
     return new HtmlString($manifestDirectory . $manifest[$path]);
 }
 
+if (! function_exists('url')) {
+    function url(string $path): string
+    {
+        $c = Container::getInstance();
+
+        return trim($c['config']['baseUrl'], '/') . '/' . trim($path, '/');
+    }
+}
+
 if (! function_exists('dd')) {
     function dd(...$args)
     {

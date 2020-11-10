@@ -6,7 +6,6 @@ module.exports = {
       'source/**/*.html',
     ]
   },
-  darkMode: false,
   theme: {
     extend: {},
   },

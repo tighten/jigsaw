@@ -28,7 +28,7 @@ class SnapshotTestCase extends BaseTestCase
         parent::tearDownAfterClass();
     }
 
-    public function setUp()
+    protected function setUp(): void
     {
         try {
             $this->filesystem = new Filesystem();

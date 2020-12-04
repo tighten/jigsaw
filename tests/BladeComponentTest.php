@@ -116,6 +116,55 @@ class BladeComponentTest extends TestCase
             $built
         );
     }
+
+    /**
+     * @test
+     */
+    public function can_include_blade_component_with_x_tag_syntax_using_namespaced_component_with_inline_render()
+    {
+        class_alias('Tests\InlineAlertComponent', 'Components\InlineClassComponent');
+
+        $files = vfsStream::setup('virtual', null, [
+            'source' => [
+                'page.blade.php' => '<h1>Hello</h1><x-inline-class-component type="error" message="The message"/>',
+            ],
+        ]);
+
+        $this->buildSite($files, []);
+
+        $built = $files->getChild('build/page.html')->getContent();
+
+        $this->assertEquals(
+            '<h1>Hello</h1> <div class="alert alert-error">The message</div> ',
+            $built
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function can_include_blade_component_with_x_tag_syntax_using_namespaced_component_with_view()
+    {
+        class_alias('Tests\\AlertComponent', 'Components\\ClassComponent');
+
+        $files = vfsStream::setup('virtual', null, [
+            'source' => [
+                'page.blade.php' => '<h1>Hello</h1><x-class-component type="error" message="The message"/>',
+                '_components' => [
+                    'alert.blade.php' => '<div class="alert alert-{{ $type }}">{{ $message }}</div>',
+                ],
+            ],
+        ]);
+
+        $this->buildSite($files, []);
+
+        $built = $files->getChild('build/page.html')->getContent();
+
+        $this->assertEquals(
+            '<h1>Hello</h1> <div class="alert alert-error">The message</div> ',
+            $built
+        );
+    }
 }
 
 class AlertComponent extends Component

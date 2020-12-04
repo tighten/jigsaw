@@ -20,7 +20,7 @@ class TestCase extends BaseTestCase
     public $sourcePath = __DIR__ . '/source';
     public $destinationPath = __DIR__ . '/build_testing';
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         require 'jigsaw-core.php';
@@ -34,7 +34,7 @@ class TestCase extends BaseTestCase
         $this->prepareTempDirectory();
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         $this->cleanupTempDirectory();
         Mockery::close();

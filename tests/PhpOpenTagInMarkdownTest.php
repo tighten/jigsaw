@@ -6,7 +6,7 @@ use TightenCo\Jigsaw\Handlers\MarkdownHandler;
 use TightenCo\Jigsaw\IterableObject;
 use TightenCo\Jigsaw\PageData;
 
-class PhpOpenTagInMarkdown extends TestCase
+class PhpOpenTagInMarkdownTest extends TestCase
 {
     /**
      * @test

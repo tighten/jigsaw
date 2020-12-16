@@ -22,7 +22,7 @@ class CustomCommandTest extends TestCase
         $console = new CommandTester($command);
         $console->execute([]);
 
-        $this->assertContains('Command Tested', $console->getDisplay());
+        $this->assertStringContainsString('Command Tested', $console->getDisplay());
     }
 }
 

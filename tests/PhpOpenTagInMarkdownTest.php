@@ -20,7 +20,7 @@ class PhpOpenTagInMarkdownTest extends TestCase
         $this->assertTrue($handler->shouldHandle($inputFile));
         $this->assertEquals('php-tag-markdown', $outputFile[0]->name());
         $this->assertEquals('Testing <?php tag', $outputFile[0]->data()->page->title);
-        $this->assertContains('<code>&lt;?php', $outputFile[0]->contents());
+        $this->assertStringContainsString('<code>&lt;?php', $outputFile[0]->contents());
     }
 
     /**
@@ -35,8 +35,8 @@ class PhpOpenTagInMarkdownTest extends TestCase
         $this->assertTrue($handler->shouldHandle($inputFile));
         $this->assertEquals('php-tag-blade-markdown', $outputFile[0]->name());
         $this->assertEquals('Testing <?php tag', $outputFile[0]->data()->page->title);
-        $this->assertContains('<code>&lt;?php', $outputFile[0]->contents());
-        $this->assertContains('<p>Title: Testing &lt;?php tag</p>', $outputFile[0]->contents());
+        $this->assertStringContainsString('<code>&lt;?php', $outputFile[0]->contents());
+        $this->assertStringContainsString('<p>Title: Testing &lt;?php tag</p>', $outputFile[0]->contents());
     }
 
     protected function getPageDataDummy()

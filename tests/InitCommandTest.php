@@ -33,7 +33,7 @@ class InitCommandTest extends TestCase
         $console->execute([]);
 
         $this->assertEquals('', $console->getInput()->getArgument('preset'));
-        $this->assertContains('initialized', $console->getDisplay());
+        $this->assertStringContainsString('initialized', $console->getDisplay());
     }
 
     /**
@@ -58,7 +58,7 @@ class InitCommandTest extends TestCase
 
         $preset_scaffold->shouldHaveReceived('init')->with('blog');
         $this->assertEquals('blog', $console->getInput()->getArgument('preset'));
-        $this->assertContains('initialized', $console->getDisplay());
+        $this->assertStringContainsString('initialized', $console->getDisplay());
     }
 
     /**
@@ -71,7 +71,7 @@ class InitCommandTest extends TestCase
         $console = new CommandTester($command);
         $console->execute(['preset' => 'invalid']);
 
-        $this->assertContains("'invalid' is not a valid package name.", $console->getDisplay());
+        $this->assertStringContainsString("'invalid' is not a valid package name.", $console->getDisplay());
     }
 
     /**
@@ -88,7 +88,7 @@ class InitCommandTest extends TestCase
         $console->setInputs(['c']);
         $console->execute([]);
 
-        $this->assertContains("It looks like you've already run 'jigsaw init' on this project", $console->getDisplay());
+        $this->assertStringContainsString("It looks like you've already run 'jigsaw init' on this project", $console->getDisplay());
     }
 
     /**
@@ -105,7 +105,7 @@ class InitCommandTest extends TestCase
         $console->setInputs(['c']);
         $console->execute([]);
 
-        $this->assertContains("It looks like you've already run 'jigsaw init' on this project", $console->getDisplay());
+        $this->assertStringContainsString("It looks like you've already run 'jigsaw init' on this project", $console->getDisplay());
     }
 
     /**
@@ -131,7 +131,7 @@ class InitCommandTest extends TestCase
 
         $basic_scaffold->shouldNotHaveReceived('archiveExistingSite');
         $basic_scaffold->shouldNotHaveReceived('build');
-        $this->assertNotContains('initialized', $console->getDisplay());
+        $this->assertStringNotContainsString('initialized', $console->getDisplay());
     }
 
     /**
@@ -156,7 +156,7 @@ class InitCommandTest extends TestCase
         $console->execute([]);
 
         $basic_scaffold->shouldHaveReceived('archiveExistingSite');
-        $this->assertContains('initialized', $console->getDisplay());
+        $this->assertStringContainsString('initialized', $console->getDisplay());
     }
 
     /**
@@ -181,7 +181,7 @@ class InitCommandTest extends TestCase
         $console->execute([]);
 
         $basic_scaffold->shouldHaveReceived('build');
-        $this->assertContains('initialized', $console->getDisplay());
+        $this->assertStringContainsString('initialized', $console->getDisplay());
     }
 
     /**
@@ -206,7 +206,7 @@ class InitCommandTest extends TestCase
         $console->execute([]);
 
         $basic_scaffold->shouldHaveReceived('deleteExistingSite');
-        $this->assertContains('initialized', $console->getDisplay());
+        $this->assertStringContainsString('initialized', $console->getDisplay());
     }
 
     /**
@@ -231,6 +231,6 @@ class InitCommandTest extends TestCase
         $console->execute([]);
 
         $basic_scaffold->shouldHaveReceived('build');
-        $this->assertContains('initialized', $console->getDisplay());
+        $this->assertStringContainsString('initialized', $console->getDisplay());
     }
 }

@@ -24,7 +24,7 @@ class DotInFileNameTest extends TestCase
         $this->assertTrue($handler->shouldHandle($inputFile));
         $this->assertEquals('filename-with.dot.1', $outputFile[0]->name());
         $this->assertEquals('Test with dot in filename', $outputFile[0]->data()->page->title);
-        $this->assertContains('<h3>This file contains a dot in the filename</h3>', $outputFile[0]->contents());
+        $this->assertStringContainsString('<h3>This file contains a dot in the filename</h3>', $outputFile[0]->contents());
     }
 
     /**
@@ -39,7 +39,7 @@ class DotInFileNameTest extends TestCase
         $this->assertTrue($handler->shouldHandle($inputFile));
         $this->assertEquals('filename-with.dot.2', $outputFile[0]->name());
         $this->assertEquals('Second test with dot in filename', $outputFile[0]->data()->page->title);
-        $this->assertContains('<h3>This file also contains a dot in the filename</h3>', $outputFile[0]->contents());
+        $this->assertStringContainsString('<h3>This file also contains a dot in the filename</h3>', $outputFile[0]->contents());
     }
 
     /**
@@ -54,7 +54,7 @@ class DotInFileNameTest extends TestCase
         $this->assertTrue($handler->shouldHandle($inputFile));
         $this->assertEquals('filename-with.dot.3', $outputFile[0]->name());
         $this->assertEquals('Test with dot in filename', $outputFile[0]->data()->page->title);
-        $this->assertContains('<h3>This file contains a dot in the filename</h3>', $outputFile[0]->contents());
+        $this->assertStringContainsString('<h3>This file contains a dot in the filename</h3>', $outputFile[0]->contents());
     }
 
     /**

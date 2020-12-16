@@ -2,6 +2,7 @@
 
 namespace TightenCo\Jigsaw\Scaffold;
 
+use Error;
 use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -58,6 +59,8 @@ class PresetPackage
         } catch (InstallerCommandException $e) {
             throw $e;
         } catch (Exception $e) {
+            throw new Exception("The 'init.php' file for this preset contains errors.");
+        } catch (Error $e) {
             throw new Exception("The 'init.php' file for this preset contains errors.");
         }
     }

@@ -14,13 +14,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [7.2, 7.3, 7.4, 8.0]
+        php: [7.3, 7.4, 8.0]
         include:
           - front-yaml: '^1.8'
             phpunit: '^9.0'
-          - php: 7.2
-            front-yaml: '^1.5'
-            phpunit: '^7.0'
 
     steps:
       - name: Checkout repository

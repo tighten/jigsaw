@@ -79,7 +79,7 @@ class PresetScaffoldBuilder extends ScaffoldBuilder
         $source = $this->package->path .
             ($directory ? DIRECTORY_SEPARATOR . trim($directory, '/') : '');
 
-        collect($this->getPresetDirectories($match, $ignore, $source))
+        collect($this->getPresetDirectories($source, $match, $ignore))
             ->each(function ($directory) {
                 $destination = $this->base . DIRECTORY_SEPARATOR . $directory->getRelativePathName();
 
@@ -88,7 +88,7 @@ class PresetScaffoldBuilder extends ScaffoldBuilder
                 }
             });
 
-        collect($this->getPresetFiles($match, $ignore, $source))
+        collect($this->getPresetFiles($source, $match, $ignore))
             ->each(function ($file) {
                 $source = $file->getPathName();
                 $destination = $this->base . DIRECTORY_SEPARATOR . $file->getRelativePathName();
@@ -124,12 +124,12 @@ class PresetScaffoldBuilder extends ScaffoldBuilder
         return $this->files->filesAndDirectories($this->base, $match, $ignore);
     }
 
-    protected function getPresetDirectories($match = [], $ignore = [], $source)
+    protected function getPresetDirectories($source, $match = [], $ignore = [])
     {
         return $this->files->directories($source, $match, $ignore);
     }
 
-    protected function getPresetFiles($match = [], $ignore = [], $source)
+    protected function getPresetFiles($source, $match = [], $ignore = [])
     {
         return $this->files->files($source, $match, $ignore);
     }

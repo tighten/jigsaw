@@ -89,7 +89,7 @@ class PresetScaffoldBuilderTest extends TestCase
             $preset->init('test');
             $this->fail('Exception not thrown');
         } catch (\Exception $e) {
-            $this->assertContains(
+            $this->assertStringContainsString(
                 "'test' is not a valid package name.",
                 $e->getMessage()
             );
@@ -120,7 +120,7 @@ class PresetScaffoldBuilderTest extends TestCase
 
             $this->fail('Exception not thrown');
         } catch (\Exception $e) {
-            $this->assertContains('contains errors', $e->getMessage());
+            $this->assertStringContainsString('contains errors', $e->getMessage());
         }
     }
 

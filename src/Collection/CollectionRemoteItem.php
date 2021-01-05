@@ -9,13 +9,13 @@ class CollectionRemoteItem
 {
     private $item;
     private $index;
-    private $prefix;
+    private $collectionName;
 
     public function __construct($item, $index = 0, $collectionName = null)
     {
         $this->item = $item;
         $this->index = $index;
-        $this->prefix = $collectionName . '_';
+        $this->collectionName = $collectionName;
     }
 
     public function getContent()
@@ -27,7 +27,11 @@ class CollectionRemoteItem
 
     public function getFilename()
     {
-        return Arr::get($this->item, 'filename', $this->prefix . ($this->index + 1)) . '.blade.md';
+        $default = is_int($this->index)
+            ? $this->collectionName . '-' . ($this->index + 1)
+            : $this->index;
+
+        return Arr::get($this->item, 'filename', $default) . '.blade.md';
     }
 
     protected function getHeader()

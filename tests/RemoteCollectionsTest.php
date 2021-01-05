@@ -442,6 +442,37 @@ class RemoteCollectionsTest extends TestCase
     /**
      * @test
      */
+    public function filename_for_output_file_is_set_to_collection_name_plus_array_key_if_filename_not_specified_and_key_is_string()
+    {
+        $config = collect([
+            'collections' => [
+                'test' => [
+                    'extends' => '_layouts.master',
+                    'items' => [
+                        'foo' => [
+                            'content' => 'item 1',
+                        ],
+                        'bar' => [
+                            'content' => 'item 2',
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+        $files = $this->setupSource([
+            '_layouts' => [
+                'master.blade.php' => "<div>@yield('content')</div>",
+            ],
+        ]);
+        $this->buildSite($files, $config);
+
+        $this->assertTrue($files->hasChild('build/test/foo.html'));
+        $this->assertTrue($files->hasChild('build/test/bar.html'));
+    }
+
+    /**
+     * @test
+     */
     public function filename_for_output_file_is_set_to_filename_key_if_specified()
     {
         $config = collect([

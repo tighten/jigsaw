@@ -1,18 +1,15 @@
 {
     "private": true,
     "scripts": {
-        "local": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-        "staging": "cross-env NODE_ENV=staging node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-        "dev": "npm run local",
-        "prod": "npm run production",
-        "watch": "npm run local -- --watch"
+        "dev": "mix",
+        "watch": "mix watch",
+        "staging": "NODE_ENV=staging mix",
+        "prod": "mix --production"
     },
     "devDependencies": {
-        "cross-env": "^3.2.3",
-        "laravel-mix": "^5.0.5",
-        "laravel-mix-jigsaw": "^1.1.0",
-        "postcss-import": "^12.0.0",
-        "tailwindcss": "^1.9.6"
+        "laravel-mix": "^6.0.10",
+        "laravel-mix-jigsaw": "^1.5.0",
+        "postcss-import": "^14.0.0",
+        "tailwindcss": "^2.0.2"
     }
 }

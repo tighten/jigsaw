@@ -1,4 +1,4 @@
-@extends('_layouts.master')
+@extends('_layouts.site')
 
 @section('body')
 <div class="p-8">

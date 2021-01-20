@@ -1,11 +1,9 @@
 module.exports = {
-  purge: {
-    content: [
-      'source/**/*.blade.php',
-      'source/**/*.md',
-      'source/**/*.html',
-    ]
-  },
+  purge: [
+    'source/**/*.blade.php',
+    'source/**/*.md',
+    'source/**/*.html',
+  ],
   theme: {
     extend: {},
   },
@@ -13,4 +11,4 @@ module.exports = {
     extend: {},
   },
   plugins: [],
-}
+};

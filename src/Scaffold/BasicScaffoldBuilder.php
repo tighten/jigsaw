@@ -11,19 +11,8 @@ class BasicScaffoldBuilder extends ScaffoldBuilder
 
     public function build()
     {
-        $this->scaffoldSite();
-        $this->scaffoldMix();
+        $this->files->copyDirectory(__DIR__ . '/../../stubs/site', $this->base);
 
         return $this;
-    }
-
-    protected function scaffoldSite()
-    {
-        $this->files->copyDirectory(__DIR__ . '/../../stubs/site', $this->base);
-    }
-
-    protected function scaffoldMix()
-    {
-        $this->files->copyDirectory(__DIR__ . '/../../stubs/mix', $this->base);
     }
 }

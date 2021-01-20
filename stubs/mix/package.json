@@ -9,10 +9,13 @@
         "watch": "npm run local -- --watch"
     },
     "devDependencies": {
+        "@tailwindcss/postcss7-compat": "^2.0.2",
+        "autoprefixer": "^9.8.6",
         "cross-env": "^3.2.3",
         "laravel-mix": "^5.0.5",
         "laravel-mix-jigsaw": "^1.1.0",
+        "postcss": "^7.0.35",
         "postcss-import": "^12.0.0",
-        "tailwindcss": "^1.9.6"
+        "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.2"
     }
 }

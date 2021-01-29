@@ -5,7 +5,6 @@
 /.idea/
 /.vscode/
 npm-debug.log
-yarn-error.log
 
 # Optional ignores
 # /build_staging/

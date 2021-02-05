@@ -119,7 +119,7 @@ class SiteBuilder
         $meta = $this->getMetaData($file, $siteData->page->baseUrl);
 
         $pageData = PageData::withPageMetaData($siteData, $meta);
-        Container::getInstance()->instance('pagedata', $pageData);
+        Container::getInstance()->instance('pageData', $pageData);
 
         return $this->getHandler($file)->handle($file, $pageData);
     }

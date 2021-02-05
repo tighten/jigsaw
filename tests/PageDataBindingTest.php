@@ -44,7 +44,7 @@ class TestPageHeaderComponent extends Component
 
     public function __construct()
     {
-        $this->page = Container::getInstance()->make('pagedata');
+        $this->page = Container::getInstance()->make('pageData');
     }
 
     public function render()

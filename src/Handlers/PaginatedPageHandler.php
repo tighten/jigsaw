@@ -41,16 +41,17 @@ class PaginatedPageHandler
 
     public function handle($file, PageData $pageData)
     {
-        $pageData->page->addVariables($this->getPageVariables($file));
+        $page = $pageData->page;
+        $page->addVariables($this->getPageVariables($file));
+        $collection = $page->pagination->collection;
 
         return $this->paginator->paginate(
             $file,
-            $pageData->get($pageData->page->pagination->collection),
-            $pageData->page->pagination->perPage ?: (
-                $pageData->page->collections->{$pageData->page->pagination->collection}->perPage ?: (
-                    $pageData->page->perPage ?: 10
-                )
-            )
+            $pageData->get($collection),
+            $page->pagination->perPage
+                ?: $page->collections->{$collection}->perPage
+                ?: $page->perPage
+                ?: 10
         )->map(function ($page) use ($file, $pageData) {
             $pageData->setPagePath($page->current);
             $pageData->put('pagination', $page);

@@ -80,8 +80,8 @@ class PresetPackage
         }
 
         $parts = explode('/', $name, 3);
-        $composerName = explode(':',Arr::get($parts, 1));
         $this->vendor = Arr::get($parts, 0);
+        $composerName = explode(':', Arr::get($parts, 1));
         $this->name = $composerName[0];
         $this->constraint = $composerName[1] ?? '';
         $this->suffix = Arr::get($parts, 2);
@@ -103,7 +103,8 @@ class PresetPackage
 
         if (! $this->files->exists($this->path)) {
             $package = $this->vendor . '/' . $this->name;
-            if (!empty($this->constraint)) {
+
+            if (! empty($this->constraint)) {
                 $package .= ':' . $this->constraint;
             }
 

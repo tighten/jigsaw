@@ -24,13 +24,13 @@ class ComponentTagCompiler extends BaseComponentTagCompiler
             return $this->aliases[$component];
         }
 
+        if (class_exists($class = $this->guessClassName($component))) {
+            return $class;
+        }
+
         if (Container::getInstance()[Factory::class]
             ->exists($view = "_components.{$component}")) {
             return $view;
-        }
-
-        if (class_exists($class = $this->guessClassName($component))) {
-            return $class;
         }
 
         throw new Exception(

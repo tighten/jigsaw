@@ -86,6 +86,7 @@ class BuildCommand extends Command
     {
         $this->app->buildPath = [
             'source' => $this->getBuildPath('source', $env),
+            'views' => $this->getBuildPath('views', $env),
             'destination' => $this->getBuildPath('destination', $env),
         ];
     }

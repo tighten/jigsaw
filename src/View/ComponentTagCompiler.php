@@ -18,7 +18,7 @@ class ComponentTagCompiler extends BaseComponentTagCompiler
      *
      * @throws \InvalidArgumentException
      */
-    protected function componentClass(string $component)
+    public function componentClass(string $component)
     {
         if (isset($this->aliases[$component])) {
             return $this->aliases[$component];

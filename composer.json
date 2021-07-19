@@ -15,9 +15,9 @@
     ],
     "require": {
         "php": "^7.2|^8.0",
-        "illuminate/container": "^7.0",
-        "illuminate/support": "^7.0",
-        "illuminate/view": "^7.0",
+        "illuminate/container": "^8.0",
+        "illuminate/support": "^8.0",
+        "illuminate/view": "^8.0",
         "michelf/php-markdown": "^1.9",
         "mnapoli/front-yaml": "^1.5|^1.8",
         "mockery/mockery": "^1.0.0",
@@ -25,7 +25,7 @@
         "symfony/process": "^4.0|^5.0",
         "symfony/var-dumper": "^4.0|^5.0",
         "symfony/yaml": "^4.0|^5.0",
-        "vlucas/phpdotenv": "^4.0"
+        "vlucas/phpdotenv": "^5.3"
     },
     "require-dev": {
         "mikey179/vfsstream": "^1.6",

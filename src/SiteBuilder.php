@@ -149,7 +149,7 @@ class SiteBuilder
             return urldecode(dirname($permalink));
         }
 
-        return urldecode($this->outputPathResolver->directory($file->path(), $file->name(), $file->extension(), $file->page()));
+        return urldecode($this->outputPathResolver->directory($file->path(), $file->name(), $file->extension(), $file->page(), $file->prefix()));
     }
 
     private function getOutputPath($file)
@@ -162,7 +162,8 @@ class SiteBuilder
             $file->path(),
             $file->name(),
             $file->extension(),
-            $file->page()
+            $file->page(),
+            $file->prefix()
         )));
     }
 

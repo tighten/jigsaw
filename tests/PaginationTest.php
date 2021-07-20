@@ -361,9 +361,7 @@ class PaginationTest extends TestCase
         );
     }
 
-        /**
-     * @test
-     */
+    /** @test */
     public function blade_template_file_can_be_paginated_with_prefix()
     {
         $config = collect(['collections' => ['posts' => []]]);
@@ -399,9 +397,7 @@ class PaginationTest extends TestCase
         $this->assertNull($files->getChild('build/blog/3/index.html'));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function blade_markdown_template_file_can_be_paginated_with_prefix()
     {
         $config = collect(['collections' => ['posts' => []]]);
@@ -430,9 +426,9 @@ class PaginationTest extends TestCase
 
         $this->buildSite($files, $config, $pretty = true);
 
-        $this->assertEquals('post1post2', $this->clean($files->getChild('build/blog/index.html')->getContent()));
-        $this->assertEquals('post3post4', $this->clean($files->getChild('build/blog/page/2/index.html')->getContent()));
-        $this->assertEquals('post5', $this->clean($files->getChild('build/blog/page/3/index.html')->getContent()));
+        $this->assertSame('post1post2', $this->clean($files->getChild('build/blog/index.html')->getContent()));
+        $this->assertSame('post3post4', $this->clean($files->getChild('build/blog/page/2/index.html')->getContent()));
+        $this->assertSame('post5', $this->clean($files->getChild('build/blog/page/3/index.html')->getContent()));
         $this->assertNull($files->getChild('build/blog/2/index.html'));
         $this->assertNull($files->getChild('build/blog/3/index.html'));
     }

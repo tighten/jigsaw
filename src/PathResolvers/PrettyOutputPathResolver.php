@@ -11,7 +11,7 @@ class PrettyOutputPathResolver
                 return '/' . leftTrimPath(trimPath($path) . '/') . trimPath($prefix . '/' . $page) . '/';
             }
 
-            return  leftTrimPath('/' . trimPath($path) . '/') . '/';
+            return leftTrimPath('/' . trimPath($path) . '/') . '/';
         }
 
         if ($type === 'html' && $name !== 'index') {

@@ -360,4 +360,76 @@ class PaginationTest extends TestCase
             $this->clean($files->getChild('build/blog/3/index.html')->getContent())
         );
     }
+
+    /** @test */
+    public function blade_template_file_can_be_paginated_with_prefix()
+    {
+        $config = collect(['collections' => ['posts' => []]]);
+
+        $files = $this->setupSource([
+            '_layouts' => [
+                'post.blade.php' => "@section('content') @endsection",
+            ],
+            '_posts' => [
+                'post1.blade.php' => "@extends('_layouts.post')1",
+                'post2.blade.php' => "@extends('_layouts.post')2",
+                'post3.blade.php' => "@extends('_layouts.post')3",
+                'post4.blade.php' => "@extends('_layouts.post')4",
+                'post5.blade.php' => "@extends('_layouts.post')5",
+            ],
+            'blog.blade.php' => <<<'BLADE'
+                ---
+                pagination:
+                    collection: posts
+                    perPage: 2
+                    prefix: page
+                ---
+                @foreach($pagination->items as $item){{ $item->getFilename() }}@endforeach
+                BLADE,
+        ]);
+
+        $this->buildSite($files, $config, $pretty = true);
+
+        $this->assertSame('post1post2', $this->clean($files->getChild('build/blog/index.html')->getContent()));
+        $this->assertSame('post3post4', $this->clean($files->getChild('build/blog/page/2/index.html')->getContent()));
+        $this->assertSame('post5', $this->clean($files->getChild('build/blog/page/3/index.html')->getContent()));
+        $this->assertNull($files->getChild('build/blog/2/index.html'));
+        $this->assertNull($files->getChild('build/blog/3/index.html'));
+    }
+
+    /** @test */
+    public function blade_markdown_template_file_can_be_paginated_with_prefix()
+    {
+        $config = collect(['collections' => ['posts' => []]]);
+
+        $files = $this->setupSource([
+            '_layouts' => [
+                'post.blade.php' => '@section(\'content\') @endsection',
+            ],
+            '_posts' => [
+                'post1.blade.php' => "@extends('_layouts.post')1",
+                'post2.blade.php' => "@extends('_layouts.post')2",
+                'post3.blade.php' => "@extends('_layouts.post')3",
+                'post4.blade.php' => "@extends('_layouts.post')4",
+                'post5.blade.php' => "@extends('_layouts.post')5",
+            ],
+            'blog.blade.md' => <<<'MD'
+                ---
+                pagination:
+                    collection: posts
+                    perPage: 2
+                    prefix: page
+                ---
+                @foreach($pagination->items as $item){{ $item->getFilename() }}@endforeach
+                MD,
+        ]);
+
+        $this->buildSite($files, $config, $pretty = true);
+
+        $this->assertSame('post1post2', $this->clean($files->getChild('build/blog/index.html')->getContent()));
+        $this->assertSame('post3post4', $this->clean($files->getChild('build/blog/page/2/index.html')->getContent()));
+        $this->assertSame('post5', $this->clean($files->getChild('build/blog/page/3/index.html')->getContent()));
+        $this->assertNull($files->getChild('build/blog/2/index.html'));
+        $this->assertNull($files->getChild('build/blog/3/index.html'));
+    }
 }

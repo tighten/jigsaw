@@ -108,7 +108,7 @@ class BuildCommand extends Command
         if (! $this->input->getOption('quiet')) {
             $customPath = Arr::get($this->app->config, 'build.destination');
 
-            if ($customPath && strpos($customPath, 'build_') !== 0) {
+            if ($customPath && strpos($customPath, 'build_') !== 0 && file_exists($customPath)) {
                 return $this->console->confirm('Overwrite "' . $this->app->buildPath['destination'] . '"? ');
             }
         }

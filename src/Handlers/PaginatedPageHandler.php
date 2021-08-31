@@ -44,6 +44,10 @@ class PaginatedPageHandler
         $page = $pageData->page;
         $page->addVariables($this->getPageVariables($file));
         $collection = $page->pagination->collection;
+        $prefix = $page->pagination->prefix
+            ?: $page->collections->{$collection}->prefix
+            ?: $page->prefix
+            ?: '';
 
         return $this->paginator->paginate(
             $file,
@@ -51,8 +55,9 @@ class PaginatedPageHandler
             $page->pagination->perPage
                 ?: $page->collections->{$collection}->perPage
                 ?: $page->perPage
-                ?: 10
-        )->map(function ($page) use ($file, $pageData) {
+                ?: 10,
+            $prefix,
+        )->map(function ($page) use ($file, $pageData, $prefix) {
             $pageData->setPagePath($page->current);
             $pageData->put('pagination', $page);
             $extension = strtolower($file->getExtension());
@@ -64,7 +69,8 @@ class PaginatedPageHandler
                 ($extension == 'php' || $extension == 'md') ? 'html' : $extension,
                 $this->render($file, $pageData),
                 $pageData,
-                $page->currentPage
+                $page->currentPage,
+                $prefix
             );
         });
     }

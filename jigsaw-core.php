@@ -67,7 +67,6 @@ $bootstrapFile = $container['cwd'] . '/bootstrap.php';
 
 $container->instance('buildPath', [
     'source' => $container['cwd'] . '/source',
-    'views' => $container['cwd'] . '/source',
     'destination' => $container['cwd'] . '/build_{env}',
 ]);
 

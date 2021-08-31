@@ -76,13 +76,13 @@ class TestCase extends BaseTestCase
         return $siteData->addCollectionData($collectionData);
     }
 
-    public function buildSite($vfs, $config = [], $pretty = false)
+    public function buildSite($vfs, $config = [], $pretty = false, $viewPath = '/source')
     {
         $this->app->consoleOutput->setup($verbosity = -1);
         $this->app->config = collect($this->app->config)->merge($config);
         $this->app->buildPath = [
             'source' => $vfs->url() . '/source',
-            'views' => $vfs->url() . '/source',
+            'views' => $vfs->url() . $viewPath,
             'destination' => $vfs->url() . '/build',
         ];
 

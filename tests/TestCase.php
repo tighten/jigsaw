@@ -27,6 +27,7 @@ class TestCase extends BaseTestCase
         $this->app = $container;
         $this->app->buildPath = [
             'source' => $this->sourcePath,
+            'views' => $this->sourcePath,
             'destination' => $this->destinationPath,
         ];
         $this->filesystem = new Filesystem();
@@ -81,6 +82,7 @@ class TestCase extends BaseTestCase
         $this->app->config = collect($this->app->config)->merge($config);
         $this->app->buildPath = [
             'source' => $vfs->url() . '/source',
+            'views' => $vfs->url() . '/source',
             'destination' => $vfs->url() . '/build',
         ];
 

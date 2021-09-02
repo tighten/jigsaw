@@ -31,7 +31,7 @@ class PageDataBindingTest extends TestCase
 
         $data = json_decode(Str::between($built, '<div>Header: ', '</div>'), true);
 
-        $this->assertTrue(Str::endsWith($data['page']['view.compiled'], '/jigsaw/cache'));
+        $this->assertEquals($data['page']['view.compiled'], getcwd() . '/cache');
         $this->assertSame('page', $data['page']['_meta']['filename']);
         $this->assertSame('/page.html', $data['page']['_meta']['path']);
         $this->assertSame('/page.html', $data['page']['_meta']['url']);

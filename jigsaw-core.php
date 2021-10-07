@@ -71,7 +71,7 @@ $container->instance('buildPath', [
 ]);
 
 $container->bind('config', function ($c) use ($cachePath) {
-    $config = (new ConfigFile($c['cwd'] . '/config.php', $c['cwd'] . '/helpers.php'))->config;
+    $config = (new ConfigFile($c['cwd'] . '/config.php', $c['cwd'] . '/helpers.php', $c['cwd'] . '/collections.php'))->config;
     $config->put('view.compiled', $cachePath);
     return $config;
 });

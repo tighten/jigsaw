@@ -72,10 +72,10 @@ return [
         'collection_tests' => [
             'sum' => 99999,
         ],
-        'sort_tests' => [
+        'sort_tests_multi' => [
             'sort' => ['letter', '-number'],
         ],
-        'sort_natural_tests' => [
+        'sort_tests_natural' => [
             'sort_natural' => 'title',
         ],
         'invalid_path_characters_test' => [

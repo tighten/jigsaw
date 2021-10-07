@@ -3,7 +3,7 @@
 @section('body')
 <h2>Multisort Test</h2>
 
-@foreach ($sort_tests as $item)
+@foreach ($sort_tests_multi as $item)
     <p>{{ $item->number }}-{{ $item->letter }}</p>
 @endforeach
 

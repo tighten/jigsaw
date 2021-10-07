@@ -3,7 +3,7 @@
 @section('body')
 <h2>Natural Sort Test</h2>
 
-@foreach ($sort_natural_tests as $item)
+@foreach ($sort_tests_natural as $item)
     <p>{{ $item->title }}</p>
 @endforeach
 

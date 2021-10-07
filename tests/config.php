@@ -75,6 +75,9 @@ return [
         'sort_tests' => [
             'sort' => ['letter', '-number'],
         ],
+        'sort_natural_tests' => [
+            'sort_natural' => 'title',
+        ],
         'invalid_path_characters_test' => [
             'path' => '{-title}',
         ],

@@ -83,6 +83,10 @@ class Collection extends BaseCollection
 
     private function defaultSort($items)
     {
+        if (Arr::has($this->settings, 'sort_natural') && is_string(Arr::get($this->settings, 'sort_natural'))) {
+            return $items->sortBy(Arr::get($this->settings, 'sort_natural'), SORT_NATURAL);
+        }
+
         $sortSettings = collect(Arr::get($this->settings, 'sort'))->map(function ($setting) {
             return [
                 'key' => ltrim($setting, '-+'),

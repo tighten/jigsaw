@@ -76,10 +76,10 @@ return [
             'sort' => ['letter', '-number'],
         ],
         'sort_tests_natural' => [
-            'sort_natural' => 'title',
+            'sort_with_flag' => 'title:SORT_NATURAL',
         ],
         'sort_tests_natural_descending' => [
-            'sort_natural' => '-title',
+            'sort_with_flag' => '-title:SORT_NATURAL',
         ],
         'invalid_path_characters_test' => [
             'path' => '{-title}',

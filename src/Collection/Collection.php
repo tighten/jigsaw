@@ -84,8 +84,12 @@ class Collection extends BaseCollection
 
     private function defaultSort($items)
     {
-        if ((string) $setting = Arr::get($this->settings, 'sort_natural')) {
-            return $items->sortBy(ltrim($setting, '-+'), SORT_NATURAL, Str::startsWith($setting, '-'));
+        if ((string) $setting = Arr::get($this->settings, 'sort_with_flag')) {
+            $key = Str::before(ltrim($setting, '-+'), ':');
+            $flag = Str::contains($setting, ':') ? constant(Str::after($setting, ':')) : SORT_REGULAR;
+            $descending_flag = Str::startsWith($setting, '-');
+
+            return $items->sortBy($key, $flag, $descending_flag);
         }
 
         $sortSettings = collect(Arr::get($this->settings, 'sort'))->map(function ($setting) {

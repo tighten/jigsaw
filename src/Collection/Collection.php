@@ -5,6 +5,7 @@ namespace TightenCo\Jigsaw\Collection;
 use Closure;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection as BaseCollection;
+use Illuminate\Support\Str;
 use TightenCo\Jigsaw\IterableObject;
 
 class Collection extends BaseCollection
@@ -83,8 +84,8 @@ class Collection extends BaseCollection
 
     private function defaultSort($items)
     {
-        if (Arr::has($this->settings, 'sort_natural') && is_string(Arr::get($this->settings, 'sort_natural'))) {
-            return $items->sortBy(Arr::get($this->settings, 'sort_natural'), SORT_NATURAL);
+        if ((string) $setting = Arr::get($this->settings, 'sort_natural')) {
+            return $items->sortBy(ltrim($setting, '-+'), SORT_NATURAL, Str::startsWith($setting, '-'));
         }
 
         $sortSettings = collect(Arr::get($this->settings, 'sort'))->map(function ($setting) {

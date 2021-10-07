@@ -78,6 +78,9 @@ return [
         'sort_tests_natural' => [
             'sort_natural' => 'title',
         ],
+        'sort_tests_natural_descending' => [
+            'sort_natural' => '-title',
+        ],
         'invalid_path_characters_test' => [
             'path' => '{-title}',
         ],

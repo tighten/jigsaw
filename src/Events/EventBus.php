@@ -21,7 +21,7 @@ class EventBus
     public function __call($event, $arguments)
     {
         if (isset($this->{$event})) {
-            $this->{$event} = $this->{$event}->merge(collect(Arr::wrap($arguments[0])));
+            $this->{$event} = $this->{$event}->merge(Arr::wrap($arguments[0]));
         }
     }
 

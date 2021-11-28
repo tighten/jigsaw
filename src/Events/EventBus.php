@@ -20,7 +20,11 @@ class EventBus
     public function __call($event, $arguments)
     {
         if (isset($this->{$event})) {
-            $this->{$event}->add(current($arguments));
+            $listeners = $arguments[0];
+            if ( ! is_array($listeners)) {
+                $listeners = [$listeners];
+            }
+            $this->{$event} = $this->{$event}->merge(collect($listeners));
         }
     }
 

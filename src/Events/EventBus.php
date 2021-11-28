@@ -2,6 +2,7 @@
 
 namespace TightenCo\Jigsaw\Events;
 
+use Illuminate\Support\Arr;
 use TightenCo\Jigsaw\Jigsaw;
 
 class EventBus
@@ -20,11 +21,7 @@ class EventBus
     public function __call($event, $arguments)
     {
         if (isset($this->{$event})) {
-            $listeners = $arguments[0];
-            if ( ! is_array($listeners)) {
-                $listeners = [$listeners];
-            }
-            $this->{$event} = $this->{$event}->merge(collect($listeners));
+            $this->{$event} = $this->{$event}->merge(collect(Arr::wrap($arguments[0])));
         }
     }
 

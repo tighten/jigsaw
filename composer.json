@@ -51,10 +51,11 @@
     "scripts": {
         "fix" : "php vendor/bin/php-cs-fixer fix --using-cache=no"
     },
-    "prefer-stable": true,
     "config": {
         "sort-packages": true,
         "preferred-install": "dist",
         "optimize-autoloader": true
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }

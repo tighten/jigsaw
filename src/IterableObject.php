@@ -28,6 +28,7 @@ class IterableObject extends BaseCollection implements ArrayAccess
         return value($default);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($key)
     {
         if (! isset($this->items[$key])) {

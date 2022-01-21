@@ -54,6 +54,26 @@ class EventsTest extends TestCase
         $this->assertEquals('set in TestListener', $jigsaw->getConfig('variable_b'));
     }
 
+    /** @test */
+    public function it_can_handle_invokable_listeners()
+    {
+        $this->app['events']->beforeBuild(new class {
+            private $object;
+
+            public function __construct()
+            {
+                $this->object = (object) [];
+            }
+
+            public function __invoke($jigsaw) {
+                $jigsaw->setConfig('variable_a', 'Set from invokable');
+            }
+        });
+        $jigsaw = $this->buildSite($this->setupSource(), ['variable_a' => 'set in config.php']);
+
+        $this->assertEquals('Set from invokable', $jigsaw->getConfig('variable_a'));
+    }
+
     /**
      * @test
      */

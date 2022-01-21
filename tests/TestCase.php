@@ -27,6 +27,7 @@ class TestCase extends BaseTestCase
         $this->app = $container;
         $this->app->buildPath = [
             'source' => $this->sourcePath,
+            'views' => $this->sourcePath,
             'destination' => $this->destinationPath,
         ];
         $this->filesystem = new Filesystem();
@@ -75,12 +76,13 @@ class TestCase extends BaseTestCase
         return $siteData->addCollectionData($collectionData);
     }
 
-    public function buildSite($vfs, $config = [], $pretty = false)
+    public function buildSite($vfs, $config = [], $pretty = false, $viewPath = '/source')
     {
         $this->app->consoleOutput->setup($verbosity = -1);
         $this->app->config = collect($this->app->config)->merge($config);
         $this->app->buildPath = [
             'source' => $vfs->url() . '/source',
+            'views' => $vfs->url() . $viewPath,
             'destination' => $vfs->url() . '/build',
         ];
 

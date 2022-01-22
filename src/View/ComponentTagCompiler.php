@@ -19,7 +19,7 @@ class ComponentTagCompiler extends BaseComponentTagCompiler
      *
      * @throws \InvalidArgumentException
      */
-    protected function componentClass(string $component)
+    public function componentClass(string $component)
     {
         $viewFactory = Container::getInstance()[Factory::class];
 

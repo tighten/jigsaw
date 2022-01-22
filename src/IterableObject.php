@@ -12,7 +12,7 @@ class IterableObject extends BaseCollection implements ArrayAccess
 {
     public function __get($key)
     {
-        if (! $this->offsetExists($key) && in_array($key, static::$proxies)) {
+        if (! array_key_exists($key, $this->items) && in_array($key, static::$proxies)) {
             return new HigherOrderCollectionProxy($this, $key);
         }
 
@@ -21,13 +21,14 @@ class IterableObject extends BaseCollection implements ArrayAccess
 
     public function get($key, $default = null)
     {
-        if ($this->offsetExists($key)) {
+        if (array_key_exists($key, $this->items)) {
             return $this->getElement($key);
         }
 
         return value($default);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($key)
     {
         if (! isset($this->items[$key])) {

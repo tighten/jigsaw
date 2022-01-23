@@ -1,44 +1,23 @@
 name: CI
-
 on:
   push:
-    branches: [master]
+    branches: [main, ci]
   pull_request:
-
 jobs:
   test:
-    name: Test (PHP ${{ matrix.php }})
-
+    name: PHP ${{ matrix.php }}, ${{ matrix.dependencies }}
     runs-on: ubuntu-latest
-
     strategy:
       fail-fast: false
       matrix:
-        php: [7.3, 7.4, 8.0]
-        include:
-          - front-yaml: '^1.8'
-            phpunit: '^9.0'
-
+        php: ['7.2', '7.3', '7.4', '8.0', '8.1']
+        dependencies: [lowest, highest]
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
+      - uses: actions/checkout@v2
+      - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-
-      - name: Cache dependencies
-        uses: actions/cache@v1
+      - uses: ramsey/composer-install@v2
         with:
-          path: ~/.composer/cache/files
-          key: php-${{ matrix.php }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: php-${{ matrix.php }}-composer-
-
-      - name: Install dependencies
-        run: |
-          composer require "mnapoli/front-yaml:${{ matrix.front-yaml }}" "phpunit/phpunit:${{ matrix.phpunit }}" --no-interaction --no-update
-          composer install --no-interaction
-
-      - name: Run PHPUnit tests
-        run: vendor/bin/phpunit --testdox --colors=always
+          dependency-versions: ${{ matrix.dependencies }}
+      - run: vendor/bin/phpunit --testdox --colors=always

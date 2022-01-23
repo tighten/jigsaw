@@ -33,6 +33,19 @@ class IterableObject extends BaseCollection implements ArrayAccess
         return value($default);
     }
 
+    public function has($key)
+    {
+        $keys = is_array($key) ? $key : func_get_args();
+
+        foreach ($keys as $value) {
+            if (! array_key_exists($value, $this->items)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     #[\ReturnTypeWillChange]
     public function offsetGet($key)
     {

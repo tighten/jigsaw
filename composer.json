@@ -33,8 +33,7 @@
         "friendsofphp/php-cs-fixer": "^2.12",
         "mikey179/vfsstream": "^1.6.10",
         "mockery/mockery": "^1.4",
-        "phpunit/phpunit": "~7.0 || ^9.3.3",
-        "spatie/ray": "^1.33"
+        "phpunit/phpunit": "~7.0 || ^9.3.3"
     },
     "autoload": {
         "psr-4": {

@@ -46,17 +46,6 @@ class IterableObject extends BaseCollection implements ArrayAccess
         return true;
     }
 
-    #[\ReturnTypeWillChange]
-    public function offsetGet($key)
-    {
-        if (! isset($this->items[$key])) {
-            $prefix = $this->_source ? 'Error in ' . $this->_source . ': ' : 'Error: ';
-            throw new Exception($prefix . "The key '$key' does not exist.");
-        }
-
-        return $this->getElement($key);
-    }
-
     public function set($key, $value)
     {
         data_set($this->items, $key, $this->isArrayable($value) ? $this->makeIterable($value) : $value);
@@ -69,6 +58,17 @@ class IterableObject extends BaseCollection implements ArrayAccess
     public function putIterable($key, $element)
     {
         $this->put($key, $this->isArrayable($element) ? $this->makeIterable($element) : $element);
+    }
+
+    #[\ReturnTypeWillChange]
+    public function offsetGet($key)
+    {
+        if (! isset($this->items[$key])) {
+            $prefix = $this->_source ? 'Error in ' . $this->_source . ': ' : 'Error: ';
+            throw new Exception($prefix . "The key '$key' does not exist.");
+        }
+
+        return $this->getElement($key);
     }
 
     protected function getElement($key)

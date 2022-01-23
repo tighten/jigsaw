@@ -19,6 +19,11 @@ class IterableObject extends BaseCollection implements ArrayAccess
         return $this->get($key);
     }
 
+    public function except($keys)
+    {
+        return is_null($keys) ? $this : parent::except($keys);
+    }
+
     public function get($key, $default = null)
     {
         if (array_key_exists($key, $this->items)) {

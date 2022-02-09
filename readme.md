@@ -6,4 +6,4 @@
 
 Simple static sites with Laravel's [Blade](https://laravel.com/docs/blade).
 
-For documentation, visit https://jigsaw.tighten.co/docs/installation/
+For documentation, visit https://jigsaw.tighten.com/docs/installation/

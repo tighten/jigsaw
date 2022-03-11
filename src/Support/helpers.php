@@ -13,7 +13,7 @@ function leftTrimPath($path)
 
 function rightTrimPath($path)
 {
-    return rtrim($path, ' .\\/');
+    return rtrim($path ?? '', ' .\\/');
 }
 
 function trimPath($path)

@@ -63,7 +63,7 @@ class BladeComponentTest extends TestCase
         $built = $files->getChild('build/page.html')->getContent();
 
         $this->assertEquals(
-            '<h1>Hello</h1> <div class="alert alert-error">The message</div> ',
+            '<h1>Hello</h1><div class="alert alert-error">The message</div>',
             $built
         );
     }
@@ -89,7 +89,7 @@ class BladeComponentTest extends TestCase
         $built = $files->getChild('build/page.html')->getContent();
 
         $this->assertEquals(
-            '<h1>Hello</h1> <div class="alert alert-error">The message</div> ',
+            '<h1>Hello</h1><div class="alert alert-error">The message</div>',
             $built
         );
     }
@@ -112,7 +112,7 @@ class BladeComponentTest extends TestCase
         $built = $files->getChild('build/page.html')->getContent();
 
         $this->assertEquals(
-            '<h1>Hello</h1> <div class="alert alert-error">The message</div> ',
+            '<h1>Hello</h1><div class="alert alert-error">The message</div>',
             $built
         );
     }
@@ -135,7 +135,7 @@ class BladeComponentTest extends TestCase
         $built = $files->getChild('build/page.html')->getContent();
 
         $this->assertEquals(
-            '<h1>Hello</h1> <div class="alert alert-error">The message</div> ',
+            '<h1>Hello</h1><div class="alert alert-error">The message</div>',
             $built
         );
     }
@@ -161,7 +161,7 @@ class BladeComponentTest extends TestCase
         $built = $files->getChild('build/page.html')->getContent();
 
         $this->assertEquals(
-            '<h1>Hello</h1> <div class="alert alert-error">The message</div> ',
+            '<h1>Hello</h1><div class="alert alert-error">The message</div>',
             $built
         );
     }

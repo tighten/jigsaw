@@ -14,23 +14,26 @@
         }
     ],
     "require": {
-        "php": "^7.2|^8.0",
-        "illuminate/container": "^7.0",
-        "illuminate/support": "^7.0",
-        "illuminate/view": "^7.0",
+        "php": "^7.3 || ~8.0.0 || ~8.1.0",
+        "illuminate/collections": "^8.53",
+        "illuminate/container": "^8.53",
+        "illuminate/filesystem": "^8.0",
+        "illuminate/support": "^8.53",
+        "illuminate/view": "^8.53",
         "michelf/php-markdown": "^1.9",
-        "mnapoli/front-yaml": "^1.5|^1.8",
-        "mockery/mockery": "^1.0.0",
-        "symfony/console": "^4.0|^5.0",
-        "symfony/process": "^4.0|^5.0",
-        "symfony/var-dumper": "^4.0|^5.0",
-        "symfony/yaml": "^4.0|^5.0",
-        "vlucas/phpdotenv": "^4.0"
+        "mnapoli/front-yaml": "^1.5",
+        "symfony/console": "^4.4.30 || ^5.4",
+        "symfony/finder": "^4.0 || ^5.3.7",
+        "symfony/process": "^4.0 || ^5.0",
+        "symfony/var-dumper": "^4.4.29 || ^5.0",
+        "symfony/yaml": "^4.0 || ^5.0",
+        "vlucas/phpdotenv": "^5.3.1"
     },
     "require-dev": {
-        "mikey179/vfsstream": "^1.6",
-        "phpunit/phpunit": "~7.0|^9.3.3",
-        "friendsofphp/php-cs-fixer": "^2.12"
+        "friendsofphp/php-cs-fixer": "^2.12",
+        "mikey179/vfsstream": "^1.6.10",
+        "mockery/mockery": "^1.4",
+        "phpunit/phpunit": "^9.3.3"
     },
     "autoload": {
         "psr-4": {
@@ -51,10 +54,11 @@
     "scripts": {
         "fix" : "php vendor/bin/php-cs-fixer fix --using-cache=no"
     },
-    "prefer-stable": true,
     "config": {
         "sort-packages": true,
         "preferred-install": "dist",
         "optimize-autoloader": true
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }

@@ -98,7 +98,7 @@ class BuildCommand extends Command
             ? $this->getAbsolutePath($customPath)
             :  Arr::get($this->app->buildPath, $pathType);
 
-        return str_replace('{env}', $env, $buildPath);
+        return str_replace('{env}', $env, $buildPath ?? '');
     }
 
     private function getAbsolutePath($path)

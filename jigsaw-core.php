@@ -118,7 +118,7 @@ $container->singleton(Factory::class, function ($c) use ($cachePath, $bladeCompi
     });
 
     $resolver->register('php', function () {
-        return new PhpEngine();
+        return new PhpEngine(new Filesystem);
     });
 
     $resolver->register('markdown', function () use ($c) {

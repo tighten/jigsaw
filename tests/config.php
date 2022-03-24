@@ -34,7 +34,7 @@ return [
     ],
     'envVariable' => env('JIGSAW_TEST_VAR', false),
     'globalPreview' => function ($data, $characters = 100) {
-        return substr(strip_tags($data->getContent()), 0, $characters);
+        return substr(strip_tags($data->getContent() ?? ''), 0, $characters);
     },
     'helperFunction' => function ($data) {
         return 'hello global! #' . $data->number;
@@ -89,7 +89,7 @@ return [
                 return sprintf('%s/%s/%s', $month, $day, $year);
             },
             'preview' => function ($post, $characters = 75) {
-                return substr(strip_tags($post->getContent()), 0, $characters);
+                return substr(strip_tags($post->getContent() ?? ''), 0, $characters);
             },
             'api' => function ($post) {
                 return [
@@ -119,7 +119,7 @@ return [
                     'name' => $data->name,
                     'number' => $data->number,
                     'role' => $data->role,
-                    'content' => strip_tags($data->getContent()),
+                    'content' => strip_tags($data->getContent() ?? ''),
                 ])->toJson();
             },
         ],

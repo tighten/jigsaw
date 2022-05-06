@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit backupGlobals="false"
-         backupStaticAttributes="false"
-         bootstrap="vendor/autoload.php"
-         colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         processIsolation="false"
-         stopOnFailure="false">
+<phpunit bootstrap="vendor/autoload.php" colors="true" convertDeprecationsToExceptions="true">
     <testsuites>
-        <testsuite name="Test Suite">
+        <testsuite name="Jigsaw Tests">
             <directory>./tests/</directory>
         </testsuite>
     </testsuites>

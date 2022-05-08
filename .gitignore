@@ -1,5 +1,7 @@
 cache/
 vendor/
+.idea/
+.vscode/
 .phpunit.result.cache
 .php_cs.cache
 composer.lock

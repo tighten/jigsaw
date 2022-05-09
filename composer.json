@@ -1,5 +1,5 @@
 {
-    "name": "jeffersonsimaogoncalves/jigsaw",
+    "name": "tightenco/jigsaw",
     "description": "Simple static sites with Laravel's Blade.",
     "keywords": ["blade", "laravel", "static", "site", "generator"],
     "license": "MIT",

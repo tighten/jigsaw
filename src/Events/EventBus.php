@@ -7,9 +7,9 @@ use Illuminate\Support\Collection;
 use TightenCo\Jigsaw\Jigsaw;
 
 /**
- * @method void beforeBuild(\callable|class-string|array<int, class-string> $callable)
- * @method void afterCollections(\callable|class-string|array<int, class-string> $callable)
- * @method void afterBuild(\callable|class-string|array<int, class-string> $callable)
+ * @method void beforeBuild(\callable|class-string|array<int, class-string> $listener)
+ * @method void afterCollections(\callable|class-string|array<int, class-string> $listener)
+ * @method void afterBuild(\callable|class-string|array<int, class-string> $listener)
  */
 class EventBus
 {

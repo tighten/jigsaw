@@ -83,7 +83,7 @@ class BuildCommand extends Command
                 return $item !== null;
             });
 
-        if ($this->app->config['merge_collections']) {
+        if ($this->app->config['merge_collection_configs']) {
             $this->app->config->put('collections', $this->app->config->get('collections')->map(
                 function ($envConfig, $key) use ($baseConfig) {
                     return array_merge($baseConfig->get('collections')->get($key), $envConfig);

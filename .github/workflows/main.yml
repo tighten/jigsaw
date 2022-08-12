@@ -1,0 +1,23 @@
+name: CI
+on:
+  push:
+    branches: [main, ci]
+  pull_request:
+jobs:
+  test:
+    name: PHP ${{ matrix.php }}, ${{ matrix.dependencies }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['7.3', '7.4', '8.0', '8.1']
+        dependencies: [lowest, highest]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+      - uses: ramsey/composer-install@v2
+        with:
+          dependency-versions: ${{ matrix.dependencies }}
+      - run: vendor/bin/phpunit --testdox --colors=always

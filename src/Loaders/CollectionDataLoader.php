@@ -3,9 +3,11 @@
 namespace TightenCo\Jigsaw\Loaders;
 
 use Exception;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 use TightenCo\Jigsaw\Collection\Collection;
 use TightenCo\Jigsaw\Collection\CollectionItem;
+use TightenCo\Jigsaw\Console\ConsoleOutput;
 use TightenCo\Jigsaw\File\InputFile;
 use TightenCo\Jigsaw\IterableObject;
 use TightenCo\Jigsaw\IterableObjectWithDefault;
@@ -21,7 +23,7 @@ class CollectionDataLoader
     private $pageSettings;
     private $collectionSettings;
 
-    public function __construct($filesystem, $consoleOutput, $pathResolver, $handlers = [])
+    public function __construct(Filesystem $filesystem, ConsoleOutput $consoleOutput, $pathResolver, $handlers = [])
     {
         $this->filesystem = $filesystem;
         $this->pathResolver = $pathResolver;
@@ -59,6 +61,8 @@ class CollectionDataLoader
         return collect($this->filesystem->files($path))
             ->reject(function ($file) {
                 return Str::startsWith($file->getFilename(), '_');
+            })->filter(function ($file) {
+                return $this->hasHandler($file);
             })->tap(function ($files) {
                 $this->consoleOutput->progressBar('collections')->addSteps($files->count());
             })->map(function ($file) {
@@ -94,31 +98,32 @@ class CollectionDataLoader
         return $item;
     }
 
-    private function getHandler($file)
+    private function hasHandler($file): bool
     {
-        $handler = $this->handlers->first(function ($handler) use ($file) {
+        return $this->handlers->contains(function ($handler) use ($file) {
             return $handler->shouldHandle($file);
         });
+    }
 
-        if (! $handler) {
-            throw new Exception('No matching collection item handler for file: ' 
-                                . $file->getFilenameWithoutExtension() . "." . $file->getExtension() );
-        }
-
-        return $handler;
+    private function getHandler($file)
+    {
+        return $this->handlers->first(function ($handler) use ($file) {
+            return $handler->shouldHandle($file);
+        });
     }
 
     private function getMetaData($file, $collection, $data)
     {
         $filename = $file->getFilenameWithoutExtension();
         $baseUrl = $data->baseUrl;
+        $relativePath = $file->getRelativePath();
         $extension = $file->getFullExtension();
         $collectionName = $collection->name;
         $collection = $collectionName;
         $source = $file->getPath();
         $modifiedTime = $file->getLastModifiedTime();
 
-        return compact('filename', 'baseUrl', 'extension', 'collection', 'collectionName', 'source', 'modifiedTime');
+        return compact('filename', 'baseUrl', 'relativePath', 'extension', 'collection', 'collectionName', 'source', 'modifiedTime');
     }
 
     private function buildUrls($paths)

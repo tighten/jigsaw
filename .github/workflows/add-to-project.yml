@@ -1,0 +1,16 @@
+name: Add to project
+on:
+  issues:
+    types: [opened]
+  pull_request:
+    types: [opened]
+  workflow_call:
+jobs:
+  add-to-project:
+    name: Add to project
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/add-to-project@v0.3
+        with:
+          project-url: https://github.com/orgs/tighten/projects/3
+          github-token: ${{ secrets.JIGSAW_ADD_TO_PROJECT_PAT }}

@@ -2,23 +2,41 @@
 
 namespace TightenCo\Jigsaw\File;
 
+use TightenCo\Jigsaw\File\InputFile;
+use TightenCo\Jigsaw\PageData;
+
 class OutputFile
 {
+    private $inputFile;
     private $path;
     private $name;
     private $extension;
     private $contents;
     private $data;
     private $page;
+    private $prefix;
 
-    public function __construct($path, $name, $extension, $contents, $data, $page = 1)
+    public function __construct(InputFile $inputFile, $path, $name, $extension, $contents, $data, $page = 1, $prefix = '')
     {
+        $this->setInputFile($inputFile, $data);
         $this->path = $path;
         $this->name = $name;
         $this->extension = $extension;
         $this->contents = $contents;
         $this->data = $data;
         $this->page = $page;
+        $this->prefix = $prefix;
+    }
+
+    public function setInputFile(InputFile $inputFile, PageData $data)
+    {
+        $this->inputFile = $inputFile;
+        $this->inputFile->setPageData($data);
+    }
+
+    public function inputFile()
+    {
+        return $this->inputFile;
     }
 
     public function path()
@@ -49,6 +67,11 @@ class OutputFile
     public function page()
     {
         return $this->page;
+    }
+
+    public function prefix()
+    {
+        return $this->prefix;
     }
 
     public function putContents($destination)

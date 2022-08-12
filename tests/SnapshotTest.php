@@ -25,7 +25,7 @@ class SnapshotTest extends SnapshotTestCase
      */
     public function ds_store_files_are_not_built()
     {
-        $this->assertFileNotExists('tests/build-testing/.DS_Store', 'DS_Store was built');
+        $this->assertFileDoesNotExist('tests/build-testing/.DS_Store', 'DS_Store was built');
     }
 
     /**
@@ -36,8 +36,8 @@ class SnapshotTest extends SnapshotTestCase
         collect($this->build_files)->each(function ($file) {
             echo "\r\nChecking " . $file->getRelativePathname();
             $this->assertEquals(
-                file_get_contents('tests/snapshots/' . $file->getRelativePathname()),
-                $file->getContents(),
+                str_replace("\r", '', file_get_contents('tests/snapshots/' . $file->getRelativePathname())),
+                str_replace("\r", '', $file->getContents()),
                 'File contents do not match: ' . $file->getRelativePathname()
             );
         });

@@ -2,16 +2,19 @@
 
 namespace TightenCo\Jigsaw\Loaders;
 
+use Illuminate\Support\Collection;
 use TightenCo\Jigsaw\Collection\CollectionRemoteItem;
 use TightenCo\Jigsaw\File\Filesystem;
 
 class CollectionRemoteItemLoader
 {
+    private $config;
     private $files;
     private $tempDirectories;
 
-    public function __construct(Filesystem $files)
+    public function __construct(Collection $config, Filesystem $files)
     {
+        $this->config = $config;
         $this->files = $files;
     }
 
@@ -39,6 +42,10 @@ class CollectionRemoteItemLoader
     {
         collect($this->tempDirectories)->each(function ($path) {
             $this->files->deleteDirectory($path);
+
+            if ($this->files->isEmptyDirectory($parent = $this->files->dirname($path))) {
+                $this->files->deleteDirectory($parent);
+            }
         });
     }
 
@@ -49,7 +56,7 @@ class CollectionRemoteItemLoader
         }
 
         return is_callable($collection->items) ?
-            $collection->items->__invoke() :
+            $collection->items->__invoke($this->config) :
             $collection->items->toArray();
     }
 

@@ -6,7 +6,7 @@ use Illuminate\Support\Str;
 
 class PageVariable extends IterableObject
 {
-    public function addVariables($variables)
+    public function addVariables(array $variables)
     {
         $this->items = collect($this->items)->merge($this->makeIterable($variables))->all();
     }

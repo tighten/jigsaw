@@ -6,14 +6,22 @@ use TightenCo\Jigsaw\PageVariable;
 
 class CollectionItem extends PageVariable
 {
-    private $collection;
+    public $collection;
 
-    public static function build($collection, $data)
+    public static function build(Collection $collection, $data)
     {
         $item = new static($data);
         $item->collection = $collection;
 
         return $item;
+    }
+
+    public static function fromItem(CollectionItem $item)
+    {
+        $newItem = new static($item);
+        $newItem->collection = $item->collection;
+
+        return $newItem;
     }
 
     public function getNext()

@@ -6,18 +6,14 @@ use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use Symfony\Component\VarDumper\VarDumper;
 
-/**
- * Remove slashes (including backslashes on Windows),
- * spaces, and periods from the beginning and/or end of paths.
- */
 function leftTrimPath($path)
 {
-    return ltrim($path, ' .\\/');
+    return ltrim($path, ' \\/');
 }
 
 function rightTrimPath($path)
 {
-    return rtrim($path, ' .\\/');
+    return rtrim($path ?? '', ' .\\/');
 }
 
 function trimPath($path)
@@ -111,6 +107,15 @@ function mix($path, $manifestDirectory = 'assets')
     return new HtmlString($manifestDirectory . $manifest[$path]);
 }
 
+if (! function_exists('url')) {
+    function url(string $path): string
+    {
+        $c = Container::getInstance();
+
+        return trim($c['config']['baseUrl'], '/') . '/' . trim($path, '/');
+    }
+}
+
 if (! function_exists('dd')) {
     function dd(...$args)
     {
@@ -120,4 +125,17 @@ if (! function_exists('dd')) {
 
         die(1);
     }
+}
+
+function inline($assetPath)
+{
+    preg_match('/^\/assets\/build\/(css|js)\/.*\.(css|js)/', $assetPath, $matches);
+
+    if (!count($matches)) {
+        throw new InvalidArgumentException("Given asset path is not valid: {$assetPath}");
+    }
+
+    $pathParts = explode('?', $assetPath);
+
+    return new HtmlString(file_get_contents("source{$pathParts[0]}"));
 }

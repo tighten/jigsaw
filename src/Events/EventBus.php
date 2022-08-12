@@ -2,13 +2,20 @@
 
 namespace TightenCo\Jigsaw\Events;
 
+use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use TightenCo\Jigsaw\Jigsaw;
 
+/**
+ * @method void beforeBuild(\callable|class-string|array<int, class-string> $listener)
+ * @method void afterCollections(\callable|class-string|array<int, class-string> $listener)
+ * @method void afterBuild(\callable|class-string|array<int, class-string> $listener)
+ */
 class EventBus
 {
-    public $beforeBuild;
-    public $afterCollections;
-    public $afterBuild;
+    public Collection $beforeBuild;
+    public Collection $afterCollections;
+    public Collection $afterBuild;
 
     public function __construct()
     {
@@ -20,7 +27,7 @@ class EventBus
     public function __call($event, $arguments)
     {
         if (isset($this->{$event})) {
-            $this->{$event} = $this->{$event}->merge(collect($arguments[0]));
+            $this->{$event} = $this->{$event}->merge(Arr::wrap($arguments[0]));
         }
     }
 

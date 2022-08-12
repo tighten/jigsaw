@@ -163,7 +163,7 @@ class FilesystemTest extends TestCase
             'directory/nested-directory',
         ]);
 
-        $this->assertNotContains('directory/nested-directory', $files);
+        $this->assertNotContains($this->fixDirectorySlashes('directory/nested-directory'), $files);
         $this->assertCount(8, $files);
     }
 
@@ -176,8 +176,8 @@ class FilesystemTest extends TestCase
             'directory/nested-directory/*',
         ]);
 
-        $this->assertContains('directory/nested-directory', $files);
-        $this->assertNotContains('directory/nested-directory/nested-file-1.md', $files);
+        $this->assertContains($this->fixDirectorySlashes('directory/nested-directory'), $files);
+        $this->assertNotContains($this->fixDirectorySlashes('directory/nested-directory/nested-file-1.md'), $files);
         $this->assertCount(9, $files);
     }
 
@@ -190,8 +190,8 @@ class FilesystemTest extends TestCase
             'directory/nested-directory/double-*-file-*.md',
         ]);
 
-        $this->assertNotContains('directory/nested-directory/double-nested-file-1.md', $files);
-        $this->assertNotContains('directory/nested-directory/double-nested-file-1.md', $files);
+        $this->assertNotContains($this->fixDirectorySlashes('directory/nested-directory/double-nested-file-1.md'), $files);
+        $this->assertNotContains($this->fixDirectorySlashes('directory/nested-directory/double-nested-file-1.md'), $files);
         $this->assertCount(9, $files);
     }
 
@@ -249,7 +249,7 @@ class FilesystemTest extends TestCase
 
         $this->assertCount(7, $files);
         $this->assertEquals('directory', $files[0]);
-        $this->assertEquals('directory/nested-file-1.md', $files[1]);
+        $this->assertEquals($this->fixDirectorySlashes('directory/nested-file-1.md'), $files[1]);
     }
 
     protected function getFilesMatching($match)

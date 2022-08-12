@@ -3,6 +3,7 @@
 namespace TightenCo\Jigsaw\Handlers;
 
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use TightenCo\Jigsaw\File\OutputFile;
 
@@ -11,7 +12,7 @@ class CollectionItemHandler
     private $config;
     private $handlers;
 
-    public function __construct($config, $handlers)
+    public function __construct(Collection $config, $handlers)
     {
         $this->config = $config;
         $this->handlers = collect($handlers);
@@ -52,7 +53,7 @@ class CollectionItemHandler
         }
 
         return $handler->handleCollectionItem($file, $pageData)
-            ->map(function ($outputFile, $templateToExtend) {
+            ->map(function ($outputFile, $templateToExtend) use ($file) {
                 if ($templateToExtend) {
                     $outputFile->data()->setExtending($templateToExtend);
                 }
@@ -60,6 +61,7 @@ class CollectionItemHandler
                 $path = $outputFile->data()->page->getPath();
 
                 return new OutputFile(
+                    $file,
                     dirname($path),
                     basename($path, '.' . $outputFile->extension()),
                     $outputFile->extension(),

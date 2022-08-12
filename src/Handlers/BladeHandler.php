@@ -48,6 +48,7 @@ class BladeHandler
 
         return collect([
             new OutputFile(
+                $file,
                 $file->getRelativePath(),
                 $file->getFilenameWithoutExtension(),
                 $extension == 'php' ? 'html' : $extension,

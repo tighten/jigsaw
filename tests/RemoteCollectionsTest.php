@@ -39,8 +39,31 @@ class RemoteCollectionsTest extends TestCase
         $siteData = $this->buildSiteData($files, $config);
 
         $this->assertCount(2, $siteData->collection);
-        $this->assertEquals('<p>Test markdown file #1</p>', $siteData->collection->file_1->getContent());
-        $this->assertEquals('<p>Test markdown file #2</p>', $siteData->collection->file_2->getContent());
+        $this->assertEquals(
+            '<p>Test markdown file #1</p>',
+            $this->clean($siteData->collection->file_1->getContent())
+        );
+        $this->assertEquals(
+            '<p>Test markdown file #2</p>',
+            $this->clean($siteData->collection->file_2->getContent())
+        );
+    }
+
+    /** @test */
+    public function collection_items_without_matching_handler_are_ignored()
+    {
+        $config = collect(['collections' => ['collection' => []]]);
+        $files = $this->setupSource([
+            '_collection' => [
+                '.git' => '-',
+                'file.md' => 'Test markdown file',
+            ],
+        ]);
+
+        $siteData = $this->buildSiteData($files, $config, 3);
+
+        $this->assertTrue($siteData->has('collection'));
+        $this->assertCount(1, $siteData->collection);
     }
 
     /**
@@ -68,11 +91,11 @@ class RemoteCollectionsTest extends TestCase
         $this->assertCount(2, $files->getChild('build/collection')->getChildren());
         $this->assertEquals(
             '<div><p>File 1 Content</p></div>',
-            $files->getChild('build/collection/file-1.html')->getContent()
+            $this->clean($files->getChild('build/collection/file-1.html')->getContent())
         );
         $this->assertEquals(
             '<div><p>File 2 Content</p></div>',
-            $files->getChild('build/collection/file-2.html')->getContent()
+            $this->clean($files->getChild('build/collection/file-2.html')->getContent())
         );
     }
 
@@ -103,7 +126,7 @@ class RemoteCollectionsTest extends TestCase
         $this->assertCount(1, $files->getChild('build/test')->getChildren());
         $this->assertEquals(
             '<div><p>item content</p></div>',
-            $files->getChild('build/test/test-1.html')->getContent()
+            $this->clean($files->getChild('build/test/test-1.html')->getContent())
         );
     }
 
@@ -139,11 +162,11 @@ class RemoteCollectionsTest extends TestCase
         $this->assertCount(2, $files->getChild('build/test')->getChildren());
         $this->assertEquals(
             '<div><p>config content</p></div>',
-            $files->getChild('build/test/test-1.html')->getContent()
+            $this->clean($files->getChild('build/test/test-1.html')->getContent())
         );
         $this->assertEquals(
             '<div><p>file content</p></div>',
-            $files->getChild('build/test/file-1.html')->getContent()
+            $this->clean($files->getChild('build/test/file-1.html')->getContent())
         );
     }
 
@@ -171,8 +194,34 @@ class RemoteCollectionsTest extends TestCase
         ]);
         $this->buildSite($files, $config);
 
-        $this->assertCount(0, $files->getChild('source/_test')->getChildren());
         $this->assertNull($files->getChild('source/_test/_tmp'));
+    }
+
+    /**
+     * @test
+     */
+    public function temporary_parent_directory_for_remote_items_is_removed_if_empty_after_build_is_complete()
+    {
+        $config = collect([
+            'collections' => [
+                'test' => [
+                    'items' => [
+                        [
+                            'extends' => '_layouts.master',
+                            'content' => 'item content',
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+        $files = $this->setupSource([
+            '_layouts' => [
+                'master.blade.php' => "<div>@yield('content')</div>",
+            ],
+        ]);
+        $this->buildSite($files, $config);
+
+        $this->assertNull($files->getChild('source/_test'));
     }
 
     /**
@@ -202,7 +251,7 @@ class RemoteCollectionsTest extends TestCase
         $this->assertCount(1, $files->getChild('build/test')->getChildren());
         $this->assertEquals(
             '<div><p>item content</p></div>',
-            $files->getChild('build/test/test-1.html')->getContent()
+            $this->clean($files->getChild('build/test/test-1.html')->getContent())
         );
     }
 
@@ -232,7 +281,7 @@ class RemoteCollectionsTest extends TestCase
 
         $this->assertEquals(
             '<div><h2>item content</h2></div>',
-            $files->getChild('build/test/test-1.html')->getContent()
+            $this->clean($files->getChild('build/test/test-1.html')->getContent())
         );
     }
 
@@ -263,7 +312,7 @@ class RemoteCollectionsTest extends TestCase
 
         $this->assertEquals(
             '<div>page variable</div>',
-            $files->getChild('build/test/test-1.html')->getContent()
+            $this->clean($files->getChild('build/test/test-1.html')->getContent())
         );
     }
 
@@ -293,7 +342,7 @@ class RemoteCollectionsTest extends TestCase
 
         $this->assertEquals(
             '<div><p>item content</p></div>',
-            $files->getChild('build/test/test-1.html')->getContent()
+            $this->clean($files->getChild('build/test/test-1.html')->getContent())
         );
     }
 
@@ -319,7 +368,7 @@ class RemoteCollectionsTest extends TestCase
 
         $this->assertEquals(
             '<div><h2>item content</h2></div>',
-            $files->getChild('build/test/test-1.html')->getContent()
+            $this->clean($files->getChild('build/test/test-1.html')->getContent())
         );
     }
 
@@ -351,11 +400,11 @@ class RemoteCollectionsTest extends TestCase
 
         $this->assertEquals(
             '<div><p>item 1 content</p></div>',
-            $files->getChild('build/test/test-1.html')->getContent()
+            $this->clean($files->getChild('build/test/test-1.html')->getContent())
         );
         $this->assertEquals(
             '<div><p>item 2 content</p></div>',
-            $files->getChild('build/test/test-2.html')->getContent()
+            $this->clean($files->getChild('build/test/test-2.html')->getContent())
         );
     }
 
@@ -388,6 +437,37 @@ class RemoteCollectionsTest extends TestCase
 
         $this->assertTrue($files->hasChild('build/test/test-1.html'));
         $this->assertTrue($files->hasChild('build/test/test-2.html'));
+    }
+
+    /**
+     * @test
+     */
+    public function filename_for_output_file_is_set_to_collection_name_plus_array_key_if_filename_not_specified_and_key_is_string()
+    {
+        $config = collect([
+            'collections' => [
+                'test' => [
+                    'extends' => '_layouts.master',
+                    'items' => [
+                        'foo' => [
+                            'content' => 'item 1',
+                        ],
+                        'bar' => [
+                            'content' => 'item 2',
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+        $files = $this->setupSource([
+            '_layouts' => [
+                'master.blade.php' => "<div>@yield('content')</div>",
+            ],
+        ]);
+        $this->buildSite($files, $config);
+
+        $this->assertTrue($files->hasChild('build/test/foo.html'));
+        $this->assertTrue($files->hasChild('build/test/bar.html'));
     }
 
     /**
@@ -445,11 +525,42 @@ class RemoteCollectionsTest extends TestCase
 
         $this->assertEquals(
             '<div><p>item 1</p></div>',
-            $files->getChild('build/test/test-1.html')->getContent()
+            $this->clean($files->getChild('build/test/test-1.html')->getContent())
         );
         $this->assertEquals(
             '<div><p>item 2</p></div>',
-            $files->getChild('build/test/test-2.html')->getContent()
+            $this->clean($files->getChild('build/test/test-2.html')->getContent())
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function items_function_can_access_other_config_variables()
+    {
+        $config = collect([
+            'collections' => [
+                'test' => [
+                    'extends' => '_layouts.master',
+                    'items' => function ($config) {
+                        return [
+                            ['content' => $config['remote_url']],
+                        ];
+                    },
+                ],
+            ],
+            'remote_url' => 'https://example.com/api',
+        ]);
+        $files = $this->setupSource([
+            '_layouts' => [
+                'master.blade.php' => "<div>@yield('content')</div>",
+            ],
+        ]);
+        $this->buildSite($files, $config);
+
+        $this->assertEquals(
+            '<div><p>https://example.com/api</p></div>',
+            $this->clean($files->getChild('build/test/test-1.html')->getContent())
         );
     }
 
@@ -480,11 +591,11 @@ class RemoteCollectionsTest extends TestCase
 
         $this->assertEquals(
             '<div><p>item 1</p></div>',
-            $files->getChild('build/test/test-1.html')->getContent()
+            $this->clean($files->getChild('build/test/test-1.html')->getContent())
         );
         $this->assertEquals(
             '<div><p>item 2</p></div>',
-            $files->getChild('build/test/test-2.html')->getContent()
+            $this->clean($files->getChild('build/test/test-2.html')->getContent())
         );
     }
 
@@ -516,8 +627,8 @@ class RemoteCollectionsTest extends TestCase
 
         $content = json_decode(file_get_contents('https://jsonplaceholder.typicode.com/posts/1'))->body;
         $this->assertEquals(
-            '<div><p>' . $content . '</p></div>',
-            $files->getChild('build/test/test-1.html')->getContent()
+            $this->clean('<div><p>' . $content . '</p></div>'),
+            $this->clean($files->getChild('build/test/test-1.html')->getContent())
         );
     }
 
@@ -543,7 +654,7 @@ class RemoteCollectionsTest extends TestCase
 
         $this->assertEquals(
             '<div><p>Hey there</p></div>',
-            $files->getChild('build/test/test-1.html')->getContent()
+            $this->clean($files->getChild('build/test/test-1.html')->getContent())
         );
     }
 }

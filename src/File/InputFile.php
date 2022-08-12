@@ -3,17 +3,34 @@
 namespace TightenCo\Jigsaw\File;
 
 use Illuminate\Support\Str;
+use TightenCo\Jigsaw\PageData;
 
 class InputFile
 {
     protected $file;
     protected $extraBladeExtensions = [
-        'js', 'json', 'xml', 'rss', 'atom', 'txt', 'text', 'html',
+        'js', 'json', 'xml', 'yaml', 'yml', 'rss', 'atom', 'txt', 'text', 'html',
     ];
+    protected $pageData;
 
     public function __construct($file)
     {
         $this->file = $file;
+    }
+
+    public function setPageData(PageData $pageData)
+    {
+        $this->pageData = $pageData->page;
+    }
+
+    public function getPageData()
+    {
+        return $this->pageData;
+    }
+
+    public function getFileInfo()
+    {
+        return $this->file;
     }
 
     public function topLevelDirectory()

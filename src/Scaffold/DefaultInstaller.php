@@ -15,7 +15,7 @@ class DefaultInstaller
     const DEFAULT_COMMANDS = [
         'composer install',
         'npm install',
-        'npm run local',
+        'npm run dev',
     ];
     protected $commands;
     protected $delete;

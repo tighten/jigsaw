@@ -54,6 +54,7 @@ class MarkdownHandler
                 $extension = $this->view->getExtension($extends);
 
                 return new OutputFile(
+                    $file,
                     $file->getRelativePath(),
                     $file->getFileNameWithoutExtension(),
                     $extension == 'php' ? 'html' : $extension,
@@ -151,9 +152,7 @@ class MarkdownHandler
 
         if (in_array($file->getFullExtension(), ['markdown', 'md', 'mdown'])) {
             $replacements = array_merge([
-                ' @' => " {{'@'}}",
-                "\n@" => "\n{{'@'}}",
-                '`@' => "`{{'@'}}",
+                '@' => "{{'@'}}",
                 '{{' => '@{{',
                 '{!!' => '@{!!',
             ], $replacements);

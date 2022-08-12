@@ -7,16 +7,18 @@ use TightenCo\Jigsaw\IterableObject;
 class CollectionPaginator
 {
     private $outputPathResolver;
+    private $prefix;
 
     public function __construct($outputPathResolver)
     {
         $this->outputPathResolver = $outputPathResolver;
     }
 
-    public function paginate($file, $items, $perPage)
+    public function paginate($file, $items, $perPage, $prefix)
     {
         $chunked = collect($items)->chunk($perPage);
         $totalPages = $chunked->count();
+        $this->prefix = $prefix;
         $numberedPageLinks = $chunked->map(function ($_, $i) use ($file) {
             $page = $i + 1;
 
@@ -46,7 +48,8 @@ class CollectionPaginator
             $file->getRelativePath(),
             $file->getFilenameWithoutExtension(),
             'html',
-            $pageNumber
+            $pageNumber,
+            $this->prefix
         );
 
         return $link !== '/' ? rightTrimPath($link) : $link;

@@ -13,13 +13,13 @@ class SnapshotTestCase extends BaseTestCase
     public $filesystem;
     public $snapshot_files;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
-        echo shell_exec('./jigsaw build testing -q');
+        echo shell_exec('php ./jigsaw build testing -q');
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         if (self::DELETE_BUILT_FILES) {
             (new Filesystem())->deleteDirectory('tests/build-testing');
@@ -28,7 +28,7 @@ class SnapshotTestCase extends BaseTestCase
         parent::tearDownAfterClass();
     }
 
-    public function setUp()
+    protected function setUp(): void
     {
         try {
             $this->filesystem = new Filesystem();

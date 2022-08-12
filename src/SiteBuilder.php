@@ -2,6 +2,8 @@
 
 namespace TightenCo\Jigsaw;
 
+use Illuminate\Container\Container;
+use TightenCo\Jigsaw\Console\ConsoleOutput;
 use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\File\InputFile;
 
@@ -14,8 +16,13 @@ class SiteBuilder
     private $consoleOutput;
     private $useCache;
 
-    public function __construct(Filesystem $files, $cachePath, $outputPathResolver, $consoleOutput, $handlers = [])
-    {
+    public function __construct(
+        Filesystem $files,
+        $cachePath,
+        $outputPathResolver,
+        ConsoleOutput $consoleOutput,
+        $handlers = []
+    ) {
         $this->files = $files;
         $this->cachePath = $cachePath;
         $this->outputPathResolver = $outputPathResolver;
@@ -91,8 +98,10 @@ class SiteBuilder
     {
         $this->consoleOutput->writeWritingFiles();
 
-        return $files->map(function ($file) use ($destination) {
-            return $this->writeFile($file, $destination);
+        return $files->mapWithKeys(function ($file) use ($destination) {
+            $outputLink = $this->writeFile($file, $destination);
+
+            return [$outputLink => $file->inputFile()->getPageData()];
         });
     }
 
@@ -109,7 +118,10 @@ class SiteBuilder
     {
         $meta = $this->getMetaData($file, $siteData->page->baseUrl);
 
-        return $this->getHandler($file)->handle($file, PageData::withPageMetaData($siteData, $meta));
+        $pageData = PageData::withPageMetaData($siteData, $meta);
+        Container::getInstance()->instance('pageData', $pageData);
+
+        return $this->getHandler($file)->handle($file, $pageData);
     }
 
     private function getHandler($file)
@@ -124,10 +136,11 @@ class SiteBuilder
         $filename = $file->getFilenameWithoutExtension();
         $extension = $file->getFullExtension();
         $path = rightTrimPath($this->outputPathResolver->link($file->getRelativePath(), $filename, $file->getExtraBladeExtension() ?: 'html'));
+        $relativePath = $file->getRelativePath();
         $url = rightTrimPath($baseUrl) . '/' . trimPath($path);
         $modifiedTime = $file->getLastModifiedTime();
 
-        return compact('filename', 'baseUrl', 'path', 'extension', 'url', 'modifiedTime');
+        return compact('filename', 'baseUrl', 'path', 'relativePath', 'extension', 'url', 'modifiedTime');
     }
 
     private function getOutputDirectory($file)
@@ -136,7 +149,7 @@ class SiteBuilder
             return urldecode(dirname($permalink));
         }
 
-        return urldecode($this->outputPathResolver->directory($file->path(), $file->name(), $file->extension(), $file->page()));
+        return urldecode($this->outputPathResolver->directory($file->path(), $file->name(), $file->extension(), $file->page(), $file->prefix()));
     }
 
     private function getOutputPath($file)
@@ -149,7 +162,8 @@ class SiteBuilder
             $file->path(),
             $file->name(),
             $file->extension(),
-            $file->page()
+            $file->page(),
+            $file->prefix()
         )));
     }
 
@@ -160,7 +174,7 @@ class SiteBuilder
         }
 
         return rightTrimPath(urldecode($this->outputPathResolver->link(
-            $file->path(),
+            str_replace('\\', '/', $file->path()),
             $file->name(),
             $file->extension(),
             $file->page()

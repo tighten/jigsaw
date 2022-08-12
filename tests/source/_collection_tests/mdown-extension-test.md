@@ -7,4 +7,4 @@ number: 100
 ---
 
 Testing PR: Added support for .mdown files, the default for mac computers
-https://github.com/tightenco/jigsaw/pull/161
+https://github.com/tighten/jigsaw/pull/161

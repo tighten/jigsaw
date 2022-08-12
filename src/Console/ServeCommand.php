@@ -2,7 +2,9 @@
 
 namespace TightenCo\Jigsaw\Console;
 
+use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Arr;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -10,7 +12,7 @@ class ServeCommand extends Command
 {
     private $app;
 
-    public function __construct($app)
+    public function __construct(Container $app)
     {
         $this->app = $app;
         parent::__construct();
@@ -39,6 +41,12 @@ class ServeCommand extends Command
                 InputOption::VALUE_REQUIRED,
                 'What port should we use?',
                 8000
+            )
+            ->addOption(
+                'no-build',
+                null,
+                InputOption::VALUE_NONE,
+                'Skip build before serving?'
             );
     }
 
@@ -47,6 +55,12 @@ class ServeCommand extends Command
         $env = $this->input->getArgument('environment');
         $host = $this->input->getOption('host');
         $port = $this->input->getOption('port');
+
+        if (! $this->input->getOption('no-build')) {
+            $buildCmd = $this->getApplication()->find('build');
+            $buildArgs = new ArrayInput(['env' => $env]);
+            $buildCmd->run($buildArgs, $this->output);
+        }
 
         $this->console->info("Server started on http://{$host}:{$port}");
 

@@ -2,20 +2,33 @@
 
 namespace TightenCo\Jigsaw;
 
+use Illuminate\Support\Traits\Macroable;
 use TightenCo\Jigsaw\File\Filesystem;
+use TightenCo\Jigsaw\Loaders\DataLoader;
+use TightenCo\Jigsaw\Loaders\CollectionRemoteItemLoader;
+use Illuminate\Contracts\Container\Container;
 
 class Jigsaw
 {
+    use Macroable;
+
     public $app;
     protected $env;
+    protected $pageInfo;
     protected $outputPaths;
     protected $siteData;
     protected $dataLoader;
+    protected $remoteItemLoader;
     protected $siteBuilder;
     protected $verbose;
+    protected static $commands = [];
 
-    public function __construct($app, $dataLoader, $remoteItemLoader, $siteBuilder)
-    {
+    public function __construct(
+        Container $app,
+        DataLoader $dataLoader,
+        CollectionRemoteItemLoader $remoteItemLoader,
+        SiteBuilder $siteBuilder
+    ) {
         $this->app = $app;
         $this->dataLoader = $dataLoader;
         $this->remoteItemLoader = $remoteItemLoader;
@@ -35,6 +48,18 @@ class Jigsaw
             ->cleanup();
     }
 
+    public static function registerCommand($command)
+    {
+        self::$commands[] = $command;
+    }
+
+    public static function addUserCommands($app, $container)
+    {
+        foreach (self::$commands as $command) {
+            $app->add(new $command($container));
+        }
+    }
+
     protected function buildCollections()
     {
         $this->remoteItemLoader->write($this->siteData->collections, $this->getSourcePath());
@@ -46,13 +71,14 @@ class Jigsaw
 
     protected function buildSite($useCache)
     {
-        $this->outputPaths = $this->siteBuilder
+        $this->pageInfo = $this->siteBuilder
             ->setUseCache($useCache)
             ->build(
                 $this->getSourcePath(),
                 $this->getDestinationPath(),
                 $this->siteData
             );
+        $this->outputPaths = $this->pageInfo->keys();
 
         return $this;
     }
@@ -143,7 +169,12 @@ class Jigsaw
 
     public function getOutputPaths()
     {
-        return $this->outputPaths ?: [];
+        return $this->outputPaths ?: collect();
+    }
+
+    public function getPages()
+    {
+        return $this->pageInfo ?: collect();
     }
 
     public function readSourceFile($fileName)

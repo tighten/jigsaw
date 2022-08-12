@@ -2,6 +2,7 @@
 
 namespace TightenCo\Jigsaw\Scaffold;
 
+use Error;
 use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -14,6 +15,7 @@ class PresetPackage
         'docs' => 'tightenco/jigsaw-docs-template',
     ];
 
+    public $constraint;
     public $name;
     public $nameShort;
     public $path;
@@ -59,6 +61,8 @@ class PresetPackage
             throw $e;
         } catch (Exception $e) {
             throw new Exception("The 'init.php' file for this preset contains errors.");
+        } catch (Error $e) {
+            throw new Exception("The 'init.php' file for this preset contains errors.");
         }
     }
 
@@ -77,7 +81,9 @@ class PresetPackage
 
         $parts = explode('/', $name, 3);
         $this->vendor = Arr::get($parts, 0);
-        $this->name = Arr::get($parts, 1);
+        $composerName = explode(':', Arr::get($parts, 1));
+        $this->name = $composerName[0];
+        $this->constraint = $composerName[1] ?? '';
         $this->suffix = Arr::get($parts, 2);
         $this->shortName = $this->getShortName();
     }
@@ -97,6 +103,10 @@ class PresetPackage
 
         if (! $this->files->exists($this->path)) {
             $package = $this->vendor . '/' . $this->name;
+
+            if (! empty($this->constraint)) {
+                $package .= ':' . $this->constraint;
+            }
 
             try {
                 $this->installPackageFromComposer($package);

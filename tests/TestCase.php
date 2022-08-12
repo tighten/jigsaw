@@ -20,13 +20,14 @@ class TestCase extends BaseTestCase
     public $sourcePath = __DIR__ . '/source';
     public $destinationPath = __DIR__ . '/build_testing';
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         require 'jigsaw-core.php';
         $this->app = $container;
         $this->app->buildPath = [
             'source' => $this->sourcePath,
+            'views' => $this->sourcePath,
             'destination' => $this->destinationPath,
         ];
         $this->filesystem = new Filesystem();
@@ -34,7 +35,7 @@ class TestCase extends BaseTestCase
         $this->prepareTempDirectory();
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         $this->cleanupTempDirectory();
         Mockery::close();
@@ -75,12 +76,13 @@ class TestCase extends BaseTestCase
         return $siteData->addCollectionData($collectionData);
     }
 
-    public function buildSite($vfs, $config = [], $pretty = false)
+    public function buildSite($vfs, $config = [], $pretty = false, $viewPath = '/source')
     {
         $this->app->consoleOutput->setup($verbosity = -1);
-        $this->app->config = collect($config);
+        $this->app->config = collect($this->app->config)->merge($config);
         $this->app->buildPath = [
             'source' => $vfs->url() . '/source',
+            'views' => $vfs->url() . $viewPath,
             'destination' => $vfs->url() . '/build',
         ];
 
@@ -91,5 +93,15 @@ class TestCase extends BaseTestCase
         return $this->app
             ->make(Jigsaw::class)
             ->build('test');
+    }
+
+    public function clean($output)
+    {
+        return str_replace("\n", "", $output);
+    }
+
+    protected function fixDirectorySlashes(string $path): string
+    {
+        return str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
     }
 }

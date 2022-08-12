@@ -32,7 +32,7 @@ class PresetScaffoldBuilderTest extends TestCase
         $preset->init('blog');
 
         $this->assertEquals(
-            $vfs->url() . '/vendor/tightenco/jigsaw-blog-template',
+            $vfs->url() . $this->fixDirectorySlashes('/vendor/tightenco/jigsaw-blog-template'),
             $preset->package->path
         );
     }
@@ -56,7 +56,7 @@ class PresetScaffoldBuilderTest extends TestCase
 
         $preset->init('test/package');
 
-        $this->assertEquals($vfs->url() . '/vendor/' . 'test/package', $preset->package->path);
+        $this->assertEquals($vfs->url() . $this->fixDirectorySlashes('/vendor/' . 'test/package'), $preset->package->path);
     }
 
     /**
@@ -89,7 +89,7 @@ class PresetScaffoldBuilderTest extends TestCase
             $preset->init('test');
             $this->fail('Exception not thrown');
         } catch (\Exception $e) {
-            $this->assertContains(
+            $this->assertStringContainsString(
                 "'test' is not a valid package name.",
                 $e->getMessage()
             );
@@ -120,7 +120,7 @@ class PresetScaffoldBuilderTest extends TestCase
 
             $this->fail('Exception not thrown');
         } catch (\Exception $e) {
-            $this->assertContains('contains errors', $e->getMessage());
+            $this->assertStringContainsString('contains errors', $e->getMessage());
         }
     }
 

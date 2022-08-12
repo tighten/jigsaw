@@ -3,7 +3,9 @@
 namespace TightenCo\Jigsaw\Handlers;
 
 use Illuminate\Support\Str;
+use TightenCo\Jigsaw\Collection\CollectionPaginator;
 use TightenCo\Jigsaw\File\OutputFile;
+use TightenCo\Jigsaw\File\TemporaryFilesystem;
 use TightenCo\Jigsaw\PageData;
 use TightenCo\Jigsaw\Parsers\FrontMatterParser;
 use TightenCo\Jigsaw\View\ViewRenderer;
@@ -15,8 +17,12 @@ class PaginatedPageHandler
     private $temporaryFilesystem;
     private $view;
 
-    public function __construct($paginator, FrontMatterParser $parser, $temporaryFilesystem, ViewRenderer $viewRenderer)
-    {
+    public function __construct(
+        CollectionPaginator $paginator,
+        FrontMatterParser $parser,
+        TemporaryFilesystem $temporaryFilesystem,
+        ViewRenderer $viewRenderer
+    ) {
         $this->paginator = $paginator;
         $this->parser = $parser;
         $this->temporaryFilesystem = $temporaryFilesystem;
@@ -25,7 +31,7 @@ class PaginatedPageHandler
 
     public function shouldHandle($file)
     {
-        if (! Str::endsWith($file->getFilename(), '.blade.php')) {
+        if (! Str::endsWith($file->getFilename(), ['.blade.md', '.blade.php'])) {
             return false;
         }
         $content = $this->parser->parse($file->getContents());
@@ -35,24 +41,36 @@ class PaginatedPageHandler
 
     public function handle($file, PageData $pageData)
     {
-        $pageData->page->addVariables($this->getPageVariables($file));
+        $page = $pageData->page;
+        $page->addVariables($this->getPageVariables($file));
+        $collection = $page->pagination->collection;
+        $prefix = $page->pagination->prefix
+            ?: $page->collections->{$collection}->prefix
+            ?: $page->prefix
+            ?: '';
 
         return $this->paginator->paginate(
             $file,
-            $pageData->get($pageData->page->pagination->collection),
-            $pageData->page->pagination->perPage ?: ($pageData->page->perPage ?: 10)
-        )->map(function ($page) use ($file, $pageData) {
+            $pageData->get($collection),
+            $page->pagination->perPage
+                ?: $page->collections->{$collection}->perPage
+                ?: $page->perPage
+                ?: 10,
+            $prefix,
+        )->map(function ($page) use ($file, $pageData, $prefix) {
             $pageData->setPagePath($page->current);
             $pageData->put('pagination', $page);
             $extension = strtolower($file->getExtension());
 
             return new OutputFile(
+                $file,
                 $file->getRelativePath(),
                 $file->getFilenameWithoutExtension(),
-                $extension == 'php' ? 'html' : $extension,
+                ($extension == 'php' || $extension == 'md') ? 'html' : $extension,
                 $this->render($file, $pageData),
                 $pageData,
-                $page->currentPage
+                $page->currentPage,
+                $prefix
             );
         });
     }

@@ -2,30 +2,28 @@
 
 namespace TightenCo\Jigsaw\File;
 
-use Illuminate\Support\Arr;
-
 class ConfigFile
 {
     public $config;
 
-    public function __construct($config_path, $helpers_path = '')
+    public function __construct(string $config_path, string $helpers_path = '')
     {
         $config = file_exists($config_path) ? include $config_path : [];
         $helpers = file_exists($helpers_path) ? include $helpers_path : [];
 
         $this->config = $this->convertStringCollectionsToArray(
-            array_merge($config, $helpers)
+            collect($config)->merge($helpers)
         );
     }
 
     protected function convertStringCollectionsToArray($config)
     {
-        $collections = Arr::get($config, 'collections');
+        $collections = $config->get('collections');
 
         if ($collections) {
-            $config['collections'] = collect($collections)->flatMap(function ($value, $key) {
+            $config->put('collections', collect($collections)->flatMap(function ($value, $key) {
                 return is_array($value) ? [$key => $value] : [$value => []];
-            });
+            }));
         }
 
         return $config;

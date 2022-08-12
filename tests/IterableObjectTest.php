@@ -75,7 +75,7 @@ class IterableObjectTest extends TestCase
 
         $iterable_object->putIterable('b', ['c' => 3]);
 
-        $this->assertEquals(IterableObject::class, get_class($iterable_object->b));
+        $this->assertInstanceOf(IterableObject::class, $iterable_object->b);
         $this->assertEquals(3, $iterable_object->b->c);
     }
 
@@ -90,7 +90,7 @@ class IterableObjectTest extends TestCase
 
         $iterable_object->putIterable('b', collect(['c' => 3]));
 
-        $this->assertEquals(IterableObject::class, get_class($iterable_object->b));
+        $this->assertInstanceOf(IterableObject::class, $iterable_object->b);
         $this->assertEquals(3, $iterable_object->b->c);
     }
 
@@ -105,7 +105,7 @@ class IterableObjectTest extends TestCase
 
         $iterable_object->putIterable('b', 'c');
 
-        $this->assertTrue(is_string($iterable_object->b));
+        $this->assertIsString($iterable_object->b);
     }
 
     /**
@@ -119,7 +119,7 @@ class IterableObjectTest extends TestCase
 
         $iterable_object->putIterable('b', new ExtendsIterableObject(['c' => 3]));
 
-        $this->assertEquals(ExtendsIterableObject::class, get_class($iterable_object->b));
+        $this->assertInstanceOf(ExtendsIterableObject::class, $iterable_object->b);
         $this->assertTrue($iterable_object->b instanceof ExtendsIterableObject);
         $this->assertTrue($iterable_object->b instanceof IterableObject);
     }
@@ -152,7 +152,7 @@ class IterableObjectTest extends TestCase
         $this->assertEquals(3, $iterable_object->b->c->d);
         $this->assertTrue($iterable_object->b instanceof IterableObject);
         $this->assertTrue($iterable_object->b->c instanceof IterableObject);
-        $this->assertTrue(is_int($iterable_object->b->c->d));
+        $this->assertIsInt($iterable_object->b->c->d);
     }
 
     /**
@@ -169,10 +169,10 @@ class IterableObjectTest extends TestCase
 
         $this->assertTrue($iterable_object->b instanceof ExtendsIterableObject);
         $this->assertEquals(3, $iterable_object->b->c);
-        $this->assertTrue(is_int($iterable_object->b->c));
+        $this->assertIsInt($iterable_object->b->c);
         $this->assertTrue($iterable_object->b->d instanceof IterableObject);
         $this->assertEquals(4, $iterable_object->b->d->e);
-        $this->assertTrue(is_int($iterable_object->b->d->e));
+        $this->assertIsInt($iterable_object->b->d->e);
     }
 }
 

@@ -3,7 +3,6 @@
 use Dotenv\Dotenv;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Events\Dispatcher;
-use Illuminate\View\Compilers\BladeCompiler;
 use Illuminate\View\Engines\CompilerEngine;
 use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Engines\PhpEngine;
@@ -38,6 +37,7 @@ use TightenCo\Jigsaw\Parsers\MarkdownParser;
 use TightenCo\Jigsaw\PathResolvers\BasicOutputPathResolver;
 use TightenCo\Jigsaw\PathResolvers\CollectionPathResolver;
 use TightenCo\Jigsaw\SiteBuilder;
+use TightenCo\Jigsaw\View\BladeCompiler;
 use TightenCo\Jigsaw\View\BladeMarkdownEngine;
 use TightenCo\Jigsaw\View\MarkdownEngine;
 use TightenCo\Jigsaw\View\ViewRenderer;
@@ -59,7 +59,7 @@ $container->setInstance($container);
 $container->instance('cwd', getcwd());
 
 if (file_exists($envPath = $container['cwd'] . '/.env')) {
-    (Dotenv::create($container['cwd']))->load();
+    (Dotenv::createImmutable($container['cwd']))->load();
 }
 
 $cachePath = $container['cwd'] . '/cache';
@@ -70,8 +70,10 @@ $container->instance('buildPath', [
     'destination' => $container['cwd'] . '/build_{env}',
 ]);
 
-$container->bind('config', function ($c) {
-    return (new ConfigFile($c['cwd'] . '/config.php', $c['cwd'] . '/helpers.php'))->config;
+$container->bind('config', function ($c) use ($cachePath) {
+    $config = (new ConfigFile($c['cwd'] . '/config.php', $c['cwd'] . '/helpers.php'))->config;
+    $config->put('view.compiled', $cachePath);
+    return $config;
 });
 
 $container->singleton('consoleOutput', function ($c) {
@@ -84,7 +86,13 @@ $container->bind('outputPathResolver', function ($c) {
 
 $container->bind(YAMLParser::class, SymfonyYAMLParser::class);
 
-$container->bind(FrontYAMLMarkdownParser::class, MarkdownParser::class);
+$container->singleton('markdownParser', function ($c) {
+    return new MarkdownParser;
+});
+
+$container->bind(FrontYAMLMarkdownParser::class, function ($c) {
+    return $c['markdownParser'];
+});
 
 $container->bind(Parser::class, function ($c) {
     return new Parser($c[YAMLParser::class], $c[FrontYAMLMarkdownParser::class]);
@@ -96,7 +104,11 @@ $container->bind(FrontMatterParser::class, function ($c) {
 
 $bladeCompiler = new BladeCompiler(new Filesystem, $cachePath);
 
-$container->bind(Factory::class, function ($c) use ($cachePath, $bladeCompiler) {
+$container->bind('bladeCompiler', function ($c) use ($bladeCompiler) {
+    return $bladeCompiler;
+});
+
+$container->singleton(Factory::class, function ($c) use ($cachePath, $bladeCompiler) {
     $resolver = new EngineResolver;
 
     $compilerEngine = new CompilerEngine($bladeCompiler, new Filesystem);
@@ -106,11 +118,11 @@ $container->bind(Factory::class, function ($c) use ($cachePath, $bladeCompiler) 
     });
 
     $resolver->register('php', function () {
-        return new PhpEngine();
+        return new PhpEngine(new Filesystem);
     });
 
     $resolver->register('markdown', function () use ($c) {
-        return new MarkdownEngine($c[FrontMatterParser::class], new Filesystem, $c['buildPath']['source']);
+        return new MarkdownEngine($c[FrontMatterParser::class], new Filesystem, $c['buildPath']['views']);
     });
 
     $resolver->register('blade-markdown', function () use ($c, $compilerEngine) {
@@ -119,9 +131,16 @@ $container->bind(Factory::class, function ($c) use ($cachePath, $bladeCompiler) 
 
     (new BladeDirectivesFile($c['cwd'] . '/blade.php', $bladeCompiler))->register();
 
-    $finder = new FileViewFinder(new Filesystem, [$cachePath, $c['buildPath']['source']]);
+    $finder = new FileViewFinder(new Filesystem, [$cachePath, $c['buildPath']['views']]);
 
-    return new Factory($resolver, $finder, new FakeDispatcher());
+    $factory = new Factory($resolver, $finder, new FakeDispatcher());
+    $factory->setContainer($c);
+
+    return $factory;
+});
+
+$container->bind('view', function ($c) {
+    return $c[Factory::class];
 });
 
 $container->bind(ViewRenderer::class, function ($c) use ($bladeCompiler) {
@@ -182,18 +201,18 @@ $container->bind(SiteBuilder::class, function ($c) use ($cachePath) {
 });
 
 $container->bind(CollectionRemoteItemLoader::class, function ($c) {
-    return new CollectionRemoteItemLoader(new Filesystem);
+    return new CollectionRemoteItemLoader($c['config'], new Filesystem);
 });
 
 $container->singleton('events', function ($c) {
     return new EventBus();
 });
 
+$container->bind(Jigsaw::class, function ($c) {
+    return new Jigsaw($c, $c[DataLoader::class], $c[CollectionRemoteItemLoader::class], $c[SiteBuilder::class]);
+});
+
 if (file_exists($bootstrapFile)) {
     $events = $container->events;
     include $bootstrapFile;
 }
-
-$container->bind(Jigsaw::class, function ($c) {
-    return new Jigsaw($c, $c[DataLoader::class], $c[CollectionRemoteItemLoader::class], $c[SiteBuilder::class]);
-});

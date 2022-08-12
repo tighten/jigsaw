@@ -21,7 +21,7 @@
                 {{ $person->number }}
 
                 @if ($person->getPath())
-                    <a href="{{ $person->getUrl() }}">{{ $person->name }}</a>
+                    <a href="{{ $person->getUrl('web') }}">{{ $person->name }}</a>
                 @else
                     {{ $person->name }}
                 @endif

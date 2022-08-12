@@ -5,13 +5,14 @@ namespace TightenCo\Jigsaw\Collection;
 use Closure;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection as BaseCollection;
+use TightenCo\Jigsaw\IterableObject;
 
 class Collection extends BaseCollection
 {
     public $settings;
     public $name;
 
-    public static function withSettings($settings, $name)
+    public static function withSettings(IterableObject $settings, $name)
     {
         $collection = new static();
         $collection->settings = $settings;
@@ -20,10 +21,11 @@ class Collection extends BaseCollection
         return $collection;
     }
 
-    public function loadItems($items)
+    public function loadItems(BaseCollection $items)
     {
         $sortedItems = $this
             ->defaultSort($items)
+            ->map($this->getMap())
             ->filter($this->getFilter())
             ->keyBy(function ($item) {
                 return $item->getFilename();
@@ -32,14 +34,14 @@ class Collection extends BaseCollection
         return $this->updateItems($this->addAdjacentItems($sortedItems));
     }
 
-    public function updateItems($items)
+    public function updateItems(BaseCollection $items)
     {
         $this->items = $this->getArrayableItems($items);
 
         return $this;
     }
 
-    private function addAdjacentItems($items)
+    private function addAdjacentItems(BaseCollection $items)
     {
         $count = $items->count();
         $adjacentItems = $items->map(function ($item) {
@@ -63,6 +65,19 @@ class Collection extends BaseCollection
 
         return function ($item) {
             return true;
+        };
+    }
+
+    private function getMap()
+    {
+        $map = Arr::get($this->settings, 'map');
+
+        if ($map) {
+            return $map;
+        }
+
+        return function ($item) {
+            return $item;
         };
     }
 
@@ -100,6 +115,6 @@ class Collection extends BaseCollection
 
     private function getValueForSorting($item, $key)
     {
-        return strtolower($item->$key instanceof Closure ? $item->$key($item) : $item->get($key) ?? $item->_meta->get($key));
+        return strtolower($item->$key instanceof Closure ? $item->$key($item) : $item->get($key) ?? $item->_meta->get($key) ?? '');
     }
 }

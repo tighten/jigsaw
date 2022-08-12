@@ -18,7 +18,7 @@ class PermalinkTest extends TestCase
 
         $this->assertEquals(
             '<div><p>Permalink file</p></div>',
-            $files->getChild('build/permalink.html')->getContent()
+            $this->clean($files->getChild('build/permalink.html')->getContent())
         );
     }
 
@@ -36,7 +36,7 @@ class PermalinkTest extends TestCase
 
         $this->assertEquals(
             '<div><p>Permalink file</p></div>',
-            $files->getChild('build/permalink.html')->getContent()
+            $this->clean($files->getChild('build/permalink.html')->getContent())
         );
     }
 
@@ -54,7 +54,7 @@ class PermalinkTest extends TestCase
 
         $this->assertEquals(
             '<div><p>Permalink file</p></div>',
-            $files->getChild('build/nested/permalink.html')->getContent()
+            $this->clean($files->getChild('build/nested/permalink.html')->getContent())
         );
     }
 
@@ -72,7 +72,7 @@ class PermalinkTest extends TestCase
 
         $this->assertEquals(
             '<div><p>Permalink file</p></div>',
-            $files->getChild('build/nested/permalink.html')->getContent()
+            $this->clean($files->getChild('build/nested/permalink.html')->getContent())
         );
     }
 
@@ -90,7 +90,7 @@ class PermalinkTest extends TestCase
 
         $this->assertEquals(
             '<div><p>Permalink file</p></div>',
-            $files->getChild('build/permalink.html')->getContent()
+            $this->clean($files->getChild('build/permalink.html')->getContent())
         );
     }
 

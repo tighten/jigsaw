@@ -115,6 +115,6 @@ class Collection extends BaseCollection
 
     private function getValueForSorting($item, $key)
     {
-        return strtolower($item->$key instanceof Closure ? $item->$key($item) : $item->get($key) ?? $item->_meta->get($key));
+        return strtolower($item->$key instanceof Closure ? $item->$key($item) : $item->get($key) ?? $item->_meta->get($key) ?? '');
     }
 }

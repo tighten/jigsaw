@@ -9,7 +9,7 @@ use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
-class SnapshotTest extends PHPUnit
+class SnapshotsTest extends PHPUnit
 {
     protected Filesystem $filesystem;
 

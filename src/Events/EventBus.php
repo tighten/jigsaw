@@ -3,7 +3,6 @@
 namespace TightenCo\Jigsaw\Events;
 
 use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
 use TightenCo\Jigsaw\Jigsaw;
 
 /**
@@ -13,9 +12,14 @@ use TightenCo\Jigsaw\Jigsaw;
  */
 class EventBus
 {
-    public Collection $beforeBuild;
-    public Collection $afterCollections;
-    public Collection $afterBuild;
+    /** @var \Illuminate\Support\Collection $beforeBuild */
+    public $beforeBuild;
+
+    /** @var \Illuminate\Support\Collection $afterCollections */
+    public $afterCollections;
+
+    /** @var \Illuminate\Support\Collection $afterBuild */
+    public $afterBuild;
 
     public function __construct()
     {

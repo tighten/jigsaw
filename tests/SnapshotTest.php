@@ -2,53 +2,100 @@
 
 namespace Tests;
 
-class SnapshotTest extends SnapshotTestCase
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Str;
+use PHPUnit\Framework\TestCase as PHPUnit;
+use Symfony\Component\Finder\SplFileInfo;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
+
+class SnapshotTest extends PHPUnit
 {
-    /**
-     * @test
-     */
-    public function all_files_are_built()
+    protected Filesystem $filesystem;
+
+    protected function setUp(): void
     {
-        $this->assertEquals($this->snapshot_files, $this->build_files, 'Some files are missing or unexpected.');
+        parent::setUp();
+
+        $this->filesystem = new Filesystem;
+    }
+
+    public function snapshots(): array
+    {
+        return collect((new Filesystem)->directories($this->source()))
+            ->map(fn ($path) => basename($path))
+            ->reject(fn ($name) => Str::endsWith($name, '_snapshot'))
+            // Prepend the test command with JIGSAW_SNAPSHOTS=<snapshot-names> to run specific snapshot tests
+            ->when(isset($_SERVER['JIGSAW_SNAPSHOTS']), fn ($directories) => $directories->filter(
+                fn ($name) => in_array($name, explode(',', $_SERVER['JIGSAW_SNAPSHOTS']))
+            ))
+            ->mapWithKeys(fn ($name) => [$name => [$name]])
+            ->all();
     }
 
     /**
      * @test
+     * @group snapshots
+     * @dataProvider snapshots
      */
-    public function dot_files_are_built()
+    public function build(string $name)
     {
-        $this->assertFileExists('tests/build-testing/.dotfile-test', 'dotfile was not built');
+        $this->runBuild($name);
+
+        $this->assertSnapshotMatches($name);
     }
 
-    /**
-     * @test
-     */
-    public function ds_store_files_are_not_built()
+    private function runBuild(string $name, string ...$arguments): void
     {
-        $this->assertFileDoesNotExist('tests/build-testing/.DS_Store', 'DS_Store was built');
+        // Delete the contents of the output directory in the source to clean up previous builds
+        $this->filesystem->deleteDirectory($this->output($name), true);
+
+        $jigsaw = realpath(implode(DIRECTORY_SEPARATOR, array_filter([__DIR__, '..', 'jigsaw'])));
+
+        $build = new Process(['php', $jigsaw, 'build', ...$arguments, '-vvv'], $this->source($name));
+
+        $build->run();
+
+        if (! $build->isSuccessful()) {
+            throw new ProcessFailedException($build);
+        }
     }
 
-    /**
-     * @test
-     */
-    public function all_built_files_contain_expected_content()
+    private function assertSnapshotMatches($name)
     {
-        collect($this->build_files)->each(function ($file) {
-            echo "\r\nChecking " . $file->getRelativePathname();
-            $this->assertEquals(
-                str_replace("\r", '', file_get_contents('tests/snapshots/' . $file->getRelativePathname())),
-                str_replace("\r", '', $file->getContents()),
-                'File contents do not match: ' . $file->getRelativePathname()
+        $this->assertDirectoryExists($this->output($name));
+
+        $this->assertSame(
+            collect($this->filesystem->allFiles($this->snapshot($name), true))
+                ->map(fn ($file) => Str::after($file->getPathname(), $this->snapshot($name)))
+                ->toArray(),
+            collect($this->filesystem->allFiles($this->output($name), true))
+                ->map(fn ($file) => Str::after($file->getPathname(), $this->output($name)))
+                ->toArray(),
+            "Output file structure does not match snapshot in '{$name}'.",
+        );
+
+        collect($this->filesystem->files($this->output($name), true))->map(function (SplFileInfo $file) use ($name) {
+            $this->assertSame(
+                file_get_contents(implode(DIRECTORY_SEPARATOR, array_filter([$this->snapshot($name), $file->getRelativePathname()]))),
+                $file->getContents(),
+                "Output file '{$file->getRelativePathname()}' does not match snapshot in '{$name}'.",
             );
         });
-
-        $this->echoLine();
-        echo "\r\n√ All built files pass.";
-        $this->echoLine();
     }
 
-    protected function echoLine()
+    private function source(string $name = ''): string
     {
-        echo "\r\n-----------------------";
+        return implode(DIRECTORY_SEPARATOR, array_filter([__DIR__, 'snapshots', $name]));
+    }
+
+    private function output(string $name): string
+    {
+        return implode(DIRECTORY_SEPARATOR, array_filter([__DIR__, 'snapshots', $name, 'build_local']));
+    }
+
+    private function snapshot(string $name): string
+    {
+        return implode(DIRECTORY_SEPARATOR, array_filter([__DIR__, 'snapshots', "{$name}_snapshot"]));
     }
 }

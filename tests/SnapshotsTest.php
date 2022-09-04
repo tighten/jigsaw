@@ -12,11 +12,11 @@ use Symfony\Component\Process\Process;
 class SnapshotsTest extends PHPUnit
 {
     // Additional arguments to pass to the build command for specific snapshots
-    protected static array $arguments = [
+    protected static $arguments = [
         'environment-specific-config-file' => ['staging'],
     ];
 
-    protected Filesystem $filesystem;
+    protected $filesystem;
 
     protected function setUp(): void
     {
@@ -28,13 +28,21 @@ class SnapshotsTest extends PHPUnit
     public function snapshots(): array
     {
         return collect((new Filesystem)->directories($this->source()))
-            ->map(fn ($path) => basename($path))
-            ->reject(fn ($name) => Str::endsWith($name, '_snapshot'))
+            ->map(function ($path) {
+                return basename($path);
+            })
+            ->reject(function ($name) {
+                return Str::endsWith($name, '_snapshot');
+            })
             // Prepend the test command with JIGSAW_SNAPSHOTS=<snapshot-names> to run specific snapshot tests
-            ->when(isset($_SERVER['JIGSAW_SNAPSHOTS']), fn ($directories) => $directories->filter(
-                fn ($name) => in_array($name, explode(',', $_SERVER['JIGSAW_SNAPSHOTS']))
-            ))
-            ->mapWithKeys(fn ($name) => [$name => [$name]])
+            ->when(isset($_SERVER['JIGSAW_SNAPSHOTS']), function ($directories) {
+                return $directories->filter(function ($name) {
+                    return in_array($name, explode(',', $_SERVER['JIGSAW_SNAPSHOTS']));
+                });
+            })
+            ->mapWithKeys(function ($name) {
+                return [$name => [$name]];
+            })
             ->all();
     }
 
@@ -51,7 +59,7 @@ class SnapshotsTest extends PHPUnit
         $jigsaw = realpath(implode(DIRECTORY_SEPARATOR, array_filter([__DIR__, '..', 'jigsaw'])));
         $arguments = static::$arguments[$name] ?? [];
 
-        $build = new Process(['php', $jigsaw, 'build', ...$arguments, '-vvv'], $this->source($name));
+        $build = new Process(array_merge(['php', $jigsaw, 'build'], $arguments, ['-vvv']), $this->source($name));
         $build->run();
 
         if (! $build->isSuccessful()) {
@@ -67,10 +75,14 @@ class SnapshotsTest extends PHPUnit
 
         $this->assertSame(
             collect($this->filesystem->allFiles($this->snapshot($name), true))
-                ->map(fn ($file) => Str::after($file->getPathname(), $this->snapshot($name)))
+                ->map(function ($file) use ($name) {
+                    return Str::after($file->getPathname(), $this->snapshot($name));
+                })
                 ->toArray(),
             collect($this->filesystem->allFiles($this->output($name), true))
-                ->map(fn ($file) => Str::after($file->getPathname(), $this->output($name)))
+                ->map(function ($file) use ($name) {
+                    return Str::after($file->getPathname(), $this->output($name));
+                })
                 ->toArray(),
             "Output file structure does not match snapshot in '{$name}'.",
         );

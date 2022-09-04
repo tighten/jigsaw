@@ -11,6 +11,11 @@ use Symfony\Component\Process\Process;
 
 class SnapshotsTest extends PHPUnit
 {
+    // Additional arguments to pass to the build command for specific snapshots
+    protected static array $arguments = [
+        'environment-specific-config-file' => ['staging'],
+    ];
+
     protected Filesystem $filesystem;
 
     protected function setUp(): void
@@ -40,25 +45,20 @@ class SnapshotsTest extends PHPUnit
      */
     public function build(string $name)
     {
-        $this->runBuild($name);
-
-        $this->assertSnapshotMatches($name);
-    }
-
-    private function runBuild(string $name, string ...$arguments): void
-    {
         // Delete the contents of the output directory in the source to clean up previous builds
         $this->filesystem->deleteDirectory($this->output($name), true);
 
         $jigsaw = realpath(implode(DIRECTORY_SEPARATOR, array_filter([__DIR__, '..', 'jigsaw'])));
+        $arguments = static::$arguments[$name] ?? [];
 
         $build = new Process(['php', $jigsaw, 'build', ...$arguments, '-vvv'], $this->source($name));
-
         $build->run();
 
         if (! $build->isSuccessful()) {
             throw new ProcessFailedException($build);
         }
+
+        $this->assertSnapshotMatches($name);
     }
 
     private function assertSnapshotMatches($name)
@@ -91,7 +91,9 @@ class SnapshotsTest extends PHPUnit
 
     private function output(string $name): string
     {
-        return implode(DIRECTORY_SEPARATOR, array_filter([__DIR__, 'snapshots', $name, 'build_local']));
+        $output = $name === 'environment-specific-config-file' ? 'build_staging' : 'build_local';
+
+        return implode(DIRECTORY_SEPARATOR, array_filter([__DIR__, 'snapshots', $name, $output]));
     }
 
     private function snapshot(string $name): string

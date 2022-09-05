@@ -52,11 +52,9 @@ if (file_exists(getcwd().'/vendor/autoload.php')) {
 
 setlocale(LC_ALL, 'en_US.UTF8');
 
-$container = new Container;
+$container = new \TightenCo\Jigsaw\Container(getcwd());
 
-$container->setInstance($container);
-
-$container->instance('cwd', getcwd());
+$container->bootstrap([]);
 
 if (file_exists($envPath = $container['cwd'] . '/.env')) {
     (Dotenv::createImmutable($container['cwd']))->load();
@@ -133,7 +131,7 @@ $container->singleton(Factory::class, function ($c) use ($cachePath, $bladeCompi
 
     $finder = new FileViewFinder(new Filesystem, [$cachePath, $c['buildPath']['views']]);
 
-    $factory = new Factory($resolver, $finder, new FakeDispatcher());
+    $factory = new Factory($resolver, $finder, $c['dispatcher']);
     $factory->setContainer($c);
 
     return $factory;
@@ -202,10 +200,6 @@ $container->bind(SiteBuilder::class, function ($c) use ($cachePath) {
 
 $container->bind(CollectionRemoteItemLoader::class, function ($c) {
     return new CollectionRemoteItemLoader($c['config'], new Filesystem);
-});
-
-$container->singleton('events', function ($c) {
-    return new EventBus();
 });
 
 $container->bind(Jigsaw::class, function ($c) {

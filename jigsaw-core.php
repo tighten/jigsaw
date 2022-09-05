@@ -73,24 +73,6 @@ $container->bind('outputPathResolver', function ($c) {
     return new BasicOutputPathResolver;
 });
 
-$container->bind(YAMLParser::class, SymfonyYAMLParser::class);
-
-$container->singleton('markdownParser', function ($c) {
-    return new MarkdownParser;
-});
-
-$container->bind(FrontYAMLMarkdownParser::class, function ($c) {
-    return $c['markdownParser'];
-});
-
-$container->bind(Parser::class, function ($c) {
-    return new Parser($c[YAMLParser::class], $c[FrontYAMLMarkdownParser::class]);
-});
-
-$container->bind(FrontMatterParser::class, function ($c) {
-    return new FrontMatterParser($c[Parser::class]);
-});
-
 $bladeCompiler = new BladeCompiler(app('files'), $cachePath);
 
 $container->bind('bladeCompiler', function ($c) use ($bladeCompiler) {

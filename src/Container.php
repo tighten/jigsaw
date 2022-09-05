@@ -60,6 +60,7 @@ class Container extends Illuminate
         foreach ([
             Providers\EventServiceProvider::class,
             Providers\FilesystemServiceProvider::class,
+            Providers\MarkdownServiceProvider::class,
         ] as $provider) {
             ($provider = new $provider($this))->register();
 

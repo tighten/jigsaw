@@ -1,23 +1,15 @@
 <?php
 
 use Dotenv\Dotenv;
-use Illuminate\Container\Container;
-use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\View\Engines\CompilerEngine;
 use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Engines\PhpEngine;
 use Illuminate\View\Factory;
 use Illuminate\View\FileViewFinder;
-use Mni\FrontYAML\Bridge\Symfony\SymfonyYAMLParser;
-use Mni\FrontYAML\Markdown\MarkdownParser as FrontYAMLMarkdownParser;
-use Mni\FrontYAML\Parser;
-use Mni\FrontYAML\YAML\YAMLParser;
+use TightenCo\Jigsaw\Collection\CollectionPaginator;
 use TightenCo\Jigsaw\CollectionItemHandlers\BladeCollectionItemHandler;
 use TightenCo\Jigsaw\CollectionItemHandlers\MarkdownCollectionItemHandler;
-use TightenCo\Jigsaw\Collection\CollectionPaginator;
 use TightenCo\Jigsaw\Console\ConsoleOutput;
-use TightenCo\Jigsaw\Events\EventBus;
-use TightenCo\Jigsaw\Events\FakeDispatcher;
 use TightenCo\Jigsaw\File\BladeDirectivesFile;
 use TightenCo\Jigsaw\File\ConfigFile;
 use TightenCo\Jigsaw\File\TemporaryFilesystem;
@@ -32,7 +24,6 @@ use TightenCo\Jigsaw\Loaders\CollectionDataLoader;
 use TightenCo\Jigsaw\Loaders\CollectionRemoteItemLoader;
 use TightenCo\Jigsaw\Loaders\DataLoader;
 use TightenCo\Jigsaw\Parsers\FrontMatterParser;
-use TightenCo\Jigsaw\Parsers\MarkdownParser;
 use TightenCo\Jigsaw\PathResolvers\BasicOutputPathResolver;
 use TightenCo\Jigsaw\PathResolvers\CollectionPathResolver;
 use TightenCo\Jigsaw\SiteBuilder;
@@ -43,6 +34,7 @@ use TightenCo\Jigsaw\View\ViewRenderer;
 
 require __DIR__ . '/vendor/autoload.php';
 
+// TODO use __DIR__??
 $container = new \TightenCo\Jigsaw\Container(getcwd());
 
 $container->bootstrap([]);

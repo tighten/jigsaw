@@ -131,7 +131,7 @@ $container->singleton(Factory::class, function ($c) use ($cachePath, $bladeCompi
 
     $finder = new FileViewFinder(new Filesystem, [$cachePath, $c['buildPath']['views']]);
 
-    $factory = new Factory($resolver, $finder, $c['dispatcher']);
+    $factory = new Factory($resolver, $finder, app('dispatcher'));
     $factory->setContainer($c);
 
     return $factory;

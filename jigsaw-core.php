@@ -42,15 +42,7 @@ use TightenCo\Jigsaw\View\BladeMarkdownEngine;
 use TightenCo\Jigsaw\View\MarkdownEngine;
 use TightenCo\Jigsaw\View\ViewRenderer;
 
-if (file_exists(__DIR__.'/vendor/autoload.php')) {
-    require __DIR__.'/vendor/autoload.php';
-}
-
-if (file_exists(getcwd().'/vendor/autoload.php')) {
-    require getcwd().'/vendor/autoload.php';
-}
-
-setlocale(LC_ALL, 'en_US.UTF8');
+require __DIR__ . '/vendor/autoload.php';
 
 $container = new \TightenCo\Jigsaw\Container(getcwd());
 

@@ -20,7 +20,6 @@ use TightenCo\Jigsaw\Events\EventBus;
 use TightenCo\Jigsaw\Events\FakeDispatcher;
 use TightenCo\Jigsaw\File\BladeDirectivesFile;
 use TightenCo\Jigsaw\File\ConfigFile;
-use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\File\TemporaryFilesystem;
 use TightenCo\Jigsaw\Handlers\BladeHandler;
 use TightenCo\Jigsaw\Handlers\CollectionItemHandler;
@@ -92,7 +91,7 @@ $container->bind(FrontMatterParser::class, function ($c) {
     return new FrontMatterParser($c[Parser::class]);
 });
 
-$bladeCompiler = new BladeCompiler(new Filesystem, $cachePath);
+$bladeCompiler = new BladeCompiler(app('files'), $cachePath);
 
 $container->bind('bladeCompiler', function ($c) use ($bladeCompiler) {
     return $bladeCompiler;
@@ -101,18 +100,18 @@ $container->bind('bladeCompiler', function ($c) use ($bladeCompiler) {
 $container->singleton(Factory::class, function ($c) use ($cachePath, $bladeCompiler) {
     $resolver = new EngineResolver;
 
-    $compilerEngine = new CompilerEngine($bladeCompiler, new Filesystem);
+    $compilerEngine = new CompilerEngine($bladeCompiler, app('files'));
 
     $resolver->register('blade', function () use ($compilerEngine) {
         return $compilerEngine;
     });
 
     $resolver->register('php', function () {
-        return new PhpEngine(new Filesystem);
+        return new PhpEngine(app('files'));
     });
 
     $resolver->register('markdown', function () use ($c) {
-        return new MarkdownEngine($c[FrontMatterParser::class], new Filesystem, $c['buildPath']['views']);
+        return new MarkdownEngine($c[FrontMatterParser::class], app('files'), $c['buildPath']['views']);
     });
 
     $resolver->register('blade-markdown', function () use ($c, $compilerEngine) {
@@ -121,7 +120,7 @@ $container->singleton(Factory::class, function ($c) use ($cachePath, $bladeCompi
 
     (new BladeDirectivesFile($c['cwd'] . '/blade.php', $bladeCompiler))->register();
 
-    $finder = new FileViewFinder(new Filesystem, [$cachePath, $c['buildPath']['views']]);
+    $finder = new FileViewFinder(app('files'), [$cachePath, $c['buildPath']['views']]);
 
     $factory = new Factory($resolver, $finder, app('dispatcher'));
     $factory->setContainer($c);
@@ -154,7 +153,7 @@ $container->bind(CollectionPathResolver::class, function ($c ) {
 });
 
 $container->bind(CollectionDataLoader::class, function ($c) {
-    return new CollectionDataLoader(new Filesystem, $c['consoleOutput'], $c[CollectionPathResolver::class], [
+    return new CollectionDataLoader(app('files'), $c['consoleOutput'], $c[CollectionPathResolver::class], [
         $c[MarkdownCollectionItemHandler::class],
         $c[BladeCollectionItemHandler::class],
     ]);
@@ -180,7 +179,7 @@ $container->bind(PaginatedPageHandler::class, function ($c) {
 });
 
 $container->bind(SiteBuilder::class, function ($c) use ($cachePath) {
-    return new SiteBuilder(new Filesystem, $cachePath, $c['outputPathResolver'], $c['consoleOutput'], [
+    return new SiteBuilder(app('files'), $cachePath, $c['outputPathResolver'], $c['consoleOutput'], [
         $c[CollectionItemHandler::class],
         new IgnoredHandler,
         $c[PaginatedPageHandler::class],
@@ -191,7 +190,7 @@ $container->bind(SiteBuilder::class, function ($c) use ($cachePath) {
 });
 
 $container->bind(CollectionRemoteItemLoader::class, function ($c) {
-    return new CollectionRemoteItemLoader($c['config'], new Filesystem);
+    return new CollectionRemoteItemLoader($c['config'], app('files'));
 });
 
 $container->bind(Jigsaw::class, function ($c) {

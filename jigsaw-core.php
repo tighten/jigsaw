@@ -39,10 +39,6 @@ $container = new \TightenCo\Jigsaw\Container(getcwd());
 
 $container->bootstrap([]);
 
-if (file_exists($envPath = $container['cwd'] . '/.env')) {
-    (Dotenv::createImmutable($container['cwd']))->load();
-}
-
 $cachePath = $container['cwd'] . '/cache';
 $bootstrapFile = $container['cwd'] . '/bootstrap.php';
 

@@ -3,8 +3,12 @@
 namespace TightenCo\Jigsaw;
 
 use Closure;
+use Dotenv\Dotenv;
+use Dotenv\Exception\InvalidFileException;
 use Illuminate\Container\Container as Illuminate;
+use Illuminate\Support\Env;
 use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 class Container extends Illuminate
 {
@@ -42,6 +46,7 @@ class Container extends Illuminate
         if (! $this->bootstrapped) {
             $this->bootstrapped = true;
 
+            $this->loadEnvironmentVariables();
             $this->registerConfiguredProviders();
 
             $this->boot();
@@ -53,6 +58,20 @@ class Container extends Illuminate
         return $this['env'] = ($input = new ArgvInput)->hasParameterOption('--env')
             ? $input->getParameterOption('--env')
             : $callback();
+    }
+
+    public function loadEnvironmentVariables(): void
+    {
+        try {
+            Dotenv::create(Env::getRepository(), $this->basePath)->safeLoad();
+        } catch (InvalidFileException $e) {
+            $output = (new ConsoleOutput)->getErrorOutput();
+
+            $output->writeln('The environment file is invalid!');
+            $output->writeln($e->getMessage());
+
+            die(1);
+        }
     }
 
     public function registerConfiguredProviders(): void

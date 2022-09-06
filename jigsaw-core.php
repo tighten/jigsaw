@@ -1,6 +1,5 @@
 <?php
 
-use Dotenv\Dotenv;
 use Illuminate\View\Engines\CompilerEngine;
 use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Engines\PhpEngine;
@@ -38,8 +37,6 @@ require __DIR__ . '/vendor/autoload.php';
 $container = new \TightenCo\Jigsaw\Container(getcwd());
 
 $container->bootstrap([]);
-
-$bootstrapFile = $container['cwd'] . '/bootstrap.php';
 
 $container->instance('buildPath', [
     'source' => $container['cwd'] . '/source',
@@ -166,7 +163,7 @@ $container->bind(Jigsaw::class, function ($c) {
     return new Jigsaw($c, $c[DataLoader::class], $c[CollectionRemoteItemLoader::class], $c[SiteBuilder::class]);
 });
 
-if (file_exists($bootstrapFile)) {
+if (file_exists($bootstrapFile = $container->basePath('bootstrap.php'))) {
     $events = $container->events;
     include $bootstrapFile;
 }

@@ -31,7 +31,7 @@ class TestCase extends BaseTestCase
             'destination' => $this->destinationPath,
         ];
         $this->filesystem = new Filesystem();
-        $this->tempPath = $cachePath;
+        $this->tempPath = $container->cachePath();
         $this->prepareTempDirectory();
     }
 

@@ -39,7 +39,6 @@ $container = new \TightenCo\Jigsaw\Container(getcwd());
 
 $container->bootstrap([]);
 
-$cachePath = $container['cwd'] . '/cache';
 $bootstrapFile = $container['cwd'] . '/bootstrap.php';
 
 $container->instance('buildPath', [
@@ -47,9 +46,9 @@ $container->instance('buildPath', [
     'destination' => $container['cwd'] . '/build_{env}',
 ]);
 
-$container->bind('config', function ($c) use ($cachePath) {
+$container->bind('config', function ($c) {
     $config = (new ConfigFile($c['cwd'] . '/config.php', $c['cwd'] . '/helpers.php'))->config;
-    $config->put('view.compiled', $cachePath);
+    $config->put('view.compiled', $c->cachePath());
     return $config;
 });
 
@@ -61,13 +60,13 @@ $container->bind('outputPathResolver', function ($c) {
     return new BasicOutputPathResolver;
 });
 
-$bladeCompiler = new BladeCompiler(app('files'), $cachePath);
+$bladeCompiler = new BladeCompiler(app('files'), $container->cachePath());
 
 $container->bind('bladeCompiler', function ($c) use ($bladeCompiler) {
     return $bladeCompiler;
 });
 
-$container->singleton(Factory::class, function ($c) use ($cachePath, $bladeCompiler) {
+$container->singleton(Factory::class, function ($c) use ($bladeCompiler) {
     $resolver = new EngineResolver;
 
     $compilerEngine = new CompilerEngine($bladeCompiler, app('files'));
@@ -90,7 +89,7 @@ $container->singleton(Factory::class, function ($c) use ($cachePath, $bladeCompi
 
     (new BladeDirectivesFile($c['cwd'] . '/blade.php', $bladeCompiler))->register();
 
-    $finder = new FileViewFinder(app('files'), [$cachePath, $c['buildPath']['views']]);
+    $finder = new FileViewFinder(app('files'), [$c->cachePath(), $c['buildPath']['views']]);
 
     $factory = new Factory($resolver, $finder, app('dispatcher'));
     $factory->setContainer($c);
@@ -106,8 +105,8 @@ $container->bind(ViewRenderer::class, function ($c) use ($bladeCompiler) {
     return new ViewRenderer($c[Factory::class], $bladeCompiler, $c['config']);
 });
 
-$container->bind(TemporaryFilesystem::class, function ($c) use ($cachePath) {
-    return new TemporaryFilesystem($cachePath);
+$container->bind(TemporaryFilesystem::class, function ($c) {
+    return new TemporaryFilesystem($c->cachePath());
 });
 
 $container->bind(BladeHandler::class, function ($c) {
@@ -148,8 +147,8 @@ $container->bind(PaginatedPageHandler::class, function ($c) {
     return new PaginatedPageHandler($c[CollectionPaginator::class], $c[FrontMatterParser::class], $c[TemporaryFilesystem::class], $c[ViewRenderer::class]);
 });
 
-$container->bind(SiteBuilder::class, function ($c) use ($cachePath) {
-    return new SiteBuilder(app('files'), $cachePath, $c['outputPathResolver'], $c['consoleOutput'], [
+$container->bind(SiteBuilder::class, function ($c) {
+    return new SiteBuilder(app('files'), $c->cachePath(), $c['outputPathResolver'], $c['consoleOutput'], [
         $c[CollectionItemHandler::class],
         new IgnoredHandler,
         $c[PaginatedPageHandler::class],

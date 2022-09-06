@@ -41,6 +41,11 @@ class Container extends Illuminate
         return $this->basePath('public', ...$path);
     }
 
+    public function cachePath(string ...$path): string
+    {
+        return $this->basePath('cache', ...$path);
+    }
+
     public function bootstrap(array $bootstrappers): void
     {
         if (! $this->bootstrapped) {

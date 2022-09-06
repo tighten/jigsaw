@@ -7,6 +7,8 @@
         "prod": "mix --production"
     },
     "devDependencies": {
+        "browser-sync": "^2.27.4",
+        "browser-sync-webpack-plugin": "^2.3.0",
         "laravel-mix": "^6.0.39",
         "laravel-mix-jigsaw": "^2.0.0",
         "postcss": "^8.4.14",

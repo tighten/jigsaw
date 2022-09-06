@@ -116,6 +116,7 @@ class Container extends Illuminate
             Providers\FilesystemServiceProvider::class,
             Providers\MarkdownServiceProvider::class,
             Providers\ViewServiceProvider::class,
+            Providers\CollectionServiceProvider::class,
         ] as $provider) {
             ($provider = new $provider($this))->register();
 

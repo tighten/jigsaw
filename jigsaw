@@ -5,11 +5,13 @@ define('JIGSAW_START', microtime(true));
 
 require_once __DIR__ . '/jigsaw-core.php';
 
-/** @var \Illuminate\Container\Container $container */
+/** @var \Illuminate\Container\Container $app */
 
-$app = new \Symfony\Component\Console\Application('Jigsaw', '1.3.45');
-$app->add($container[\TightenCo\Jigsaw\Console\InitCommand::class]);
-$app->add(new \TightenCo\Jigsaw\Console\BuildCommand($container));
-$app->add(new \TightenCo\Jigsaw\Console\ServeCommand($container));
-\TightenCo\Jigsaw\Jigsaw::addUserCommands($app, $container);
-$app->run();
+$application = new \Symfony\Component\Console\Application('Jigsaw', '1.3.45');
+$application->add($app[\TightenCo\Jigsaw\Console\InitCommand::class]);
+$application->add(new \TightenCo\Jigsaw\Console\BuildCommand($app));
+$application->add(new \TightenCo\Jigsaw\Console\ServeCommand($app));
+
+\TightenCo\Jigsaw\Jigsaw::addUserCommands($application, $app);
+
+$application->run();

@@ -24,14 +24,14 @@ class TestCase extends BaseTestCase
     {
         parent::setUp();
         require 'jigsaw-core.php';
-        $this->app = $container;
+        $this->app = $app;
         $this->app->buildPath = [
             'source' => $this->sourcePath,
             'views' => $this->sourcePath,
             'destination' => $this->destinationPath,
         ];
         $this->filesystem = new Filesystem();
-        $this->tempPath = $container->cachePath();
+        $this->tempPath = $this->app->cachePath();
         $this->prepareTempDirectory();
     }
 

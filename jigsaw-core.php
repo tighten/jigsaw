@@ -3,11 +3,11 @@
 require __DIR__ . '/vendor/autoload.php';
 
 // TODO use __DIR__??
-$container = new \TightenCo\Jigsaw\Container(getcwd());
+$app = new \TightenCo\Jigsaw\Container(getcwd());
+$app->bootstrap([]);
 
-$container->bootstrap([]);
-
-if (file_exists($bootstrapFile = $container->basePath('bootstrap.php'))) {
-    $events = $container->events;
+if (file_exists($bootstrapFile = $app->basePath('bootstrap.php'))) {
+    $events = $app->events;
+    $container = $app;
     include $bootstrapFile;
 }

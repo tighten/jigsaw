@@ -46,55 +46,6 @@ $container->bind('outputPathResolver', function ($c) {
     return new BasicOutputPathResolver;
 });
 
-$bladeCompiler = new BladeCompiler(app('files'), $container->cachePath());
-
-$container->bind('bladeCompiler', function ($c) use ($bladeCompiler) {
-    return $bladeCompiler;
-});
-
-$container->singleton(Factory::class, function ($c) use ($bladeCompiler) {
-    $resolver = new EngineResolver;
-
-    $compilerEngine = new CompilerEngine($bladeCompiler, app('files'));
-
-    $resolver->register('blade', function () use ($compilerEngine) {
-        return $compilerEngine;
-    });
-
-    $resolver->register('php', function () {
-        return new PhpEngine(app('files'));
-    });
-
-    $resolver->register('markdown', function () use ($c) {
-        return new MarkdownEngine($c[FrontMatterParser::class], app('files'), $c['buildPath']['views']);
-    });
-
-    $resolver->register('blade-markdown', function () use ($c, $compilerEngine) {
-        return new BladeMarkdownEngine($compilerEngine, $c[FrontMatterParser::class]);
-    });
-
-    (new BladeDirectivesFile($c['cwd'] . '/blade.php', $bladeCompiler))->register();
-
-    $finder = new FileViewFinder(app('files'), [$c->cachePath(), $c['buildPath']['views']]);
-
-    $factory = new Factory($resolver, $finder, app('dispatcher'));
-    $factory->setContainer($c);
-
-    return $factory;
-});
-
-$container->bind('view', function ($c) {
-    return $c[Factory::class];
-});
-
-$container->bind(ViewRenderer::class, function ($c) use ($bladeCompiler) {
-    return new ViewRenderer($c[Factory::class], $bladeCompiler, $c['config']);
-});
-
-$container->bind(TemporaryFilesystem::class, function ($c) {
-    return new TemporaryFilesystem($c->cachePath());
-});
-
 $container->bind(BladeHandler::class, function ($c) {
     return new BladeHandler($c[TemporaryFilesystem::class], $c[FrontMatterParser::class], $c[ViewRenderer::class]);
 });

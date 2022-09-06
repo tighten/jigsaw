@@ -24,6 +24,8 @@ class Container extends Illuminate
         static::setInstance($this);
         $this->instance('app', $this);
         $this->instance('cwd', getcwd());
+
+        $this->registerCoreAliases();
     }
 
     public function basePath(...$path): string
@@ -113,6 +115,7 @@ class Container extends Illuminate
             Providers\EventServiceProvider::class,
             Providers\FilesystemServiceProvider::class,
             Providers\MarkdownServiceProvider::class,
+            Providers\ViewServiceProvider::class,
         ] as $provider) {
             ($provider = new $provider($this))->register();
 
@@ -131,6 +134,7 @@ class Container extends Illuminate
     {
         foreach ([
             'app' => [static::class, \Illuminate\Contracts\Container\Container::class],
+            'view' => [\Illuminate\View\Factory::class, \Illuminate\Contracts\View\Factory::class],
         ] as $key => $aliases) {
             foreach ($aliases as $alias) {
                 $this->alias($key, $alias);

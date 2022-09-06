@@ -38,17 +38,6 @@ $container = new \TightenCo\Jigsaw\Container(getcwd());
 
 $container->bootstrap([]);
 
-$container->instance('buildPath', [
-    'source' => $container['cwd'] . '/source',
-    'destination' => $container['cwd'] . '/build_{env}',
-]);
-
-$container->bind('config', function ($c) {
-    $config = (new ConfigFile($c['cwd'] . '/config.php', $c['cwd'] . '/helpers.php'))->config;
-    $config->put('view.compiled', $c->cachePath());
-    return $config;
-});
-
 $container->singleton('consoleOutput', function ($c) {
     return new ConsoleOutput();
 });

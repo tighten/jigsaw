@@ -52,17 +52,13 @@ class Container extends Illuminate
             $this->bootstrapped = true;
 
             $this->loadEnvironmentVariables();
+
+            $this->loadConfiguration();
+
             $this->registerConfiguredProviders();
 
             $this->boot();
         }
-    }
-
-    public function detectEnvironment(Closure $callback): string
-    {
-        return $this['env'] = ($input = new ArgvInput)->hasParameterOption('--env')
-            ? $input->getParameterOption('--env')
-            : $callback();
     }
 
     public function loadEnvironmentVariables(): void
@@ -77,6 +73,38 @@ class Container extends Illuminate
 
             die(1);
         }
+    }
+
+    public function loadConfiguration(): void
+    {
+        $config = collect();
+
+        $files = array_filter([
+            $this->basePath('config.php'),
+            $this->basePath('helpers.php'),
+        ], 'file_exists');
+
+        foreach ($files as $path) {
+            $config = $config->merge(require $path);
+        }
+
+        if ($config->get('collections')) {
+            $config->put('collections', collect($config->get('collections'))->flatMap(
+                fn ($value, $key) => is_array($value) ? [$key => $value] : [$value => []]
+            ));
+        }
+
+        $this->instance('cachePath', $this->cachePath());
+        $this->instance('buildPath', [
+            'source' => $this->basePath('source'),
+            'destination' => $this->basePath('build_{env}'),
+        ]);
+
+        $config->put('view.compiled', $this->cachePath());
+
+        $this->instance('config', $config);
+
+        mb_internal_encoding('UTF-8');
     }
 
     public function registerConfiguredProviders(): void

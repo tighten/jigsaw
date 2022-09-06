@@ -3,15 +3,17 @@
 
 define('JIGSAW_START', microtime(true));
 
-require_once __DIR__ . '/jigsaw-core.php';
+require __DIR__ . '/vendor/autoload.php';
 
-/** @var \Illuminate\Container\Container $app */
+$app = new TightenCo\Jigsaw\Container(getcwd());
 
-$application = new \Symfony\Component\Console\Application('Jigsaw', '1.3.45');
-$application->add($app[\TightenCo\Jigsaw\Console\InitCommand::class]);
-$application->add(new \TightenCo\Jigsaw\Console\BuildCommand($app));
-$application->add(new \TightenCo\Jigsaw\Console\ServeCommand($app));
+$app->bootstrap([]);
 
-\TightenCo\Jigsaw\Jigsaw::addUserCommands($application, $app);
+$application = new Symfony\Component\Console\Application('Jigsaw', '1.3.45');
+$application->add($app[TightenCo\Jigsaw\Console\InitCommand::class]);
+$application->add(new TightenCo\Jigsaw\Console\BuildCommand($app));
+$application->add(new TightenCo\Jigsaw\Console\ServeCommand($app));
+
+TightenCo\Jigsaw\Jigsaw::addUserCommands($application, $app);
 
 $application->run();

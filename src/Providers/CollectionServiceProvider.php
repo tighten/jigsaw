@@ -5,7 +5,6 @@ namespace TightenCo\Jigsaw\Providers;
 use TightenCo\Jigsaw\Collection\CollectionPaginator;
 use TightenCo\Jigsaw\CollectionItemHandlers\BladeCollectionItemHandler;
 use TightenCo\Jigsaw\CollectionItemHandlers\MarkdownCollectionItemHandler;
-use TightenCo\Jigsaw\Console\ConsoleOutput;
 use TightenCo\Jigsaw\Container;
 use TightenCo\Jigsaw\File\TemporaryFilesystem;
 use TightenCo\Jigsaw\Handlers\BladeHandler;
@@ -29,9 +28,6 @@ class CollectionServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        // TODO re-home this
-        $this->app->singleton('consoleOutput', fn () => new ConsoleOutput);
-
         $this->app->bind('outputPathResolver', fn () => new BasicOutputPathResolver);
 
         $this->registerHandlers();

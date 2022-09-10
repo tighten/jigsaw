@@ -22,7 +22,6 @@ class Container extends Illuminate
 
         static::setInstance($this);
         $this->instance('app', $this);
-        $this->instance('cwd', getcwd());
 
         $this->registerCoreAliases();
     }
@@ -107,6 +106,7 @@ class Container extends Illuminate
             Providers\ViewServiceProvider::class,
             Providers\CollectionServiceProvider::class,
             Providers\BootstrapFileServiceProvider::class,
+            Providers\CompatibilityServiceProvider::class,
         ] as $provider) {
             ($provider = new $provider($this))->register();
 

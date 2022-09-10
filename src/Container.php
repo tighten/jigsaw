@@ -12,14 +12,13 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 
 class Container extends Illuminate
 {
-    protected string $basePath;
-
+    private string $basePath;
     private bool $bootstrapped = false;
     private array $providers = [];
 
-    public function __construct(string $basePath)
+    public function __construct()
     {
-        $this->basePath = rtrim($basePath, DIRECTORY_SEPARATOR);
+        $this->basePath = getcwd();
 
         static::setInstance($this);
         $this->instance('app', $this);
@@ -30,17 +29,7 @@ class Container extends Illuminate
 
     public function basePath(...$path): string
     {
-        return implode(DIRECTORY_SEPARATOR, array_filter([$this->basePath, ...$path]));
-    }
-
-    public function contentPath(...$path): string
-    {
-        return $this->basePath('content', ...$path);
-    }
-
-    public function publicPath(...$path): string
-    {
-        return $this->basePath('public', ...$path);
+        return implode('/', array_filter([$this->basePath, ...$path]));
     }
 
     public function cachePath(string ...$path): string

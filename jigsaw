@@ -5,7 +5,7 @@ define('JIGSAW_START', microtime(true));
 
 require __DIR__ . '/vendor/autoload.php';
 
-$app = new TightenCo\Jigsaw\Container(getcwd());
+$app = new TightenCo\Jigsaw\Container;
 
 $app->bootstrap([]);
 

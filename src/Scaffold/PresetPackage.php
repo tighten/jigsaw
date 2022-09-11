@@ -17,7 +17,7 @@ class PresetPackage
 
     public $constraint;
     public $name;
-    public $nameShort;
+    public $shortName;
     public $path;
     public $preset;
     public $suffix;

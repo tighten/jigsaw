@@ -8,6 +8,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 abstract class Command extends SymfonyCommand
 {
+    protected $input;
+    protected $output;
+    protected $console;
+
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $this->input = $input;

@@ -11,6 +11,7 @@ class PresetScaffoldBuilder extends ScaffoldBuilder
     protected $files;
     protected $process;
     protected $question;
+    protected $composerDependencies;
 
     public function __construct(Filesystem $files, PresetPackage $package, ProcessRunner $process)
     {

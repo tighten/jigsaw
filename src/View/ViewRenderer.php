@@ -8,8 +8,10 @@ use Illuminate\View\Factory;
 
 class ViewRenderer
 {
+    private $config;
     private $viewFactory;
     private $bladeCompiler;
+    private $finder;
     private $extensionEngines = [
         'md' => 'markdown',
         'markdown' => 'markdown',

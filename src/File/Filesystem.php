@@ -52,7 +52,7 @@ class Filesystem extends BaseFilesystem
         ) : [];
     }
 
-    public function isEmptyDirectory($directory)
+    public function isEmptyDirectory($directory, $ignoreDotFiles = false)
     {
         return $this->exists($directory) ? count($this->files($directory)) == 0 : false;
     }

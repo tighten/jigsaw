@@ -61,7 +61,7 @@ class IterableObject extends BaseCollection implements ArrayAccess
     }
 
     #[\ReturnTypeWillChange]
-    public function offsetGet($key): mixed
+    public function offsetGet($key): array|float|int|object|string|null
     {
         if (! isset($this->items[$key])) {
             $prefix = $this->_source ? 'Error in ' . $this->_source . ': ' : 'Error: ';

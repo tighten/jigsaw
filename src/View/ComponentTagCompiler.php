@@ -6,6 +6,7 @@ use Illuminate\Container\Container;
 use Illuminate\Support\Str;
 use Illuminate\View\Compilers\ComponentTagCompiler as BaseComponentTagCompiler;
 use Illuminate\View\Factory;
+use Illuminate\View\ViewFinderInterface;
 use InvalidArgumentException;
 
 class ComponentTagCompiler extends BaseComponentTagCompiler
@@ -83,9 +84,26 @@ class ComponentTagCompiler extends BaseComponentTagCompiler
      */
     public function guessClassName(string $component)
     {
-        $componentPieces = array_map(function ($componentPiece) {
-            return ucfirst(Str::camel($componentPiece));
-        }, explode('.', $component));
-        return 'Components\\'.implode('\\', $componentPieces);
+        return 'Components\\' . $this->formatClassName($component);
+    }
+
+    /**
+     * Guess the view name for the given component.
+     *
+     * @param  string  $name
+     * @param  string  $prefix
+     * @return string
+     */
+    public function guessViewName($name, $prefix = '_components.')
+    {
+        $prefix = Str::finish($prefix, '.');
+
+        $delimiter = ViewFinderInterface::HINT_PATH_DELIMITER;
+
+        if (Str::contains($name, $delimiter)) {
+            return Str::replaceFirst($delimiter, $delimiter . $prefix, $name);
+        }
+
+        return $prefix . $name;
     }
 }

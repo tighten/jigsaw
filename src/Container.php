@@ -159,6 +159,16 @@ class Container extends Illuminate
     {
         foreach ([
             Providers\EventServiceProvider::class,
+        ] as $provider) {
+            ($provider = new $provider($this))->register();
+
+            $this->providers[] = $provider;
+        }
+    }
+
+    private function registerConfiguredProviders(): void
+    {
+        foreach ([
             Providers\FilesystemServiceProvider::class,
             Providers\MarkdownServiceProvider::class,
             Providers\ViewServiceProvider::class,
@@ -170,11 +180,6 @@ class Container extends Illuminate
 
             $this->providers[] = $provider;
         }
-    }
-
-    private function registerConfiguredProviders(): void
-    {
-        //
     }
 
     private function registerCoreAliases(): void

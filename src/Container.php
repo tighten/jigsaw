@@ -2,76 +2,101 @@
 
 namespace TightenCo\Jigsaw;
 
-use Closure;
 use Dotenv\Dotenv;
 use Dotenv\Exception\InvalidFileException;
 use Illuminate\Container\Container as Illuminate;
 use Illuminate\Support\Env;
-use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 class Container extends Illuminate
 {
-    private string $basePath;
+    private string $path;
+
     private bool $bootstrapped = false;
+
+    private bool $booted = false;
+
+    /** @var callable[] */
+    private array $bootingCallbacks = [];
+
+    /** @var callable[] */
+    private array $bootedCallbacks = [];
+
     private array $providers = [];
 
     public function __construct()
     {
-        $this->basePath = getcwd();
+        $this->path = getcwd();
 
         static::setInstance($this);
         $this->instance('app', $this);
 
+        $this->registerCoreProviders();
         $this->registerCoreAliases();
     }
 
-    public function basePath(...$path): string
-    {
-        return implode('/', array_filter([$this->basePath, ...$path]));
-    }
-
-    public function cachePath(string ...$path): string
-    {
-        return $this->basePath('cache', ...$path);
-    }
-
-    public function bootstrap(array $bootstrappers): void
+    public function bootstrap(): void
     {
         if (! $this->bootstrapped) {
             $this->bootstrapped = true;
 
             $this->loadEnvironmentVariables();
-
             $this->loadConfiguration();
-
             $this->registerConfiguredProviders();
-
             $this->boot();
         }
     }
 
-    public function loadEnvironmentVariables(): void
+    public function path(string ...$path): string
+    {
+        return implode(DIRECTORY_SEPARATOR, array_filter([$this->path, ...$path]));
+    }
+
+    public function cachePath(string ...$path): string
+    {
+        return $this->path('cache', ...$path);
+    }
+
+    public function isBooted(): bool
+    {
+        return $this->booted;
+    }
+
+    public function booting(callable $callback): void
+    {
+        $this->bootingCallbacks[] = $callback;
+    }
+
+    public function booted(callable $callback): void
+    {
+        $this->bootedCallbacks[] = $callback;
+
+        if ($this->isBooted()) {
+            $callback($this);
+        }
+    }
+
+    private function loadEnvironmentVariables(): void
     {
         try {
-            Dotenv::create(Env::getRepository(), $this->basePath)->safeLoad();
+            Dotenv::create(Env::getRepository(), $this->path)->safeLoad();
         } catch (InvalidFileException $e) {
             $output = (new ConsoleOutput)->getErrorOutput();
 
             $output->writeln('The environment file is invalid!');
             $output->writeln($e->getMessage());
 
-            die(1);
+            exit(1);
         }
     }
 
-    public function loadConfiguration(): void
+    private function loadConfiguration(): void
     {
         $config = collect();
 
         $files = array_filter([
-            $this->basePath('config.php'),
-            $this->basePath('helpers.php'),
+            $this->path('config.php'),
+            $this->path('helpers.php'),
         ], 'file_exists');
 
         foreach ($files as $path) {
@@ -84,20 +109,53 @@ class Container extends Illuminate
             ));
         }
 
+        // $this['env'] = ($input = new ArgvInput)->hasParameterOption('--env')
+        //     ? $input->getParameterOption('--env')
+        //     : $config->get('env', 'production');
+
         $this->instance('cachePath', $this->cachePath());
         $this->instance('buildPath', [
-            'source' => $this->basePath('source'),
-            'destination' => $this->basePath('build_{env}'),
+            'source' => $this->path('source'),
+            'destination' => $this->path('build_{env}'),
         ]);
 
         $config->put('view.compiled', $this->cachePath());
 
         $this->instance('config', $config);
 
+        // date_default_timezone_set($config->get('timezone', 'UTC'));
+
         mb_internal_encoding('UTF-8');
     }
 
-    public function registerConfiguredProviders(): void
+    private function boot(): void
+    {
+        $this->fireAppCallbacks($this->bootingCallbacks);
+
+        array_walk($this->providers, function ($provider) {
+            if (method_exists($provider, 'boot')) {
+                $this->call([$provider, 'boot']);
+            }
+        });
+
+        $this->booted = true;
+
+        $this->fireAppCallbacks($this->bootedCallbacks);
+    }
+
+    /** @param  callable[]  $callbacks */
+    private function fireAppCallbacks(array &$callbacks): void
+    {
+        $index = 0;
+
+        while ($index < count($callbacks)) {
+            $callbacks[$index]($this);
+
+            $index++;
+        }
+    }
+
+    private function registerCoreProviders(): void
     {
         foreach ([
             Providers\EventServiceProvider::class,
@@ -114,17 +172,15 @@ class Container extends Illuminate
         }
     }
 
-    public function boot(): void
+    private function registerConfiguredProviders(): void
     {
-        array_walk($this->providers, function ($provider) {
-            $this->call([$provider, 'boot']);
-        });
+        //
     }
 
-    protected function registerCoreAliases(): void
+    private function registerCoreAliases(): void
     {
         foreach ([
-            'app' => [static::class, \Illuminate\Contracts\Container\Container::class],
+            'app' => [self::class, \Illuminate\Contracts\Container\Container::class, \Psr\Container\ContainerInterface::class],
             'view' => [\Illuminate\View\Factory::class, \Illuminate\Contracts\View\Factory::class],
         ] as $key => $aliases) {
             foreach ($aliases as $alias) {

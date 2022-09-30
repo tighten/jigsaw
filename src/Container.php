@@ -173,8 +173,8 @@ class Container extends Illuminate
             Providers\MarkdownServiceProvider::class,
             Providers\ViewServiceProvider::class,
             Providers\CollectionServiceProvider::class,
-            Providers\BootstrapFileServiceProvider::class,
             Providers\CompatibilityServiceProvider::class,
+            Providers\BootstrapFileServiceProvider::class,
         ] as $provider) {
             ($provider = new $provider($this))->register();
 

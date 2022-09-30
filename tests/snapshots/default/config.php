@@ -3,11 +3,6 @@
 use Illuminate\Support\Str;
 
 return [
-    'environment' => 'testing',
-    'build' => [
-        'source' => 'tests/source',
-        'destination' => 'tests/build-testing',
-    ],
     'baseUrl' => 'http://jigsaw.test',
     'global_array' => [1, 2, 3],
     'global_variable' => 'some global variable',

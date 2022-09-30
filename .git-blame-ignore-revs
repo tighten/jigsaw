@@ -3,3 +3,6 @@
 
 # Rename SnapshotTest to SnapshotsTest
 45b422424a03c24ad2aed0af2bd0648ba4eb4e17
+
+# Move dotenv file snapshot test
+a2f33e083680337ba53704e4daf8c2d9ed2ac2f8

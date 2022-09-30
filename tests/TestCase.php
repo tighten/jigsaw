@@ -25,8 +25,8 @@ class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        $this->app = new Container(getcwd());
-        $this->app->bootstrap([]);
+        $this->app = new Container;
+        $this->app->bootstrap();
 
         $this->app->buildPath = [
             'source' => $this->sourcePath,

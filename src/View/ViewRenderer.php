@@ -3,9 +3,9 @@
 namespace TightenCo\Jigsaw\View;
 
 /**
- * For now, some of this only works if we do it in this file, not in the ViewServiceProvider,
+ * For now some of this only works if we do it in this file, not in the ViewServiceProvider,
  * because other code (BuildCommand, TestCase) updates the config or buildPaths after the
- * ViewServiceProvider has already run, so if we do it there it'll be out of date.
+ * ViewServiceProvider is registered, so if we do it there it'll be overwritten.
  */
 class ViewRenderer
 {

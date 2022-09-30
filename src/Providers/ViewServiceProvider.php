@@ -2,6 +2,7 @@
 
 namespace TightenCo\Jigsaw\Providers;
 
+use Illuminate\View\DynamicComponent;
 use Illuminate\View\Engines\CompilerEngine;
 use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Engines\FileEngine;
@@ -61,6 +62,9 @@ class ViewServiceProvider extends ServiceProvider
     {
         $this->app->singleton('blade.compiler', function (Container $app) {
             // TODO $app['config']['view.compiled']
+            return tap(new BladeCompiler($app['files'], $app['cachePath']), function ($blade) {
+                $blade->component('dynamic-component', DynamicComponent::class);
+            });
         });
 
         // v1 binding is 'bladeCompiler'

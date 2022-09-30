@@ -9,7 +9,7 @@ class CompatibilityServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->app->instance('cwd', $this->app->basePath());
+        $this->app->instance('cwd', $this->app->path());
 
         $this->app->singleton('consoleOutput', fn () => new ConsoleOutput);
     }

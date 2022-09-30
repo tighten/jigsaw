@@ -28,7 +28,7 @@ class ViewServiceProvider extends ServiceProvider
         $this->registerBladeCompiler();
         $this->registerEngineResolvers();
 
-        (new BladeDirectivesFile($this->app->basePath('blade.php'), $this->app['blade.compiler']))->register();
+        (new BladeDirectivesFile($this->app->path('blade.php'), $this->app['blade.compiler']))->register();
         $this->app->bind(ViewRenderer::class, fn () => new ViewRenderer);
         $this->app->bind(TemporaryFilesystem::class, fn (Container $app) => new TemporaryFilesystem($app['cachePath']));
 

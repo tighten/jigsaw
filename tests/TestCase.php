@@ -17,8 +17,8 @@ class TestCase extends BaseTestCase
     public $app;
     public $filesystem;
     public $tempPath;
-    public $sourcePath = __DIR__ . '/source';
-    public $destinationPath = __DIR__ . '/build_testing';
+    public $sourcePath = __DIR__ . '/snapshots/default/source';
+    public $destinationPath = __DIR__ . '/snapshots/default/build_local';
 
     protected function setUp(): void
     {

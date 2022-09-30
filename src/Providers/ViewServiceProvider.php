@@ -42,6 +42,8 @@ class ViewServiceProvider extends ServiceProvider
             $factory = new Factory($app['view.engine.resolver'], $app['view.finder'], $app['dispatcher']);
 
             $factory->setContainer($app);
+            // TODO provide a magic `$app` variable to all views?
+            // $factory->share('app', $app);
 
             return $factory;
         });
@@ -50,6 +52,7 @@ class ViewServiceProvider extends ServiceProvider
     private function registerViewFinder(): void
     {
         $this->app->bind('view.finder', function (Container $app) {
+            // TODO $app['config']['view.paths']
             return new FileViewFinder($app['files'], [$app['cachePath'], $app['buildPath']['views']]);
         });
     }
@@ -57,7 +60,7 @@ class ViewServiceProvider extends ServiceProvider
     private function registerBladeCompiler(): void
     {
         $this->app->singleton('blade.compiler', function (Container $app) {
-            return new BladeCompiler($app['files'], $app['cachePath']);
+            // TODO $app['config']['view.compiled']
         });
 
         // v1 binding is 'bladeCompiler'
@@ -76,6 +79,7 @@ class ViewServiceProvider extends ServiceProvider
             $resolver->register('blade', fn () => $compilerEngine);
 
             // Specific to Jigsaw
+            // TODO $app['config']['view.paths']
             $resolver->register('markdown', fn () => new MarkdownEngine($app[FrontMatterParser::class], $app['files'], $app['buildPath']['views']));
             $resolver->register('blade-markdown', fn () => new BladeMarkdownEngine($compilerEngine, $this->app[FrontMatterParser::class]));
 

@@ -19,6 +19,7 @@ class ViewRenderer
         'blade.md' => 'blade-markdown',
         'blade.mdown' => 'blade-markdown',
         'blade.markdown' => 'blade-markdown',
+        'md.blade.php' => 'blade-markdown',
     ];
     private $bladeExtensions = [
         'js', 'json', 'xml', 'yaml', 'yml', 'rss', 'atom', 'txt', 'text', 'html',

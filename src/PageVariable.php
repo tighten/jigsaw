@@ -25,6 +25,7 @@ class PageVariable extends IterableObject
         if (is_callable($helper)) {
             return $helper->__invoke($this, ...$args);
         }
+
         throw new Exception($this->missingHelperError($method));
     }
 

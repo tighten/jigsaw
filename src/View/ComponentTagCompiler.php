@@ -13,10 +13,9 @@ class ComponentTagCompiler extends BaseComponentTagCompiler
     /**
      * Get the component class for a given component alias.
      *
-     * @param  string  $component
      * @return string
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function componentClass(string $component)
     {
@@ -74,7 +73,6 @@ class ComponentTagCompiler extends BaseComponentTagCompiler
     /**
      * Guess the class name for the given component.
      *
-     * @param  string  $component
      * @return string
      */
     public function guessClassName(string $component)

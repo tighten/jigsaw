@@ -39,9 +39,11 @@ return (new PhpCsFixer\Config)
         'not_operator_with_successor_space' => true,
         'php_unit_method_casing' => false,
         'phpdoc_annotation_without_dot' => false,
-        'phpdoc_order' => true,
         'phpdoc_to_comment' => [
             'ignored_tags' => ['var'],
+        ],
+        'phpdoc_separation' => [
+            'groups' => [['test', 'group', 'dataProvider', 'doesNotPerformAssertions']]
         ],
         'phpdoc_var_annotation_correct_order' => true,
         'trailing_comma_in_multiline' => [

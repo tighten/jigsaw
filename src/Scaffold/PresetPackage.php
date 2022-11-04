@@ -10,7 +10,7 @@ use TightenCo\Jigsaw\File\Filesystem;
 
 class PresetPackage
 {
-    const PRESETS = [
+    public const PRESETS = [
         'blog' => 'tightenco/jigsaw-blog-template',
         'docs' => 'tightenco/jigsaw-docs-template',
     ];

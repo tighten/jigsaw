@@ -37,15 +37,15 @@ class PaginationTest extends TestCase
 
         $this->assertEquals(
             'post1 post2',
-            $this->clean($files->getChild('build/blog/index.html')->getContent())
+            $this->clean($files->getChild('build/blog/index.html')->getContent()),
         );
         $this->assertEquals(
             'post3 post4',
-            $this->clean($files->getChild('build/blog/2/index.html')->getContent())
+            $this->clean($files->getChild('build/blog/2/index.html')->getContent()),
         );
         $this->assertEquals(
             'post5',
-            $this->clean($files->getChild('build/blog/3/index.html')->getContent())
+            $this->clean($files->getChild('build/blog/3/index.html')->getContent()),
         );
     }
 
@@ -82,15 +82,15 @@ class PaginationTest extends TestCase
 
         $this->assertEquals(
             'post1 post2',
-            $this->clean($files->getChild('build/blog/index.html')->getContent())
+            $this->clean($files->getChild('build/blog/index.html')->getContent()),
         );
         $this->assertEquals(
             'post3 post4',
-            $this->clean($files->getChild('build/blog/2/index.html')->getContent())
+            $this->clean($files->getChild('build/blog/2/index.html')->getContent()),
         );
         $this->assertEquals(
             'post5',
-            $this->clean($files->getChild('build/blog/3/index.html')->getContent())
+            $this->clean($files->getChild('build/blog/3/index.html')->getContent()),
         );
     }
 
@@ -126,15 +126,15 @@ class PaginationTest extends TestCase
 
         $this->assertEquals(
             'post1 post2',
-            $this->clean($files->getChild('build/blog/index.html')->getContent())
+            $this->clean($files->getChild('build/blog/index.html')->getContent()),
         );
         $this->assertEquals(
             'post3 post4',
-            $this->clean($files->getChild('build/blog/2/index.html')->getContent())
+            $this->clean($files->getChild('build/blog/2/index.html')->getContent()),
         );
         $this->assertEquals(
             'post5',
-            $this->clean($files->getChild('build/blog/3/index.html')->getContent())
+            $this->clean($files->getChild('build/blog/3/index.html')->getContent()),
         );
     }
 
@@ -170,15 +170,15 @@ class PaginationTest extends TestCase
 
         $this->assertEquals(
             'post1 post2',
-            $this->clean($files->getChild('build/blog/index.html')->getContent())
+            $this->clean($files->getChild('build/blog/index.html')->getContent()),
         );
         $this->assertEquals(
             'post3 post4',
-            $this->clean($files->getChild('build/blog/2/index.html')->getContent())
+            $this->clean($files->getChild('build/blog/2/index.html')->getContent()),
         );
         $this->assertEquals(
             'post5',
-            $this->clean($files->getChild('build/blog/3/index.html')->getContent())
+            $this->clean($files->getChild('build/blog/3/index.html')->getContent()),
         );
     }
 
@@ -214,15 +214,15 @@ class PaginationTest extends TestCase
 
         $this->assertEquals(
             'post1 post2',
-            $this->clean($files->getChild('build/blog/index.html')->getContent())
+            $this->clean($files->getChild('build/blog/index.html')->getContent()),
         );
         $this->assertEquals(
             'post3 post4',
-            $this->clean($files->getChild('build/blog/2/index.html')->getContent())
+            $this->clean($files->getChild('build/blog/2/index.html')->getContent()),
         );
         $this->assertEquals(
             'post5',
-            $this->clean($files->getChild('build/blog/3/index.html')->getContent())
+            $this->clean($files->getChild('build/blog/3/index.html')->getContent()),
         );
     }
 
@@ -259,15 +259,15 @@ class PaginationTest extends TestCase
 
         $this->assertEquals(
             'post1 post2',
-            $this->clean($files->getChild('build/blog/index.html')->getContent())
+            $this->clean($files->getChild('build/blog/index.html')->getContent()),
         );
         $this->assertEquals(
             'post3 post4',
-            $this->clean($files->getChild('build/blog/2/index.html')->getContent())
+            $this->clean($files->getChild('build/blog/2/index.html')->getContent()),
         );
         $this->assertEquals(
             'post5',
-            $this->clean($files->getChild('build/blog/3/index.html')->getContent())
+            $this->clean($files->getChild('build/blog/3/index.html')->getContent()),
         );
     }
 
@@ -304,15 +304,15 @@ class PaginationTest extends TestCase
 
         $this->assertEquals(
             'post1 post2',
-            $this->clean($files->getChild('build/blog/index.html')->getContent())
+            $this->clean($files->getChild('build/blog/index.html')->getContent()),
         );
         $this->assertEquals(
             'post3 post4',
-            $this->clean($files->getChild('build/blog/2/index.html')->getContent())
+            $this->clean($files->getChild('build/blog/2/index.html')->getContent()),
         );
         $this->assertEquals(
             'post5',
-            $this->clean($files->getChild('build/blog/3/index.html')->getContent())
+            $this->clean($files->getChild('build/blog/3/index.html')->getContent()),
         );
     }
 
@@ -349,15 +349,15 @@ class PaginationTest extends TestCase
 
         $this->assertEquals(
             'post1 post2',
-            $this->clean($files->getChild('build/blog/index.html')->getContent())
+            $this->clean($files->getChild('build/blog/index.html')->getContent()),
         );
         $this->assertEquals(
             'post3 post4',
-            $this->clean($files->getChild('build/blog/2/index.html')->getContent())
+            $this->clean($files->getChild('build/blog/2/index.html')->getContent()),
         );
         $this->assertEquals(
             'post5',
-            $this->clean($files->getChild('build/blog/3/index.html')->getContent())
+            $this->clean($files->getChild('build/blog/3/index.html')->getContent()),
         );
     }
 

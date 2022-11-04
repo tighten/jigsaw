@@ -2,7 +2,6 @@
 
 use Dotenv\Dotenv;
 use Illuminate\Container\Container;
-use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\View\Engines\CompilerEngine;
 use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Engines\PhpEngine;
@@ -12,9 +11,9 @@ use Mni\FrontYAML\Bridge\Symfony\SymfonyYAMLParser;
 use Mni\FrontYAML\Markdown\MarkdownParser as FrontYAMLMarkdownParser;
 use Mni\FrontYAML\Parser;
 use Mni\FrontYAML\YAML\YAMLParser;
+use TightenCo\Jigsaw\Collection\CollectionPaginator;
 use TightenCo\Jigsaw\CollectionItemHandlers\BladeCollectionItemHandler;
 use TightenCo\Jigsaw\CollectionItemHandlers\MarkdownCollectionItemHandler;
-use TightenCo\Jigsaw\Collection\CollectionPaginator;
 use TightenCo\Jigsaw\Console\ConsoleOutput;
 use TightenCo\Jigsaw\Events\EventBus;
 use TightenCo\Jigsaw\Events\FakeDispatcher;
@@ -42,12 +41,12 @@ use TightenCo\Jigsaw\View\BladeMarkdownEngine;
 use TightenCo\Jigsaw\View\MarkdownEngine;
 use TightenCo\Jigsaw\View\ViewRenderer;
 
-if (file_exists(__DIR__.'/vendor/autoload.php')) {
-    require __DIR__.'/vendor/autoload.php';
+if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+    require __DIR__ . '/vendor/autoload.php';
 }
 
-if (file_exists(getcwd().'/vendor/autoload.php')) {
-    require getcwd().'/vendor/autoload.php';
+if (file_exists(getcwd() . '/vendor/autoload.php')) {
+    require getcwd() . '/vendor/autoload.php';
 }
 
 setlocale(LC_ALL, 'en_US.UTF8');
@@ -59,7 +58,7 @@ $container->setInstance($container);
 $container->instance('cwd', getcwd());
 
 if (file_exists($envPath = $container['cwd'] . '/.env')) {
-    (Dotenv::createImmutable($container['cwd']))->load();
+    Dotenv::createImmutable($container['cwd'])->load();
 }
 
 $cachePath = $container['cwd'] . '/cache';
@@ -73,6 +72,7 @@ $container->instance('buildPath', [
 $container->bind('config', function ($c) use ($cachePath) {
     $config = (new ConfigFile($c['cwd'] . '/config.php', $c['cwd'] . '/helpers.php'))->config;
     $config->put('view.compiled', $cachePath);
+
     return $config;
 });
 
@@ -159,7 +159,7 @@ $container->bind(MarkdownHandler::class, function ($c) {
     return new MarkdownHandler($c[TemporaryFilesystem::class], $c[FrontMatterParser::class], $c[ViewRenderer::class]);
 });
 
-$container->bind(CollectionPathResolver::class, function ($c ) {
+$container->bind(CollectionPathResolver::class, function ($c) {
     return new CollectionPathResolver($c['outputPathResolver'], $c[ViewRenderer::class]);
 });
 

@@ -55,7 +55,7 @@ class BladeHandler
                 $this->hasFrontMatter ?
                     $this->renderWithFrontMatter($file, $pageData) :
                     $this->render($file->getPathName(), $pageData),
-                $pageData
+                $pageData,
             ),
         ]);
     }
@@ -83,7 +83,7 @@ class BladeHandler
         $bladeFilePath = $this->temporaryFilesystem->put(
             $this->parser->getBladeContent($file->getContents()),
             $file->getPathname(),
-            '.blade.php'
+            '.blade.php',
         );
 
         return $this->render($bladeFilePath, $pageData);

@@ -12,13 +12,13 @@ use TightenCo\Jigsaw\Jigsaw;
  */
 class EventBus
 {
-    /** @var \Illuminate\Support\Collection $beforeBuild */
+    /** @var \Illuminate\Support\Collection */
     public $beforeBuild;
 
-    /** @var \Illuminate\Support\Collection $afterCollections */
+    /** @var \Illuminate\Support\Collection */
     public $afterCollections;
 
-    /** @var \Illuminate\Support\Collection $afterBuild */
+    /** @var \Illuminate\Support\Collection */
     public $afterBuild;
 
     public function __construct()

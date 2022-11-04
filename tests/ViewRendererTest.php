@@ -20,12 +20,12 @@ class ViewRendererTest extends TestCase
         $mock->shouldReceive('addExtension');
         new ViewRenderer($mock, Mockery::mock(BladeCompiler::class), collect([
             'viewHintPaths' => [
-                'view::hint' => 'path'
-            ]
+                'view::hint' => 'path',
+            ],
         ]));
 
         $this->addToAssertionCount(
-            Mockery::getContainer()->mockery_getExpectationCount()
+            Mockery::getContainer()->mockery_getExpectationCount(),
         );
     }
 
@@ -41,7 +41,7 @@ class ViewRendererTest extends TestCase
         new ViewRenderer($mock, Mockery::mock(BladeCompiler::class));
 
         $this->addToAssertionCount(
-            Mockery::getContainer()->mockery_getExpectationCount()
+            Mockery::getContainer()->mockery_getExpectationCount(),
         );
     }
 
@@ -55,11 +55,11 @@ class ViewRendererTest extends TestCase
         $mock->shouldNotReceive('addNamespace')->with('view::hint', 'path');
         $mock->shouldReceive('addExtension');
         new ViewRenderer($mock, Mockery::mock(BladeCompiler::class), collect([
-            'viewHintPaths' => []
+            'viewHintPaths' => [],
         ]));
 
         $this->addToAssertionCount(
-            Mockery::getContainer()->mockery_getExpectationCount()
+            Mockery::getContainer()->mockery_getExpectationCount(),
         );
     }
 }

@@ -7,7 +7,7 @@ use TightenCo\Jigsaw\Scaffold\BasicScaffoldBuilder;
 
 class ScaffoldTest extends TestCase
 {
-    const EXISTING_FILES = [
+    public const EXISTING_FILES = [
         '.gitignore' => '',
         'bootstrap.php' => '',
         'config.php' => '',
@@ -27,7 +27,7 @@ class ScaffoldTest extends TestCase
     {
         $vfs = vfsStream::setup('virtual', null, array_merge(
             self::EXISTING_FILES,
-            ['archived' => []]
+            ['archived' => []],
         ));
         $scaffold = $this->app->make(BasicScaffoldBuilder::class)->setBase($vfs->url());
 
@@ -64,7 +64,7 @@ class ScaffoldTest extends TestCase
     {
         $vfs = vfsStream::setup('virtual', null, array_merge(
             self::EXISTING_FILES,
-            ['archived' => ['old-file.md' => '']]
+            ['archived' => ['old-file.md' => '']],
         ));
         $scaffold = $this->app->make(BasicScaffoldBuilder::class)->setBase($vfs->url());
 
@@ -83,7 +83,7 @@ class ScaffoldTest extends TestCase
     {
         $vfs = vfsStream::setup('virtual', null, array_merge(
             self::EXISTING_FILES,
-            ['archived' => []]
+            ['archived' => []],
         ));
         $scaffold = $this->app->make(BasicScaffoldBuilder::class)->setBase($vfs->url());
 
@@ -100,7 +100,7 @@ class ScaffoldTest extends TestCase
     {
         $vfs = vfsStream::setup('virtual', null, array_merge(
             self::EXISTING_FILES,
-            ['vendor' => []]
+            ['vendor' => []],
         ));
         $scaffold = $this->app->make(BasicScaffoldBuilder::class)->setBase($vfs->url());
 
@@ -117,7 +117,7 @@ class ScaffoldTest extends TestCase
     {
         $vfs = vfsStream::setup('virtual', null, array_merge(
             self::EXISTING_FILES,
-            ['node_modules' => []]
+            ['node_modules' => []],
         ));
         $scaffold = $this->app->make(BasicScaffoldBuilder::class)->setBase($vfs->url());
 
@@ -149,7 +149,7 @@ class ScaffoldTest extends TestCase
     {
         $vfs = vfsStream::setup('virtual', null, array_merge(
             self::EXISTING_FILES,
-            ['archived' => []]
+            ['archived' => []],
         ));
         $scaffold = $this->app->make(BasicScaffoldBuilder::class)->setBase($vfs->url());
 
@@ -165,7 +165,7 @@ class ScaffoldTest extends TestCase
     {
         $vfs = vfsStream::setup('virtual', null, array_merge(
             self::EXISTING_FILES,
-            ['vendor' => []]
+            ['vendor' => []],
         ));
         $scaffold = $this->app->make(BasicScaffoldBuilder::class)->setBase($vfs->url());
 
@@ -181,7 +181,7 @@ class ScaffoldTest extends TestCase
     {
         $vfs = vfsStream::setup('virtual', null, array_merge(
             self::EXISTING_FILES,
-            ['node_modules' => []]
+            ['node_modules' => []],
         ));
         $scaffold = $this->app->make(BasicScaffoldBuilder::class)->setBase($vfs->url());
 

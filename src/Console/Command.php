@@ -19,7 +19,7 @@ abstract class Command extends SymfonyCommand
         $this->console = new ConsoleSession(
             $this->input,
             $this->output,
-            $this->getHelper('question')
+            $this->getHelper('question'),
         );
 
         return (int) $this->fire();

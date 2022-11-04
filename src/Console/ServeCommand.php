@@ -26,27 +26,27 @@ class ServeCommand extends Command
                 'environment',
                 InputArgument::OPTIONAL,
                 'What environment should we serve?',
-                'local'
+                'local',
             )
             ->addOption(
                 'host',
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'What hostname or ip address should we use?',
-                'localhost'
+                'localhost',
             )
             ->addOption(
                 'port',
                 'p',
                 InputOption::VALUE_REQUIRED,
                 'What port should we use?',
-                8000
+                8000,
             )
             ->addOption(
                 'no-build',
                 null,
                 InputOption::VALUE_NONE,
-                'Skip build before serving?'
+                'Skip build before serving?',
             );
     }
 
@@ -79,7 +79,7 @@ class ServeCommand extends Command
         $customBuildPath = Arr::get(
             $environmentConfig,
             'build.destination',
-            Arr::get($this->app->config, 'build.destination')
+            Arr::get($this->app->config, 'build.destination'),
         );
 
         $buildPath = $customBuildPath ? $this->getAbsolutePath($customBuildPath) : $this->app->buildPath['destination'];

@@ -2,8 +2,6 @@
 
 namespace TightenCo\Jigsaw\File;
 
-use TightenCo\Jigsaw\File\InputFile;
-
 class CopyFile extends OutputFile
 {
     protected $source;

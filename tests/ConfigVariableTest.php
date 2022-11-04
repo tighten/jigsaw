@@ -18,7 +18,7 @@ class ConfigVariableTest extends TestCase
 
         $this->assertEquals(
             '<div>value</div>',
-            $files->getChild('build/variable-test.html')->getContent()
+            $files->getChild('build/variable-test.html')->getContent(),
         );
     }
 
@@ -37,7 +37,7 @@ class ConfigVariableTest extends TestCase
 
         $this->assertEquals(
             '<div>local</div>',
-            $files->getChild('build/variable-test.html')->getContent()
+            $files->getChild('build/variable-test.html')->getContent(),
         );
     }
 }

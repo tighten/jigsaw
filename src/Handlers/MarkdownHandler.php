@@ -59,7 +59,7 @@ class MarkdownHandler
                     $file->getFileNameWithoutExtension(),
                     $extension == 'php' ? 'html' : $extension,
                     $this->render($file, $pageData, $extends),
-                    $pageData
+                    $pageData,
                 );
             });
     }
@@ -72,24 +72,24 @@ class MarkdownHandler
             return $this->view->render($cached->getPathname(), $pageData);
         } elseif ($file->isBladeFile()) {
             return $this->renderBladeMarkdownFile($file, $uniqueFileName, $pageData, $extends);
-        } else {
-            return $this->renderMarkdownFile($file, $uniqueFileName, $pageData, $extends);
         }
+
+        return $this->renderMarkdownFile($file, $uniqueFileName, $pageData, $extends);
     }
 
     private function renderMarkdownFile($file, $uniqueFileName, $pageData, $extends)
     {
         $html = $this->parser->parseMarkdownWithoutFrontMatter(
-            $this->getEscapedMarkdownContent($file)
+            $this->getEscapedMarkdownContent($file),
         );
         $wrapper = $this->view->renderString(
             "@extends('{$extends}')\n" .
-            "@section('{$pageData->page->section}'){$html}@endsection"
+            "@section('{$pageData->page->section}'){$html}@endsection",
         );
 
         return $this->view->render(
             $this->temporaryFilesystem->put($wrapper, $uniqueFileName, '.php'),
-            $pageData
+            $pageData,
         );
     }
 
@@ -102,9 +102,9 @@ class MarkdownHandler
                 $uniqueFileName,
                 basename($contentPath, '.blade.md'),
                 $pageData,
-                $extends
+                $extends,
             ),
-            $pageData
+            $pageData,
         );
     }
 
@@ -113,7 +113,7 @@ class MarkdownHandler
         return $this->temporaryFilesystem->put(
             $this->getEscapedMarkdownContent($file),
             $file->getPathname(),
-            '.blade.md'
+            '.blade.md',
         );
     }
 
@@ -122,7 +122,7 @@ class MarkdownHandler
         return $this->temporaryFilesystem->put(
             $this->makeBladeWrapper($contentFileName, $pageData, $extends),
             $sourceFileName,
-            '.blade.php'
+            '.blade.php',
         );
     }
 

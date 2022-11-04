@@ -28,7 +28,7 @@ class DefaultHandler
                 $file->getRelativePath(),
                 $file->getBasename('.' . $file->getExtension()),
                 $file->getExtension(),
-                $pageData
+                $pageData,
             ),
         ]);
     }

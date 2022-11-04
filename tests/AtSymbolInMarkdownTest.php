@@ -20,7 +20,7 @@ class AtSymbolInMarkdownTest extends TestCase
 
         $this->assertEquals(
             '<div><p><a href="&#109;&#x61;&#105;&#x6c;&#116;&#x6f;&#58;&#x74;&#101;&#x73;&#116;&#x40;&#116;&#x65;&#115;&#x74;&#46;&#x63;&#111;&#x6d;">test@test.com</a></p></div>',
-            $this->clean($files->getChild('build/test.html')->getContent())
+            $this->clean($files->getChild('build/test.html')->getContent()),
         );
     }
 
@@ -40,7 +40,7 @@ class AtSymbolInMarkdownTest extends TestCase
 
         $this->assertEquals(
             '<div><p><a href="&#109;&#x61;&#105;&#x6c;&#116;&#x6f;&#58;&#x74;&#101;&#x73;&#116;&#x40;&#116;&#x65;&#115;&#x74;&#46;&#x63;&#111;&#x6d;">test@test.com</a></p></div>',
-            $this->clean($files->getChild('build/test.html')->getContent())
+            $this->clean($files->getChild('build/test.html')->getContent()),
         );
     }
 
@@ -54,13 +54,13 @@ class AtSymbolInMarkdownTest extends TestCase
                 'master.blade.php' => "<div>@yield('content')</div>",
             ],
             'test.md' => $this->getYamlHeader() .
-                "<p>@include('foo')</p>"
+                "<p>@include('foo')</p>",
         ]);
         $this->buildSite($files);
 
         $this->assertEquals(
             "<div><p>@include('foo')</p></div>",
-            $this->clean($files->getChild('build/test.html')->getContent())
+            $this->clean($files->getChild('build/test.html')->getContent()),
         );
     }
 
@@ -74,13 +74,13 @@ class AtSymbolInMarkdownTest extends TestCase
                 'master.blade.php' => "<div>@yield('content')</div>",
             ],
             'test.blade.md' => $this->getYamlHeader() .
-                "```\n@@if(true)<h1>Foo</h1>@@endif\n```"
+                "```\n@@if(true)<h1>Foo</h1>@@endif\n```",
         ]);
         $this->buildSite($files);
 
         $this->assertEquals(
             '<div><pre><code>@if(true)&lt;h1&gt;Foo&lt;/h1&gt;@endif</code></pre></div>',
-            $this->clean($files->getChild('build/test.html')->getContent())
+            $this->clean($files->getChild('build/test.html')->getContent()),
         );
     }
 
@@ -94,13 +94,13 @@ class AtSymbolInMarkdownTest extends TestCase
                 'master.blade.php' => "<div>@yield('content')</div>",
             ],
             'test.blade.md' => $this->getYamlHeader() .
-                "`@@if(true)<h1>Foo</h1>@@endif`"
+                '`@@if(true)<h1>Foo</h1>@@endif`',
         ]);
         $this->buildSite($files);
 
         $this->assertEquals(
             '<div><p><code>@if(true)&lt;h1&gt;Foo&lt;/h1&gt;@endif</code></p></div>',
-            $this->clean($files->getChild('build/test.html')->getContent())
+            $this->clean($files->getChild('build/test.html')->getContent()),
         );
     }
 

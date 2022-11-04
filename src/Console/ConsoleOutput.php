@@ -81,7 +81,7 @@ class ConsoleOutput extends SymfonyConsoleOutput
             . $env
             . ' site '
             . $cacheMessage
-            . '</>'
+            . '</>',
         );
 
         return $this;
@@ -111,7 +111,7 @@ class ConsoleOutput extends SymfonyConsoleOutput
             '<fg=yellow>Build time: </><fg=white>' .
             $time .
             ' seconds</> ' .
-            $cacheMessage
+            $cacheMessage,
         );
 
         return $this;

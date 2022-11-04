@@ -21,7 +21,7 @@ class SiteBuilder
         $cachePath,
         $outputPathResolver,
         ConsoleOutput $consoleOutput,
-        $handlers = []
+        $handlers = [],
     ) {
         $this->files = $files;
         $this->cachePath = $cachePath;
@@ -163,7 +163,7 @@ class SiteBuilder
             $file->name(),
             $file->extension(),
             $file->page(),
-            $file->prefix()
+            $file->prefix(),
         )));
     }
 
@@ -177,7 +177,7 @@ class SiteBuilder
             str_replace('\\', '/', $file->path()),
             $file->name(),
             $file->extension(),
-            $file->page()
+            $file->page(),
         )));
     }
 

@@ -2,11 +2,11 @@
 
 namespace TightenCo\Jigsaw;
 
+use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Traits\Macroable;
 use TightenCo\Jigsaw\File\Filesystem;
-use TightenCo\Jigsaw\Loaders\DataLoader;
 use TightenCo\Jigsaw\Loaders\CollectionRemoteItemLoader;
-use Illuminate\Contracts\Container\Container;
+use TightenCo\Jigsaw\Loaders\DataLoader;
 
 class Jigsaw
 {
@@ -27,7 +27,7 @@ class Jigsaw
         Container $app,
         DataLoader $dataLoader,
         CollectionRemoteItemLoader $remoteItemLoader,
-        SiteBuilder $siteBuilder
+        SiteBuilder $siteBuilder,
     ) {
         $this->app = $app;
         $this->dataLoader = $dataLoader;
@@ -76,7 +76,7 @@ class Jigsaw
             ->build(
                 $this->getSourcePath(),
                 $this->getDestinationPath(),
-                $this->siteData
+                $this->siteData,
             );
         $this->outputPaths = $this->pageInfo->keys();
 

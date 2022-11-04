@@ -2,7 +2,6 @@
 
 namespace TightenCo\Jigsaw\Loaders;
 
-use Exception;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 use TightenCo\Jigsaw\Collection\Collection;

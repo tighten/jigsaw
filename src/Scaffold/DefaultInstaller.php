@@ -6,13 +6,13 @@ use Illuminate\Support\Arr;
 
 class DefaultInstaller
 {
-    const ALWAYS_IGNORE = [
+    public const ALWAYS_IGNORE = [
         'build_*',
         'init.php',
         'node_modules',
         'vendor',
     ];
-    const DEFAULT_COMMANDS = [
+    public const DEFAULT_COMMANDS = [
         'composer install',
         'npm install',
         'npm run dev',

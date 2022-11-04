@@ -4,7 +4,6 @@ namespace Tests;
 
 use Illuminate\Container\Container;
 use Illuminate\View\Component;
-use Illuminate\View\View;
 use org\bovigo\vfs\vfsStream;
 
 class BladeComponentTest extends TestCase
@@ -41,8 +40,8 @@ class BladeComponentTest extends TestCase
             "<h3>This is the component</h3>\n" .
             "<h4>Named title slot: Title test</h4>\n" .
             "<h1>Default content</h1>\n" .
-            "</div>",
-            $built
+            '</div>',
+            $built,
         );
     }
 
@@ -64,7 +63,7 @@ class BladeComponentTest extends TestCase
 
         $this->assertEquals(
             '<h1>Hello</h1><div class="alert alert-error">The message</div>',
-            $built
+            $built,
         );
     }
 
@@ -90,7 +89,7 @@ class BladeComponentTest extends TestCase
 
         $this->assertEquals(
             '<h1>Hello</h1><div class="alert alert-error">The message</div>',
-            $built
+            $built,
         );
     }
 
@@ -113,7 +112,7 @@ class BladeComponentTest extends TestCase
 
         $this->assertEquals(
             '<h1>Hello</h1><div class="alert alert-error">The message</div>',
-            $built
+            $built,
         );
     }
 
@@ -136,7 +135,7 @@ class BladeComponentTest extends TestCase
 
         $this->assertEquals(
             '<h1>Hello</h1><div class="alert alert-error">The message</div>',
-            $built
+            $built,
         );
     }
 
@@ -162,7 +161,7 @@ class BladeComponentTest extends TestCase
 
         $this->assertEquals(
             '<h1>Hello</h1><div class="alert alert-error">The message</div>',
-            $built
+            $built,
         );
     }
 }

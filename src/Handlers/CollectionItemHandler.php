@@ -66,7 +66,7 @@ class CollectionItemHandler
                     basename($path, '.' . $outputFile->extension()),
                     $outputFile->extension(),
                     $outputFile->contents(),
-                    $outputFile->data()
+                    $outputFile->data(),
                 );
             })->values();
     }

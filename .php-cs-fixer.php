@@ -1,23 +1,43 @@
 <?php
-$finder = PhpCsFixer\Finder::create()
-    ->name('*.php')
-    ->in(__DIR__ . DIRECTORY_SEPARATOR . 'src')
-    ->in(__DIR__ . DIRECTORY_SEPARATOR . 'tests');
 
-return PhpCsFixer\Config::create()
+return (new PhpCsFixer\Config)
+    ->setFinder(
+        PhpCsFixer\Finder::create()
+            ->in(__DIR__)
+            ->exclude(['vendor', 'tests/snapshots'])
+            ->name('*.php')
+    )
     ->setRiskyAllowed(true)
     ->setRules([
         '@PSR2' => true,
         '@Symfony' => true,
-        'align_multiline_comment' => ['comment_type' => 'all_multiline'],
-        'array_syntax' => ['syntax' => 'short'],
-        'concat_space' => ['spacing' => 'one'],
-        'method_argument_space' => ['on_multiline' => 'ensure_fully_multiline'],
+        'align_multiline_comment' => [
+            'comment_type' => 'all_multiline',
+        ],
+        'binary_operator_spaces' => [
+            'operators' => [
+                '|' => 'no_space'
+            ],
+        ],
+        'blank_line_after_opening_tag' => true,
+        'blank_line_after_namespace' => true,
+        'blank_line_before_statement' => [
+            'statements' => ['return'],
+        ],
+        'concat_space' => [
+            'spacing' => 'one',
+        ],
+        // 'no_extra_blank_lines' => ['tokens' => ['extra', 'use']],
+        'new_with_braces' => false,
+        'no_empty_comment' => false,
+        'no_useless_else' => true,
         'not_operator_with_successor_space' => true,
-        'ordered_imports' => ['sort_algorithm' => 'alpha'],
-        'phpdoc_annotation_without_dot' => true,
+        'php_unit_method_casing' => false,
+        'phpdoc_annotation_without_dot' => false,
         'phpdoc_order' => true,
-        'trailing_comma_in_multiline_array' => true,
+        'trailing_comma_in_multiline' => [
+            'after_heredoc' => true,
+            'elements' => ['arrays', 'arguments', 'parameters'],
+        ],
         'yoda_style' => false,
-    ])
-    ->setFinder($finder);
+    ]);

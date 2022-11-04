@@ -98,7 +98,7 @@ class CollectionServiceProvider extends ServiceProvider
     private function registerSiteBuilder(): void
     {
         $this->app->bind(SiteBuilder::class, function (Container $app) {
-            return new SiteBuilder($app['files'], $app['cachePath'], $app['outputPathResolver'], $app['consoleOutput'], [
+            return new SiteBuilder($app['files'], $app->cachePath(), $app['outputPathResolver'], $app['consoleOutput'], [
                 $app[CollectionItemHandler::class],
                 new IgnoredHandler,
                 $app[PaginatedPageHandler::class],

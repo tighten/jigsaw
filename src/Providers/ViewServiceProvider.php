@@ -30,7 +30,7 @@ class ViewServiceProvider extends ServiceProvider
 
         (new BladeDirectivesFile($this->app->path('blade.php'), $this->app['blade.compiler']))->register();
         $this->app->bind(ViewRenderer::class, fn () => new ViewRenderer);
-        $this->app->bind(TemporaryFilesystem::class, fn (Container $app) => new TemporaryFilesystem($app['cachePath']));
+        $this->app->bind(TemporaryFilesystem::class, fn (Container $app) => new TemporaryFilesystem($app->cachePath()));
 
         // TODO
         // $this->registerExtensionEngines();
@@ -54,7 +54,7 @@ class ViewServiceProvider extends ServiceProvider
     {
         $this->app->bind('view.finder', function (Container $app) {
             // TODO $app['config']['view.paths']
-            return new FileViewFinder($app['files'], [$app['cachePath'], $app['buildPath']['views']]);
+            return new FileViewFinder($app['files'], [$app->cachePath(), $app['buildPath']['views']]);
         });
     }
 
@@ -62,7 +62,7 @@ class ViewServiceProvider extends ServiceProvider
     {
         $this->app->singleton('blade.compiler', function (Container $app) {
             // TODO $app['config']['view.compiled']
-            return tap(new BladeCompiler($app['files'], $app['cachePath']), function ($blade) {
+            return tap(new BladeCompiler($app['files'], $app->cachePath()), function ($blade) {
                 $blade->component('dynamic-component', DynamicComponent::class);
             });
         });

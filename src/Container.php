@@ -113,7 +113,6 @@ class Container extends Illuminate
         //     ? $input->getParameterOption('--env')
         //     : $config->get('env', 'production');
 
-        $this->instance('cachePath', $this->cachePath());
         $this->instance('buildPath', [
             'source' => $this->path('source'),
             'destination' => $this->path('build_{env}'),

@@ -49,7 +49,7 @@ class Container extends Illuminate
 
     public function path(string ...$path): string
     {
-        return implode(DIRECTORY_SEPARATOR, array_filter([$this->path, ...$path]));
+        return implode('/', array_filter([$this->path, ...$path]));
     }
 
     public function cachePath(string ...$path): string

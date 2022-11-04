@@ -16,7 +16,7 @@ return (new PhpCsFixer\Config)
         ],
         'binary_operator_spaces' => [
             'operators' => [
-                '|' => 'single_space' // Doesn't apply to union types
+                '|' => 'single_space', // Doesn't apply to union types
             ],
         ],
         'blank_line_after_namespace' => true,
@@ -27,12 +27,10 @@ return (new PhpCsFixer\Config)
         'concat_space' => [
             'spacing' => 'one',
         ],
-        // 'declare_strict_types' => true,
         'get_class_to_class_keyword' => true,
         'global_namespace_import' => [
             'import_classes' => true,
         ],
-        // 'no_extra_blank_lines' => ['tokens' => ['extra', 'use']],
         'new_with_braces' => false,
         'no_empty_comment' => false,
         'no_useless_else' => true,

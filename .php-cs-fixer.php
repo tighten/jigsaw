@@ -29,6 +29,9 @@ return (new PhpCsFixer\Config)
         ],
         // 'declare_strict_types' => true,
         'get_class_to_class_keyword' => true,
+        'global_namespace_import' => [
+            'import_classes' => true,
+        ],
         // 'no_extra_blank_lines' => ['tokens' => ['extra', 'use']],
         'new_with_braces' => false,
         'no_empty_comment' => false,

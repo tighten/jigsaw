@@ -3,6 +3,7 @@
 namespace Tests;
 
 use Illuminate\Support\Str;
+use Illuminate\View\Component;
 use Mockery;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase as BaseTestCase;
@@ -42,6 +43,13 @@ class TestCase extends BaseTestCase
     {
         $this->cleanupTempDirectory();
         Mockery::close();
+
+        if (method_exists(Component::class, 'flushCache')) {
+            Component::flushCache();
+            Component::forgetComponentsResolver();
+            Component::forgetFactory();
+        }
+
         parent::tearDown();
     }
 

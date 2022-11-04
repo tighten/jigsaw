@@ -16,17 +16,19 @@ return (new PhpCsFixer\Config)
         ],
         'binary_operator_spaces' => [
             'operators' => [
-                '|' => 'no_space'
+                '|' => 'single_space' // Doesn't apply to union types
             ],
         ],
-        'blank_line_after_opening_tag' => true,
         'blank_line_after_namespace' => true,
+        'blank_line_after_opening_tag' => true,
         'blank_line_before_statement' => [
             'statements' => ['return'],
         ],
         'concat_space' => [
             'spacing' => 'one',
         ],
+        // 'declare_strict_types' => true,
+        'get_class_to_class_keyword' => true,
         // 'no_extra_blank_lines' => ['tokens' => ['extra', 'use']],
         'new_with_braces' => false,
         'no_empty_comment' => false,
@@ -35,6 +37,10 @@ return (new PhpCsFixer\Config)
         'php_unit_method_casing' => false,
         'phpdoc_annotation_without_dot' => false,
         'phpdoc_order' => true,
+        'phpdoc_to_comment' => [
+            'ignored_tags' => ['var'],
+        ],
+        'phpdoc_var_annotation_correct_order' => true,
         'trailing_comma_in_multiline' => [
             'after_heredoc' => true,
             'elements' => ['arrays', 'arguments', 'parameters'],

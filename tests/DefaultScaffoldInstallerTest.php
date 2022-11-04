@@ -160,7 +160,7 @@ class DefaultScaffoldInstallerTest extends TestCase
 
         $this->assertEquals(
             'new config file from preset',
-            $vfs->getChild('config.php')->getContent()
+            $vfs->getChild('config.php')->getContent(),
         );
     }
 
@@ -497,7 +497,7 @@ class DefaultScaffoldInstallerTest extends TestCase
             [
                 'require' => [],
             ],
-            json_decode($vfs->getChild('composer.json')->getContent(), true)
+            json_decode($vfs->getChild('composer.json')->getContent(), true),
         );
     }
 }

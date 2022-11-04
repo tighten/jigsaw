@@ -31,9 +31,7 @@ class ComponentTagCompiler extends BaseComponentTagCompiler
                 return $alias;
             }
 
-            throw new InvalidArgumentException(
-                "Unable to locate class or view [{$alias}] for component [{$component}]."
-            );
+            throw new InvalidArgumentException("Unable to locate class or view [{$alias}] for component [{$component}].");
         }
 
         if ($class = $this->findClassByComponent($component)) {
@@ -70,9 +68,7 @@ class ComponentTagCompiler extends BaseComponentTagCompiler
             return $guess;
         }
 
-        throw new InvalidArgumentException(
-            "Unable to locate a class or view for component [{$component}]."
-        );
+        throw new InvalidArgumentException("Unable to locate a class or view for component [{$component}].");
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace TightenCo\Jigsaw;
 
+use Exception;
 use Illuminate\Support\Str;
 
 class PageVariable extends IterableObject
@@ -17,15 +18,14 @@ class PageVariable extends IterableObject
 
         if (! $helper && Str::startsWith($method, 'get')) {
             return $this->_meta->get(Str::camel(substr($method, 3)), function () use ($method) {
-                throw new \Exception($this->missingHelperError($method));
+                throw new Exception($this->missingHelperError($method));
             });
         }
 
         if (is_callable($helper)) {
             return $helper->__invoke($this, ...$args);
-        } else {
-            throw new \Exception($this->missingHelperError($method));
         }
+        throw new Exception($this->missingHelperError($method));
     }
 
     public function getPath($key = null)

@@ -143,7 +143,7 @@ class Container extends Illuminate
         $this->fireAppCallbacks($this->bootedCallbacks);
     }
 
-    /** @param  callable[]  $callbacks */
+    /** @param callable[] $callbacks */
     private function fireAppCallbacks(array &$callbacks): void
     {
         $index = 0;

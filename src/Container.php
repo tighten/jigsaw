@@ -109,10 +109,6 @@ class Container extends Illuminate
             ));
         }
 
-        // $this['env'] = ($input = new ArgvInput)->hasParameterOption('--env')
-        //     ? $input->getParameterOption('--env')
-        //     : $config->get('env', 'production');
-
         $this->instance('buildPath', [
             'source' => $this->path('source'),
             'destination' => $this->path('build_{env}'),
@@ -121,8 +117,6 @@ class Container extends Illuminate
         $config->put('view.compiled', $this->cachePath());
 
         $this->instance('config', $config);
-
-        // date_default_timezone_set($config->get('timezone', 'UTC'));
 
         mb_internal_encoding('UTF-8');
     }

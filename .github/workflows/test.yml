@@ -4,7 +4,7 @@ on:
   push:
     branches: [main, ci]
 jobs:
-  test:
+  phpunit:
     name: PHP ${{ matrix.php }}, ${{ matrix.dependencies }}
     runs-on: ubuntu-latest
     continue-on-error: ${{ matrix.php == '8.2' }}

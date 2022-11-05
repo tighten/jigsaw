@@ -1,12 +1,7 @@
 <?php
 
 return (new PhpCsFixer\Config)
-    ->setFinder(
-        PhpCsFixer\Finder::create()
-            ->in(__DIR__)
-            ->exclude(['vendor', 'tests/snapshots'])
-            ->name('*.php')
-    )
+    ->setFinder(PhpCsFixer\Finder::create()->in(__DIR__)->exclude('tests/snapshots'))
     ->setRiskyAllowed(true)
     ->setRules([
         '@PSR2' => true,
@@ -41,7 +36,9 @@ return (new PhpCsFixer\Config)
             'ignored_tags' => ['var'],
         ],
         'phpdoc_separation' => [
-            'groups' => [['test', 'group', 'dataProvider', 'doesNotPerformAssertions']]
+            'groups' => [
+                ['test', 'group', 'dataProvider', 'doesNotPerformAssertions'],
+            ],
         ],
         'phpdoc_var_annotation_correct_order' => true,
         'trailing_comma_in_multiline' => [

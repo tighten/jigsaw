@@ -2,74 +2,51 @@
 
 namespace TightenCo\Jigsaw\View;
 
-use Illuminate\Support\Collection;
-use Illuminate\View\Compilers\BladeCompiler;
-use Illuminate\View\Factory;
-
+/**
+ * For now some of this only works if we do it in this file, not in the ViewServiceProvider,
+ * because other code (BuildCommand, TestCase) updates the config or buildPaths after the
+ * ViewServiceProvider is registered, so if we do it there it'll be overwritten.
+ */
 class ViewRenderer
 {
-    private $config;
-    private $viewFactory;
-    private $bladeCompiler;
-    private $finder;
-    private $extensionEngines = [
-        'md' => 'markdown',
-        'markdown' => 'markdown',
-        'mdown' => 'markdown',
-        'blade.md' => 'blade-markdown',
-        'blade.mdown' => 'blade-markdown',
-        'blade.markdown' => 'blade-markdown',
-    ];
-    private $bladeExtensions = [
-        'js', 'json', 'xml', 'yaml', 'yml', 'rss', 'atom', 'txt', 'text', 'html',
-    ];
-
-    public function __construct(Factory $viewFactory, BladeCompiler $bladeCompiler, Collection $config = null)
+    public function __construct()
     {
-        $this->config = $config ?? collect();
-        $this->viewFactory = $viewFactory;
-        $this->bladeCompiler = $bladeCompiler;
-        $this->finder = $this->viewFactory->getFinder();
         $this->addExtensions();
         $this->addHintpaths();
     }
 
     public function getExtension($bladeViewPath)
     {
-        return strtolower(pathinfo($this->finder->find($bladeViewPath), PATHINFO_EXTENSION));
+        return strtolower(pathinfo(app('view')->getFinder()->find($bladeViewPath), PATHINFO_EXTENSION));
     }
 
     public function render($path, $data)
     {
-        return $this->viewFactory->file($path, $data->all())->render();
+        return app('view')->file($path, $data->all())->render();
     }
 
     public function renderString($string)
     {
-        return $this->bladeCompiler->compileString($string);
+        return app('blade.compiler')->compileString($string);
     }
 
     private function addHintpaths()
     {
-        collect($this->config->get('viewHintPaths'))->each(function ($path, $hint) {
-            $this->addHintpath($hint, $path);
-        });
-    }
-
-    private function addHintPath($hint, $path)
-    {
-        $this->viewFactory->addNamespace($hint, $path);
+        foreach (app('config')->get('viewHintPaths', []) as $hint => $path) {
+            app('view')->addNamespace($hint, $path);
+        }
     }
 
     private function addExtensions()
     {
-        collect($this->extensionEngines)->each(function ($engine, $extension) {
-            $this->viewFactory->addExtension($extension, $engine);
-        });
+        foreach (['md', 'markdown', 'mdown'] as $extension) {
+            app('view')->addExtension($extension, 'markdown');
+            app('view')->addExtension("blade.{$extension}", 'blade-markdown');
+        }
 
-        collect($this->bladeExtensions)->each(function ($extension) {
-            $this->viewFactory->addExtension($extension, 'php');
-            $this->viewFactory->addExtension('blade.' . $extension, 'blade');
-        });
+        foreach (['js', 'json', 'xml', 'yaml', 'yml', 'rss', 'atom', 'txt', 'text', 'html'] as $extension) {
+            app('view')->addExtension($extension, 'php');
+            app('view')->addExtension("blade.{$extension}", 'blade');
+        }
     }
 }

@@ -6,6 +6,17 @@ use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use Symfony\Component\VarDumper\VarDumper;
 
+if (! function_exists('app')) {
+    function app(string $abstract = null, array $parameters = []): mixed
+    {
+        if (is_null($abstract)) {
+            return \TightenCo\Jigsaw\Container::getInstance();
+        }
+
+        return \TightenCo\Jigsaw\Container::getInstance()->make($abstract, $parameters);
+    }
+}
+
 function leftTrimPath($path)
 {
     return ltrim($path, ' \\/');

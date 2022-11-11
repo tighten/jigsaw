@@ -3,9 +3,11 @@
 namespace Tests;
 
 use Illuminate\Support\Str;
+use Illuminate\View\Component;
 use Mockery;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase as BaseTestCase;
+use TightenCo\Jigsaw\Container;
 use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\File\InputFile;
 use TightenCo\Jigsaw\Jigsaw;
@@ -23,15 +25,17 @@ class TestCase extends BaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        require 'jigsaw-core.php';
-        $this->app = $container;
+
+        $this->app = new Container;
+        $this->app->bootstrapWith([]);
+
         $this->app->buildPath = [
             'source' => $this->sourcePath,
             'views' => $this->sourcePath,
             'destination' => $this->destinationPath,
         ];
         $this->filesystem = new Filesystem();
-        $this->tempPath = $cachePath;
+        $this->tempPath = $this->app->cachePath();
         $this->prepareTempDirectory();
     }
 
@@ -39,6 +43,13 @@ class TestCase extends BaseTestCase
     {
         $this->cleanupTempDirectory();
         Mockery::close();
+
+        if (method_exists(Component::class, 'flushCache')) {
+            Component::flushCache();
+            Component::forgetComponentsResolver();
+            Component::forgetFactory();
+        }
+
         parent::tearDown();
     }
 

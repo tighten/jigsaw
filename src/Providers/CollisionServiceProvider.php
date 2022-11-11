@@ -12,7 +12,7 @@ class CollisionServiceProvider extends ServiceProvider
     {
         // TODO bind something global in the TestCase for now?
         // if (! $this->app->runningUnitTests()) {
-            $this->app->bind(ProviderContract::class, fn () => new Provider);
+        $this->app->bind(ProviderContract::class, fn () => new Provider);
         // }
     }
 }

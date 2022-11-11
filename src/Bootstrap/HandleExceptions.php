@@ -35,20 +35,20 @@ class HandleExceptions
 
         // TODO
         // if (! $app->environment('testing')) {
-            ini_set('display_errors', 'Off');
+        ini_set('display_errors', 'Off');
         // }
     }
 
     /**
      * Convert PHP errors to ErrorException instances.
      *
-     * @param  int  $level
-     * @param  string  $message
-     * @param  string  $file
-     * @param  int  $line
-     * @param  array  $context
+     * @param int    $level
+     * @param string $message
+     * @param string $file
+     * @param int    $line
+     * @param array  $context
      *
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function handleError($level, $message, $file = '', $line = 0, $context = []): void
     {

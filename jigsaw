@@ -3,7 +3,13 @@
 
 define('JIGSAW_START', microtime(true));
 
-require __DIR__ . '/vendor/autoload.php';
+if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+    require __DIR__ . '/vendor/autoload.php';
+}
+
+if (file_exists(getcwd() . '/vendor/autoload.php')) {
+    require getcwd() . '/vendor/autoload.php';
+}
 
 $app = new TightenCo\Jigsaw\Container;
 

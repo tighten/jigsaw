@@ -27,6 +27,10 @@ class TestCase extends BaseTestCase
         parent::setUp();
 
         $this->app = new Container;
+        $this->app->singleton(
+            \Illuminate\Contracts\Debug\ExceptionHandler::class,
+            \TightenCo\Jigsaw\Exceptions\Handler::class,
+        );
         $this->app->bootstrapWith([
             \TightenCo\Jigsaw\Bootstrap\HandleExceptions::class,
         ]);

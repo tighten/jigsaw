@@ -24,6 +24,7 @@
         "michelf/php-markdown": "^1.9",
         "mnapoli/front-yaml": "^1.5",
         "nunomaduro/collision": "^6.0",
+        "spatie/laravel-ignition": "^1.6",
         "symfony/console": "^5.4 || ^6.0",
         "symfony/error-handler": "^5.0 || ^6.0",
         "symfony/finder": "^5.3.7 || ^6.0",

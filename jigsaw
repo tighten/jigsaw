@@ -13,7 +13,14 @@ if (file_exists(getcwd() . '/vendor/autoload.php')) {
 
 $app = new TightenCo\Jigsaw\Container;
 
-$app->bootstrapWith([]);
+$app->singleton(
+    Illuminate\Contracts\Debug\ExceptionHandler::class,
+    TightenCo\Jigsaw\Exceptions\Handler::class,
+);
+
+$app->bootstrapWith([
+    TightenCo\Jigsaw\Bootstrap\HandleExceptions::class,
+]);
 
 $application = new Symfony\Component\Console\Application('Jigsaw', '1.4.0');
 $application->add($app[TightenCo\Jigsaw\Console\InitCommand::class]);

@@ -27,7 +27,9 @@ class TestCase extends BaseTestCase
         parent::setUp();
 
         $this->app = new Container;
-        $this->app->bootstrapWith([]);
+        $this->app->bootstrapWith([
+            \TightenCo\Jigsaw\Bootstrap\HandleExceptions::class,
+        ]);
 
         $this->app->buildPath = [
             'source' => $this->sourcePath,

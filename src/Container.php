@@ -118,7 +118,7 @@ class Container extends Illuminate
 
         $this->instance('config', $config);
 
-        mb_internal_encoding('UTF-8');
+        setlocale(LC_ALL, 'en_US.UTF8');
     }
 
     private function boot(): void

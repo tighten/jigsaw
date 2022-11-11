@@ -22,7 +22,9 @@
         "illuminate/view": "^9.8",
         "michelf/php-markdown": "^1.9",
         "mnapoli/front-yaml": "^1.5",
+        "nunomaduro/collision": "^6.0",
         "symfony/console": "^5.4 || ^6.0",
+        "symfony/error-handler": "^5.0 || ^6.0",
         "symfony/finder": "^5.3.7 || ^6.0",
         "symfony/process": "^5.0 || ^6.0",
         "symfony/var-dumper": "^5.0 || ^6.0",
@@ -33,7 +35,8 @@
         "friendsofphp/php-cs-fixer": "^3.11",
         "mikey179/vfsstream": "^1.6.10",
         "mockery/mockery": "^1.4",
-        "phpunit/phpunit": "^9.3.3"
+        "phpunit/phpunit": "^9.3.3",
+        "ramsey/composer-repl": "^1.4"
     },
     "autoload": {
         "psr-4": {
@@ -55,8 +58,11 @@
         "format" : "php-cs-fixer fix --verbose"
     },
     "config": {
+        "sort-packages": true,
         "optimize-autoloader": true,
-        "sort-packages": true
+        "allow-plugins": {
+            "ramsey/composer-repl": true
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true

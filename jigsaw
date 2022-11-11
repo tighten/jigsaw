@@ -7,7 +7,7 @@ require __DIR__ . '/vendor/autoload.php';
 
 $app = new TightenCo\Jigsaw\Container;
 
-$app->bootstrap();
+$app->bootstrapWith([]);
 
 $application = new Symfony\Component\Console\Application('Jigsaw', '1.4.0');
 $application->add($app[TightenCo\Jigsaw\Console\InitCommand::class]);

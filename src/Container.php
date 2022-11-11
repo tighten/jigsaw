@@ -35,16 +35,19 @@ class Container extends Illuminate
         $this->registerCoreAliases();
     }
 
-    public function bootstrap(): void
+    public function bootstrapWith(array $bootstrappers): void
     {
-        if (! $this->bootstrapped) {
-            $this->bootstrapped = true;
+        $this->bootstrapped = true;
 
-            $this->loadEnvironmentVariables();
-            $this->loadConfiguration();
-            $this->registerConfiguredProviders();
-            $this->boot();
+        $this->loadEnvironmentVariables();
+        $this->loadConfiguration();
+
+        foreach ($bootstrappers as $bootstrapper) {
+            $this->make($bootstrapper)->bootstrap($this);
         }
+
+        $this->registerConfiguredProviders();
+        $this->boot();
     }
 
     public function path(string ...$path): string

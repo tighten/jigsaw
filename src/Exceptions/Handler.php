@@ -2,9 +2,12 @@
 
 namespace TightenCo\Jigsaw\Exceptions;
 
+use Closure;
 use Illuminate\Console\View\Components\BulletList;
 use Illuminate\Console\View\Components\Error;
 use Illuminate\Contracts\Debug\ExceptionHandler;
+use Illuminate\Support\Traits\ReflectsClosures;
+use InvalidArgumentException;
 use NunoMaduro\Collision\Adapters\Laravel\Inspector;
 use NunoMaduro\Collision\Contracts\Provider;
 use Symfony\Component\Console\Application as ConsoleApplication;
@@ -14,9 +17,38 @@ use Throwable;
 
 class Handler implements ExceptionHandler
 {
+    use ReflectsClosures;
+
+    /** @var array<string, Closure> */
+    private array $exceptionMap = [];
+
+    public function map(Closure|string $from, Closure|string|null $to = null): static
+    {
+        if (is_string($to)) {
+            $to = fn ($exception) => new $to('', 0, $exception);
+        }
+
+        if (is_callable($from) && is_null($to)) {
+            $from = $this->firstClosureParameterType($to = $from);
+        }
+
+        if (! is_string($from) || ! $to instanceof Closure) {
+            throw new InvalidArgumentException('Invalid exception mapping.');
+        }
+
+        $this->exceptionMap[$from] = $to;
+
+        return $this;
+    }
+
     public function report(Throwable $e): void
     {
         //
+    }
+
+    public function shouldReport(Throwable $e): bool
+    {
+        return true;
     }
 
     public function render($request, Throwable $e): void
@@ -52,6 +84,8 @@ class Handler implements ExceptionHandler
             return;
         }
 
+        $e = $this->mapException($e);
+
         /** @var \NunoMaduro\Collision\Contracts\Provider $provider */
         $provider = app(Provider::class);
 
@@ -61,8 +95,18 @@ class Handler implements ExceptionHandler
         $handler->handle();
     }
 
-    public function shouldReport(Throwable $e): bool
+    protected function mapException(Throwable $e): Throwable
     {
-        return true;
+        if (method_exists($e, 'getInnerException') && ($inner = $e->getInnerException()) instanceof Throwable) {
+            return $inner;
+        }
+
+        foreach ($this->exceptionMap as $class => $mapper) {
+            if ($e instanceof $class) {
+                return $mapper($e);
+            }
+        }
+
+        return $e;
     }
 }

@@ -9,7 +9,7 @@ use NunoMaduro\Collision\Provider as CollisionProvider;
 use Spatie\LaravelIgnition\Views\ViewExceptionMapper;
 use TightenCo\Jigsaw\Support\ServiceProvider;
 
-class CollisionServiceProvider extends ServiceProvider
+class ExceptionServiceProvider extends ServiceProvider
 {
     public function register(): void
     {

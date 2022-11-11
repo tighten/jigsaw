@@ -26,6 +26,7 @@ $application = new Symfony\Component\Console\Application('Jigsaw', '1.4.0');
 $application->add($app[TightenCo\Jigsaw\Console\InitCommand::class]);
 $application->add(new TightenCo\Jigsaw\Console\BuildCommand($app));
 $application->add(new TightenCo\Jigsaw\Console\ServeCommand($app));
+$application->setCatchExceptions(false);
 
 TightenCo\Jigsaw\Jigsaw::addUserCommands($application, $app);
 

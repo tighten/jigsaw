@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use Exception;
 use Mockery;
 use org\bovigo\vfs\vfsStream;
 use TightenCo\Jigsaw\Scaffold\CustomInstaller;
@@ -33,7 +34,7 @@ class PresetScaffoldBuilderTest extends TestCase
 
         $this->assertEquals(
             $vfs->url() . $this->fixDirectorySlashes('/vendor/tightenco/jigsaw-blog-template'),
-            $preset->package->path
+            $preset->package->path,
         );
     }
 
@@ -56,7 +57,7 @@ class PresetScaffoldBuilderTest extends TestCase
 
         $preset->init('test/package');
 
-        $this->assertEquals($vfs->url() . $this->fixDirectorySlashes('/vendor/' . 'test/package'), $preset->package->path);
+        $this->assertEquals($vfs->url() . $this->fixDirectorySlashes('/vendor/test/package'), $preset->package->path);
     }
 
     /**
@@ -88,10 +89,10 @@ class PresetScaffoldBuilderTest extends TestCase
         try {
             $preset->init('test');
             $this->fail('Exception not thrown');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->assertStringContainsString(
                 "'test' is not a valid package name.",
-                $e->getMessage()
+                $e->getMessage(),
             );
         }
     }
@@ -119,7 +120,7 @@ class PresetScaffoldBuilderTest extends TestCase
             $preset->build();
 
             $this->fail('Exception not thrown');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->assertStringContainsString('contains errors', $e->getMessage());
         }
     }
@@ -246,7 +247,7 @@ class PresetScaffoldBuilderTest extends TestCase
                     'tightenco/jigsaw' => '^1.2',
                 ],
             ],
-            json_decode($vfs->getChild('composer.json')->getContent(), true)
+            json_decode($vfs->getChild('composer.json')->getContent(), true),
         );
     }
 
@@ -282,7 +283,7 @@ class PresetScaffoldBuilderTest extends TestCase
                     'tightenco/jigsaw' => '^1.2',
                 ],
             ],
-            json_decode($vfs->getChild('composer.json')->getContent(), true)
+            json_decode($vfs->getChild('composer.json')->getContent(), true),
         );
     }
 }

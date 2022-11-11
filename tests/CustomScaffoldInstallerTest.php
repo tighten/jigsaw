@@ -353,7 +353,7 @@ class CustomScaffoldInstallerTest extends TestCase
         $this->assertNotNull($vfs->getChild('composer.json'));
         $this->assertEquals(
             $old_composer,
-            json_decode($vfs->getChild('composer.json')->getContent(), true)
+            json_decode($vfs->getChild('composer.json')->getContent(), true),
         );
     }
 
@@ -395,7 +395,7 @@ class CustomScaffoldInstallerTest extends TestCase
                     'other/package' => '2.0',
                 ],
             ],
-            json_decode($vfs->getChild('composer.json')->getContent(), true)
+            json_decode($vfs->getChild('composer.json')->getContent(), true),
         );
     }
 
@@ -447,7 +447,7 @@ class CustomScaffoldInstallerTest extends TestCase
                     'another/package' => '3.0',
                 ],
             ],
-            json_decode($vfs->getChild('composer.json')->getContent(), true)
+            json_decode($vfs->getChild('composer.json')->getContent(), true),
         );
     }
 
@@ -474,7 +474,7 @@ class CustomScaffoldInstallerTest extends TestCase
             [
                 'require' => [],
             ],
-            json_decode($vfs->getChild('composer.json')->getContent(), true)
+            json_decode($vfs->getChild('composer.json')->getContent(), true),
         );
     }
 
@@ -511,7 +511,7 @@ class CustomScaffoldInstallerTest extends TestCase
             ->ask(
                 'What theme would you like to use?',
                 ['l' => 'light', 'd' => 'dark'],
-                $default = 'l'
+                $default = 'l',
             );
 
         $console->shouldHaveReceived('ask')
@@ -519,7 +519,7 @@ class CustomScaffoldInstallerTest extends TestCase
                 'What theme would you like to use?',
                 ['l' => 'light', 'd' => 'dark'],
                 'l',
-                null
+                null,
             );
     }
 

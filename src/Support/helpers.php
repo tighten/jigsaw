@@ -134,7 +134,7 @@ if (! function_exists('dd')) {
             (new VarDumper())->dump($x);
         }
 
-        die(1);
+        exit(1);
     }
 }
 
@@ -142,7 +142,7 @@ function inline($assetPath)
 {
     preg_match('/^\/assets\/build\/(css|js)\/.*\.(css|js)/', $assetPath, $matches);
 
-    if (!count($matches)) {
+    if (! count($matches)) {
         throw new InvalidArgumentException("Given asset path is not valid: {$assetPath}");
     }
 

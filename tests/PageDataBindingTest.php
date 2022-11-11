@@ -3,8 +3,8 @@
 namespace Tests;
 
 use Illuminate\Container\Container;
-use Illuminate\View\Component;
 use Illuminate\Support\Str;
+use Illuminate\View\Component;
 use org\bovigo\vfs\vfsStream;
 use TightenCo\Jigsaw\PageData;
 

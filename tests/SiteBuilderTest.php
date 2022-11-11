@@ -50,14 +50,12 @@ class SiteBuilderTest extends TestCase
      */
     public function page_metadata_contains_path()
     {
-        $files = $this->setupSource(['nested' =>
-            ['page.blade.php' => '{{ $page->getPath() }}'],
-        ]);
+        $files = $this->setupSource(['nested' => ['page.blade.php' => '{{ $page->getPath() }}']]);
         $this->buildSite($files, [], $pretty = true);
 
         $this->assertEquals(
             '/nested/page',
-            $this->clean($files->getChild('build/nested/page/index.html')->getContent())
+            $this->clean($files->getChild('build/nested/page/index.html')->getContent()),
         );
     }
 
@@ -66,14 +64,12 @@ class SiteBuilderTest extends TestCase
      */
     public function page_metadata_contains_relative_path()
     {
-        $files = $this->setupSource(['nested' =>
-            ['page.blade.php' => '{{ $page->getRelativePath() }}'],
-        ]);
+        $files = $this->setupSource(['nested' => ['page.blade.php' => '{{ $page->getRelativePath() }}']]);
         $this->buildSite($files, [], $pretty = true);
 
         $this->assertEquals(
             'nested',
-            $this->clean($files->getChild('build/nested/page/index.html')->getContent())
+            $this->clean($files->getChild('build/nested/page/index.html')->getContent()),
         );
     }
 
@@ -89,7 +85,7 @@ class SiteBuilderTest extends TestCase
 
         $this->assertEquals(
             'foo.com/page',
-            $this->clean($files->getChild('build/page/index.html')->getContent())
+            $this->clean($files->getChild('build/page/index.html')->getContent()),
         );
     }
 
@@ -103,7 +99,7 @@ class SiteBuilderTest extends TestCase
 
         $this->assertEquals(
             'page',
-            $this->clean($files->getChild('build/page/index.html')->getContent())
+            $this->clean($files->getChild('build/page/index.html')->getContent()),
         );
     }
 
@@ -117,7 +113,7 @@ class SiteBuilderTest extends TestCase
 
         $this->assertEquals(
             'blade.php',
-            $this->clean($files->getChild('build/page/index.html')->getContent())
+            $this->clean($files->getChild('build/page/index.html')->getContent()),
         );
     }
 
@@ -131,7 +127,7 @@ class SiteBuilderTest extends TestCase
 
         $this->assertEquals(
             $files->getChild('build/page/index.html')->filemtime(),
-            $this->clean($files->getChild('build/page/index.html')->getContent())
+            $this->clean($files->getChild('build/page/index.html')->getContent()),
         );
     }
 
@@ -153,7 +149,7 @@ class SiteBuilderTest extends TestCase
                 '/page1',
                 '/nested/page2',
             ],
-            $jigsaw->getOutputPaths()->toArray()
+            $jigsaw->getOutputPaths()->toArray(),
         );
     }
 
@@ -173,7 +169,7 @@ class SiteBuilderTest extends TestCase
         $source1 = $jigsaw->getPages()->get('/page1');
         $this->assertEquals(
             $files->getChild('build/page1/index.html')->filemtime(),
-            $source1->getModifiedTime()
+            $source1->getModifiedTime(),
         );
         $this->assertEquals('page1', $source1->getFilename());
         $this->assertEquals('/page1', $source1->getPath());
@@ -182,7 +178,7 @@ class SiteBuilderTest extends TestCase
         $source2 = $jigsaw->getPages()->get('/nested/page2');
         $this->assertEquals(
             $files->getChild('build/nested/page2/index.html')->filemtime(),
-            $source2->getModifiedTime()
+            $source2->getModifiedTime(),
         );
         $this->assertEquals('page2', $source2->getFilename());
         $this->assertEquals('/nested/page2', $source2->getPath());

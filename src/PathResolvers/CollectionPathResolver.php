@@ -20,7 +20,7 @@ class CollectionPathResolver
     {
         return collect($data->extends)->map(function ($bladeViewPath, $templateKey) use ($path, $data) {
             return $this->cleanOutputPath(
-                $this->getPath($path, $data, $this->getExtension($bladeViewPath), $templateKey)
+                $this->getPath($path, $data, $this->getExtension($bladeViewPath), $templateKey),
             );
         });
     }
@@ -76,7 +76,7 @@ class CollectionPathResolver
         $bracketedParametersReplaced =
             collect($bracketedParameters[0])->map(function ($param) use ($data) {
                 return ['token' => $param, 'value' => $this->getParameterValue($param, $data)];
-            })->reduce(function ($carry, $param) use ($path) {
+            })->reduce(function ($carry, $param) {
                 return str_replace($param['token'], $param['value'], $carry);
             }, $path);
 

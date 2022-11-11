@@ -108,7 +108,7 @@ class Container extends Illuminate
 
         if ($config->get('collections')) {
             $config->put('collections', collect($config->get('collections'))->flatMap(
-                fn ($value, $key) => is_array($value) ? [$key => $value] : [$value => []]
+                fn ($value, $key) => is_array($value) ? [$key => $value] : [$value => []],
             ));
         }
 
@@ -147,7 +147,7 @@ class Container extends Illuminate
         while ($index < count($callbacks)) {
             $callbacks[$index]($this);
 
-            $index++;
+            ++$index;
         }
     }
 

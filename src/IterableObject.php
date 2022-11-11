@@ -64,6 +64,7 @@ class IterableObject extends BaseCollection implements ArrayAccess
     {
         if (! isset($this->items[$key])) {
             $prefix = $this->_source ? 'Error in ' . $this->_source . ': ' : 'Error: ';
+
             throw new Exception($prefix . "The key '$key' does not exist.");
         }
 

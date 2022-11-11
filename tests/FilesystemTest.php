@@ -7,7 +7,7 @@ use TightenCo\Jigsaw\File\Filesystem;
 
 class FilesystemTest extends TestCase
 {
-    const TEST_FILES = [
+    public const TEST_FILES = [
         '.dotfile' => '',
         'file-1.md' => '',
         'file-2.md' => '',
@@ -49,7 +49,7 @@ class FilesystemTest extends TestCase
 
         $files = collect(
             $this->app->make(Filesystem::class)
-            ->filesAndDirectories($vfs->url())
+            ->filesAndDirectories($vfs->url()),
         )->map(function ($file) {
             return $file->getRelativePathName();
         });
@@ -256,7 +256,7 @@ class FilesystemTest extends TestCase
     {
         return collect(
             $this->app->make(Filesystem::class)
-            ->filesAndDirectories($this->setupFiles()->url(), $match)
+            ->filesAndDirectories($this->setupFiles()->url(), $match),
         )->map(function ($file) {
             return $file->getRelativePathName();
         });
@@ -266,7 +266,7 @@ class FilesystemTest extends TestCase
     {
         return collect(
             $this->app->make(Filesystem::class)
-            ->filesAndDirectories($this->setupFiles()->url(), null, $ignore)
+            ->filesAndDirectories($this->setupFiles()->url(), null, $ignore),
         )->map(function ($file) {
             return $file->getRelativePathName();
         });

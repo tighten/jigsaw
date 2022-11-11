@@ -13,10 +13,9 @@ class ComponentTagCompiler extends BaseComponentTagCompiler
     /**
      * Get the component class for a given component alias.
      *
-     * @param  string  $component
      * @return string
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function componentClass(string $component)
     {
@@ -31,9 +30,7 @@ class ComponentTagCompiler extends BaseComponentTagCompiler
                 return $alias;
             }
 
-            throw new InvalidArgumentException(
-                "Unable to locate class or view [{$alias}] for component [{$component}]."
-            );
+            throw new InvalidArgumentException("Unable to locate class or view [{$alias}] for component [{$component}].");
         }
 
         if ($class = $this->findClassByComponent($component)) {
@@ -70,15 +67,12 @@ class ComponentTagCompiler extends BaseComponentTagCompiler
             return $guess;
         }
 
-        throw new InvalidArgumentException(
-            "Unable to locate a class or view for component [{$component}]."
-        );
+        throw new InvalidArgumentException("Unable to locate a class or view for component [{$component}].");
     }
 
     /**
      * Guess the class name for the given component.
      *
-     * @param  string  $component
      * @return string
      */
     public function guessClassName(string $component)

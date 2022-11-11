@@ -6,7 +6,6 @@ use org\bovigo\vfs\vfsStream;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 use TightenCo\Jigsaw\Console\Command;
-use TightenCo\Jigsaw\Jigsaw;
 
 class CustomCommandTest extends TestCase
 {
@@ -26,9 +25,10 @@ class CustomCommandTest extends TestCase
     }
 }
 
-class CustomCommand extends Command {
+class CustomCommand extends Command
+{
     protected function fire()
     {
-        $this->console->info("Command Tested");
+        $this->console->info('Command Tested');
     }
 }

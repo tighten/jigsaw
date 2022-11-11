@@ -34,7 +34,7 @@ class ViewPathTest extends TestCase
                 <h1>Hello world!</h1>
             </body>
             HTML,
-            $files->getChild('build/page.html')->getContent()
+            $files->getChild('build/page.html')->getContent(),
         );
     }
 }

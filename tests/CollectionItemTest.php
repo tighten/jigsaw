@@ -25,11 +25,11 @@ class CollectionItemTest extends TestCase
 
         $this->assertEquals(
             $files->getChild('build/test_get_content.html')->getContent(),
-            $files->getChild('build/test_to_string.html')->getContent()
+            $files->getChild('build/test_to_string.html')->getContent(),
         );
         $this->assertEquals(
             '<div><h3>Collection Item Content</h3></div>',
-            $this->clean($files->getChild('build/test_to_string.html')->getContent())
+            $this->clean($files->getChild('build/test_to_string.html')->getContent()),
         );
     }
 
@@ -38,33 +38,32 @@ class CollectionItemTest extends TestCase
      */
     public function collection_item_can_be_filtered()
     {
-        $config = collect(['collections' =>
-            [
+        $config = collect(['collections' => [
                 'collection' => [
                     'path' => 'collection/{filename}',
                     'filter' => function ($item) {
                         return $item->published;
-                    }
-                ]
-            ]
+                    },
+                ],
+            ],
         ]);
         $builtHeader = implode("\n", [
             '---',
             'extends: _layouts.collection_item',
             'published: true',
             'section: content',
-            '---'
+            '---',
         ]);
         $filteredHeader = implode("\n", [
             '---',
             'extends: _layouts.collection_item',
             'published: false',
             'section: content',
-            '---'
+            '---',
         ]);
         $files = $this->setupSource([
             '_layouts' => [
-                'collection_item.blade.php' => '@section(\'content\') @endsection'
+                'collection_item.blade.php' => '@section(\'content\') @endsection',
             ],
             '_collection' => [
                 'item.md' => implode("\n", [$builtHeader, '### Collection Item Content']),
@@ -86,15 +85,14 @@ class CollectionItemTest extends TestCase
      */
     public function collection_item_can_be_mapped()
     {
-        $config = collect(['collections' =>
-            [
+        $config = collect(['collections' => [
                 'collection' => [
                     'path' => 'collection/{filename}',
                     'map' => function ($item) {
                         return MappedItem::fromItem($item);
-                    }
-                ]
-            ]
+                    },
+                ],
+            ],
         ]);
         $itemHeader = implode("\n", [
             '---',
@@ -118,7 +116,7 @@ class CollectionItemTest extends TestCase
 
         $this->assertEquals(
             '111-222',
-            $this->clean($files->getChild('build/collection/item.html')->getContent())
+            $this->clean($files->getChild('build/collection/item.html')->getContent()),
         );
     }
 
@@ -141,7 +139,7 @@ class CollectionItemTest extends TestCase
 
         $this->assertEquals(
             '/collection/page',
-            $this->clean($files->getChild('build/collection/page/index.html')->getContent())
+            $this->clean($files->getChild('build/collection/page/index.html')->getContent()),
         );
     }
 
@@ -166,7 +164,7 @@ class CollectionItemTest extends TestCase
 
         $this->assertEquals(
             'nested',
-            $this->clean($files->getChild('build/collection/page/index.html')->getContent())
+            $this->clean($files->getChild('build/collection/page/index.html')->getContent()),
         );
     }
 
@@ -189,7 +187,7 @@ class CollectionItemTest extends TestCase
 
         $this->assertEquals(
             'blade.php',
-            $this->clean($files->getChild('build/collection/page/index.html')->getContent())
+            $this->clean($files->getChild('build/collection/page/index.html')->getContent()),
         );
     }
 
@@ -213,11 +211,11 @@ class CollectionItemTest extends TestCase
 
         $this->assertEquals(
             'collection',
-            $this->clean($files->getChild('build/collection/page1/index.html')->getContent())
+            $this->clean($files->getChild('build/collection/page1/index.html')->getContent()),
         );
         $this->assertEquals(
             'collection',
-            $this->clean($files->getChild('build/collection/page2/index.html')->getContent())
+            $this->clean($files->getChild('build/collection/page2/index.html')->getContent()),
         );
     }
 
@@ -240,7 +238,7 @@ class CollectionItemTest extends TestCase
 
         $this->assertEquals(
             'vfs://virtual/source/_collection',
-            $this->clean($files->getChild('build/collection/page/index.html')->getContent())
+            $this->clean($files->getChild('build/collection/page/index.html')->getContent()),
         );
     }
 
@@ -263,7 +261,7 @@ class CollectionItemTest extends TestCase
 
         $this->assertEquals(
             $files->getChild('build/collection/page/index.html')->filemtime(),
-            $this->clean($files->getChild('build/collection/page/index.html')->getContent())
+            $this->clean($files->getChild('build/collection/page/index.html')->getContent()),
         );
     }
 }

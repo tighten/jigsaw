@@ -52,12 +52,11 @@
         "jigsaw"
     ],
     "scripts": {
-        "fix" : "php vendor/bin/php-cs-fixer fix --using-cache=no"
+        "format" : "php-cs-fixer fix --verbose"
     },
     "config": {
-        "sort-packages": true,
-        "preferred-install": "dist",
-        "optimize-autoloader": true
+        "optimize-autoloader": true,
+        "sort-packages": true
     },
     "minimum-stability": "dev",
     "prefer-stable": true

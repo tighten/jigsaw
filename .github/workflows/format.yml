@@ -1,0 +1,34 @@
+name: Format
+on:
+  pull_request:
+    paths: ['**.php']
+jobs:
+  php-cs-fixer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.ref }}
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+      - uses: ramsey/composer-install@v2
+      - name: Run PHP-CS-Fixer
+        id: format
+        # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
+        run: |
+          delimiter=$RANDOM
+          echo "summary<<${delimiter}" >> $GITHUB_OUTPUT
+          composer format >> $GITHUB_OUTPUT
+          echo $delimiter >> $GITHUB_OUTPUT
+      - name: Check for fixed files
+        run: echo "changed=$(git diff --quiet && echo false || echo true)" >> $GITHUB_ENV
+      - name: Commit changes
+        if: ${{ env.changed == 'true' }}
+        run: |
+          git config --global user.name github-actions
+          git config --global user.email github-actions[bot]@users.noreply.github.com
+          # awk trims leading and trailing whitespace from each line, sed removes the last two lines
+          git commit -a -m "Format" -m "$(echo '${{ steps.format.outputs.summary }})' | awk '{$1=$1};1' | sed '$d' | sed '$d')"
+          git push

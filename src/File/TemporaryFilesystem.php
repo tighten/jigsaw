@@ -28,7 +28,7 @@ class TemporaryFilesystem
         $file = new SplFileInfo(
             $this->buildTempPath($originalFilename, $extension),
             $this->tempPath,
-            $originalFilename . $extension
+            $originalFilename . $extension,
         );
 
         return $file->isReadable() ? new InputFile($file) : null;

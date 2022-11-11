@@ -39,7 +39,7 @@ class InitCommand extends Command
             ->addArgument(
                 'preset',
                 InputArgument::OPTIONAL,
-                'Which preset should we use to initialize this project?'
+                'Which preset should we use to initialize this project?',
             );
     }
 
@@ -67,7 +67,7 @@ class InitCommand extends Command
 
                 case 'd':
                     if ($this->console->confirm(
-                        '<fg=red>Are you sure you want to delete your existing site?</>'
+                        '<fg=red>Are you sure you want to delete your existing site?</>',
                     )) {
                         $this->console->comment('Deleting your existing site...');
                         $scaffold->deleteExistingSite();

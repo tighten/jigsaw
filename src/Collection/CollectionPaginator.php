@@ -49,7 +49,7 @@ class CollectionPaginator
             $file->getFilenameWithoutExtension(),
             'html',
             $pageNumber,
-            $this->prefix
+            $this->prefix,
         );
 
         return $link !== '/' ? rightTrimPath($link) : $link;

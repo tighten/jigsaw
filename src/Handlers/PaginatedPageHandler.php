@@ -21,7 +21,7 @@ class PaginatedPageHandler
         CollectionPaginator $paginator,
         FrontMatterParser $parser,
         TemporaryFilesystem $temporaryFilesystem,
-        ViewRenderer $viewRenderer
+        ViewRenderer $viewRenderer,
     ) {
         $this->paginator = $paginator;
         $this->parser = $parser;
@@ -70,7 +70,7 @@ class PaginatedPageHandler
                 $this->render($file, $pageData),
                 $pageData,
                 $page->currentPage,
-                $prefix
+                $prefix,
             );
         });
     }
@@ -86,7 +86,7 @@ class PaginatedPageHandler
         $bladeFilePath = $this->temporaryFilesystem->put(
             $bladeContent,
             $file->getPathname(),
-            '.blade.php'
+            '.blade.php',
         );
 
         return $this->view->render($bladeFilePath, $pageData);

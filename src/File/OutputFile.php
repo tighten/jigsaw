@@ -2,7 +2,6 @@
 
 namespace TightenCo\Jigsaw\File;
 
-use TightenCo\Jigsaw\File\InputFile;
 use TightenCo\Jigsaw\PageData;
 
 class OutputFile

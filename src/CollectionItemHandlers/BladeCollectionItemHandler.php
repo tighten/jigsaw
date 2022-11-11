@@ -28,7 +28,7 @@ class BladeCollectionItemHandler
 
         return array_merge(
             $frontMatter,
-            ['extends' => $extendsFromBladeContent ?: Arr::get($frontMatter, 'extends')]
+            ['extends' => $extendsFromBladeContent ?: Arr::get($frontMatter, 'extends')],
         );
     }
 

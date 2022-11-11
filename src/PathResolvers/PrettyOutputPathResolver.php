@@ -28,15 +28,15 @@ class PrettyOutputPathResolver
     public function path($path, $name, $type, $page = 1, $prefix = '')
     {
         if ($type === 'html' && $name === 'index' && $page > 1) {
-            return leftTrimPath(trimPath($path) . '/' . trimPath($prefix . '/' . $page) . '/' . 'index.html');
+            return leftTrimPath(trimPath($path) . '/' . trimPath($prefix . '/' . $page) . '/index.html');
         }
 
         if ($type === 'html' && $name !== 'index') {
             if ($page > 1) {
-                return  trimPath($path) . '/' . $name . '/' . trimPath($prefix . '/' . $page) . '/' . 'index.html';
+                return trimPath($path) . '/' . $name . '/' . trimPath($prefix . '/' . $page) . '/index.html';
             }
 
-            return trimPath($path) . '/' . $name . '/' . 'index.html';
+            return trimPath($path) . '/' . $name . '/index.html';
         }
 
         if (empty($type)) {
@@ -54,7 +54,7 @@ class PrettyOutputPathResolver
 
         if ($type === 'html' && $name !== 'index') {
             if ($page > 1) {
-                return  trimPath($path) . '/' . $name . '/' . trimPath($prefix . '/' . $page);
+                return trimPath($path) . '/' . $name . '/' . trimPath($prefix . '/' . $page);
             }
 
             return trimPath($path) . '/' . $name;

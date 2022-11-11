@@ -108,7 +108,7 @@ class TestCase extends BaseTestCase
 
     public function clean($output)
     {
-        return str_replace("\n", "", $output);
+        return str_replace("\n", '', $output);
     }
 
     protected function fixDirectorySlashes(string $path): string

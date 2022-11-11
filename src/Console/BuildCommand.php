@@ -87,7 +87,7 @@ class BuildCommand extends Command
             $this->app->config->put('collections', $this->app->config->get('collections')->map(
                 function ($envConfig, $key) use ($baseConfig) {
                     return array_merge($baseConfig->get('collections')->get($key), $envConfig);
-                }
+                },
             ));
         }
     }
@@ -106,7 +106,7 @@ class BuildCommand extends Command
         $customPath = Arr::get($this->app->config, 'build.' . $pathType);
         $buildPath = $customPath
             ? $this->getAbsolutePath($customPath)
-            :  Arr::get($this->app->buildPath, $pathType);
+            : Arr::get($this->app->buildPath, $pathType);
 
         return str_replace('{env}', $env, $buildPath ?? '');
     }

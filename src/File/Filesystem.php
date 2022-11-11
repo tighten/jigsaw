@@ -32,7 +32,7 @@ class Filesystem extends BaseFilesystem
     {
         return $directory ? iterator_to_array(
             $this->getFinder($directory, $match, $ignore, $ignore_dotfiles)->files(),
-            false
+            false,
         ) : [];
     }
 
@@ -40,7 +40,7 @@ class Filesystem extends BaseFilesystem
     {
         return $directory ? iterator_to_array(
             $this->getFinder($directory, $match, $ignore, $ignore_dotfiles)->directories(),
-            false
+            false,
         ) : [];
     }
 
@@ -48,7 +48,7 @@ class Filesystem extends BaseFilesystem
     {
         return $directory ? iterator_to_array(
             $this->getFinder($directory, $match, $ignore, $ignore_dotfiles),
-            false
+            false,
         ) : [];
     }
 

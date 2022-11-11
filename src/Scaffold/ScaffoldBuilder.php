@@ -6,7 +6,7 @@ use TightenCo\Jigsaw\File\Filesystem;
 
 abstract class ScaffoldBuilder
 {
-    const IGNORE_DIRECTORIES = [
+    public const IGNORE_DIRECTORIES = [
         'archived',
         'node_modules',
         'vendor',
@@ -119,7 +119,7 @@ abstract class ScaffoldBuilder
             $this->base,
             null,
             self::IGNORE_DIRECTORIES,
-            $ignore_dotfiles = false
+            $ignore_dotfiles = false,
         );
     }
 
@@ -137,7 +137,7 @@ abstract class ScaffoldBuilder
         if ($content) {
             $this->files->put(
                 $this->base . DIRECTORY_SEPARATOR . 'composer.json',
-                json_encode($content, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT)
+                json_encode($content, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT),
             );
         }
     }

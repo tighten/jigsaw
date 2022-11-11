@@ -63,7 +63,7 @@ class ConsoleSession
         return $this->question->ask(
             $this->input,
             $this->output,
-            $question
+            $question,
         );
     }
 
@@ -76,7 +76,7 @@ class ConsoleSession
         return (bool) $this->question->ask(
             $this->input,
             $this->output,
-            new ConfirmationQuestion($question . $defaultPrompt, $default ?? false)
+            new ConfirmationQuestion($question . $defaultPrompt, $default ?? false),
         );
     }
 }

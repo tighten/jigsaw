@@ -69,12 +69,12 @@ class HandleExceptions
         self::$reservedMemory = null;
 
         try {
-            $this->getExceptionHandler()->report($e);
+            static::$app->make(ExceptionHandler::class)->report($e);
         } catch (Exception $e) {
             //
         }
 
-        $this->getExceptionHandler()->renderForConsole(new ConsoleOutput, $e);
+        static::$app->make(ExceptionHandler::class)->renderForConsole(new ConsoleOutput, $e);
     }
 
     /**
@@ -85,13 +85,8 @@ class HandleExceptions
         self::$reservedMemory = null;
 
         if (! is_null($error = error_get_last()) && $this->isFatal($error['type'])) {
-            $this->handleException($this->fatalErrorFromPhpError($error, 0));
+            $this->handleException(new FatalError($error['message'], 0, $error, 0));
         }
-    }
-
-    protected function fatalErrorFromPhpError(array $error, ?int $traceOffset = null): FatalError
-    {
-        return new FatalError($error['message'], 0, $error, $traceOffset);
     }
 
     /**
@@ -107,10 +102,5 @@ class HandleExceptions
     protected function isFatal(int $type): bool
     {
         return in_array($type, [E_COMPILE_ERROR, E_CORE_ERROR, E_ERROR, E_PARSE]);
-    }
-
-    protected function getExceptionHandler(): ExceptionHandler
-    {
-        return static::$app->make(ExceptionHandler::class);
     }
 }

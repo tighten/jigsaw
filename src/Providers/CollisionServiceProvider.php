@@ -3,7 +3,8 @@
 namespace TightenCo\Jigsaw\Providers;
 
 use NunoMaduro\Collision\Contracts\Provider as ProviderContract;
-use NunoMaduro\Collision\Provider;
+use NunoMaduro\Collision\Contracts\Provider as CollisionProviderContract;
+use NunoMaduro\Collision\Provider as CollisionProvider;
 use TightenCo\Jigsaw\Support\ServiceProvider;
 
 class CollisionServiceProvider extends ServiceProvider
@@ -12,7 +13,7 @@ class CollisionServiceProvider extends ServiceProvider
     {
         // TODO bind something global in the TestCase for now?
         // if (! $this->app->runningUnitTests()) {
-        $this->app->bind(ProviderContract::class, fn () => new Provider);
+        $this->app->bind(CollisionProviderContract::class, fn () => new CollisionProvider);
         // }
     }
 }

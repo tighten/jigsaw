@@ -4,6 +4,7 @@ namespace TightenCo\Jigsaw\Providers;
 
 use Illuminate\Contracts\Debug\ExceptionHandler as ExceptionHandlerContract;
 use NunoMaduro\Collision\Adapters\Laravel\ExceptionHandler;
+use NunoMaduro\Collision\Contracts\Provider as ProviderContract;
 use NunoMaduro\Collision\Handler;
 use NunoMaduro\Collision\Provider;
 use NunoMaduro\Collision\SolutionsRepositories\NullSolutionsRepository;
@@ -16,7 +17,7 @@ class CollisionServiceProvider extends ServiceProvider
     {
         // TODO bind something global in the TestCase for now?
         // if (! $this->app->runningUnitTests()) {
-            $this->app->bind(Provider::class, function () {
+            $this->app->bind(ProviderContract::class, function () {
                 $writer = new Writer(new NullSolutionsRepository);
                 $handler = new Handler($writer);
 

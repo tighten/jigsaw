@@ -14,26 +14,20 @@ use Throwable;
 
 class Handler implements ExceptionHandler
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function report(Throwable $e)
+    public function report(Throwable $e): void
+    {
+        //
+    }
+
+    public function render($request, Throwable $e): void
     {
         //
     }
 
     /**
-     * {@inheritdoc}
+     * @param  \Symfony\Component\Console\Output\OutputInterface  $output
      */
-    public function render($request, Throwable $e)
-    {
-        //
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function renderForConsole($output, Throwable $e)
+    public function renderForConsole($output, Throwable $e): void
     {
         if ($e instanceof CommandNotFoundException) {
             $message = str($e->getMessage())->explode('.')->first();
@@ -67,10 +61,7 @@ class Handler implements ExceptionHandler
         $handler->handle();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function shouldReport(Throwable $e)
+    public function shouldReport(Throwable $e): bool
     {
         return true;
     }

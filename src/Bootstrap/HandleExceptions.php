@@ -74,11 +74,6 @@ class HandleExceptions
             //
         }
 
-        $this->renderForConsole($e);
-    }
-
-    protected function renderForConsole(Throwable $e): void
-    {
         $this->getExceptionHandler()->renderForConsole(new ConsoleOutput, $e);
     }
 

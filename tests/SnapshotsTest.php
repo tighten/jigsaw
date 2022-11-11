@@ -56,7 +56,7 @@ class SnapshotsTest extends PHPUnit
         // Delete the contents of the output directory in the source to clean up previous builds
         $this->filesystem->deleteDirectory($this->output($name), true);
 
-        $jigsaw = realpath(implode(DIRECTORY_SEPARATOR, array_filter([__DIR__, '..', 'jigsaw'])));
+        $jigsaw = realpath(implode('/', array_filter([__DIR__, '..', 'jigsaw'])));
         $arguments = static::$arguments[$name] ?? [];
 
         $build = new Process(array_merge(['php', $jigsaw, 'build'], $arguments, ['-vvv']), $this->source($name));

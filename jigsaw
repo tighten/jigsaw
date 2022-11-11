@@ -1,16 +1,25 @@
 #!/usr/bin/env php
 <?php
 
-use TightenCo\Jigsaw\Console\BuildCommand;
-use TightenCo\Jigsaw\Console\InitCommand;
-use TightenCo\Jigsaw\Console\ServeCommand;
-use TightenCo\Jigsaw\Jigsaw;
+define('JIGSAW_START', microtime(true));
 
-require_once(__DIR__ . '/jigsaw-core.php');
+if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+    require __DIR__ . '/vendor/autoload.php';
+}
 
-$app = new Symfony\Component\Console\Application('Jigsaw', '1.4.0');
-$app->add($container[InitCommand::class]);
-$app->add(new BuildCommand($container));
-$app->add(new ServeCommand($container));
-Jigsaw::addUserCommands($app, $container);
-$app->run();
+if (file_exists(getcwd() . '/vendor/autoload.php')) {
+    require getcwd() . '/vendor/autoload.php';
+}
+
+$app = new TightenCo\Jigsaw\Container;
+
+$app->bootstrapWith([]);
+
+$application = new Symfony\Component\Console\Application('Jigsaw', '1.4.0');
+$application->add($app[TightenCo\Jigsaw\Console\InitCommand::class]);
+$application->add(new TightenCo\Jigsaw\Console\BuildCommand($app));
+$application->add(new TightenCo\Jigsaw\Console\ServeCommand($app));
+
+TightenCo\Jigsaw\Jigsaw::addUserCommands($application, $app);
+
+$application->run();

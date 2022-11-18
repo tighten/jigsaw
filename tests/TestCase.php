@@ -7,6 +7,7 @@ use Illuminate\View\Component;
 use Mockery;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase as BaseTestCase;
+use TightenCo\Jigsaw\Bootstrap\HandleExceptions;
 use TightenCo\Jigsaw\Container;
 use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\File\InputFile;
@@ -49,7 +50,13 @@ class TestCase extends BaseTestCase
 
     protected function tearDown(): void
     {
+        if ($this->app) {
+            $this->app->flush();
+            $this->app = null;
+        }
+
         $this->cleanupTempDirectory();
+
         Mockery::close();
 
         if (method_exists(Component::class, 'flushCache')) {
@@ -57,6 +64,8 @@ class TestCase extends BaseTestCase
             Component::forgetComponentsResolver();
             Component::forgetFactory();
         }
+
+        HandleExceptions::forgetApp();
 
         parent::tearDown();
     }

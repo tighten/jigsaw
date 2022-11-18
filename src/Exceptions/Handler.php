@@ -8,6 +8,7 @@ use Illuminate\Console\View\Components\Error;
 use Illuminate\Console\View\Components\Warn;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Traits\ReflectsClosures;
+use Illuminate\View\ViewException;
 use InvalidArgumentException;
 use NunoMaduro\Collision\Adapters\Laravel\Inspector;
 use NunoMaduro\Collision\Contracts\Provider;
@@ -86,6 +87,14 @@ class Handler implements ExceptionHandler
         }
 
         if ($e instanceof DeprecationException) {
+            // If the exception appears to have come from a compiled Blade view, wrap it
+            // in a ViewException and map it so Ignition will add the uncompiled path
+            if (preg_match('/cache\/\w+\.php$/', $e->getFile()) === 1) {
+                $e = $this->mapException(
+                    new ViewException("{$e->getMessage()} (View: )", 0, 1, $e->getFile(), $e->getLine(), $e)
+                );
+            }
+
             with(new Warn($output))->render("{$e->getMessage()} in {$e->getFile()} on line {$e->getLine()}");
 
             return;

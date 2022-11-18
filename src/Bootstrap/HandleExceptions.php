@@ -14,7 +14,7 @@ class HandleExceptions
 {
     public static $reservedMemory;
 
-    protected static Container $app;
+    protected static ?Container $app;
 
     public static function forgetApp(): void
     {

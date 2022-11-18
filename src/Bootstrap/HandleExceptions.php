@@ -50,7 +50,7 @@ class HandleExceptions
      *
      * @throws ErrorException
      */
-    public function handleError($level, $message, $file = '', $line = 0, $context = []): void
+    private function handleError($level, $message, $file = '', $line = 0, $context = []): void
     {
         if (error_reporting() & $level) {
             throw new ErrorException($message, 0, $level, $file, $line);
@@ -64,7 +64,7 @@ class HandleExceptions
      * in the kernel, but fatal error exceptions must be handled
      * differently since they are not normal exceptions.
      */
-    public function handleException(Throwable $e): void
+    private function handleException(Throwable $e): void
     {
         self::$reservedMemory = null;
 
@@ -80,27 +80,23 @@ class HandleExceptions
     /**
      * Handle the PHP shutdown event.
      */
-    public function handleShutdown(): void
+    private function handleShutdown(): void
     {
         self::$reservedMemory = null;
 
-        if (! is_null($error = error_get_last()) && $this->isFatal($error['type'])) {
+        if (
+            ! is_null($error = error_get_last())
+            && in_array($error['type'], [E_COMPILE_ERROR, E_CORE_ERROR, E_ERROR, E_PARSE])
+        ) {
             $this->handleException(new FatalError($error['message'], 0, $error, 0));
         }
     }
 
     /**
-     * Forward a method call to the given method (on this class) if an application instance exists.
+     * Forward a method call to the given method on this class if an application instance exists.
      */
-    protected function forwardTo($method): callable
+    private function forwardTo(string $method): callable
     {
-        return fn (...$arguments) => static::$app
-            ? $this->{$method}(...$arguments)
-            : false;
-    }
-
-    protected function isFatal(int $type): bool
-    {
-        return in_array($type, [E_COMPILE_ERROR, E_CORE_ERROR, E_ERROR, E_PARSE]);
+        return fn (...$arguments) => static::$app ? $this->{$method}(...$arguments) : false;
     }
 }

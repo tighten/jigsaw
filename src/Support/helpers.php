@@ -17,6 +17,13 @@ if (! function_exists('app')) {
     }
 }
 
+if (! function_exists('resolve')) {
+    function resolve(string $name, array $parameters = [])
+    {
+        return app($name, $parameters);
+    }
+}
+
 function leftTrimPath($path)
 {
     return ltrim($path, ' \\/');

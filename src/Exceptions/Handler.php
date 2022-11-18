@@ -91,7 +91,7 @@ class Handler implements ExceptionHandler
             // in a ViewException and map it so Ignition will add the uncompiled path
             if (preg_match('/cache\/\w+\.php$/', $e->getFile()) === 1) {
                 $e = $this->mapException(
-                    new ViewException("{$e->getMessage()} (View: )", 0, 1, $e->getFile(), $e->getLine(), $e)
+                    new ViewException("{$e->getMessage()} (View: )", 0, 1, $e->getFile(), $e->getLine(), $e),
                 );
             }
 

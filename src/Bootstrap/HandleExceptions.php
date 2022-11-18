@@ -9,6 +9,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\ErrorHandler\Error\FatalError;
 use Throwable;
 use TightenCo\Jigsaw\Container;
+use TightenCo\Jigsaw\Exceptions\DeprecationException;
 
 class HandleExceptions
 {
@@ -40,7 +41,7 @@ class HandleExceptions
     }
 
     /**
-     * Convert PHP errors to ErrorException instances.
+     * Report PHP deprecations, or convert PHP errors to ErrorException instances.
      *
      * @param int    $level
      * @param string $message
@@ -52,9 +53,36 @@ class HandleExceptions
      */
     private function handleError($level, $message, $file = '', $line = 0, $context = []): void
     {
+        if (in_array($level, [E_DEPRECATED, E_USER_DEPRECATED])) {
+            $this->handleDeprecation(new DeprecationException($message, 0, $level, $file, $line));
+
+            return;
+        }
+
         if (error_reporting() & $level) {
             throw new ErrorException($message, 0, $level, $file, $line);
         }
+    }
+
+    /**
+     * Handle a deprecation.
+     *
+     * @throws \TightenCo\Jigsaw\Exceptions\DeprecationException
+     */
+    private function handleDeprecation(Throwable $e): void
+    {
+        /** @internal The '__testing' binding is for Jigsaw development only and may be removed. */
+        if (static::$app['__testing']) {
+            throw $e;
+        }
+
+        try {
+            static::$app->make(ExceptionHandler::class)->report($e);
+        } catch (Exception $e) {
+            //
+        }
+
+        static::$app->make(ExceptionHandler::class)->renderForConsole(new ConsoleOutput, $e);
     }
 
     /**

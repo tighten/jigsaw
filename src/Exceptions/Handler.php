@@ -5,6 +5,7 @@ namespace TightenCo\Jigsaw\Exceptions;
 use Closure;
 use Illuminate\Console\View\Components\BulletList;
 use Illuminate\Console\View\Components\Error;
+use Illuminate\Console\View\Components\Warn;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Traits\ReflectsClosures;
 use InvalidArgumentException;
@@ -80,6 +81,12 @@ class Handler implements ExceptionHandler
 
         if ($e instanceof SymfonyConsoleExceptionInterface) {
             (new ConsoleApplication)->renderThrowable($e, $output);
+
+            return;
+        }
+
+        if ($e instanceof DeprecationException) {
+            with(new Warn($output))->render("{$e->getMessage()} in {$e->getFile()} on line {$e->getLine()}");
 
             return;
         }

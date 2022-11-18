@@ -35,7 +35,7 @@ class HandleExceptions
         register_shutdown_function($this->forwardTo('handleShutdown'));
 
         /** @internal The '__testing' binding is for Jigsaw development only and may be removed. */
-        if (! $app['__testing']) {
+        if (! $app->has('__testing') || ! $app['__testing']) {
             ini_set('display_errors', 'Off');
         }
     }
@@ -72,7 +72,7 @@ class HandleExceptions
     private function handleDeprecation(Throwable $e): void
     {
         /** @internal The '__testing' binding is for Jigsaw development only and may be removed. */
-        if (static::$app['__testing']) {
+        if (static::$app->has('__testing') && static::$app['__testing']) {
             throw $e;
         }
 

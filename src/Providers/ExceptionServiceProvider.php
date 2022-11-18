@@ -14,7 +14,7 @@ class ExceptionServiceProvider extends ServiceProvider
     public function register(): void
     {
         /** @internal The '__testing' binding is for Jigsaw development only and may be removed. */
-        if (! $this->app['__testing']) {
+        if (! $this->app->has('__testing') || ! $this->app['__testing']) {
             $this->app->bind(CollisionProviderContract::class, fn () => new CollisionProvider);
         }
 

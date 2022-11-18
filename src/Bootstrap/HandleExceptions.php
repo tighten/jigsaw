@@ -33,10 +33,10 @@ class HandleExceptions
         set_exception_handler($this->forwardTo('handleException'));
         register_shutdown_function($this->forwardTo('handleShutdown'));
 
-        // TODO
-        // if (! $app->environment('testing')) {
-        ini_set('display_errors', 'Off');
-        // }
+        /** @internal The '__testing' binding is for Jigsaw development only and may be removed. */
+        if (! $app['__testing']) {
+            ini_set('display_errors', 'Off');
+        }
     }
 
     /**

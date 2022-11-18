@@ -27,6 +27,8 @@ class TestCase extends BaseTestCase
         parent::setUp();
 
         $this->app = new Container;
+        /** @internal The '__testing' binding is for Jigsaw development only and may be removed. */
+        $this->app['__testing'] = true;
         $this->app->singleton(
             \Illuminate\Contracts\Debug\ExceptionHandler::class,
             \TightenCo\Jigsaw\Exceptions\Handler::class,

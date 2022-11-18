@@ -13,10 +13,10 @@ class ExceptionServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        // TODO bind something global in the TestCase for now?
-        // if (! $this->app->runningUnitTests()) {
-        $this->app->bind(CollisionProviderContract::class, fn () => new CollisionProvider);
-        // }
+        /** @internal The '__testing' binding is for Jigsaw development only and may be removed. */
+        if (! $this->app['__testing']) {
+            $this->app->bind(CollisionProviderContract::class, fn () => new CollisionProvider);
+        }
 
         $this->app->make(ExceptionHandler::class)->map(
             fn (ViewException $e) => $this->app->make(ViewExceptionMapper::class)->map($e),

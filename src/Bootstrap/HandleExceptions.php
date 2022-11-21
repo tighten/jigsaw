@@ -88,8 +88,8 @@ class HandleExceptions
     /**
      * Handle an uncaught exception from the application.
      *
-     * Note: Most exceptions can be handled via the try / catch block
-     * in the kernel, but fatal error exceptions must be handled
+     * Note: Most exceptions can be handled in a try / catch block higher
+     * in the app, but fatal error exceptions must be handled
      * differently since they are not normal exceptions.
      */
     private function handleException(Throwable $e): void

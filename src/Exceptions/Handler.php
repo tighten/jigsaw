@@ -24,25 +24,6 @@ class Handler implements ExceptionHandler
     /** @var array<string, Closure> */
     private array $exceptionMap = [];
 
-    public function map(Closure|string $from, Closure|string|null $to = null): static
-    {
-        if (is_string($to)) {
-            $to = fn ($exception) => new $to('', 0, $exception);
-        }
-
-        if (is_callable($from) && is_null($to)) {
-            $from = $this->firstClosureParameterType($to = $from);
-        }
-
-        if (! is_string($from) || ! $to instanceof Closure) {
-            throw new InvalidArgumentException('Invalid exception mapping.');
-        }
-
-        $this->exceptionMap[$from] = $to;
-
-        return $this;
-    }
-
     public function report(Throwable $e): void
     {
         //
@@ -67,14 +48,10 @@ class Handler implements ExceptionHandler
             $message = str($e->getMessage())->explode('.')->first();
 
             if (! empty($alternatives = $e->getAlternatives())) {
-                $message .= '. Did you mean one of these?';
-
-                with(new Error($output))->render($message);
-                with(new BulletList($output))->render($e->getAlternatives());
-
-                $output->writeln('');
+                (new Error($output))->render("{$message}. Did you mean one of these?");
+                (new BulletList($output))->render($alternatives);
             } else {
-                with(new Error($output))->render($message);
+                (new Error($output))->render($message);
             }
 
             return;
@@ -87,15 +64,15 @@ class Handler implements ExceptionHandler
         }
 
         if ($e instanceof DeprecationException) {
-            // If the exception appears to have come from a compiled Blade view, wrap it
-            // in a ViewException and map it so Ignition will add the uncompiled path
+            // If the deprecation appears to have come from a compiled Blade view, wrap it in
+            // a ViewException and map it manually so Ignition will add the uncompiled path
             if (preg_match('/cache\/\w+\.php$/', $e->getFile()) === 1) {
                 $e = $this->mapException(
                     new ViewException("{$e->getMessage()} (View: )", 0, 1, $e->getFile(), $e->getLine(), $e),
                 );
             }
 
-            with(new Warn($output))->render("{$e->getMessage()} in {$e->getFile()} on line {$e->getLine()}");
+            (new Warn($output))->render("{$e->getMessage()} in {$e->getFile()} on line {$e->getLine()}");
 
             return;
         }
@@ -109,6 +86,25 @@ class Handler implements ExceptionHandler
         $handler->setInspector(new Inspector($e));
 
         $handler->handle();
+    }
+
+    public function map(Closure|string $from, Closure|string|null $to = null): static
+    {
+        if (is_string($to)) {
+            $to = fn ($exception) => new $to('', 0, $exception);
+        }
+
+        if (is_callable($from) && is_null($to)) {
+            $from = $this->firstClosureParameterType($to = $from);
+        }
+
+        if (! is_string($from) || ! $to instanceof Closure) {
+            throw new InvalidArgumentException('Invalid exception mapping.');
+        }
+
+        $this->exceptionMap[$from] = $to;
+
+        return $this;
     }
 
     protected function mapException(Throwable $e): Throwable

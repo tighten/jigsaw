@@ -7,6 +7,7 @@ use Illuminate\View\Component;
 use Mockery;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase as BaseTestCase;
+use TightenCo\Jigsaw\Bootstrap\HandleExceptions;
 use TightenCo\Jigsaw\Container;
 use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\File\InputFile;
@@ -27,7 +28,15 @@ class TestCase extends BaseTestCase
         parent::setUp();
 
         $this->app = new Container;
-        $this->app->bootstrapWith([]);
+        /* @internal The '__testing' binding is for Jigsaw development only and may be removed. */
+        $this->app->instance('__testing', true);
+        $this->app->singleton(
+            \Illuminate\Contracts\Debug\ExceptionHandler::class,
+            \TightenCo\Jigsaw\Exceptions\Handler::class,
+        );
+        $this->app->bootstrapWith([
+            \TightenCo\Jigsaw\Bootstrap\HandleExceptions::class,
+        ]);
 
         $this->app->buildPath = [
             'source' => $this->sourcePath,
@@ -41,7 +50,13 @@ class TestCase extends BaseTestCase
 
     protected function tearDown(): void
     {
+        if ($this->app) {
+            $this->app->flush();
+            $this->app = null;
+        }
+
         $this->cleanupTempDirectory();
+
         Mockery::close();
 
         if (method_exists(Component::class, 'flushCache')) {
@@ -49,6 +64,8 @@ class TestCase extends BaseTestCase
             Component::forgetComponentsResolver();
             Component::forgetFactory();
         }
+
+        HandleExceptions::forgetApp();
 
         parent::tearDown();
     }

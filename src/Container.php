@@ -165,6 +165,7 @@ class Container extends Illuminate
     private function registerConfiguredProviders(): void
     {
         foreach ([
+            Providers\ExceptionServiceProvider::class,
             Providers\FilesystemServiceProvider::class,
             Providers\MarkdownServiceProvider::class,
             Providers\ViewServiceProvider::class,

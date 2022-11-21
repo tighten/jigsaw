@@ -3,10 +3,12 @@
 namespace TightenCo\Jigsaw\Console;
 
 use Illuminate\Contracts\Container\Container;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Arr;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Throwable;
 use TightenCo\Jigsaw\File\ConfigFile;
 use TightenCo\Jigsaw\File\TemporaryFilesystem;
 use TightenCo\Jigsaw\Jigsaw;
@@ -57,7 +59,14 @@ class BuildCommand extends Command
         $this->consoleOutput->writeIntro($env, $this->useCache(), $cacheExists);
 
         if ($this->confirmDestination()) {
-            $this->app->make(Jigsaw::class)->build($env, $this->useCache());
+            try {
+                $this->app->make(Jigsaw::class)->build($env, $this->useCache());
+            } catch (Throwable $e) {
+                $this->app->make(ExceptionHandler::class)->report($e);
+                $this->app->make(ExceptionHandler::class)->renderForConsole($this->consoleOutput, $e);
+
+                return static::FAILURE;
+            }
 
             $this->consoleOutput
                 ->writeTime(round(microtime(true) - $startTime, 2), $this->useCache(), $cacheExists)

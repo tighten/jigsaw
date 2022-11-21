@@ -16,13 +16,17 @@
     "require": {
         "php": "^8.0.2 <8.3",
         "illuminate/collections": "^9.0",
+        "illuminate/console": "^9.21.1",
         "illuminate/container": "^9.0",
         "illuminate/filesystem": "^9.0",
         "illuminate/support": "^9.0",
         "illuminate/view": "^9.8",
         "michelf/php-markdown": "^1.9",
         "mnapoli/front-yaml": "^1.5",
+        "nunomaduro/collision": "^6.0",
+        "spatie/laravel-ignition": "^1.6",
         "symfony/console": "^5.4 || ^6.0",
+        "symfony/error-handler": "^5.0 || ^6.0",
         "symfony/finder": "^5.3.7 || ^6.0",
         "symfony/process": "^5.0 || ^6.0",
         "symfony/var-dumper": "^5.0 || ^6.0",
@@ -31,7 +35,7 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.11",
-        "mikey179/vfsstream": "^1.6.10",
+        "mikey179/vfsstream": "^1.6.11",
         "mockery/mockery": "^1.4",
         "phpunit/phpunit": "^9.3.3"
     },
@@ -55,8 +59,8 @@
         "format" : "php-cs-fixer fix --verbose"
     },
     "config": {
-        "optimize-autoloader": true,
-        "sort-packages": true
+        "sort-packages": true,
+        "optimize-autoloader": true
     },
     "minimum-stability": "dev",
     "prefer-stable": true

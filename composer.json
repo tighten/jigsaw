@@ -37,8 +37,7 @@
         "friendsofphp/php-cs-fixer": "^3.11",
         "mikey179/vfsstream": "^1.6.11",
         "mockery/mockery": "^1.4",
-        "phpunit/phpunit": "^9.3.3",
-        "ramsey/composer-repl": "^1.4"
+        "phpunit/phpunit": "^9.3.3"
     },
     "autoload": {
         "psr-4": {
@@ -61,10 +60,7 @@
     },
     "config": {
         "sort-packages": true,
-        "optimize-autoloader": true,
-        "allow-plugins": {
-            "ramsey/composer-repl": true
-        }
+        "optimize-autoloader": true
     },
     "minimum-stability": "dev",
     "prefer-stable": true

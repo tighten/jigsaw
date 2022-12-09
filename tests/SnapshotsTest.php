@@ -16,7 +16,7 @@ class SnapshotsTest extends PHPUnit
         'environment-specific-config-file' => ['staging'],
     ];
 
-    protected $filesystem;
+    protected Filesystem $filesystem;
 
     protected function setUp(): void
     {
@@ -28,21 +28,13 @@ class SnapshotsTest extends PHPUnit
     public function snapshots(): array
     {
         return collect((new Filesystem)->directories($this->source()))
-            ->map(function ($path) {
-                return basename($path);
-            })
-            ->reject(function ($name) {
-                return Str::endsWith($name, '_snapshot');
-            })
+            ->map(fn ($path) => basename($path))
+            ->reject(fn ($name) => Str::endsWith($name, '_snapshot'))
             // Prepend the test command with JIGSAW_SNAPSHOTS=<snapshot-names> to run specific snapshot tests
-            ->when(isset($_SERVER['JIGSAW_SNAPSHOTS']), function ($directories) {
-                return $directories->filter(function ($name) {
-                    return in_array($name, explode(',', $_SERVER['JIGSAW_SNAPSHOTS']));
-                });
-            })
-            ->mapWithKeys(function ($name) {
-                return [$name => [$name]];
-            })
+            ->when(isset($_SERVER['JIGSAW_SNAPSHOTS']), fn ($directories) => $directories->filter(
+                fn ($name) => in_array($name, explode(',', $_SERVER['JIGSAW_SNAPSHOTS']))
+            ))
+            ->mapWithKeys(fn ($name) => [$name => [$name]])
             ->all();
     }
 
@@ -75,14 +67,10 @@ class SnapshotsTest extends PHPUnit
 
         $this->assertSame(
             collect($this->filesystem->allFiles($this->snapshot($name), true))
-                ->map(function ($file) use ($name) {
-                    return Str::after($file->getPathname(), $this->snapshot($name));
-                })
+                ->map(fn ($file) => Str::after($file->getPathname(), $this->snapshot($name)))
                 ->toArray(),
             collect($this->filesystem->allFiles($this->output($name), true))
-                ->map(function ($file) use ($name) {
-                    return Str::after($file->getPathname(), $this->output($name));
-                })
+                ->map(fn ($file) => Str::after($file->getPathname(), $this->output($name)))
                 ->toArray(),
             "Output file structure does not match snapshot in '{$name}'.",
         );

@@ -87,7 +87,7 @@ class SnapshotsTest extends PHPUnit
             "Output file structure does not match snapshot in '{$name}'.",
         );
 
-        collect($this->filesystem->files($this->output($name), true))->map(function (SplFileInfo $file) use ($name) {
+        collect($this->filesystem->allFiles($this->output($name), true))->map(function (SplFileInfo $file) use ($name) {
             $this->assertSame(
                 file_get_contents(implode(DIRECTORY_SEPARATOR, array_filter([$this->snapshot($name), $file->getRelativePathname()]))),
                 $file->getContents(),

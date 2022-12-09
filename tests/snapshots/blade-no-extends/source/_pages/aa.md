@@ -2,4 +2,4 @@
 extends: _layouts.main
 section: body
 ---
-# Test
+Regular markdown with extends and section.

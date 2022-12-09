@@ -2,9 +2,13 @@
 
 return [
     'collections' => [
-        'posts',
-        // 'pages' => [
-        //     'extends' => '_layouts.main',
-        // ],
+        'pages',
+        'people' => [
+            'extends' => '_layouts.main',
+        ],
+        'posts' => [
+            'extends' => '_layouts.main',
+            'section' => 'body',
+        ],
     ],
 ];

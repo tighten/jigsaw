@@ -79,6 +79,11 @@ class CollectionDataLoader
             ->merge(['section' => 'content'])
             ->merge($collection->settings)
             ->merge($this->getHandler($file)->getItemVariables($file));
+
+        if (! $data->get('extends') && $collection->settings->get('extends')) {
+            $data->put('extends', $collection->settings->extends);
+        }
+
         $data->put('_meta', new IterableObject($this->getMetaData($file, $collection, $data)));
         $path = $this->getPath($data);
         $data->_meta->put('path', $path)->put('url', $this->buildUrls($path));

@@ -82,9 +82,8 @@ class PaginatedPageHandler
 
     private function render($file, $pageData)
     {
-        $bladeContent = $this->parser->getBladeContent($file->getContents());
         $bladeFilePath = $this->temporaryFilesystem->put(
-            $bladeContent,
+            $this->parser->getBladeContent($file->getContents(), $pageData->page->get('extends')),
             $file->getPathname(),
             '.blade.php',
         );

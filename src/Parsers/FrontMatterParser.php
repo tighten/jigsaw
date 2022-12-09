@@ -45,13 +45,13 @@ class FrontMatterParser
         return $this->parse($content, false)->content;
     }
 
-    public function getBladeContent($content)
+    public function getBladeContent($content, $configuredExtends = null)
     {
         $parsed = $this->parse($content);
-        $extendsFromFrontMatter = Arr::get($parsed->frontMatter, 'extends');
+        $extends = Arr::get($parsed->frontMatter, 'extends', $configuredExtends);
 
-        return (! $this->getExtendsFromBladeContent($parsed->content) && $extendsFromFrontMatter)
-            ? $this->addExtendsToBladeContent($extendsFromFrontMatter, $parsed->content)
+        return (! $this->getExtendsFromBladeContent($parsed->content) && $extends)
+            ? $this->addExtendsToBladeContent($extends, $parsed->content)
             : $parsed->content;
     }
 

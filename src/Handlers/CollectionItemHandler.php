@@ -46,6 +46,7 @@ class CollectionItemHandler
         $handler = $this->handlers->first(function ($handler) use ($file) {
             return $handler->shouldHandle($file);
         });
+
         $pageData->setPageVariableToCollectionItem($this->getCollectionName($file), $file->getFilenameWithoutExtension());
 
         if ($pageData->page === null) {

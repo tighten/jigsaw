@@ -32,7 +32,7 @@ class SnapshotsTest extends PHPUnit
             ->reject(fn ($name) => Str::endsWith($name, '_snapshot'))
             // Prepend the test command with JIGSAW_SNAPSHOTS=<snapshot-names> to run specific snapshot tests
             ->when(isset($_SERVER['JIGSAW_SNAPSHOTS']), fn ($directories) => $directories->filter(
-                fn ($name) => in_array($name, explode(',', $_SERVER['JIGSAW_SNAPSHOTS']))
+                fn ($name) => in_array($name, explode(',', $_SERVER['JIGSAW_SNAPSHOTS'])),
             ))
             ->mapWithKeys(fn ($name) => [$name => [$name]])
             ->all();

@@ -60,14 +60,14 @@ class CollectionItemHandler
 
                 $path = $outputFile->data()->page->getPath();
 
-                return new OutputFile(
+                return $path ? new OutputFile(
                     $file,
                     dirname($path),
                     basename($path, '.' . $outputFile->extension()),
                     $outputFile->extension(),
                     $outputFile->contents(),
                     $outputFile->data(),
-                );
-            })->values();
+                ) : null;
+            })->filter()->values();
     }
 }

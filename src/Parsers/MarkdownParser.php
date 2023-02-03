@@ -23,7 +23,7 @@ class MarkdownParser implements FrontYAMLMarkdownParser
         $this->parser->$property = $value;
     }
 
-    public function parse($markdown)
+    public function parse(string $markdown): string
     {
         return $this->parser->parse($markdown);
     }

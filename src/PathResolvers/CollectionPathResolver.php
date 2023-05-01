@@ -16,12 +16,12 @@ class CollectionPathResolver
         $this->view = $viewRenderer;
     }
 
-    public function link($path, $data, $collection)
+    public function link($path, $data, $transliterate=true)
     {
-        return collect($data->extends)->map(function ($bladeViewPath, $templateKey) use ($path, $data, $collection) {
+        return collect($data->extends)->map(function ($bladeViewPath, $templateKey) use ($path, $data, $transliterate) {
             return $this->cleanOutputPath(
                 $this->getPath($path, $data, $this->getExtension($bladeViewPath), $templateKey),
-                Arr::get($collection->settings, 'transliterate', true)
+                $transliterate
             );
         });
     }

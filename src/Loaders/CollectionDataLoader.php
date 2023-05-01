@@ -3,6 +3,7 @@
 namespace TightenCo\Jigsaw\Loaders;
 
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use TightenCo\Jigsaw\Collection\Collection;
 use TightenCo\Jigsaw\Collection\CollectionItem;
@@ -136,7 +137,11 @@ class CollectionDataLoader
 
     private function getPath($data, $collection)
     {
-        $links = $this->pathResolver->link($data->path, new PageVariable($data), $collection);
+        $links = $this->pathResolver->link(
+            $data->path,
+            new PageVariable($data),
+            Arr::get($collection->settings, 'transliterate', true)
+        );
 
         return $links->count() ? new IterableObjectWithDefault($links) : null;
     }

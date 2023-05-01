@@ -16,11 +16,12 @@ class CollectionPathResolver
         $this->view = $viewRenderer;
     }
 
-    public function link($path, $data)
+    public function link($path, $data, $collection)
     {
-        return collect($data->extends)->map(function ($bladeViewPath, $templateKey) use ($path, $data) {
+        return collect($data->extends)->map(function ($bladeViewPath, $templateKey) use ($path, $data, $collection) {
             return $this->cleanOutputPath(
                 $this->getPath($path, $data, $this->getExtension($bladeViewPath), $templateKey),
+                Arr::get($collection->settings, 'transliterate', true)
             );
         });
     }
@@ -117,12 +118,16 @@ class CollectionPathResolver
         return $this->ensureSlashAtBeginningOnly($path);
     }
 
-    private function cleanOutputPath($path)
+    private function cleanOutputPath($path, $transliterate=true)
     {
-        $removeDoubleSlashes = preg_replace('/\/\/+/', '/', $path);
-        $transliterate = $this->ascii($removeDoubleSlashes);
+        // remove double slashes
+        $path = preg_replace('/\/\/+/', '/', $path);
 
-        return $this->ensureSlashAtBeginningOnly($transliterate);
+        if($transliterate) {
+            $path = $this->ascii($path);
+        }
+
+        return $this->ensureSlashAtBeginningOnly($path);
     }
 
     private function ensureSlashAtBeginningOnly($path)

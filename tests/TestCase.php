@@ -109,14 +109,12 @@ class TestCase extends BaseTestCase
         $this->app->consoleOutput->setup($verbosity = -1);
         $this->app->config = collect($this->app->config)->merge($config);
 
-        $collections = value($this->app->config->get('collections'));
-
-        if ($collections) {
+        if ($collections = value($this->app->config->get('collections'))) {
             $this->app->config->put('collections', collect($collections)->flatMap(function ($value, $key) {
                 return is_array($value) ? [$key => $value] : [$value => []];
             }));
         }
-        
+
         $this->app->buildPath = [
             'source' => $vfs->url() . '/source',
             'views' => $vfs->url() . $viewPath,

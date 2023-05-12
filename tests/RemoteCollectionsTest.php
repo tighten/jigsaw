@@ -2,6 +2,8 @@
 
 namespace Tests;
 
+use Illuminate\Support\Arr;
+
 class RemoteCollectionsTest extends TestCase
 {
     /**
@@ -655,6 +657,41 @@ class RemoteCollectionsTest extends TestCase
         $this->assertEquals(
             '<div><p>Hey there</p></div>',
             $this->clean($files->getChild('build/test/test-1.html')->getContent()),
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function collections_key_in_config_can_be_a_function_that_returns_a_list_of_collections()
+    {
+        $config = collect([
+            'collections' => fn () => [
+                'test' => [
+                    'extends' => '_layouts.master',
+                    'items' => function () {
+                        return collect([
+                            ['content' => 'item 1'],
+                            ['content' => 'item 2'],
+                        ]);
+                    },
+                ],
+            ],
+        ]);
+        $files = $this->setupSource([
+            '_layouts' => [
+                'master.blade.php' => "<div>@yield('content')</div>",
+            ],
+        ]);
+        $this->buildSite($files, $config);
+
+        $this->assertEquals(
+            '<div><p>item 1</p></div>',
+            $this->clean($files->getChild('build/test/test-1.html')->getContent()),
+        );
+        $this->assertEquals(
+            '<div><p>item 2</p></div>',
+            $this->clean($files->getChild('build/test/test-2.html')->getContent()),
         );
     }
 }

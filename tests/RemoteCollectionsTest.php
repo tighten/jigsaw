@@ -2,8 +2,6 @@
 
 namespace Tests;
 
-use Illuminate\Support\Arr;
-
 class RemoteCollectionsTest extends TestCase
 {
     /**

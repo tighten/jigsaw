@@ -16,7 +16,7 @@ class CollectionPathResolver
         $this->view = $viewRenderer;
     }
 
-    public function link($path, $data, $transliterate=true)
+    public function link($path, $data, bool $transliterate = true)
     {
         return collect($data->extends)->map(function ($bladeViewPath, $templateKey) use ($path, $data, $transliterate) {
             return $this->cleanOutputPath(
@@ -118,12 +118,12 @@ class CollectionPathResolver
         return $this->ensureSlashAtBeginningOnly($path);
     }
 
-    private function cleanOutputPath($path, $transliterate=true)
+    private function cleanOutputPath($path, bool $transliterate)
     {
-        // remove double slashes
+        // Remove double slashes
         $path = preg_replace('/\/\/+/', '/', $path);
 
-        if($transliterate) {
+        if ($transliterate) {
             $path = $this->ascii($path);
         }
 

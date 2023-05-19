@@ -21,6 +21,7 @@
         "illuminate/filesystem": "^9.0",
         "illuminate/support": "^9.0",
         "illuminate/view": "^9.8",
+        "league/commonmark": "^2.4",
         "michelf/php-markdown": "^1.9",
         "mnapoli/front-yaml": "^1.5",
         "nunomaduro/collision": "^6.0",

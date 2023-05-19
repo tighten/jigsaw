@@ -4,7 +4,7 @@ namespace TightenCo\Jigsaw\Parsers;
 
 use Michelf\MarkdownExtra;
 
-class JigsawMarkdownParser extends MarkdownExtra
+class JigsawMarkdownParser extends MarkdownExtra implements MarkdownParserContract
 {
     public function __construct()
     {

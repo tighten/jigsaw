@@ -2,15 +2,15 @@
 
 namespace TightenCo\Jigsaw\Parsers;
 
-use Mni\FrontYAML\Markdown\MarkdownParser as FrontYAMLMarkdownParser;
+use Mni\FrontYAML\Markdown\MarkdownParser as FrontYAMLMarkdownParserInterface;
 
-class MarkdownParser implements FrontYAMLMarkdownParser
+class MarkdownParser implements FrontYAMLMarkdownParserInterface
 {
     public $parser;
 
-    public function __construct(JigsawMarkdownParser $parser = null)
+    public function __construct(MarkdownParserContract $parser = null)
     {
-        $this->parser = $parser ?: new JigsawMarkdownParser();
+        $this->parser = $parser ?? new JigsawMarkdownParser;
     }
 
     public function __get($property)

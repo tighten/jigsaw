@@ -89,14 +89,12 @@ class CommonMarkTest extends TestCase
 
     private function withContent(string|array $content)
     {
-        return $this->setupSource([
+        return $this->setupSource(array_merge([
             '_layouts' => [
                 'master.blade.php' => "<div>@yield('content')</div>",
             ],
-            ...(is_string($content) ? [
-                'test.md' => $this->withFrontMatter($content),
-            ] : $content),
-        ]);
+            is_string($content) ? ['test.md' => $this->withFrontMatter($content)] : $content,
+        ]));
     }
 
     private function withFrontMatter(string $content): string

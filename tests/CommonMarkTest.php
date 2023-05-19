@@ -68,8 +68,7 @@ class CommonMarkTest extends TestCase
         $files = $this->withContent('### Heading {.class}');
 
         $this->app->bind(MarkdownParserContract::class, function () {
-            return new class implements MarkdownParserContract
-            {
+            return new class implements MarkdownParserContract {
                 public function parse(string $text)
                 {
                     return <<<EOT
@@ -94,7 +93,7 @@ class CommonMarkTest extends TestCase
             '_layouts' => [
                 'master.blade.php' => "<div>@yield('content')</div>",
             ],
-            ...(is_string($content)  ? [
+            ...(is_string($content) ? [
                 'test.md' => $this->withFrontMatter($content),
             ] : $content),
         ]);

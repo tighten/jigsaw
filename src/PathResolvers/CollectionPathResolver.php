@@ -21,7 +21,7 @@ class CollectionPathResolver
         return collect($data->extends)->map(function ($bladeViewPath, $templateKey) use ($path, $data, $transliterate) {
             return $this->cleanOutputPath(
                 $this->getPath($path, $data, $this->getExtension($bladeViewPath), $templateKey),
-                $transliterate
+                $transliterate,
             );
         });
     }

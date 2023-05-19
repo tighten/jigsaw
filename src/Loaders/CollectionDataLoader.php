@@ -3,6 +3,7 @@
 namespace TightenCo\Jigsaw\Loaders;
 
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use TightenCo\Jigsaw\Collection\Collection;
 use TightenCo\Jigsaw\Collection\CollectionItem;
@@ -80,7 +81,7 @@ class CollectionDataLoader
             ->merge($collection->settings)
             ->merge($this->getHandler($file)->getItemVariables($file));
         $data->put('_meta', new IterableObject($this->getMetaData($file, $collection, $data)));
-        $path = $this->getPath($data);
+        $path = $this->getPath($data, $collection);
         $data->_meta->put('path', $path)->put('url', $this->buildUrls($path));
 
         return CollectionItem::build($collection, $data);
@@ -134,9 +135,13 @@ class CollectionDataLoader
         return $urls->count() ? new IterableObjectWithDefault($urls) : null;
     }
 
-    private function getPath($data)
+    private function getPath($data, $collection)
     {
-        $links = $this->pathResolver->link($data->path, new PageVariable($data));
+        $links = $this->pathResolver->link(
+            $data->path,
+            new PageVariable($data),
+            Arr::get($collection->settings, 'transliterate', true)
+        );
 
         return $links->count() ? new IterableObjectWithDefault($links) : null;
     }

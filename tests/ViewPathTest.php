@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-
 class ViewPathTest extends TestCase
 {
     /** @test */

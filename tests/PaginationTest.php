@@ -393,8 +393,8 @@ class PaginationTest extends TestCase
         $this->assertSame('post1post2', $this->clean($files->getChild('build/blog/index.html')->getContent()));
         $this->assertSame('post3post4', $this->clean($files->getChild('build/blog/page/2/index.html')->getContent()));
         $this->assertSame('post5', $this->clean($files->getChild('build/blog/page/3/index.html')->getContent()));
-        $this->assertNull($files->getChild('build/blog/2/index.html'));
-        $this->assertNull($files->getChild('build/blog/3/index.html'));
+        $this->assertFileMissing($this->tmpPath('build/blog/2/index.html'));
+        $this->assertFileMissing($this->tmpPath('build/blog/3/index.html'));
     }
 
     /** @test */
@@ -429,7 +429,7 @@ class PaginationTest extends TestCase
         $this->assertSame('post1post2', $this->clean($files->getChild('build/blog/index.html')->getContent()));
         $this->assertSame('post3post4', $this->clean($files->getChild('build/blog/page/2/index.html')->getContent()));
         $this->assertSame('post5', $this->clean($files->getChild('build/blog/page/3/index.html')->getContent()));
-        $this->assertNull($files->getChild('build/blog/2/index.html'));
-        $this->assertNull($files->getChild('build/blog/3/index.html'));
+        $this->assertFileMissing($this->tmpPath('build/blog/2/index.html'));
+        $this->assertFileMissing($this->tmpPath('build/blog/3/index.html'));
     }
 }

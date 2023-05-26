@@ -2,8 +2,6 @@
 
 namespace Tests;
 
-use org\bovigo\vfs\vfsStream;
-
 class SiteBuilderTest extends TestCase
 {
     /**
@@ -11,7 +9,7 @@ class SiteBuilderTest extends TestCase
      */
     public function destination_directory_is_deleted_when_building_site()
     {
-        $files = vfsStream::setup('virtual', null, [
+        $this->createSource([
             'build' => [
                 'old.blade.php' => 'Old file',
             ],
@@ -20,9 +18,9 @@ class SiteBuilderTest extends TestCase
             ],
         ]);
 
-        $this->buildSite($files);
+        $this->buildSite(new class {});
 
-        $this->assertCount(1, $files->getChild('build')->getChildren());
+        $this->assertCount(1, app('files')->filesAndDirectories($this->tmpPath('build')));
     }
 
     /**
@@ -30,7 +28,7 @@ class SiteBuilderTest extends TestCase
      */
     public function existing_files_in_destination_directory_are_replaced_when_building_site()
     {
-        $files = vfsStream::setup('virtual', null, [
+        $this->createSource([
             'build' => [
                 'test.blade.php' => 'Old file',
             ],
@@ -39,10 +37,10 @@ class SiteBuilderTest extends TestCase
             ],
         ]);
 
-        $this->buildSite($files);
+        $this->buildSite(new class {});
 
-        $this->assertCount(1, $files->getChild('build')->getChildren());
-        $this->assertEquals('New file', $files->getChild('build')->getChild('build/test.html')->getContent());
+        $this->assertCount(1, app('files')->filesAndDirectories($this->tmpPath('build')));
+        $this->assertOutputFile('build/test.html', 'New file');
     }
 
     /**

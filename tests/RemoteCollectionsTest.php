@@ -194,7 +194,7 @@ class RemoteCollectionsTest extends TestCase
         ]);
         $this->buildSite($files, $config);
 
-        $this->assertNull($files->getChild('source/_test/_tmp'));
+        $this->assertFileMissing($this->tmpPath('source/_test/_tmp'));
     }
 
     /**
@@ -221,7 +221,7 @@ class RemoteCollectionsTest extends TestCase
         ]);
         $this->buildSite($files, $config);
 
-        $this->assertNull($files->getChild('source/_test'));
+        $this->assertFileMissing($this->tmpPath('source/_test'));
     }
 
     /**

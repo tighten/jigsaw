@@ -2,8 +2,6 @@
 
 namespace Tests;
 
-use org\bovigo\vfs\vfsStream;
-
 class EventsTest extends TestCase
 {
     /**
@@ -368,7 +366,7 @@ class EventsTest extends TestCase
         });
         $this->buildSite($source = $this->setupSource());
 
-        $this->assertEquals($source->url() . '/source', $result);
+        $this->assertEquals("{$this->tmp}/source", $result);
     }
 
     /**
@@ -376,7 +374,7 @@ class EventsTest extends TestCase
      */
     public function user_can_change_source_path_in_event_listener()
     {
-        $source = vfsStream::setup('virtual', null, [
+        $this->createSource([
             'source' => [
                 'file_in_original_source.html' => 'original',
             ],
@@ -384,17 +382,17 @@ class EventsTest extends TestCase
                 'file_in_new_source.html' => 'new',
             ],
         ]);
-        $this->app['events']->beforeBuild(function ($jigsaw) use ($source, &$original, &$result) {
+        $this->app['events']->beforeBuild(function ($jigsaw) use (&$original, &$result) {
             $original = $jigsaw->getSourcePath();
-            $jigsaw->setSourcePath($source->url() . '/new_source');
+            $jigsaw->setSourcePath("{$this->tmp}/new_source");
             $result = $jigsaw->getSourcePath();
         });
-        $this->buildSite($source);
+        $this->buildSite(new class {});
 
-        $this->assertEquals($source->url() . '/source', $original);
-        $this->assertEquals($source->url() . '/new_source', $result);
-        $this->assertNull($source->getChild('build/file_in_original_source.html'));
-        $this->assertEquals('new', $source->getChild('build/file_in_new_source.html')->getContent());
+        $this->assertEquals("{$this->tmp}/source", $original);
+        $this->assertEquals("{$this->tmp}/new_source", $result);
+        $this->assertFileMissing($this->tmpPath('build/file_in_original_source.html'));
+        $this->assertOutputFile('build/file_in_new_source.html', 'new');
     }
 
     /**
@@ -407,7 +405,7 @@ class EventsTest extends TestCase
         });
         $this->buildSite($source = $this->setupSource());
 
-        $this->assertEquals($source->url() . '/build', $result);
+        $this->assertEquals("{$this->tmp}/build", $result);
     }
 
     /**
@@ -417,16 +415,16 @@ class EventsTest extends TestCase
     {
         $source = $this->setupSource(['file.html' => 'test']);
 
-        $this->app['events']->beforeBuild(function ($jigsaw) use ($source, &$original, &$result) {
+        $this->app['events']->beforeBuild(function ($jigsaw) use (&$original, &$result) {
             $original = $jigsaw->getDestinationPath();
-            $jigsaw->setDestinationPath($source->url() . '/new_build');
+            $jigsaw->setDestinationPath("{$this->tmp}/new_build");
             $result = $jigsaw->getDestinationPath();
         });
         $this->buildSite($source);
 
-        $this->assertEquals($source->url() . '/build', $original);
-        $this->assertEquals($source->url() . '/new_build', $result);
-        $this->assertNull($source->getChild('build/file.html'));
+        $this->assertEquals("{$this->tmp}/build", $original);
+        $this->assertEquals("{$this->tmp}/new_build", $result);
+        $this->assertFileMissing($this->tmpPath('build/file.html'));
         $this->assertEquals('test', $source->getChild('new_build/file.html')->getContent());
     }
 

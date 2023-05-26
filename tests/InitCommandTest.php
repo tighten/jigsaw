@@ -3,7 +3,6 @@
 namespace Tests;
 
 use Mockery;
-use org\bovigo\vfs\vfsStream;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 use TightenCo\Jigsaw\Console\InitCommand;
@@ -24,10 +23,10 @@ class InitCommandTest extends TestCase
             ->andReturn($basic_scaffold);
         $this->app->instance(BasicScaffoldBuilder::class, $basic_scaffold);
 
-        $vfs = vfsStream::setup('virtual', null, []);
+        $this->createSource([]);
         $command = $this->app->make(InitCommand::class);
         $command->setApplication(new Application());
-        $command->setBase($vfs->url());
+        $command->setBase($this->tmp);
 
         $console = new CommandTester($command);
         $console->execute([]);
@@ -48,10 +47,10 @@ class InitCommandTest extends TestCase
             ->andReturn($preset_scaffold);
         $this->app->instance(PresetScaffoldBuilder::class, $preset_scaffold);
 
-        $vfs = vfsStream::setup('virtual', null, []);
+        $this->createSource([]);
         $command = $this->app->make(InitCommand::class);
         $command->setApplication(new Application());
-        $command->setBase($vfs->url());
+        $command->setBase($this->tmp);
 
         $console = new CommandTester($command);
         $console->execute(['preset' => 'blog']);
@@ -79,10 +78,10 @@ class InitCommandTest extends TestCase
      */
     public function init_command_displays_warning_if_source_directory_exists()
     {
-        $vfs = vfsStream::setup('virtual', null, ['source' => []]);
+        $this->createSource(['source' => []]);
         $command = $this->app->make(InitCommand::class);
         $command->setApplication(new Application());
-        $command->setBase($vfs->url());
+        $command->setBase($this->tmp);
 
         $console = new CommandTester($command);
         $console->setInputs(['c']);
@@ -96,10 +95,10 @@ class InitCommandTest extends TestCase
      */
     public function init_command_displays_warning_if_config_dot_php_exists()
     {
-        $vfs = vfsStream::setup('virtual', null, ['config.php' => '']);
+        $this->createSource(['config.php' => '']);
         $command = $this->app->make(InitCommand::class);
         $command->setApplication(new Application());
-        $command->setBase($vfs->url());
+        $command->setBase($this->tmp);
 
         $console = new CommandTester($command);
         $console->setInputs(['c']);
@@ -120,10 +119,10 @@ class InitCommandTest extends TestCase
             ->andReturn($basic_scaffold);
         $this->app->instance(BasicScaffoldBuilder::class, $basic_scaffold);
 
-        $vfs = vfsStream::setup('virtual', null, ['config.php' => '']);
+        $this->createSource(['config.php' => '']);
         $command = $this->app->make(InitCommand::class);
         $command->setApplication(new Application());
-        $command->setBase($vfs->url());
+        $command->setBase($this->tmp);
 
         $console = new CommandTester($command);
         $console->setInputs(['c']);
@@ -146,10 +145,10 @@ class InitCommandTest extends TestCase
             ->andReturn($basic_scaffold);
         $this->app->instance(BasicScaffoldBuilder::class, $basic_scaffold);
 
-        $vfs = vfsStream::setup('virtual', null, ['config.php' => '']);
+        $this->createSource(['config.php' => '']);
         $command = $this->app->make(InitCommand::class);
         $command->setApplication(new Application());
-        $command->setBase($vfs->url());
+        $command->setBase($this->tmp);
 
         $console = new CommandTester($command);
         $console->setInputs(['a']);
@@ -171,10 +170,10 @@ class InitCommandTest extends TestCase
             ->andReturn($basic_scaffold);
         $this->app->instance(BasicScaffoldBuilder::class, $basic_scaffold);
 
-        $vfs = vfsStream::setup('virtual', null, ['config.php' => '']);
+        $this->createSource(['config.php' => '']);
         $command = $this->app->make(InitCommand::class);
         $command->setApplication(new Application());
-        $command->setBase($vfs->url());
+        $command->setBase($this->tmp);
 
         $console = new CommandTester($command);
         $console->setInputs(['a']);
@@ -196,10 +195,10 @@ class InitCommandTest extends TestCase
             ->andReturn($basic_scaffold);
         $this->app->instance(BasicScaffoldBuilder::class, $basic_scaffold);
 
-        $vfs = vfsStream::setup('virtual', null, ['config.php' => '']);
+        $this->createSource(['config.php' => '']);
         $command = $this->app->make(InitCommand::class);
         $command->setApplication(new Application());
-        $command->setBase($vfs->url());
+        $command->setBase($this->tmp);
 
         $console = new CommandTester($command);
         $console->setInputs(['d', 'y']);
@@ -221,10 +220,10 @@ class InitCommandTest extends TestCase
             ->andReturn($basic_scaffold);
         $this->app->instance(BasicScaffoldBuilder::class, $basic_scaffold);
 
-        $vfs = vfsStream::setup('virtual', null, ['config.php' => '']);
+        $this->createSource(['config.php' => '']);
         $command = $this->app->make(InitCommand::class);
         $command->setApplication(new Application());
-        $command->setBase($vfs->url());
+        $command->setBase($this->tmp);
 
         $console = new CommandTester($command);
         $console->setInputs(['d', 'y']);

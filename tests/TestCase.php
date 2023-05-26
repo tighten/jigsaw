@@ -61,9 +61,8 @@ class TestCase extends PHPUnit
     {
         mkdir($this->tmp = __DIR__ . '/fixtures/tmp/' . static::haiku());
 
-        mkdir("{$this->tmp}/cache");
-        mkdir("{$this->tmp}/cache/views");
-        mkdir("{$this->tmp}/public");
+        // TODO this creates Jigsaw's cache directory in the root of this repo
+        $this->filesystem->ensureDirectoryExists(app()->cachePath());
     }
 
     protected function tearDown(): void
@@ -84,6 +83,7 @@ class TestCase extends PHPUnit
 
         if (! $this->hasFailed()) {
             $this->filesystem->deleteDirectories(__DIR__ . '/fixtures/tmp/');
+            $this->filesystem->deleteDirectory(app()->cachePath());
         }
 
         parent::tearDown();
@@ -92,7 +92,7 @@ class TestCase extends PHPUnit
     public function getInputFile($filename)
     {
         $sourceFile = $this->filesystem->getFile(
-            Str::finish($this->sourcePath, '/') . pathinfo($filename)['dirname'], basename($filename)
+            Str::finish($this->sourcePath, '/') . pathinfo($filename)['dirname'], basename($filename),
         );
 
         return new InputFile($sourceFile, $this->sourcePath);
@@ -107,24 +107,37 @@ class TestCase extends PHPUnit
     {
         $this->createSource(['source' => $source]);
 
-        return new class ($this->tmpPath('')) {
+        return new class($this->tmpPath('')) {
             public function __construct(
                 protected string $tmp,
             ) {}
+
+            public function hasChild($path)
+            {
+                return app('files')->exists($this->tmp . $path);
+            }
+
             public function getChild($path)
             {
-                return new class ($this->tmp, $path) {
+                return new class($this->tmp, $path) {
                     public function __construct(
                         protected string $tmp,
                         protected string $path,
                     ) {}
+
                     public function getContent()
                     {
                         return app('files')->get($this->tmp . $this->path);
                     }
+
                     public function filemtime()
                     {
                         return app('files')->lastModified($this->tmp . $this->path);
+                    }
+
+                    public function getChildren()
+                    {
+                        return app('files')->files($this->tmp . $this->path);
                     }
                 };
             }
@@ -152,7 +165,7 @@ class TestCase extends PHPUnit
         $this->app->consoleOutput->setup($verbosity = -1);
         $loader = $this->app->make(DataLoader::class);
         $siteData = $loader->loadSiteData($config);
-        $collectionData = $loader->loadCollectionData($siteData, $vfs->url() . '/source');
+        $collectionData = $loader->loadCollectionData($siteData, "{$this->tmp}/source");
 
         return $siteData->addCollectionData($collectionData);
     }

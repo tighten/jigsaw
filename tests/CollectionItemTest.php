@@ -76,8 +76,8 @@ class CollectionItemTest extends TestCase
         $this->assertNull($jigsaw->getSiteData()->collection->filtered);
         $this->assertNotNull($jigsaw->getSiteData()->collection->item);
 
-        $this->assertNull($files->getChild('build/collection/filtered.html'));
-        $this->assertNotNull($files->getChild('build/collection/item.html'));
+        $this->assertFileMissing($this->tmpPath('build/collection/filtered.html'));
+        $this->assertFileExists($this->tmpPath('build/collection/item.html'));
     }
 
     /**
@@ -237,7 +237,7 @@ class CollectionItemTest extends TestCase
         $this->buildSite($files, $config, $pretty = true);
 
         $this->assertEquals(
-            'vfs://virtual/source/_collection',
+            "{$this->tmp}/source/_collection",
             $this->clean($files->getChild('build/collection/page/index.html')->getContent()),
         );
     }

@@ -4,7 +4,6 @@ namespace Tests;
 
 use Illuminate\Support\Arr;
 use Mockery;
-use org\bovigo\vfs\vfsStream;
 use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\Scaffold\DefaultInstaller;
 use TightenCo\Jigsaw\Scaffold\PresetPackage;
@@ -18,18 +17,18 @@ class DefaultScaffoldInstallerTest extends TestCase
      */
     public function installer_installs_basic_scaffold_files()
     {
-        $vfs = vfsStream::setup('virtual', null, []);
+        $this->createSource([]);
         $builder = new PresetScaffoldBuilder(new Filesystem(), Mockery::mock(PresetPackage::class), new ProcessRunner());
-        $builder->setBase($vfs->url());
+        $builder->setBase($this->tmp);
 
-        $this->assertCount(0, $vfs->getChildren());
+        $this->assertCount(0, app('files')->filesAndDirectories($this->tmp));
 
         (new DefaultInstaller())->install($builder, ['commands' => []]);
 
-        $this->assertNotNull($vfs->getChild('source'));
-        $this->assertNotNull($vfs->getChild('package.json'));
-        $this->assertNotNull($vfs->getChild('webpack.mix.js'));
-        $this->assertNotNull($vfs->getChild('config.php'));
+        $this->assertFileExists($this->tmpPath('source'));
+        $this->assertFileExists($this->tmpPath('package.json'));
+        $this->assertFileExists($this->tmpPath('webpack.mix.js'));
+        $this->assertFileExists($this->tmpPath('config.php'));
     }
 
     /**
@@ -37,17 +36,17 @@ class DefaultScaffoldInstallerTest extends TestCase
      */
     public function installer_deletes_single_base_file_specified_in_delete_array()
     {
-        $vfs = vfsStream::setup('virtual', null, []);
+        $this->createSource([]);
         $builder = new PresetScaffoldBuilder(new Filesystem(), Mockery::mock(PresetPackage::class), new ProcessRunner());
-        $builder->setBase($vfs->url());
+        $builder->setBase($this->tmp);
 
         (new DefaultInstaller())->install($builder, [
             'delete' => 'config.php',
             'commands' => [],
         ]);
 
-        $this->assertNull($vfs->getChild('config.php'));
-        $this->assertNotNull($vfs->getChild('source'));
+        $this->assertFileMissing($this->tmpPath('config.php'));
+        $this->assertFileExists($this->tmpPath('source'));
     }
 
     /**
@@ -55,18 +54,18 @@ class DefaultScaffoldInstallerTest extends TestCase
      */
     public function installer_deletes_multiple_base_files_specified_in_delete_array()
     {
-        $vfs = vfsStream::setup('virtual', null, []);
+        $this->createSource([]);
         $builder = new PresetScaffoldBuilder(new Filesystem(), Mockery::mock(PresetPackage::class), new ProcessRunner());
-        $builder->setBase($vfs->url());
+        $builder->setBase($this->tmp);
 
         (new DefaultInstaller())->install($builder, [
             'delete' => ['config.php', 'package.json'],
             'commands' => [],
         ]);
 
-        $this->assertNull($vfs->getChild('config.php'));
-        $this->assertNull($vfs->getChild('package.json'));
-        $this->assertNotNull($vfs->getChild('source'));
+        $this->assertFileMissing($this->tmpPath('config.php'));
+        $this->assertFileMissing($this->tmpPath('package.json'));
+        $this->assertFileExists($this->tmpPath('source'));
     }
 
     /**
@@ -74,16 +73,16 @@ class DefaultScaffoldInstallerTest extends TestCase
      */
     public function installer_deletes_base_directories_specified_in_delete_array()
     {
-        $vfs = vfsStream::setup('virtual', null, []);
+        $this->createSource([]);
         $builder = new PresetScaffoldBuilder(new Filesystem(), Mockery::mock(PresetPackage::class), new ProcessRunner());
-        $builder->setBase($vfs->url());
+        $builder->setBase($this->tmp);
 
         (new DefaultInstaller())->install($builder, [
             'delete' => ['source'],
             'commands' => [],
         ]);
 
-        $this->assertNull($vfs->getChild('source'));
+        $this->assertFileMissing($this->tmpPath('source'));
     }
 
     /**
@@ -91,7 +90,7 @@ class DefaultScaffoldInstallerTest extends TestCase
      */
     public function installer_copies_all_preset_files()
     {
-        $vfs = vfsStream::setup('virtual', null, [
+        $this->createSource([
             'package' => [
                 '.dotfile' => '',
                 'preset-file.php' => '',
@@ -108,17 +107,17 @@ class DefaultScaffoldInstallerTest extends TestCase
             ],
         ]);
         $package = Mockery::mock(PresetPackage::class);
-        $package->path = $vfs->url() . '/package';
+        $package->path = $this->tmp . '/package';
         $builder = new PresetScaffoldBuilder(new Filesystem(), $package, new ProcessRunner());
-        $builder->setBase($vfs->url());
+        $builder->setBase($this->tmp);
 
         (new DefaultInstaller())->install($builder, ['commands' => []]);
 
-        $this->assertNotNull($vfs->getChild('.dotfile'));
-        $this->assertNotNull($vfs->getChild('preset-file.php'));
-        $this->assertNotNull($vfs->getChild('source/source-file.md'));
-        $this->assertNotNull($vfs->getChild('other/nested/nested-file.md'));
-        $this->assertNotNull($vfs->getChild('empty'));
+        $this->assertFileExists($this->tmpPath('.dotfile'));
+        $this->assertFileExists($this->tmpPath('preset-file.php'));
+        $this->assertFileExists($this->tmpPath('source/source-file.md'));
+        $this->assertFileExists($this->tmpPath('other/nested/nested-file.md'));
+        $this->assertFileExists($this->tmpPath('empty'));
     }
 
     /**
@@ -126,19 +125,19 @@ class DefaultScaffoldInstallerTest extends TestCase
      */
     public function installer_preserves_base_files_when_copying_preset_files()
     {
-        $vfs = vfsStream::setup('virtual', null, [
+        $this->createSource([
             'package' => [
                 'preset-file.php' => '',
             ],
         ]);
         $package = Mockery::mock(PresetPackage::class);
-        $package->path = $vfs->url() . '/package';
+        $package->path = $this->tmp . '/package';
         $builder = new PresetScaffoldBuilder(new Filesystem(), $package, new ProcessRunner());
-        $builder->setBase($vfs->url());
+        $builder->setBase($this->tmp);
 
         (new DefaultInstaller())->install($builder, ['commands' => []]);
 
-        $this->assertNotNull($vfs->getChild('config.php'));
+        $this->assertFileExists($this->tmpPath('config.php'));
     }
 
     /**
@@ -146,22 +145,19 @@ class DefaultScaffoldInstallerTest extends TestCase
      */
     public function installer_overwrites_base_files_of_same_name_when_copying_preset_files()
     {
-        $vfs = vfsStream::setup('virtual', null, [
+        $this->createSource([
             'package' => [
                 'config.php' => 'new config file from preset',
             ],
         ]);
         $package = Mockery::mock(PresetPackage::class);
-        $package->path = $vfs->url() . '/package';
+        $package->path = $this->tmp . '/package';
         $builder = new PresetScaffoldBuilder(new Filesystem(), $package, new ProcessRunner());
-        $builder->setBase($vfs->url());
+        $builder->setBase($this->tmp);
 
         (new DefaultInstaller())->install($builder, ['commands' => []]);
 
-        $this->assertEquals(
-            'new config file from preset',
-            $vfs->getChild('config.php')->getContent(),
-        );
+        $this->assertOutputFile('config.php', 'new config file from preset');
     }
 
     /**
@@ -169,7 +165,7 @@ class DefaultScaffoldInstallerTest extends TestCase
      */
     public function installer_can_ignore_files_and_directories_from_preset_when_copying()
     {
-        $vfs = vfsStream::setup('virtual', null, [
+        $this->createSource([
             'package' => [
                 'copy-this.php' => '',
                 'ignore-this.php' => '',
@@ -182,9 +178,9 @@ class DefaultScaffoldInstallerTest extends TestCase
             ],
         ]);
         $package = Mockery::mock(PresetPackage::class);
-        $package->path = $vfs->url() . '/package';
+        $package->path = $this->tmp . '/package';
         $builder = new PresetScaffoldBuilder(new Filesystem(), $package, new ProcessRunner());
-        $builder->setBase($vfs->url());
+        $builder->setBase($this->tmp);
 
         (new DefaultInstaller())->install($builder, [
             'ignore' => [
@@ -194,10 +190,10 @@ class DefaultScaffoldInstallerTest extends TestCase
             'commands' => [],
         ]);
 
-        $this->assertNotNull($vfs->getChild('copy-this.php'));
-        $this->assertNull($vfs->getChild('ignore-this.php'));
-        $this->assertNotNull($vfs->getChild('copy-directory'));
-        $this->assertNull($vfs->getChild('ignore-directory'));
+        $this->assertFileExists($this->tmpPath('copy-this.php'));
+        $this->assertFileMissing($this->tmpPath('ignore-this.php'));
+        $this->assertFileExists($this->tmpPath('copy-directory'));
+        $this->assertFileMissing($this->tmpPath('ignore-directory'));
     }
 
     /**
@@ -205,7 +201,7 @@ class DefaultScaffoldInstallerTest extends TestCase
      */
     public function installer_can_ignore_files_and_directories_from_preset_using_wildcard_when_copying()
     {
-        $vfs = vfsStream::setup('virtual', null, [
+        $this->createSource([
             'package' => [
                 'copy-this.php' => '',
                 'ignore-this.php' => '',
@@ -218,9 +214,9 @@ class DefaultScaffoldInstallerTest extends TestCase
             ],
         ]);
         $package = Mockery::mock(PresetPackage::class);
-        $package->path = $vfs->url() . '/package';
+        $package->path = $this->tmp . '/package';
         $builder = new PresetScaffoldBuilder(new Filesystem(), $package, new ProcessRunner());
-        $builder->setBase($vfs->url());
+        $builder->setBase($this->tmp);
 
         (new DefaultInstaller())->install($builder, [
             'ignore' => [
@@ -229,10 +225,10 @@ class DefaultScaffoldInstallerTest extends TestCase
             'commands' => [],
         ]);
 
-        $this->assertNotNull($vfs->getChild('copy-this.php'));
-        $this->assertNull($vfs->getChild('ignore-this.php'));
-        $this->assertNotNull($vfs->getChild('copy-directory'));
-        $this->assertNull($vfs->getChild('ignore-directory'));
+        $this->assertFileExists($this->tmpPath('copy-this.php'));
+        $this->assertFileMissing($this->tmpPath('ignore-this.php'));
+        $this->assertFileExists($this->tmpPath('copy-directory'));
+        $this->assertFileMissing($this->tmpPath('ignore-directory'));
     }
 
     /**
@@ -240,19 +236,19 @@ class DefaultScaffoldInstallerTest extends TestCase
      */
     public function installer_ignores_node_modules_directory_from_preset_when_copying()
     {
-        $vfs = vfsStream::setup('virtual', null, [
+        $this->createSource([
             'package' => [
                 'node_modules' => [],
             ],
         ]);
         $package = Mockery::mock(PresetPackage::class);
-        $package->path = $vfs->url() . '/package';
+        $package->path = $this->tmp . '/package';
         $builder = new PresetScaffoldBuilder(new Filesystem(), $package, new ProcessRunner());
-        $builder->setBase($vfs->url());
+        $builder->setBase($this->tmp);
 
         (new DefaultInstaller())->install($builder, ['commands' => []]);
 
-        $this->assertNull($vfs->getChild('node_modules'));
+        $this->assertFileMissing($this->tmpPath('node_modules'));
     }
 
     /**
@@ -260,19 +256,19 @@ class DefaultScaffoldInstallerTest extends TestCase
      */
     public function installer_ignores_vendor_directory_from_preset_when_copying()
     {
-        $vfs = vfsStream::setup('virtual', null, [
+        $this->createSource([
             'package' => [
                 'vendor' => [],
             ],
         ]);
         $package = Mockery::mock(PresetPackage::class);
-        $package->path = $vfs->url() . '/package';
+        $package->path = $this->tmp . '/package';
         $builder = new PresetScaffoldBuilder(new Filesystem(), $package, new ProcessRunner());
-        $builder->setBase($vfs->url());
+        $builder->setBase($this->tmp);
 
         (new DefaultInstaller())->install($builder, ['commands' => []]);
 
-        $this->assertNull($vfs->getChild('vendor'));
+        $this->assertFileMissing($this->tmpPath('vendor'));
     }
 
     /**
@@ -280,19 +276,19 @@ class DefaultScaffoldInstallerTest extends TestCase
      */
     public function installer_ignores_init_file_from_preset_when_copying()
     {
-        $vfs = vfsStream::setup('virtual', null, [
+        $this->createSource([
             'package' => [
                 'init.php' => 'the init file',
             ],
         ]);
         $package = Mockery::mock(PresetPackage::class);
-        $package->path = $vfs->url() . '/package';
+        $package->path = $this->tmp . '/package';
         $builder = new PresetScaffoldBuilder(new Filesystem(), $package, new ProcessRunner());
-        $builder->setBase($vfs->url());
+        $builder->setBase($this->tmp);
 
         (new DefaultInstaller())->install($builder, ['commands' => []]);
 
-        $this->assertNull($vfs->getChild('init.php'));
+        $this->assertFileMissing($this->tmpPath('init.php'));
     }
 
     /**
@@ -300,21 +296,21 @@ class DefaultScaffoldInstallerTest extends TestCase
      */
     public function installer_ignores_build_directories_from_preset_when_copying()
     {
-        $vfs = vfsStream::setup('virtual', null, [
+        $this->createSource([
             'package' => [
                 'build_local' => [],
                 'build_production' => [],
             ],
         ]);
         $package = Mockery::mock(PresetPackage::class);
-        $package->path = $vfs->url() . '/package';
+        $package->path = $this->tmp . '/package';
         $builder = new PresetScaffoldBuilder(new Filesystem(), $package, new ProcessRunner());
-        $builder->setBase($vfs->url());
+        $builder->setBase($this->tmp);
 
         (new DefaultInstaller())->install($builder, ['commands' => []]);
 
-        $this->assertNull($vfs->getChild('build_local'));
-        $this->assertNull($vfs->getChild('build_production'));
+        $this->assertFileMissing($this->tmpPath('build_local'));
+        $this->assertFileMissing($this->tmpPath('build_production'));
     }
 
     /**
@@ -385,21 +381,21 @@ class DefaultScaffoldInstallerTest extends TestCase
                 'test/preset' => '1.0',
             ],
         ];
-        $vfs = vfsStream::setup('virtual', null, [
+        $this->createSource([
             'composer.json' => json_encode($old_composer),
             'package' => [
                 'preset-file.php' => '',
             ],
         ]);
         $package = Mockery::mock(PresetPackage::class);
-        $package->path = $vfs->url() . '/package';
+        $package->path = $this->tmp . '/package';
         $builder = new PresetScaffoldBuilder(new Filesystem(), $package, new ProcessRunner());
-        $builder->setBase($vfs->url());
+        $builder->setBase($this->tmp);
 
         (new DefaultInstaller())->install($builder, ['commands' => [], 'delete' => 'composer.json']);
 
-        $this->assertNotNull($vfs->getChild('composer.json'));
-        $this->assertEquals($old_composer, json_decode($vfs->getChild('composer.json')->getContent(), true));
+        $this->assertFileExists($this->tmpPath('composer.json'));
+        $this->assertEquals($old_composer, json_decode(file_get_contents($this->tmpPath('composer.json')), true));
     }
 
     /**
@@ -413,7 +409,7 @@ class DefaultScaffoldInstallerTest extends TestCase
                 'test/preset' => '1.0',
             ],
         ];
-        $vfs = vfsStream::setup('virtual', null, [
+        $this->createSource([
             'composer.json' => json_encode($old_composer),
             'package' => [
                 'preset-file.php' => '',
@@ -426,13 +422,13 @@ class DefaultScaffoldInstallerTest extends TestCase
             ],
         ]);
         $package = Mockery::mock(PresetPackage::class);
-        $package->path = $vfs->url() . '/package';
+        $package->path = $this->tmp . '/package';
         $builder = new PresetScaffoldBuilder(new Filesystem(), $package, new ProcessRunner());
-        $builder->setBase($vfs->url());
+        $builder->setBase($this->tmp);
 
         (new DefaultInstaller())->install($builder, ['commands' => [], 'delete' => 'composer.json']);
 
-        $new_composer = json_decode($vfs->getChild('composer.json')->getContent(), true);
+        $new_composer = json_decode(file_get_contents($this->tmpPath('composer.json')), true);
 
         $this->assertEquals('^1.2', Arr::get($new_composer, 'require.tightenco/jigsaw'));
         $this->assertEquals('5.1', Arr::get($new_composer, 'require.other/dependency'));
@@ -450,7 +446,7 @@ class DefaultScaffoldInstallerTest extends TestCase
                 'test/preset' => '1.0',
             ],
         ];
-        $vfs = vfsStream::setup('virtual', null, [
+        $this->createSource([
             'composer.json' => json_encode($old_composer),
             'package' => [
                 'preset-file.php' => '',
@@ -463,13 +459,13 @@ class DefaultScaffoldInstallerTest extends TestCase
             ],
         ]);
         $package = Mockery::mock(PresetPackage::class);
-        $package->path = $vfs->url() . '/package';
+        $package->path = $this->tmp . '/package';
         $builder = new PresetScaffoldBuilder(new Filesystem(), $package, new ProcessRunner());
-        $builder->setBase($vfs->url());
+        $builder->setBase($this->tmp);
 
         (new DefaultInstaller())->install($builder, ['commands' => [], 'delete' => 'composer.json']);
 
-        $new_composer = json_decode($vfs->getChild('composer.json')->getContent(), true);
+        $new_composer = json_decode(file_get_contents($this->tmpPath('composer.json')), true);
 
         $this->assertEquals('^1.2', Arr::get($new_composer, 'require.tightenco/jigsaw'));
         $this->assertEquals('1.0', Arr::get($new_composer, 'require.test/preset'));
@@ -481,15 +477,15 @@ class DefaultScaffoldInstallerTest extends TestCase
      */
     public function empty_composer_json_is_created_if_it_was_not_present_before_preset_was_installed()
     {
-        $vfs = vfsStream::setup('virtual', null, [
+        $this->createSource([
             'package' => [
                 'preset-file.php' => '',
             ],
         ]);
         $package = Mockery::mock(PresetPackage::class);
-        $package->path = $vfs->url() . '/package';
+        $package->path = $this->tmp . '/package';
         $builder = new PresetScaffoldBuilder(new Filesystem(), $package, new ProcessRunner());
-        $builder->setBase($vfs->url());
+        $builder->setBase($this->tmp);
 
         (new DefaultInstaller())->install($builder, ['commands' => [], 'delete' => 'composer.json']);
 
@@ -497,7 +493,7 @@ class DefaultScaffoldInstallerTest extends TestCase
             [
                 'require' => [],
             ],
-            json_decode($vfs->getChild('composer.json')->getContent(), true),
+            json_decode(file_get_contents($this->tmpPath('composer.json')), true),
         );
     }
 }

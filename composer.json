@@ -35,8 +35,7 @@
         "vlucas/phpdotenv": "^5.3.1"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.11",
-        "mikey179/vfsstream": "^1.6.11",
+        "friendsofphp/php-cs-fixer": "^3.17",
         "mockery/mockery": "^1.4",
         "phpunit/phpunit": "^9.3.3"
     },

@@ -18,7 +18,7 @@ class SiteBuilderTest extends TestCase
             ],
         ]);
 
-        $this->buildSite(new class {});
+        $this->buildSite();
 
         $this->assertCount(1, app('files')->filesAndDirectories($this->tmpPath('build')));
     }
@@ -37,7 +37,7 @@ class SiteBuilderTest extends TestCase
             ],
         ]);
 
-        $this->buildSite(new class {});
+        $this->buildSite();
 
         $this->assertCount(1, app('files')->filesAndDirectories($this->tmpPath('build')));
         $this->assertOutputFile('build/test.html', 'New file');

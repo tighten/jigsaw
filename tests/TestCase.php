@@ -160,7 +160,7 @@ class TestCase extends PHPUnit
         $create($this->tmp, $files, $create);
     }
 
-    protected function buildSiteData($vfs, $config = [])
+    protected function buildSiteData($vfs = null, $config = [])
     {
         $this->app->consoleOutput->setup($verbosity = -1);
         $loader = $this->app->make(DataLoader::class);
@@ -170,7 +170,7 @@ class TestCase extends PHPUnit
         return $siteData->addCollectionData($collectionData);
     }
 
-    public function buildSite($vfs, $config = [], $pretty = false, $viewPath = '/source')
+    public function buildSite($vfs = null, $config = [], $pretty = false, $viewPath = '/source')
     {
         $this->app->consoleOutput->setup($verbosity = -1);
         $this->app->config = collect($this->app->config)->merge($config);

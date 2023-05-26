@@ -25,7 +25,7 @@ class ViewPathTest extends TestCase
             ],
         ]);
 
-        $this->buildSite(new class {}, [], false, '/views');
+        $this->buildSite(null, [], false, '/views');
 
         $this->assertOutputFile('build/page.html', <<<HTML
             <body>

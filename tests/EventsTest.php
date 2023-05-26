@@ -387,7 +387,7 @@ class EventsTest extends TestCase
             $jigsaw->setSourcePath("{$this->tmp}/new_source");
             $result = $jigsaw->getSourcePath();
         });
-        $this->buildSite(new class {});
+        $this->buildSite();
 
         $this->assertEquals("{$this->tmp}/source", $original);
         $this->assertEquals("{$this->tmp}/new_source", $result);

@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-use League\CommonMark\Extension\Attributes\AttributesExtension;
 use League\CommonMark\Extension\DescriptionList\DescriptionListExtension;
 use TightenCo\Jigsaw\Parsers\MarkdownParserContract;
 

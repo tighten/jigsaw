@@ -108,8 +108,8 @@ class InitCommand extends Command
 
     protected function initHasAlreadyBeenRun()
     {
-        return $this->files->exists($this->base . '/config.php') ||
-            $this->files->exists($this->base . '/source');
+        return $this->files->exists($this->base . '/config.php')
+            || $this->files->exists($this->base . '/source');
     }
 
     protected function askUserWhatToDoWithExistingSite()

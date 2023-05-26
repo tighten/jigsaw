@@ -2,11 +2,11 @@
 
 namespace Tests;
 
+use Closure;
 use Illuminate\Support\Str;
 use Illuminate\View\Component;
 use Mockery;
-use org\bovigo\vfs\vfsStream;
-use PHPUnit\Framework\TestCase as BaseTestCase;
+use PHPUnit\Framework\TestCase as PHPUnit;
 use TightenCo\Jigsaw\Bootstrap\HandleExceptions;
 use TightenCo\Jigsaw\Container;
 use TightenCo\Jigsaw\File\Filesystem;
@@ -15,17 +15,29 @@ use TightenCo\Jigsaw\Jigsaw;
 use TightenCo\Jigsaw\Loaders\DataLoader;
 use TightenCo\Jigsaw\PathResolvers\PrettyOutputPathResolver;
 
-class TestCase extends BaseTestCase
+class TestCase extends PHPUnit
 {
-    public $app;
-    public $filesystem;
-    public $tempPath;
+    use Haiku;
+
     public $sourcePath = __DIR__ . '/snapshots/default/source';
     public $destinationPath = __DIR__ . '/snapshots/default/build_local';
+
+    protected Container $app;
+    protected Filesystem $filesystem;
+    protected string $tmp;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->filesystem = new Filesystem;
+    }
 
     protected function setUp(): void
     {
         parent::setUp();
+
+        $this->createTmp();
 
         $this->app = new Container;
         /* @internal The '__testing' binding is for Jigsaw development only and may be removed. */
@@ -43,19 +55,22 @@ class TestCase extends BaseTestCase
             'views' => $this->sourcePath,
             'destination' => $this->destinationPath,
         ];
-        $this->filesystem = new Filesystem();
-        $this->tempPath = $this->app->cachePath();
-        $this->prepareTempDirectory();
+    }
+
+    protected function createTmp(): void
+    {
+        mkdir($this->tmp = __DIR__ . '/fixtures/tmp/' . static::haiku());
+
+        mkdir("{$this->tmp}/cache");
+        mkdir("{$this->tmp}/cache/views");
+        mkdir("{$this->tmp}/public");
     }
 
     protected function tearDown(): void
     {
         if ($this->app) {
             $this->app->flush();
-            $this->app = null;
         }
-
-        $this->cleanupTempDirectory();
 
         Mockery::close();
 
@@ -67,31 +82,69 @@ class TestCase extends BaseTestCase
 
         HandleExceptions::forgetApp();
 
-        parent::tearDown();
-    }
-
-    public function prepareTempDirectory()
-    {
-        if (! $this->filesystem->isDirectory($this->tempPath)) {
-            $this->filesystem->makeDirectory($this->tempPath, 0755, true);
+        if (! $this->hasFailed()) {
+            $this->filesystem->deleteDirectories(__DIR__ . '/fixtures/tmp/');
         }
-    }
 
-    public function cleanupTempDirectory()
-    {
-        $this->filesystem->deleteDirectory($this->tempPath);
+        parent::tearDown();
     }
 
     public function getInputFile($filename)
     {
-        $sourceFile = $this->filesystem->getFile(Str::finish($this->sourcePath, '/') . pathinfo($filename)['dirname'], basename($filename));
+        $sourceFile = $this->filesystem->getFile(
+            Str::finish($this->sourcePath, '/') . pathinfo($filename)['dirname'], basename($filename)
+        );
 
         return new InputFile($sourceFile, $this->sourcePath);
     }
 
-    public function setupSource($source = [])
+    protected function tmpPath(string $path): string
     {
-        return vfsStream::setup('virtual', null, ['source' => $source]);
+        return "{$this->tmp}/{$path}";
+    }
+
+    protected function setupSource($source = [])
+    {
+        $this->createSource(['source' => $source]);
+
+        return new class ($this->tmpPath('')) {
+            public function __construct(
+                protected string $tmp,
+            ) {}
+            public function getChild($path)
+            {
+                return new class ($this->tmp, $path) {
+                    public function __construct(
+                        protected string $tmp,
+                        protected string $path,
+                    ) {}
+                    public function getContent()
+                    {
+                        return app('files')->get($this->tmp . $this->path);
+                    }
+                    public function filemtime()
+                    {
+                        return app('files')->lastModified($this->tmp . $this->path);
+                    }
+                };
+            }
+        };
+    }
+
+    protected function createSource(array $files): void
+    {
+        $create = function (string $prefix, array $files, Closure $create) {
+            foreach ($files as $path => $contents) {
+                if (is_array($contents)) {
+                    app('files')->ensureDirectoryExists("{$prefix}/{$path}");
+                    $create("{$prefix}/{$path}", $contents, $create);
+                } else {
+                    app('files')->put("{$prefix}/{$path}", $contents);
+                }
+            }
+        };
+
+        $create($this->tmp, $files, $create);
     }
 
     protected function buildSiteData($vfs, $config = [])
@@ -108,10 +161,11 @@ class TestCase extends BaseTestCase
     {
         $this->app->consoleOutput->setup($verbosity = -1);
         $this->app->config = collect($this->app->config)->merge($config);
+
         $this->app->buildPath = [
-            'source' => $vfs->url() . '/source',
-            'views' => $vfs->url() . $viewPath,
-            'destination' => $vfs->url() . '/build',
+            'source' => "{$this->tmp}/source",
+            'views' => "{$this->tmp}/{$viewPath}",
+            'destination' => "{$this->tmp}/build",
         ];
 
         if ($pretty) {
@@ -131,5 +185,19 @@ class TestCase extends BaseTestCase
     protected function fixDirectorySlashes(string $path): string
     {
         return str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
+    }
+
+    protected function assertOutputFile(string $path, string $contents, string $message = null): void
+    {
+        static::assertStringEqualsFile(
+            $this->tmpPath($path),
+            trim($contents),
+            $message ??= Str::after($this->tmp, __DIR__ . '/fixtures/tmp/') . "\n",
+        );
+    }
+
+    protected function assertFileMissing(string $path): void
+    {
+        static::assertFileDoesNotExist($path);
     }
 }

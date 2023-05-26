@@ -140,7 +140,7 @@ class CollectionDataLoader
         $links = $this->pathResolver->link(
             $data->path,
             new PageVariable($data),
-            Arr::get($collection->settings, 'transliterate', true)
+            Arr::get($collection->settings, 'transliterate', true),
         );
 
         return $links->count() ? new IterableObjectWithDefault($links) : null;

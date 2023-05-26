@@ -3,6 +3,7 @@
 namespace Tests;
 
 use League\CommonMark\Extension\Attributes\AttributesExtension;
+use League\CommonMark\Extension\DescriptionList\DescriptionListExtension;
 use TightenCo\Jigsaw\Parsers\MarkdownParserContract;
 
 class CommonMarkTest extends TestCase
@@ -17,7 +18,7 @@ class CommonMarkTest extends TestCase
         ]);
 
         $this->assertSame(
-            '<div><h3>Heading {.class}</h3></div>',
+            '<div><h3 class="class">Heading</h3></div>',
             $this->clean($files->getChild('build/test.html')->getContent()),
         );
     }
@@ -44,20 +45,26 @@ class CommonMarkTest extends TestCase
     }
 
     /** @test */
-    public function add_commonmark_extensions()
+    public function replace_commonmark_extensions()
     {
-        $files = $this->withContent('### Heading {.class}');
+        $files = $this->withContent(<<<MD
+            # Fruits {.class}
+
+            Apple
+            :   Pomaceous fruit of plants of the genus Malus in the family Rosaceae.
+            :   An American computer company.
+            MD);
 
         $this->buildSite($files, [
             'commonmark' => [
                 'extensions' => [
-                    new AttributesExtension,
+                    new DescriptionListExtension,
                 ],
             ],
         ]);
 
         $this->assertSame(
-            '<div><h3 class="class">Heading</h3></div>',
+            '<div><h1>Fruits {.class}</h1><dl><dt>Apple</dt><dd>Pomaceous fruit of plants of the genus Malus in the family Rosaceae.</dd><dd>An American computer company.</dd></dl></div>',
             $this->clean($files->getChild('build/test.html')->getContent()),
         );
     }

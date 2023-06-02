@@ -103,6 +103,9 @@ class TestCase extends PHPUnit
         return "{$this->tmp}/{$path}";
     }
 
+    /**
+     * @deprecated Use createSource instead.
+     */
     protected function setupSource($source = [])
     {
         $this->createSource(['source' => $source]);

@@ -17,7 +17,7 @@ class ConfigFile
 
     protected function convertStringCollectionsToArray()
     {
-        $collections = $this->config->get('collections');
+        $collections = value($this->config->get('collections'));
 
         if ($collections) {
             $this->config->put('collections', collect($collections)->flatMap(function ($value, $key) {

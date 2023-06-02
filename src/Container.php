@@ -106,8 +106,8 @@ class Container extends Illuminate
             $config = $config->merge(require $path);
         }
 
-        if ($config->get('collections')) {
-            $config->put('collections', collect($config->get('collections'))->flatMap(
+        if ($collections = value($config->get('collections'))) {
+            $config->put('collections', collect($collections)->flatMap(
                 fn ($value, $key) => is_array($value) ? [$key => $value] : [$value => []],
             ));
         }

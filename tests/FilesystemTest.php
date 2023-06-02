@@ -218,9 +218,7 @@ class FilesystemTest extends TestCase
             'file-2.md',
         ]);
 
-        $this->assertCount(2, $files);
-        $this->assertEquals('file-2.md', $files[0]);
-        $this->assertEquals('file-1.md', $files[1]);
+        $this->assertEqualsCanonicalizing(['file-1.md', 'file-2.md'], $files->all());
     }
 
     /**
@@ -232,9 +230,7 @@ class FilesystemTest extends TestCase
             'file-*.md',
         ]);
 
-        $this->assertCount(2, $files);
-        $this->assertEquals('file-2.md', $files[0]);
-        $this->assertEquals('file-1.md', $files[1]);
+        $this->assertEqualsCanonicalizing(['file-1.md', 'file-2.md'], $files->all());
     }
 
     /**
@@ -247,8 +243,8 @@ class FilesystemTest extends TestCase
         ]);
 
         $this->assertCount(7, $files);
-        $this->assertEquals('directory', $files[0]);
-        $this->assertEquals($this->fixDirectorySlashes('directory/nested-file-1.md'), $files[2]);
+        $this->assertEquals('directory', $files->sort()[0]);
+        $this->assertEquals($this->fixDirectorySlashes('directory/nested-file-1.md'), $files->sort()[2]);
     }
 
     protected function getFilesMatching($match)

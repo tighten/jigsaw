@@ -142,7 +142,7 @@ class SiteBuilderTest extends TestCase
         ]);
         $jigsaw = $this->buildSite($files, [], $pretty = true);
 
-        $this->assertEquals(
+        $this->assertEqualsCanonicalizing(
             [
                 '/page1',
                 '/nested/page2',

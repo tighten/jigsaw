@@ -10,7 +10,11 @@
         },
         {
             "name": "Keith Damiani",
-            "email": "keith@tighten.co"
+            "email": "keith@tighten.com"
+        },
+        {
+            "name": "Jacob Baker-Kretzmar",
+            "email": "jacob@tighten.com"
         }
     ],
     "require": {

@@ -242,9 +242,15 @@ class FilesystemTest extends TestCase
             'directory',
         ]);
 
-        $this->assertCount(7, $files);
-        $this->assertEquals('directory', $files->sort()[0]);
-        $this->assertEquals($this->fixDirectorySlashes('directory/nested-file-1.md'), $files->sort()[2]);
+        $this->assertEqualsCanonicalizing([
+            'directory',
+            $this->fixDirectorySlashes('directory/nested-directory'),
+            $this->fixDirectorySlashes('directory/nested-directory/double-nested-file-1.md'),
+            $this->fixDirectorySlashes('directory/nested-directory/double-nested-file-2.md'),
+            $this->fixDirectorySlashes('directory/nested-empty-directory'),
+            $this->fixDirectorySlashes('directory/nested-file-1.md'),
+            $this->fixDirectorySlashes('directory/nested-file-2.md'),
+        ], $files->all());
     }
 
     protected function getFilesMatching($match)

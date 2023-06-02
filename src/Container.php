@@ -154,8 +154,8 @@ class Container extends Illuminate
     private function registerCoreProviders(): void
     {
         foreach ([
-                     Providers\EventServiceProvider::class,
-                 ] as $provider) {
+             Providers\EventServiceProvider::class,
+         ] as $provider) {
             ($provider = new $provider($this))->register();
 
             $this->providers[] = $provider;
@@ -165,14 +165,14 @@ class Container extends Illuminate
     private function registerConfiguredProviders(): void
     {
         foreach ([
-                     Providers\ExceptionServiceProvider::class,
-                     Providers\FilesystemServiceProvider::class,
-                     Providers\MarkdownServiceProvider::class,
-                     Providers\ViewServiceProvider::class,
-                     Providers\CollectionServiceProvider::class,
-                     Providers\CompatibilityServiceProvider::class,
-                     Providers\BootstrapFileServiceProvider::class,
-                 ] as $provider) {
+             Providers\ExceptionServiceProvider::class,
+             Providers\FilesystemServiceProvider::class,
+             Providers\MarkdownServiceProvider::class,
+             Providers\ViewServiceProvider::class,
+             Providers\CollectionServiceProvider::class,
+             Providers\CompatibilityServiceProvider::class,
+             Providers\BootstrapFileServiceProvider::class,
+         ] as $provider) {
             ($provider = new $provider($this))->register();
 
             $this->providers[] = $provider;
@@ -182,9 +182,9 @@ class Container extends Illuminate
     private function registerCoreAliases(): void
     {
         foreach ([
-                     'app' => [self::class, \Illuminate\Contracts\Container\Container::class, \Psr\Container\ContainerInterface::class],
-                     'view' => [\Illuminate\View\Factory::class, \Illuminate\Contracts\View\Factory::class],
-                 ] as $key => $aliases) {
+             'app' => [self::class, \Illuminate\Contracts\Container\Container::class, \Psr\Container\ContainerInterface::class],
+             'view' => [\Illuminate\View\Factory::class, \Illuminate\Contracts\View\Factory::class],
+         ] as $key => $aliases) {
             foreach ($aliases as $alias) {
                 $this->alias($key, $alias);
             }

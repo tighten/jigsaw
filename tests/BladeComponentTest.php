@@ -4,7 +4,6 @@ namespace Tests;
 
 use Illuminate\Container\Container;
 use Illuminate\View\Component;
-use org\bovigo\vfs\vfsStream;
 
 class BladeComponentTest extends TestCase
 {
@@ -33,15 +32,13 @@ class BladeComponentTest extends TestCase
 
         $this->buildSite($files, []);
 
-        $built = $files->getChild('build/page.html')->getContent();
-
-        $this->assertEquals(
-            "<div>\n" .
-            "<h3>This is the component</h3>\n" .
-            "<h4>Named title slot: Title test</h4>\n" .
-            "<h1>Default content</h1>\n" .
-            '</div>',
-            $built,
+        $this->assertOutputFile('build/page.html', <<<HTML
+            <div>
+            <h3>This is the component</h3>
+            <h4>Named title slot: Title test</h4>
+            <h1>Default content</h1>
+            </div>
+            HTML,
         );
     }
 
@@ -74,12 +71,10 @@ class BladeComponentTest extends TestCase
     {
         $this->app['bladeCompiler']->component('alert', AlertComponent::class);
 
-        $files = vfsStream::setup('virtual', null, [
-            'source' => [
-                'page.blade.php' => '<h1>Hello</h1><x-alert type="error" message="The message"/>',
-                '_components' => [
-                    'alert.blade.php' => '<div class="alert alert-{{ $type }}">{{ $message }}</div>',
-                ],
+        $files = $this->setupSource([
+            'page.blade.php' => '<h1>Hello</h1><x-alert type="error" message="The message"/>',
+            '_components' => [
+                'alert.blade.php' => '<div class="alert alert-{{ $type }}">{{ $message }}</div>',
             ],
         ]);
 
@@ -100,10 +95,8 @@ class BladeComponentTest extends TestCase
     {
         $this->app['bladeCompiler']->component('inline', InlineAlertComponent::class);
 
-        $files = vfsStream::setup('virtual', null, [
-            'source' => [
-                'page.blade.php' => '<h1>Hello</h1><x-inline type="error" message="The message"/>',
-            ],
+        $files = $this->setupSource([
+            'page.blade.php' => '<h1>Hello</h1><x-inline type="error" message="The message"/>',
         ]);
 
         $this->buildSite($files, []);
@@ -123,10 +116,8 @@ class BladeComponentTest extends TestCase
     {
         class_alias('Tests\InlineAlertComponent', 'Components\InlineClassComponent');
 
-        $files = vfsStream::setup('virtual', null, [
-            'source' => [
-                'page.blade.php' => '<h1>Hello</h1><x-inline-class-component type="error" message="The message"/>',
-            ],
+        $files = $this->setupSource([
+            'page.blade.php' => '<h1>Hello</h1><x-inline-class-component type="error" message="The message"/>',
         ]);
 
         $this->buildSite($files, []);
@@ -146,12 +137,10 @@ class BladeComponentTest extends TestCase
     {
         class_alias('Tests\\AlertComponent', 'Components\\ClassComponent');
 
-        $files = vfsStream::setup('virtual', null, [
-            'source' => [
-                'page.blade.php' => '<h1>Hello</h1><x-class-component type="error" message="The message"/>',
-                '_components' => [
-                    'alert.blade.php' => '<div class="alert alert-{{ $type }}">{{ $message }}</div>',
-                ],
+        $files = $this->setupSource([
+            'page.blade.php' => '<h1>Hello</h1><x-class-component type="error" message="The message"/>',
+            '_components' => [
+                'alert.blade.php' => '<div class="alert alert-{{ $type }}">{{ $message }}</div>',
             ],
         ]);
 

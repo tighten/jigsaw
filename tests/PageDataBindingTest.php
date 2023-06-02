@@ -5,7 +5,6 @@ namespace Tests;
 use Illuminate\Container\Container;
 use Illuminate\Support\Str;
 use Illuminate\View\Component;
-use org\bovigo\vfs\vfsStream;
 use TightenCo\Jigsaw\PageData;
 
 class PageDataBindingTest extends TestCase
@@ -19,10 +18,8 @@ class PageDataBindingTest extends TestCase
             $this->assertTrue($component->page instanceof PageData);
         });
 
-        $files = vfsStream::setup('virtual', null, [
-            'source' => [
-                'page.blade.php' => '<x-page-header/>',
-            ],
+        $files = $this->setupSource([
+            'page.blade.php' => '<x-page-header/>',
         ]);
 
         $this->buildSite($files, []);

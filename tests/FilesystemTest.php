@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-use org\bovigo\vfs\vfsStream;
 use TightenCo\Jigsaw\File\Filesystem;
 
 class FilesystemTest extends TestCase
@@ -31,7 +30,7 @@ class FilesystemTest extends TestCase
         $filesystem = $this->app->make(Filesystem::class);
         $vfs = $this->setupFiles();
 
-        $files = $filesystem->filesAndDirectories($vfs->url());
+        $files = $filesystem->filesAndDirectories($this->tmp);
 
         $this->assertCount(11, $files);
     }
@@ -41,7 +40,7 @@ class FilesystemTest extends TestCase
      */
     public function DS_Store_is_always_ignored_when_retrieving_all_files_and_directories()
     {
-        $vfs = vfsStream::setup('virtual', null, [
+        $this->createSource([
             'test-file.md' => '',
             '.gitignore' => '',
             '.DS_Store' => '',
@@ -49,7 +48,7 @@ class FilesystemTest extends TestCase
 
         $files = collect(
             $this->app->make(Filesystem::class)
-            ->filesAndDirectories($vfs->url()),
+            ->filesAndDirectories($this->tmp),
         )->map(function ($file) {
             return $file->getRelativePathName();
         });
@@ -203,7 +202,7 @@ class FilesystemTest extends TestCase
         $filesystem = $this->app->make(Filesystem::class);
         $vfs = $this->setupFiles();
 
-        $files = $filesystem->filesAndDirectories($vfs->url(), 'file-1.md');
+        $files = $filesystem->filesAndDirectories($this->tmp, 'file-1.md');
 
         $this->assertCount(1, $files);
         $this->assertEquals('file-1.md', $files[0]->getFileName());
@@ -219,9 +218,7 @@ class FilesystemTest extends TestCase
             'file-2.md',
         ]);
 
-        $this->assertCount(2, $files);
-        $this->assertEquals('file-1.md', $files[0]);
-        $this->assertEquals('file-2.md', $files[1]);
+        $this->assertEqualsCanonicalizing(['file-1.md', 'file-2.md'], $files->all());
     }
 
     /**
@@ -233,9 +230,7 @@ class FilesystemTest extends TestCase
             'file-*.md',
         ]);
 
-        $this->assertCount(2, $files);
-        $this->assertEquals('file-1.md', $files[0]);
-        $this->assertEquals('file-2.md', $files[1]);
+        $this->assertEqualsCanonicalizing(['file-1.md', 'file-2.md'], $files->all());
     }
 
     /**
@@ -247,16 +242,24 @@ class FilesystemTest extends TestCase
             'directory',
         ]);
 
-        $this->assertCount(7, $files);
-        $this->assertEquals('directory', $files[0]);
-        $this->assertEquals($this->fixDirectorySlashes('directory/nested-file-1.md'), $files[1]);
+        $this->assertEqualsCanonicalizing([
+            'directory',
+            $this->fixDirectorySlashes('directory/nested-directory'),
+            $this->fixDirectorySlashes('directory/nested-directory/double-nested-file-1.md'),
+            $this->fixDirectorySlashes('directory/nested-directory/double-nested-file-2.md'),
+            $this->fixDirectorySlashes('directory/nested-empty-directory'),
+            $this->fixDirectorySlashes('directory/nested-file-1.md'),
+            $this->fixDirectorySlashes('directory/nested-file-2.md'),
+        ], $files->all());
     }
 
     protected function getFilesMatching($match)
     {
+        $this->setupFiles();
+
         return collect(
             $this->app->make(Filesystem::class)
-            ->filesAndDirectories($this->setupFiles()->url(), $match),
+            ->filesAndDirectories($this->tmp, $match),
         )->map(function ($file) {
             return $file->getRelativePathName();
         });
@@ -264,9 +267,11 @@ class FilesystemTest extends TestCase
 
     protected function getFilesExcept($ignore)
     {
+        $this->setupFiles();
+
         return collect(
             $this->app->make(Filesystem::class)
-            ->filesAndDirectories($this->setupFiles()->url(), null, $ignore),
+            ->filesAndDirectories($this->tmp, null, $ignore),
         )->map(function ($file) {
             return $file->getRelativePathName();
         });
@@ -274,6 +279,6 @@ class FilesystemTest extends TestCase
 
     protected function setupFiles()
     {
-        return vfsStream::setup('virtual', null, self::TEST_FILES);
+        $this->createSource(self::TEST_FILES);
     }
 }

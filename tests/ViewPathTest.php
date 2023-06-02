@@ -2,14 +2,12 @@
 
 namespace Tests;
 
-use org\bovigo\vfs\vfsStream;
-
 class ViewPathTest extends TestCase
 {
     /** @test */
     public function can_load_views_from_custom_path()
     {
-        $files = vfsStream::setup('virtual', null, [
+        $this->createSource([
             'source' => [
                 'page.md' => <<<MD
                 ---
@@ -27,14 +25,13 @@ class ViewPathTest extends TestCase
             ],
         ]);
 
-        $this->buildSite($files, [], false, '/views');
+        $this->buildSite(null, [], false, '/views');
 
-        $this->assertSame(<<<HTML
+        $this->assertOutputFile('build/page.html', <<<HTML
             <body>
                 <h1>Hello world!</h1>
             </body>
             HTML,
-            $files->getChild('build/page.html')->getContent(),
         );
     }
 }

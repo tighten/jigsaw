@@ -4,7 +4,6 @@ namespace Tests;
 
 use Exception;
 use Mockery;
-use org\bovigo\vfs\vfsStream;
 use TightenCo\Jigsaw\Scaffold\CustomInstaller;
 use TightenCo\Jigsaw\Scaffold\DefaultInstaller;
 use TightenCo\Jigsaw\Scaffold\PresetPackage;
@@ -19,7 +18,7 @@ class PresetScaffoldBuilderTest extends TestCase
     public function named_preset_resolves_to_predefined_package_path()
     {
         $preset = $this->app->make(PresetScaffoldBuilder::class);
-        $vfs = vfsStream::setup('virtual', null, [
+        $this->createSource([
             'vendor' => [
                 'tightenco' => [
                     'jigsaw-blog-template' => [
@@ -28,12 +27,12 @@ class PresetScaffoldBuilderTest extends TestCase
                 ],
             ],
         ]);
-        $preset->base = $vfs->url();
+        $preset->base = $this->tmp;
 
         $preset->init('blog');
 
         $this->assertEquals(
-            $vfs->url() . $this->fixDirectorySlashes('/vendor/tightenco/jigsaw-blog-template'),
+            $this->tmp . $this->fixDirectorySlashes('/vendor/tightenco/jigsaw-blog-template'),
             $preset->package->path,
         );
     }
@@ -44,7 +43,7 @@ class PresetScaffoldBuilderTest extends TestCase
     public function named_preset_resolves_to_vendor_package_path_if_not_predefined()
     {
         $preset = $this->app->make(PresetScaffoldBuilder::class);
-        $vfs = vfsStream::setup('virtual', null, [
+        $this->createSource([
             'vendor' => [
                 'test' => [
                     'package' => [
@@ -53,11 +52,11 @@ class PresetScaffoldBuilderTest extends TestCase
                 ],
             ],
         ]);
-        $preset->base = $vfs->url();
+        $preset->base = $this->tmp;
 
         $preset->init('test/package');
 
-        $this->assertEquals($vfs->url() . $this->fixDirectorySlashes('/vendor/test/package'), $preset->package->path);
+        $this->assertEquals($this->tmp . $this->fixDirectorySlashes('/vendor/test/package'), $preset->package->path);
     }
 
     /**
@@ -69,8 +68,8 @@ class PresetScaffoldBuilderTest extends TestCase
         $process = Mockery::spy(ProcessRunner::class);
         $this->app->instance(PresetPackage::class, new PresetPackage(new DefaultInstaller(), new CustomInstaller(), $process));
         $preset = $this->app->make(PresetScaffoldBuilder::class);
-        $vfs = vfsStream::setup('virtual', null, ['vendor' => ['test' => ['package' => []]]]);
-        $preset->base = $vfs->url();
+        $this->createSource(['vendor' => ['test' => ['package' => []]]]);
+        $preset->base = $this->tmp;
 
         $preset->init('test/other-package');
 
@@ -83,8 +82,8 @@ class PresetScaffoldBuilderTest extends TestCase
     public function exception_is_thrown_if_package_is_missing_a_slash()
     {
         $preset = $this->app->make(PresetScaffoldBuilder::class);
-        $vfs = vfsStream::setup('virtual', null, ['vendor' => ['test' => ['package' => []]]]);
-        $preset->base = $vfs->url();
+        $this->createSource(['vendor' => ['test' => ['package' => []]]]);
+        $preset->base = $this->tmp;
 
         try {
             $preset->init('test');
@@ -104,7 +103,7 @@ class PresetScaffoldBuilderTest extends TestCase
     {
         $preset = $this->app->make(PresetScaffoldBuilder::class);
         $initFile = '<?php contains-an-error;';
-        $vfs = vfsStream::setup('virtual', null, [
+        $this->createSource([
             'vendor' => [
                 'test' => [
                     'preset' => [
@@ -113,7 +112,7 @@ class PresetScaffoldBuilderTest extends TestCase
                 ],
             ],
         ]);
-        $preset->base = $vfs->url();
+        $preset->base = $this->tmp;
 
         try {
             $preset->init('test/preset');
@@ -138,7 +137,7 @@ class PresetScaffoldBuilderTest extends TestCase
         $initFile = '<?php return [
             "delete" => ["test.json"],
         ];';
-        $vfs = vfsStream::setup('virtual', null, [
+        $this->createSource([
             'vendor' => [
                 'test' => [
                     'preset' => [
@@ -147,7 +146,7 @@ class PresetScaffoldBuilderTest extends TestCase
                 ],
             ],
         ]);
-        $preset->base = $vfs->url();
+        $preset->base = $this->tmp;
 
         $preset->init('test/preset');
         $preset->build();
@@ -173,7 +172,7 @@ class PresetScaffoldBuilderTest extends TestCase
             ->andReturn($custom_installer);
 
         $initFile = '<?php $init->copy("test");';
-        $vfs = vfsStream::setup('virtual', null, [
+        $this->createSource([
             'vendor' => [
                 'test' => [
                     'preset' => [
@@ -182,7 +181,7 @@ class PresetScaffoldBuilderTest extends TestCase
                 ],
             ],
         ]);
-        $preset->base = $vfs->url();
+        $preset->base = $this->tmp;
 
         $preset->init('test/preset');
         $preset->build();
@@ -200,14 +199,14 @@ class PresetScaffoldBuilderTest extends TestCase
         $this->app->instance(DefaultInstaller::class, $default_installer);
         $preset = $this->app->make(PresetScaffoldBuilder::class);
 
-        $vfs = vfsStream::setup('virtual', null, [
+        $this->createSource([
             'vendor' => [
                 'test' => [
                     'preset' => [],
                 ],
             ],
         ]);
-        $preset->base = $vfs->url();
+        $preset->base = $this->tmp;
 
         $preset->init('test/preset');
         $preset->build();
@@ -234,9 +233,9 @@ class PresetScaffoldBuilderTest extends TestCase
                 ],
             ],
         ];
-        $vfs = vfsStream::setup('virtual', null, $existing_site);
+        $this->createSource($existing_site);
         $preset = $this->app->make(PresetScaffoldBuilder::class)
-            ->setBase($vfs->url())
+            ->setBase($this->tmp)
             ->init('test/preset');
 
         $preset->archiveExistingSite();
@@ -247,7 +246,7 @@ class PresetScaffoldBuilderTest extends TestCase
                     'tightenco/jigsaw' => '^1.2',
                 ],
             ],
-            json_decode($vfs->getChild('composer.json')->getContent(), true),
+            json_decode(file_get_contents($this->tmpPath('composer.json')), true),
         );
     }
 
@@ -270,9 +269,9 @@ class PresetScaffoldBuilderTest extends TestCase
                 ],
             ],
         ];
-        $vfs = vfsStream::setup('virtual', null, $existing_site);
+        $this->createSource($existing_site);
         $preset = $this->app->make(PresetScaffoldBuilder::class)
-            ->setBase($vfs->url())
+            ->setBase($this->tmp)
             ->init('test/preset');
 
         $preset->deleteExistingSite();
@@ -283,7 +282,7 @@ class PresetScaffoldBuilderTest extends TestCase
                     'tightenco/jigsaw' => '^1.2',
                 ],
             ],
-            json_decode($vfs->getChild('composer.json')->getContent(), true),
+            json_decode(file_get_contents($this->tmpPath('composer.json')), true),
         );
     }
 }

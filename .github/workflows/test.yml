@@ -13,6 +13,9 @@ jobs:
       matrix:
         php: ['8.0', '8.1', '8.2', '8.3']
         dependencies: [lowest, highest]
+        include:
+          - php: '8.3'
+            composer: --ignore-platform-req=php
     steps:
       - uses: actions/checkout@v3
       - uses: shivammathur/setup-php@v2
@@ -21,4 +24,5 @@ jobs:
       - uses: ramsey/composer-install@v2
         with:
           dependency-versions: ${{ matrix.dependencies }}
+          composer-options: ${{ matrix.composer }}
       - run: vendor/bin/phpunit --testdox --colors=always

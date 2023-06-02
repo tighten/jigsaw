@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-use org\bovigo\vfs\vfsStream;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 use TightenCo\Jigsaw\Console\Command;
@@ -14,7 +13,7 @@ class CustomCommandTest extends TestCase
      */
     public function custom_command_with_no_arguments()
     {
-        $vfs = vfsStream::setup('virtual', null, []);
+        $this->createSource([]);
         $command = $this->app->make(CustomCommand::class);
         $command->setApplication(new Application());
 

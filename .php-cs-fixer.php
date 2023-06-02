@@ -41,6 +41,7 @@ return (new PhpCsFixer\Config)
             ],
         ],
         'phpdoc_var_annotation_correct_order' => true,
+        'single_line_empty_body' => true,
         'trailing_comma_in_multiline' => [
             'after_heredoc' => true,
             'elements' => ['arrays', 'arguments', 'parameters'],

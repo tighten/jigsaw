@@ -35,4 +35,12 @@ class HelpersTest extends TestCase
 
         $this->assertSame('https://test.com/sub/posts/my-first-post', url('posts/my-first-post'));
     }
+
+    /** @test */
+    public function resolve_path_does_not_strip_0s()
+    {
+        $path = 'path/to/assets/0/0/0.png';
+
+        $this->assertSame($path, resolvePath($path));
+    }
 }

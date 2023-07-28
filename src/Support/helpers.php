@@ -37,13 +37,15 @@ function resolvePath($path)
     $path = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
     $segments = [];
 
-    collect(explode(DIRECTORY_SEPARATOR, $path))->filter()->each(function ($part) use (&$segments) {
-        if ($part == '..') {
-            array_pop($segments);
-        } elseif ($part != '.') {
-            $segments[] = $part;
-        }
-    });
+    collect(explode(DIRECTORY_SEPARATOR, $path))
+        ->filter(fn ($part) => (string) $part !== '')
+        ->each(function ($part) use (&$segments) {
+            if ($part == '..') {
+                array_pop($segments);
+            } elseif ($part != '.') {
+                $segments[] = $part;
+            }
+        });
 
     return implode(DIRECTORY_SEPARATOR, $segments);
 }

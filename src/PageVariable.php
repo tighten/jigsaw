@@ -45,11 +45,15 @@ class PageVariable extends IterableObject
 
     public function getUrl($key = null)
     {
+        $wrap = fn ($url) => $url . (
+            ! str_ends_with($url, '/') && app('config')->get('trailing_slash') ? '/' : ''
+        );
+
         if (($key || $this->_meta->extending) && $this->_meta->path instanceof IterableObject) {
-            return $this->_meta->url->get($key ?: $this->getExtending());
+            return $wrap($this->_meta->url->get($key ?: $this->getExtending()));
         }
 
-        return (string) $this->_meta->url;
+        return $wrap((string) $this->_meta->url);
     }
 
     public function getUrls()

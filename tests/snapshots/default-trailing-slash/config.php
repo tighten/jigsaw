@@ -3,6 +3,7 @@
 use Illuminate\Support\Str;
 
 return [
+    'trailing_slash' => true,
     'baseUrl' => 'http://jigsaw.test',
     'global_array' => [1, 2, 3],
     'global_variable' => 'some global variable',

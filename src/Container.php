@@ -35,6 +35,11 @@ class Container extends Illuminate
         $this->registerCoreAliases();
     }
 
+    public function isBootstrapped(): bool
+    {
+        return $this->bootstrapped;
+    }
+
     public function bootstrapWith(array $bootstrappers): void
     {
         $this->bootstrapped = true;

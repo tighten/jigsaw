@@ -76,7 +76,7 @@ class CollectionDataLoader
     private function buildCollectionItem($file, $collection)
     {
         $data = $this->pageSettings
-            ->merge(['section' => 'content'])
+            ->merge(['section' => 'content']) // !!
             ->merge($collection->settings)
             ->merge($this->getHandler($file)->getItemVariables($file));
 

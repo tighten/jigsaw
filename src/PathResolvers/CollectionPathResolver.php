@@ -18,6 +18,10 @@ class CollectionPathResolver
 
     public function link($path, $data)
     {
+        // if (! $data->extends) {
+        //     return collect($this->cleanOutputPath($this->getDefaultPath($data)));
+        // }
+
         return collect($data->extends)->map(function ($bladeViewPath, $templateKey) use ($path, $data) {
             return $this->cleanOutputPath(
                 $this->getPath($path, $data, $this->getExtension($bladeViewPath), $templateKey),

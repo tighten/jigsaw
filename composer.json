@@ -41,7 +41,8 @@
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.17",
         "mockery/mockery": "^1.4",
-        "phpunit/phpunit": "^9.3.3"
+        "phpunit/phpunit": "^9.3.3",
+        "tightenco/duster": "^2.5"
     },
     "autoload": {
         "psr-4": {

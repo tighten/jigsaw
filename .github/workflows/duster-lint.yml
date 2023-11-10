@@ -1,0 +1,17 @@
+name: Duster Lint
+
+on:
+    push:
+        branches: [ main ]
+    pull_request:
+
+jobs:
+  duster:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: "Duster Lint"
+        uses: tighten/duster-action@v2
+        with:
+          args: lint

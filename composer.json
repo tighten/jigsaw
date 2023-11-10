@@ -1,7 +1,13 @@
 {
     "name": "tightenco/jigsaw",
     "description": "Simple static sites with Laravel's Blade.",
-    "keywords": ["blade", "laravel", "static", "site", "generator"],
+    "keywords": [
+        "blade",
+        "laravel",
+        "static",
+        "site",
+        "generator"
+    ],
     "license": "MIT",
     "authors": [
         {
@@ -39,7 +45,6 @@
         "vlucas/phpdotenv": "^5.3.1"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.17",
         "mockery/mockery": "^1.4",
         "phpunit/phpunit": "^9.3.3",
         "tightenco/duster": "^2.5"
@@ -61,7 +66,7 @@
         "jigsaw"
     ],
     "scripts": {
-        "format" : "php-cs-fixer fix --verbose"
+        "format": "./vendor/bin/duster fix"
     },
     "config": {
         "sort-packages": true,

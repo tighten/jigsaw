@@ -29,15 +29,6 @@ class CollectionRemoteItemLoader
         });
     }
 
-    private function createTempDirectory($source, $collectionName)
-    {
-        $tempDirectory = $source . '/_' . $collectionName . '/_tmp';
-        $this->prepareDirectory($tempDirectory, true);
-        $this->tempDirectories[] = $tempDirectory;
-
-        return $tempDirectory;
-    }
-
     public function cleanup()
     {
         collect($this->tempDirectories)->each(function ($path) {
@@ -47,6 +38,15 @@ class CollectionRemoteItemLoader
                 $this->files->deleteDirectory($parent);
             }
         });
+    }
+
+    private function createTempDirectory($source, $collectionName)
+    {
+        $tempDirectory = $source . '/_' . $collectionName . '/_tmp';
+        $this->prepareDirectory($tempDirectory, true);
+        $this->tempDirectories[] = $tempDirectory;
+
+        return $tempDirectory;
     }
 
     private function getItems($collection)

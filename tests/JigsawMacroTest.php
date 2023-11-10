@@ -29,6 +29,7 @@ class JigsawMacroTest extends TestCase
     }
 }
 
+// phpcs:disable PSR1.Classes.ClassDeclaration,Squiz.Classes.ClassFileName
 class JigsawMixinTestClass
 {
     public function getNameMixin()

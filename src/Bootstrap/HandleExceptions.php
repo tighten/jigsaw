@@ -43,11 +43,11 @@ class HandleExceptions
     /**
      * Report PHP deprecations, or convert PHP errors to ErrorException instances.
      *
-     * @param int    $level
-     * @param string $message
-     * @param string $file
-     * @param int    $line
-     * @param array  $context
+     * @param  int  $level
+     * @param  string  $message
+     * @param  string  $file
+     * @param  int  $line
+     * @param  array  $context
      *
      * @throws ErrorException
      */

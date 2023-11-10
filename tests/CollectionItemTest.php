@@ -38,7 +38,8 @@ class CollectionItemTest extends TestCase
      */
     public function collection_item_can_be_filtered()
     {
-        $config = collect(['collections' => [
+        $config = collect([
+            'collections' => [
                 'collection' => [
                     'path' => 'collection/{filename}',
                     'filter' => function ($item) {
@@ -85,7 +86,8 @@ class CollectionItemTest extends TestCase
      */
     public function collection_item_can_be_mapped()
     {
-        $config = collect(['collections' => [
+        $config = collect([
+            'collections' => [
                 'collection' => [
                     'path' => 'collection/{filename}',
                     'map' => function ($item) {
@@ -266,6 +268,7 @@ class CollectionItemTest extends TestCase
     }
 }
 
+// phpcs:disable PSR1.Classes.ClassDeclaration,Squiz.Classes.ClassFileName
 class MappedItem extends CollectionItem
 {
     public function doubleNumber()

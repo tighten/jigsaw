@@ -16,155 +16,11 @@ class CollectionPathResolver
         $this->view = $viewRenderer;
     }
 
-    public function link($path, $data, bool $transliterate = true)
-    {
-        return collect($data->extends)->map(function ($bladeViewPath, $templateKey) use ($path, $data, $transliterate) {
-            return $this->cleanOutputPath(
-                $this->getPath($path, $data, $this->getExtension($bladeViewPath), $templateKey),
-                $transliterate,
-            );
-        });
-    }
-
-    public function getExtension($bladeViewPath)
-    {
-        $extension = $this->view->getExtension($bladeViewPath);
-
-        return collect(['php', 'html'])->contains($extension) ? '' : '.' . $extension;
-    }
-
-    private function getPath($path, $data, $extension, $templateKey = null)
-    {
-        $templateKeySuffix = $templateKey ? '/' . $templateKey : '';
-
-        if ($templateKey && $path instanceof IterableObject) {
-            $path = $path->get($templateKey);
-            $templateKeySuffix = '';
-
-            if (! $path) {
-                return;
-            }
-        }
-
-        if (is_callable($path)) {
-            $link = $this->cleanInputPath($path->__invoke($data));
-
-            return $link ? $this->resolve($link . $templateKeySuffix . $extension) : '';
-        }
-
-        if (is_string($path) && $path) {
-            $link = $this->parseShorthand($this->cleanInputPath($path), $data);
-
-            return $link ? $this->resolve($link . $templateKeySuffix . $extension) : '';
-        }
-
-        return $this->getDefaultPath($data, $templateKey) . $templateKeySuffix . $extension;
-    }
-
-    private function getDefaultPath($data)
-    {
-        return $this->slug($data->getCollectionName()) . '/' . $this->slug($data->getFilename());
-    }
-
-    private function parseShorthand($path, $data)
-    {
-        preg_match_all('/\{(.*?)\}/', $path, $bracketedParameters);
-
-        if (count($bracketedParameters[0]) == 0) {
-            return $path . '/' . $this->slug($data->getFilename());
-        }
-
-        $bracketedParametersReplaced =
-            collect($bracketedParameters[0])->map(function ($param) use ($data) {
-                return ['token' => $param, 'value' => $this->getParameterValue($param, $data)];
-            })->reduce(function ($carry, $param) {
-                return str_replace($param['token'], $param['value'], $carry);
-            }, $path);
-
-        return $bracketedParametersReplaced;
-    }
-
-    private function getParameterValue($param, $data)
-    {
-        list($param, $dateFormat) = explode('|', trim($param, '{}') . '|');
-        $slugSeparator = ctype_alpha($param[0]) ? null : $param[0];
-
-        if ($slugSeparator) {
-            $param = ltrim($param, $param[0]);
-        }
-
-        $value = Arr::get($data, $param, $data->_meta->get($param));
-
-        if (! $value) {
-            return '';
-        }
-
-        $value = $dateFormat ? $this->formatDate($value, $dateFormat) : $value;
-
-        return $slugSeparator ? $this->slug($value, $slugSeparator) : $value;
-    }
-
-    private function formatDate($date, $format)
-    {
-        if (is_string($date)) {
-            return strtotime($date) ? date($format, strtotime($date)) : '';
-        }
-
-        return date($format, $date);
-    }
-
-    private function cleanInputPath($path)
-    {
-        return $this->ensureSlashAtBeginningOnly($path);
-    }
-
-    private function cleanOutputPath($path, bool $transliterate)
-    {
-        // Remove double slashes
-        $path = preg_replace('/\/\/+/', '/', $path);
-
-        if ($transliterate) {
-            $path = $this->ascii($path);
-        }
-
-        return $this->ensureSlashAtBeginningOnly($path);
-    }
-
-    private function ensureSlashAtBeginningOnly($path)
-    {
-        return '/' . trimPath($path);
-    }
-
-    private function resolve($path)
-    {
-        return $this->outputPathResolver->link(dirname($path), basename($path), 'html');
-    }
-
-    /**
-     * This is identical to Laravel's built-in `str_slug()` helper,
-     * except it preserves `.` characters.
-     */
-    private function slug($string, $separator = '-')
-    {
-        // Convert all dashes/underscores into separator
-        $flip = $separator == '-' ? '_' : '-';
-        $string = preg_replace('![' . preg_quote($flip) . ']+!u', $separator, $string);
-
-        // Remove all characters that are not the separator, letters, numbers, whitespace, or dot
-        $string = preg_replace('![^' . preg_quote($separator) . '\pL\pN\s\.]+!u', '', mb_strtolower($string));
-
-        // Replace all separator characters and whitespace by a single separator
-        $string = preg_replace('![' . preg_quote($separator) . '\s]+!u', $separator, $string);
-
-        return trim($string, $separator);
-    }
-
     /**
      * Transliterate a UTF-8 value to ASCII.
      *
-     * @param string $value
-     * @param string $language
-     *
+     * @param  string  $value
+     * @param  string  $language
      * @return string
      */
     private static function ascii($value, $language = 'en')
@@ -323,8 +179,7 @@ class CollectionPathResolver
      *
      * @see https://github.com/danielstjules/Stringy/blob/3.1.0/LICENSE.txt
      *
-     * @param string $language
-     *
+     * @param  string  $language
      * @return array|null
      */
     private static function languageSpecificCharsArray($language)
@@ -345,5 +200,148 @@ class CollectionPathResolver
         }
 
         return $languageSpecific[$language] ?? null;
+    }
+
+    public function link($path, $data, bool $transliterate = true)
+    {
+        return collect($data->extends)->map(function ($bladeViewPath, $templateKey) use ($path, $data, $transliterate) {
+            return $this->cleanOutputPath(
+                $this->getPath($path, $data, $this->getExtension($bladeViewPath), $templateKey),
+                $transliterate,
+            );
+        });
+    }
+
+    public function getExtension($bladeViewPath)
+    {
+        $extension = $this->view->getExtension($bladeViewPath);
+
+        return collect(['php', 'html'])->contains($extension) ? '' : '.' . $extension;
+    }
+
+    private function getPath($path, $data, $extension, $templateKey = null)
+    {
+        $templateKeySuffix = $templateKey ? '/' . $templateKey : '';
+
+        if ($templateKey && $path instanceof IterableObject) {
+            $path = $path->get($templateKey);
+            $templateKeySuffix = '';
+
+            if (! $path) {
+                return;
+            }
+        }
+
+        if (is_callable($path)) {
+            $link = $this->cleanInputPath($path->__invoke($data));
+
+            return $link ? $this->resolve($link . $templateKeySuffix . $extension) : '';
+        }
+
+        if (is_string($path) && $path) {
+            $link = $this->parseShorthand($this->cleanInputPath($path), $data);
+
+            return $link ? $this->resolve($link . $templateKeySuffix . $extension) : '';
+        }
+
+        return $this->getDefaultPath($data, $templateKey) . $templateKeySuffix . $extension;
+    }
+
+    private function getDefaultPath($data)
+    {
+        return $this->slug($data->getCollectionName()) . '/' . $this->slug($data->getFilename());
+    }
+
+    private function parseShorthand($path, $data)
+    {
+        preg_match_all('/\{(.*?)\}/', $path, $bracketedParameters);
+
+        if (count($bracketedParameters[0]) == 0) {
+            return $path . '/' . $this->slug($data->getFilename());
+        }
+
+        $bracketedParametersReplaced =
+            collect($bracketedParameters[0])->map(function ($param) use ($data) {
+                return ['token' => $param, 'value' => $this->getParameterValue($param, $data)];
+            })->reduce(function ($carry, $param) {
+                return str_replace($param['token'], $param['value'], $carry);
+            }, $path);
+
+        return $bracketedParametersReplaced;
+    }
+
+    private function getParameterValue($param, $data)
+    {
+        [$param, $dateFormat] = explode('|', trim($param, '{}') . '|');
+        $slugSeparator = ctype_alpha($param[0]) ? null : $param[0];
+
+        if ($slugSeparator) {
+            $param = ltrim($param, $param[0]);
+        }
+
+        $value = Arr::get($data, $param, $data->_meta->get($param));
+
+        if (! $value) {
+            return '';
+        }
+
+        $value = $dateFormat ? $this->formatDate($value, $dateFormat) : $value;
+
+        return $slugSeparator ? $this->slug($value, $slugSeparator) : $value;
+    }
+
+    private function formatDate($date, $format)
+    {
+        if (is_string($date)) {
+            return strtotime($date) ? date($format, strtotime($date)) : '';
+        }
+
+        return date($format, $date);
+    }
+
+    private function cleanInputPath($path)
+    {
+        return $this->ensureSlashAtBeginningOnly($path);
+    }
+
+    private function cleanOutputPath($path, bool $transliterate)
+    {
+        // Remove double slashes
+        $path = preg_replace('/\/\/+/', '/', $path);
+
+        if ($transliterate) {
+            $path = $this->ascii($path);
+        }
+
+        return $this->ensureSlashAtBeginningOnly($path);
+    }
+
+    private function ensureSlashAtBeginningOnly($path)
+    {
+        return '/' . trimPath($path);
+    }
+
+    private function resolve($path)
+    {
+        return $this->outputPathResolver->link(dirname($path), basename($path), 'html');
+    }
+
+    /**
+     * This is identical to Laravel's built-in `str_slug()` helper,
+     * except it preserves `.` characters.
+     */
+    private function slug($string, $separator = '-')
+    {
+        // Convert all dashes/underscores into separator
+        $flip = $separator == '-' ? '_' : '-';
+        $string = preg_replace('![' . preg_quote($flip) . ']+!u', $separator, $string);
+
+        // Remove all characters that are not the separator, letters, numbers, whitespace, or dot
+        $string = preg_replace('![^' . preg_quote($separator) . '\pL\pN\s\.]+!u', '', mb_strtolower($string));
+
+        // Replace all separator characters and whitespace by a single separator
+        $string = preg_replace('![' . preg_quote($separator) . '\s]+!u', $separator, $string);
+
+        return trim($string, $separator);
     }
 }

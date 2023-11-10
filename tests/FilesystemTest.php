@@ -48,7 +48,7 @@ class FilesystemTest extends TestCase
 
         $files = collect(
             $this->app->make(Filesystem::class)
-            ->filesAndDirectories($this->tmp),
+                ->filesAndDirectories($this->tmp),
         )->map(function ($file) {
             return $file->getRelativePathName();
         });
@@ -259,7 +259,7 @@ class FilesystemTest extends TestCase
 
         return collect(
             $this->app->make(Filesystem::class)
-            ->filesAndDirectories($this->tmp, $match),
+                ->filesAndDirectories($this->tmp, $match),
         )->map(function ($file) {
             return $file->getRelativePathName();
         });
@@ -271,7 +271,7 @@ class FilesystemTest extends TestCase
 
         return collect(
             $this->app->make(Filesystem::class)
-            ->filesAndDirectories($this->tmp, null, $ignore),
+                ->filesAndDirectories($this->tmp, null, $ignore),
         )->map(function ($file) {
             return $file->getRelativePathName();
         });

@@ -21,18 +21,20 @@ class BladeComponentTest extends TestCase
             ]),
             '_components' => [
                 'alert.blade.php' => implode("\n", [
-                '<div>',
-                '<h3>This is the component</h3>',
-                '<h4>Named title slot: {{ $title }}</h4>',
-                '{{ $slot }}',
-                '</div>',
+                    '<div>',
+                    '<h3>This is the component</h3>',
+                    '<h4>Named title slot: {{ $title }}</h4>',
+                    '{{ $slot }}',
+                    '</div>',
                 ]),
             ],
         ]);
 
         $this->buildSite($files, []);
 
-        $this->assertOutputFile('build/page.html', <<<HTML
+        $this->assertOutputFile(
+            'build/page.html',
+            <<<'HTML'
             <div>
             <h3>This is the component</h3>
             <h4>Named title slot: Title test</h4>
@@ -155,6 +157,7 @@ class BladeComponentTest extends TestCase
     }
 }
 
+// phpcs:disable PSR1.Classes.ClassDeclaration,Squiz.Classes.ClassFileName
 class AlertComponent extends Component
 {
     public $type;

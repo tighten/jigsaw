@@ -35,6 +35,7 @@ class PageDataBindingTest extends TestCase
     }
 }
 
+// phpcs:disable PSR1.Classes.ClassDeclaration,Squiz.Classes.ClassFileName
 class TestPageHeaderComponent extends Component
 {
     public $page;

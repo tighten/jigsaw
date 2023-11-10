@@ -139,7 +139,7 @@ class Container extends Illuminate
         $this->fireAppCallbacks($this->bootedCallbacks);
     }
 
-    /** @param callable[] $callbacks */
+    /** @param  callable[]  $callbacks */
     private function fireAppCallbacks(array &$callbacks): void
     {
         $index = 0;
@@ -147,7 +147,7 @@ class Container extends Illuminate
         while ($index < count($callbacks)) {
             $callbacks[$index]($this);
 
-            ++$index;
+            $index++;
         }
     }
 

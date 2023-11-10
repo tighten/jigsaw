@@ -12,16 +12,25 @@ class Jigsaw
 {
     use Macroable;
 
-    public $app;
-    protected $env;
-    protected $pageInfo;
-    protected $outputPaths;
-    protected $siteData;
-    protected $dataLoader;
-    protected $remoteItemLoader;
-    protected $siteBuilder;
-    protected $verbose;
     protected static $commands = [];
+
+    public $app;
+
+    protected $env;
+
+    protected $pageInfo;
+
+    protected $outputPaths;
+
+    protected $siteData;
+
+    protected $dataLoader;
+
+    protected $remoteItemLoader;
+
+    protected $siteBuilder;
+
+    protected $verbose;
 
     public function __construct(
         Container $app,
@@ -33,19 +42,6 @@ class Jigsaw
         $this->dataLoader = $dataLoader;
         $this->remoteItemLoader = $remoteItemLoader;
         $this->siteBuilder = $siteBuilder;
-    }
-
-    public function build($env, $useCache = false)
-    {
-        $this->env = $env;
-        $this->siteData = $this->dataLoader->loadSiteData($this->app->config);
-
-        return $this->fireEvent('beforeBuild')
-            ->buildCollections()
-            ->fireEvent('afterCollections')
-            ->buildSite($useCache)
-            ->fireEvent('afterBuild')
-            ->cleanup();
     }
 
     public static function registerCommand($command)
@@ -60,41 +56,17 @@ class Jigsaw
         }
     }
 
-    protected function buildCollections()
+    public function build($env, $useCache = false)
     {
-        $this->remoteItemLoader->write($this->siteData->collections, $this->getSourcePath());
-        $collectionData = $this->dataLoader->loadCollectionData($this->siteData, $this->getSourcePath());
-        $this->siteData = $this->siteData->addCollectionData($collectionData);
+        $this->env = $env;
+        $this->siteData = $this->dataLoader->loadSiteData($this->app->config);
 
-        return $this;
-    }
-
-    protected function buildSite($useCache)
-    {
-        $this->pageInfo = $this->siteBuilder
-            ->setUseCache($useCache)
-            ->build(
-                $this->getSourcePath(),
-                $this->getDestinationPath(),
-                $this->siteData,
-            );
-        $this->outputPaths = $this->pageInfo->keys();
-
-        return $this;
-    }
-
-    protected function cleanup()
-    {
-        $this->remoteItemLoader->cleanup();
-
-        return $this;
-    }
-
-    protected function fireEvent($event)
-    {
-        $this->app->events->fire($event, $this);
-
-        return $this;
+        return $this->fireEvent('beforeBuild')
+            ->buildCollections()
+            ->fireEvent('afterCollections')
+            ->buildSite($useCache)
+            ->fireEvent('afterBuild')
+            ->cleanup();
     }
 
     public function getSiteData()
@@ -195,5 +167,42 @@ class Jigsaw
     public function writeOutputFile($fileName, $contents)
     {
         return $this->getFilesystem()->putWithDirectories($this->getDestinationPath() . '/' . $fileName, $contents);
+    }
+
+    protected function buildCollections()
+    {
+        $this->remoteItemLoader->write($this->siteData->collections, $this->getSourcePath());
+        $collectionData = $this->dataLoader->loadCollectionData($this->siteData, $this->getSourcePath());
+        $this->siteData = $this->siteData->addCollectionData($collectionData);
+
+        return $this;
+    }
+
+    protected function buildSite($useCache)
+    {
+        $this->pageInfo = $this->siteBuilder
+            ->setUseCache($useCache)
+            ->build(
+                $this->getSourcePath(),
+                $this->getDestinationPath(),
+                $this->siteData,
+            );
+        $this->outputPaths = $this->pageInfo->keys();
+
+        return $this;
+    }
+
+    protected function cleanup()
+    {
+        $this->remoteItemLoader->cleanup();
+
+        return $this;
+    }
+
+    protected function fireEvent($event)
+    {
+        $this->app->events->fire($event, $this);
+
+        return $this;
     }
 }

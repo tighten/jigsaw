@@ -17,9 +17,13 @@ class DefaultInstaller
         'npm install',
         'npm run dev',
     ];
+
     protected $commands;
+
     protected $delete;
+
     protected $ignore;
+
     protected $builder;
 
     public function install(ScaffoldBuilder $builder, $settings = [])

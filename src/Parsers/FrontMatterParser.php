@@ -7,9 +7,11 @@ use Mni\FrontYAML\Parser;
 
 class FrontMatterParser
 {
-    private $parser;
     public $frontMatter = [];
+
     public $content;
+
+    private $parser;
 
     public function __construct(Parser $parser)
     {
@@ -78,6 +80,6 @@ class FrontMatterParser
 
     private function addExtendsToBladeContent($extends, $bladeContent)
     {
-        return "@extends('$extends')\n" . $bladeContent;
+        return "@extends('{$extends}')\n" . $bladeContent;
     }
 }

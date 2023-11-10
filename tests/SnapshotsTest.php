@@ -40,7 +40,9 @@ class SnapshotsTest extends PHPUnit
 
     /**
      * @test
+     *
      * @group snapshots
+     *
      * @dataProvider snapshots
      */
     public function build(string $name)

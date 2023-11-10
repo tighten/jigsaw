@@ -10,15 +10,6 @@ use Illuminate\Support\HigherOrderCollectionProxy;
 
 class IterableObject extends BaseCollection implements ArrayAccess
 {
-    public function __get($key)
-    {
-        if (! array_key_exists($key, $this->items) && in_array($key, static::$proxies)) {
-            return new HigherOrderCollectionProxy($this, $key);
-        }
-
-        return $this->get($key);
-    }
-
     public function except($keys)
     {
         return is_null($keys) ? $this : parent::except($keys);
@@ -65,7 +56,7 @@ class IterableObject extends BaseCollection implements ArrayAccess
         if (! isset($this->items[$key])) {
             $prefix = $this->_source ? 'Error in ' . $this->_source . ': ' : 'Error: ';
 
-            throw new Exception($prefix . "The key '$key' does not exist.");
+            throw new Exception($prefix . "The key '{$key}' does not exist.");
         }
 
         return $this->getElement($key);
@@ -90,5 +81,14 @@ class IterableObject extends BaseCollection implements ArrayAccess
     protected function isArrayable($element)
     {
         return is_array($element) || $element instanceof BaseCollection;
+    }
+
+    public function __get($key)
+    {
+        if (! array_key_exists($key, $this->items) && in_array($key, static::$proxies)) {
+            return new HigherOrderCollectionProxy($this, $key);
+        }
+
+        return $this->get($key);
     }
 }

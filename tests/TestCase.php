@@ -57,14 +57,6 @@ class TestCase extends PHPUnit
         ];
     }
 
-    protected function createTmp(): void
-    {
-        mkdir($this->tmp = __DIR__ . '/fixtures/tmp/' . static::haiku());
-
-        // TODO this creates Jigsaw's cache directory in the root of this repo
-        $this->filesystem->ensureDirectoryExists(app()->cachePath());
-    }
-
     protected function tearDown(): void
     {
         if ($this->app) {
@@ -98,6 +90,45 @@ class TestCase extends PHPUnit
         return new InputFile($sourceFile, $this->sourcePath);
     }
 
+    public function buildSite($vfs = null, $config = [], $pretty = false, $viewPath = '/source')
+    {
+        $this->app->consoleOutput->setup($verbosity = -1);
+        $this->app->config = collect($this->app->config)->merge($config);
+
+        if ($collections = value($this->app->config->get('collections'))) {
+            $this->app->config->put('collections', collect($collections)->flatMap(function ($value, $key) {
+                return is_array($value) ? [$key => $value] : [$value => []];
+            }));
+        }
+
+        $this->app->buildPath = [
+            'source' => "{$this->tmp}/source",
+            'views' => "{$this->tmp}/{$viewPath}",
+            'destination' => "{$this->tmp}/build",
+        ];
+
+        if ($pretty) {
+            $this->app->instance('outputPathResolver', new PrettyOutputPathResolver);
+        }
+
+        return $this->app
+            ->make(Jigsaw::class)
+            ->build('test');
+    }
+
+    public function clean($output)
+    {
+        return str_replace("\n", '', $output);
+    }
+
+    protected function createTmp(): void
+    {
+        mkdir($this->tmp = __DIR__ . '/fixtures/tmp/' . static::haiku());
+
+        // TODO this creates Jigsaw's cache directory in the root of this repo
+        $this->filesystem->ensureDirectoryExists(app()->cachePath());
+    }
+
     protected function tmpPath(string $path): string
     {
         return "{$this->tmp}/{$path}";
@@ -110,10 +141,12 @@ class TestCase extends PHPUnit
     {
         $this->createSource(['source' => $source]);
 
-        return new class($this->tmpPath('')) {
+        return new class($this->tmpPath(''))
+        {
             public function __construct(
                 protected string $tmp,
-            ) {}
+            ) {
+            }
 
             public function hasChild($path)
             {
@@ -122,11 +155,13 @@ class TestCase extends PHPUnit
 
             public function getChild($path)
             {
-                return new class($this->tmp, $path) {
+                return new class($this->tmp, $path)
+                {
                     public function __construct(
                         protected string $tmp,
                         protected string $path,
-                    ) {}
+                    ) {
+                    }
 
                     public function getContent()
                     {
@@ -171,37 +206,6 @@ class TestCase extends PHPUnit
         $collectionData = $loader->loadCollectionData($siteData, "{$this->tmp}/source");
 
         return $siteData->addCollectionData($collectionData);
-    }
-
-    public function buildSite($vfs = null, $config = [], $pretty = false, $viewPath = '/source')
-    {
-        $this->app->consoleOutput->setup($verbosity = -1);
-        $this->app->config = collect($this->app->config)->merge($config);
-
-        if ($collections = value($this->app->config->get('collections'))) {
-            $this->app->config->put('collections', collect($collections)->flatMap(function ($value, $key) {
-                return is_array($value) ? [$key => $value] : [$value => []];
-            }));
-        }
-
-        $this->app->buildPath = [
-            'source' => "{$this->tmp}/source",
-            'views' => "{$this->tmp}/{$viewPath}",
-            'destination' => "{$this->tmp}/build",
-        ];
-
-        if ($pretty) {
-            $this->app->instance('outputPathResolver', new PrettyOutputPathResolver());
-        }
-
-        return $this->app
-            ->make(Jigsaw::class)
-            ->build('test');
-    }
-
-    public function clean($output)
-    {
-        return str_replace("\n", '', $output);
     }
 
     protected function fixDirectorySlashes(string $path): string

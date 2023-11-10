@@ -28,21 +28,21 @@ class EventBus
         $this->afterBuild = collect();
     }
 
-    public function __call($event, $arguments)
-    {
-        if (isset($this->{$event})) {
-            $this->{$event} = $this->{$event}->merge(Arr::wrap($arguments[0]));
-        }
-    }
-
     public function fire($event, Jigsaw $jigsaw)
     {
         $this->{$event}->each(function ($task) use ($jigsaw) {
             if (is_callable($task)) {
                 $task($jigsaw);
             } else {
-                (new $task())->handle($jigsaw);
+                (new $task)->handle($jigsaw);
             }
         });
+    }
+
+    public function __call($event, $arguments)
+    {
+        if (isset($this->{$event})) {
+            $this->{$event} = $this->{$event}->merge(Arr::wrap($arguments[0]));
+        }
     }
 }

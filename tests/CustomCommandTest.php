@@ -15,7 +15,7 @@ class CustomCommandTest extends TestCase
     {
         $this->createSource([]);
         $command = $this->app->make(CustomCommand::class);
-        $command->setApplication(new Application());
+        $command->setApplication(new Application);
 
         $console = new CommandTester($command);
         $console->execute([]);
@@ -24,6 +24,7 @@ class CustomCommandTest extends TestCase
     }
 }
 
+// phpcs:disable PSR1.Classes.ClassDeclaration,Squiz.Classes.ClassFileName
 class CustomCommand extends Command
 {
     protected function fire()

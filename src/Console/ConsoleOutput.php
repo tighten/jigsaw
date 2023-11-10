@@ -16,37 +16,6 @@ class ConsoleOutput extends SymfonyConsoleOutput
         $this->setupProgressBars();
     }
 
-    protected function setupSections()
-    {
-        $this->sections = collect([
-            'footer' => $this->section(),
-            'intro' => $this->section(),
-            'message' => $this->section(),
-            'progress' => $this->section(),
-            'header' => $this->section(),
-        ])->map(function ($section) {
-            return $this->section();
-        });
-
-        $this->sections['header']->writeln('');
-        $this->sections['footer']->writeln('');
-    }
-
-    protected function setupProgressBars()
-    {
-        $this->progressBars = [
-            'collections' => $this->getProgressBar('Loading collections...'),
-            'build' => $this->getProgressBar('Building files from source...'),
-        ];
-    }
-
-    protected function getProgressBar($message = null)
-    {
-        return $this->isVerbose() ?
-            new ProgressBar($this, $message, $this->sections['progress']) :
-            new NullProgressBar($this, $message, $this->sections['progress']);
-    }
-
     public function progressBar($name)
     {
         return $this->progressBars[$name];
@@ -122,5 +91,36 @@ class ConsoleOutput extends SymfonyConsoleOutput
         $this->sections['message']->overwrite('<fg=green>Site built successfully!</>');
 
         return $this;
+    }
+
+    protected function setupSections()
+    {
+        $this->sections = collect([
+            'footer' => $this->section(),
+            'intro' => $this->section(),
+            'message' => $this->section(),
+            'progress' => $this->section(),
+            'header' => $this->section(),
+        ])->map(function ($section) {
+            return $this->section();
+        });
+
+        $this->sections['header']->writeln('');
+        $this->sections['footer']->writeln('');
+    }
+
+    protected function setupProgressBars()
+    {
+        $this->progressBars = [
+            'collections' => $this->getProgressBar('Loading collections...'),
+            'build' => $this->getProgressBar('Building files from source...'),
+        ];
+    }
+
+    protected function getProgressBar($message = null)
+    {
+        return $this->isVerbose() ?
+            new ProgressBar($this, $message, $this->sections['progress']) :
+            new NullProgressBar($this, $message, $this->sections['progress']);
     }
 }

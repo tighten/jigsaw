@@ -55,7 +55,8 @@ class EventsTest extends TestCase
     /** @test */
     public function it_can_handle_invokable_listeners()
     {
-        $this->app['events']->beforeBuild(new class {
+        $this->app['events']->beforeBuild(new class
+        {
             private $object;
 
             public function __construct()
@@ -554,6 +555,7 @@ class EventsTest extends TestCase
     }
 }
 
+// phpcs:disable PSR1.Classes.ClassDeclaration,Squiz.Classes.ClassFileName
 class TestListener
 {
     public function handle($jigsaw)

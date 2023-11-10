@@ -13,6 +13,11 @@ class MarkdownParser implements FrontYAMLMarkdownParserInterface
         $this->parser = $parser ?? new JigsawMarkdownParser;
     }
 
+    public function parse($markdown)
+    {
+        return $this->parser->parse($markdown);
+    }
+
     public function __get($property)
     {
         return $this->parser->$property;
@@ -21,10 +26,5 @@ class MarkdownParser implements FrontYAMLMarkdownParserInterface
     public function __set($property, $value)
     {
         $this->parser->$property = $value;
-    }
-
-    public function parse($markdown)
-    {
-        return $this->parser->parse($markdown);
     }
 }

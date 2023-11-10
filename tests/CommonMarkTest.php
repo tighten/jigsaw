@@ -46,7 +46,7 @@ class CommonMarkTest extends TestCase
     /** @test */
     public function replace_commonmark_extensions()
     {
-        $files = $this->withContent(<<<MD
+        $files = $this->withContent(<<<'MD'
             # Fruits {.class}
 
             Apple
@@ -74,10 +74,11 @@ class CommonMarkTest extends TestCase
         $files = $this->withContent('### Heading {.class}');
 
         $this->app->bind(MarkdownParserContract::class, function () {
-            return new class implements MarkdownParserContract {
+            return new class implements MarkdownParserContract
+            {
                 public function parse(string $text)
                 {
-                    return <<<EOT
+                    return <<<'EOT'
                         SYKE
 
                         EOT;

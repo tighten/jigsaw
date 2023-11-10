@@ -24,23 +24,6 @@ class CollectionItemHandler
             && ! Str::startsWith($file->getFilename(), ['.', '_']);
     }
 
-    private function isInCollectionDirectory($file)
-    {
-        $base = $file->topLevelDirectory();
-
-        return Str::startsWith($base, '_') && $this->hasCollectionNamed($this->getCollectionName($file));
-    }
-
-    private function hasCollectionNamed($candidate)
-    {
-        return Arr::get($this->config, 'collections.' . $candidate) !== null;
-    }
-
-    private function getCollectionName($file)
-    {
-        return substr($file->topLevelDirectory(), 1);
-    }
-
     public function handle($file, $pageData)
     {
         $handler = $this->handlers->first(function ($handler) use ($file) {
@@ -69,5 +52,22 @@ class CollectionItemHandler
                     $outputFile->data(),
                 ) : null;
             })->filter()->values();
+    }
+
+    private function isInCollectionDirectory($file)
+    {
+        $base = $file->topLevelDirectory();
+
+        return Str::startsWith($base, '_') && $this->hasCollectionNamed($this->getCollectionName($file));
+    }
+
+    private function hasCollectionNamed($candidate)
+    {
+        return Arr::get($this->config, 'collections.' . $candidate) !== null;
+    }
+
+    private function getCollectionName($file)
+    {
+        return substr($file->topLevelDirectory(), 1);
     }
 }

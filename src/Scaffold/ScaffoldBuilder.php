@@ -13,6 +13,7 @@ abstract class ScaffoldBuilder
     ];
 
     public $base;
+
     protected $console;
     protected $files;
     protected $process;

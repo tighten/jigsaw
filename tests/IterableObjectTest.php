@@ -176,4 +176,8 @@ class IterableObjectTest extends TestCase
     }
 }
 
-class ExtendsIterableObject extends IterableObject {}
+// phpcs:disable PSR1.Classes.ClassDeclaration,Squiz.Classes.ClassFileName
+class ExtendsIterableObject extends IterableObject
+{
+}
+// phpcs:enable

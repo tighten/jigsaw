@@ -22,6 +22,7 @@ class PresetPackage
     public $preset;
     public $suffix;
     public $vendor;
+
     protected $builder;
     protected $customInstaller;
     protected $defaultInstaller;
@@ -33,7 +34,7 @@ class PresetPackage
         $this->defaultInstaller = $default;
         $this->customInstaller = $custom;
         $this->process = $process;
-        $this->files = new Filesystem();
+        $this->files = new Filesystem;
     }
 
     public function init($preset, PresetScaffoldBuilder $builder)

@@ -40,7 +40,7 @@ class Handler implements ExceptionHandler
     }
 
     /**
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param  \Symfony\Component\Console\Output\OutputInterface  $output
      */
     public function renderForConsole($output, Throwable $e): void
     {
@@ -88,7 +88,7 @@ class Handler implements ExceptionHandler
         $handler->handle();
     }
 
-    public function map(Closure|string $from, Closure|string|null $to = null): static
+    public function map(Closure|string $from, Closure|string $to = null): static
     {
         if (is_string($to)) {
             $to = fn ($exception) => new $to('', 0, $exception);

@@ -22,5 +22,4 @@ function removeDirectory($path)
 
     rmdir($path);
 
-    return;
-}
+    }

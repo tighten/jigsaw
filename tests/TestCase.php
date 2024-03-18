@@ -26,9 +26,9 @@ class TestCase extends PHPUnit
     protected Filesystem $filesystem;
     protected string $tmp;
 
-    public function __construct()
+    public function __construct($name = null, array $data = [], $dataName = '') 
     {
-        parent::__construct("Jigsaw");
+        parent::__construct($name, $data, $dataName);
 
         $this->filesystem = new Filesystem;
     }

@@ -23,7 +23,7 @@ class JigsawMacroTest extends TestCase
      */
     public function jigsaw_mixin_function_calls_successfully()
     {
-        Jigsaw::mixin(new JigsawMixinTestClass);
+        Jigsaw::mixin(new JigsawMixinTestClass());
 
         $this->assertSame('Reed', Jigsaw::getNameMixin());
     }

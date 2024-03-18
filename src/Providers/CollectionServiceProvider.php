@@ -28,7 +28,7 @@ class CollectionServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->app->bind('outputPathResolver', fn () => new BasicOutputPathResolver);
+        $this->app->bind('outputPathResolver', fn () => new BasicOutputPathResolver());
 
         $this->registerHandlers();
         $this->registerPathResolver();
@@ -100,7 +100,7 @@ class CollectionServiceProvider extends ServiceProvider
         $this->app->bind(SiteBuilder::class, function (Container $app) {
             return new SiteBuilder($app['files'], $app->cachePath(), $app['outputPathResolver'], $app['consoleOutput'], [
                 $app[CollectionItemHandler::class],
-                new IgnoredHandler,
+                new IgnoredHandler(),
                 $app[PaginatedPageHandler::class],
                 $app[MarkdownHandler::class],
                 $app[BladeHandler::class],

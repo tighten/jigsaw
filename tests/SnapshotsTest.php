@@ -22,12 +22,12 @@ class SnapshotsTest extends PHPUnit
     {
         parent::setUp();
 
-        $this->filesystem = new Filesystem;
+        $this->filesystem = new Filesystem();
     }
 
     public function snapshots(): array
     {
-        return collect((new Filesystem)->directories($this->source()))
+        return collect((new Filesystem())->directories($this->source()))
             ->map(fn ($path) => basename($path))
             ->reject(fn ($name) => Str::endsWith($name, '_snapshot'))
             // Prepend the test command with JIGSAW_SNAPSHOTS=<snapshot-names> to run specific snapshot tests

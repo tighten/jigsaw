@@ -8,9 +8,9 @@ class MarkdownParser implements FrontYAMLMarkdownParserInterface
 {
     public $parser;
 
-    public function __construct(MarkdownParserContract $parser = null)
+    public function __construct(?MarkdownParserContract $parser = null)
     {
-        $this->parser = $parser ?? new JigsawMarkdownParser;
+        $this->parser = $parser ?? new JigsawMarkdownParser();
     }
 
     public function __get($property)

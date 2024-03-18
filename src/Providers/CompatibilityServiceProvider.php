@@ -11,6 +11,6 @@ class CompatibilityServiceProvider extends ServiceProvider
     {
         $this->app->instance('cwd', $this->app->path());
 
-        $this->app->singleton('consoleOutput', fn () => new ConsoleOutput);
+        $this->app->singleton('consoleOutput', fn () => new ConsoleOutput());
     }
 }

@@ -13,6 +13,6 @@ class EventServiceProvider extends ServiceProvider
     {
         $this->app->singleton('dispatcher', fn (Container $app) => new Dispatcher($app));
 
-        $this->app->singleton('events', fn (Container $app) => new EventBus);
+        $this->app->singleton('events', fn (Container $app) => new EventBus());
     }
 }

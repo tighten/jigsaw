@@ -29,7 +29,7 @@ class ViewServiceProvider extends ServiceProvider
         $this->registerEngineResolvers();
 
         (new BladeDirectivesFile($this->app->path('blade.php'), $this->app['blade.compiler']))->register();
-        $this->app->bind(ViewRenderer::class, fn () => new ViewRenderer);
+        $this->app->bind(ViewRenderer::class, fn () => new ViewRenderer());
         $this->app->bind(TemporaryFilesystem::class, fn (Container $app) => new TemporaryFilesystem($app->cachePath()));
 
         // TODO
@@ -74,7 +74,7 @@ class ViewServiceProvider extends ServiceProvider
     private function registerEngineResolvers(): void
     {
         $this->app->singleton('view.engine.resolver', function (Container $app) {
-            $resolver = new EngineResolver;
+            $resolver = new EngineResolver();
             $compilerEngine = new CompilerEngine($app['blade.compiler'], $app['files']);
 
             // Same as Laravel

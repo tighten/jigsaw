@@ -67,7 +67,7 @@ class HandleExceptions
     /**
      * Handle a deprecation.
      *
-     * @throws \TightenCo\Jigsaw\Exceptions\DeprecationException
+     * @throws DeprecationException
      */
     private function handleDeprecation(Throwable $e): void
     {
@@ -82,7 +82,7 @@ class HandleExceptions
             //
         }
 
-        static::$app->make(ExceptionHandler::class)->renderForConsole(new ConsoleOutput, $e);
+        static::$app->make(ExceptionHandler::class)->renderForConsole(new ConsoleOutput(), $e);
     }
 
     /**
@@ -102,7 +102,7 @@ class HandleExceptions
             //
         }
 
-        static::$app->make(ExceptionHandler::class)->renderForConsole(new ConsoleOutput, $e);
+        static::$app->make(ExceptionHandler::class)->renderForConsole(new ConsoleOutput(), $e);
     }
 
     /**

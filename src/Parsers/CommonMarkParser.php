@@ -19,13 +19,13 @@ class CommonMarkParser implements MarkdownParserContract
     {
         $environment = new Environment(Arr::get(app('config'), 'commonmark.config', []));
 
-        $environment->addExtension(new CommonMarkCoreExtension);
+        $environment->addExtension(new CommonMarkCoreExtension());
 
         collect(Arr::get(app('config'), 'commonmark.extensions', [
-            new AttributesExtension,
-            new SmartPunctExtension,
-            new StrikethroughExtension,
-            new TableExtension,
+            new AttributesExtension(),
+            new SmartPunctExtension(),
+            new StrikethroughExtension(),
+            new TableExtension(),
         ]))->map(fn ($extension) => $environment->addExtension($extension));
 
         $this->converter = new MarkdownConverter($environment);

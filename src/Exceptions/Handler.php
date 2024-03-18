@@ -58,7 +58,7 @@ class Handler implements ExceptionHandler
         }
 
         if ($e instanceof SymfonyConsoleExceptionInterface) {
-            (new ConsoleApplication)->renderThrowable($e, $output);
+            (new ConsoleApplication())->renderThrowable($e, $output);
 
             return;
         }
@@ -79,7 +79,7 @@ class Handler implements ExceptionHandler
 
         $e = $this->mapException($e);
 
-        /** @var \NunoMaduro\Collision\Provider $provider */
+        /** @var Provider $provider */
         $provider = app(Provider::class);
 
         $handler = $provider->register()->getHandler()->setOutput($output);

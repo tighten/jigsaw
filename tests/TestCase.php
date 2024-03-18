@@ -26,11 +26,11 @@ class TestCase extends PHPUnit
     protected Filesystem $filesystem;
     protected string $tmp;
 
-    public function __construct($name = null, array $data = [], $dataName = '') 
+    public function __construct(string $name = 'Jigsaw')
     {
-        parent::__construct($name, $data, $dataName);
+        parent::__construct($name);
 
-        $this->filesystem = new Filesystem;
+        $this->filesystem = new Filesystem();
     }
 
     protected function setUp(): void
@@ -39,7 +39,7 @@ class TestCase extends PHPUnit
 
         $this->createTmp();
 
-        $this->app = new Container;
+        $this->app = new Container();
         /* @internal The '__testing' binding is for Jigsaw development only and may be removed. */
         $this->app->instance('__testing', true);
         $this->app->singleton(
@@ -47,7 +47,7 @@ class TestCase extends PHPUnit
             \TightenCo\Jigsaw\Exceptions\Handler::class,
         );
         $this->app->bootstrapWith([
-            \TightenCo\Jigsaw\Bootstrap\HandleExceptions::class,
+            HandleExceptions::class,
         ]);
 
         $this->app->buildPath = [
@@ -209,7 +209,7 @@ class TestCase extends PHPUnit
         return str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
     }
 
-    protected function assertOutputFile(string $path, string $contents, string $message = null): void
+    protected function assertOutputFile(string $path, string $contents, ?string $message = null): void
     {
         static::assertStringEqualsFile(
             $this->tmpPath($path),

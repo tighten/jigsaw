@@ -21,7 +21,7 @@ class MarkdownServiceProvider extends ServiceProvider
         $this->app->bind(YAMLParser::class, SymfonyYAMLParser::class);
 
         $this->app->bind(MarkdownParserContract::class, function (Container $app) {
-            return $app['config']->get('commonmark') ? new CommonMarkParser : new JigsawMarkdownParser;
+            return $app['config']->get('commonmark') ? new CommonMarkParser() : new JigsawMarkdownParser();
         });
 
         $this->app->singleton('markdownParser', fn (Container $app) => new MarkdownParser($app[MarkdownParserContract::class]));

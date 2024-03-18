@@ -84,7 +84,7 @@ class Container extends Illuminate
         try {
             Dotenv::create(Env::getRepository(), $this->path)->safeLoad();
         } catch (InvalidFileException $e) {
-            $output = (new ConsoleOutput)->getErrorOutput();
+            $output = (new ConsoleOutput())->getErrorOutput();
 
             $output->writeln('The environment file is invalid!');
             $output->writeln($e->getMessage());

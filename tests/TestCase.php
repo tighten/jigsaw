@@ -28,7 +28,7 @@ class TestCase extends PHPUnit
 
     public function __construct()
     {
-        parent::__construct();
+        parent::__construct("Jigsaw");
 
         $this->filesystem = new Filesystem;
     }

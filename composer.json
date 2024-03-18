@@ -18,30 +18,31 @@
         }
     ],
     "require": {
-        "php": "^8.0.2 <8.4",
-        "illuminate/collections": "^9.0",
-        "illuminate/console": "^9.21.1",
-        "illuminate/container": "^9.0",
-        "illuminate/filesystem": "^9.0",
-        "illuminate/support": "^9.0",
-        "illuminate/view": "^9.8",
+        "php": "^8.3",
+        "illuminate/collections": "^11.0.7",
+        "illuminate/console": "^11.0.7",
+        "illuminate/container": "^11.0.7",
+        "illuminate/filesystem": "^11.0.7",
+        "illuminate/support": "^11.0.7",
+        "illuminate/view": "^11.0.7",
         "league/commonmark": "^2.4",
-        "michelf/php-markdown": "^1.9",
-        "mnapoli/front-yaml": "^1.5",
-        "nunomaduro/collision": "^6.0",
-        "spatie/laravel-ignition": "^1.6",
-        "symfony/console": "^5.4 || ^6.0",
-        "symfony/error-handler": "^5.0 || ^6.0",
-        "symfony/finder": "^5.3.7 || ^6.0",
-        "symfony/process": "^5.0 || ^6.0",
-        "symfony/var-dumper": "^5.0 || ^6.0",
-        "symfony/yaml": "^5.0 || ^6.0",
-        "vlucas/phpdotenv": "^5.3.1"
+        "michelf/php-markdown": "^2.0",
+        "mnapoli/front-yaml": "^2.0",
+        "nunomaduro/collision": "^8.1",
+        "spatie/laravel-ignition": "^2.4",
+        "symfony/console": "^6.0 || ^7.0",
+        "symfony/error-handler": "^6.0 || ^7.0",
+        "symfony/finder": "^6.0 || ^7.0",
+        "symfony/process": "^6.0 || ^7.0",
+        "symfony/var-dumper": "^6.0 || ^7.0",
+        "symfony/yaml": "^6.0 || ^7.0",
+        "vlucas/phpdotenv": "^5.6",
+        "laravel/prompts": "^0.1"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.17",
-        "mockery/mockery": "^1.4",
-        "phpunit/phpunit": "^9.3.3"
+        "friendsofphp/php-cs-fixer": "^3.51",
+        "mockery/mockery": "^1.6",
+        "phpunit/phpunit": "^11.0.6"
     },
     "autoload": {
         "psr-4": {

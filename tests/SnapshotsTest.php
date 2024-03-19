@@ -4,6 +4,9 @@ namespace Tests;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase as PHPUnit;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -25,9 +28,9 @@ class SnapshotsTest extends PHPUnit
         $this->filesystem = new Filesystem;
     }
 
-    public function snapshots(): array
+    public static function snapshots(): array
     {
-        return collect((new Filesystem)->directories($this->source()))
+        return collect((new Filesystem())->directories(static::source()))
             ->map(fn ($path) => basename($path))
             ->reject(fn ($name) => Str::endsWith($name, '_snapshot'))
             // Prepend the test command with JIGSAW_SNAPSHOTS=<snapshot-names> to run specific snapshot tests
@@ -38,11 +41,9 @@ class SnapshotsTest extends PHPUnit
             ->all();
     }
 
-    /**
-     * @test
-     * @group snapshots
-     * @dataProvider snapshots
-     */
+    #[Test]
+    #[Group('snapshots')]
+    #[DataProvider('snapshots')]
     public function build(string $name)
     {
         // Delete the contents of the output directory in the source to clean up previous builds
@@ -51,7 +52,7 @@ class SnapshotsTest extends PHPUnit
         $jigsaw = realpath(implode('/', array_filter([__DIR__, '..', 'jigsaw'])));
         $arguments = static::$arguments[$name] ?? [];
 
-        $build = new Process(array_merge(['php', $jigsaw, 'build'], $arguments, ['-vvv']), $this->source($name));
+        $build = new Process(array_merge(['php', $jigsaw, 'build'], $arguments, ['-vvv']), static::source($name));
         $build->run();
 
         if (! $build->isSuccessful()) {
@@ -84,7 +85,7 @@ class SnapshotsTest extends PHPUnit
         });
     }
 
-    private function source(string $name = ''): string
+    private static function source(string $name = ''): string
     {
         return implode(DIRECTORY_SEPARATOR, array_filter([__DIR__, 'snapshots', $name]));
     }

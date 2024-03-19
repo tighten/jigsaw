@@ -2,13 +2,12 @@
 
 namespace Tests;
 
+use PHPUnit\Framework\Attributes\Test;
 use TightenCo\Jigsaw\Jigsaw;
 
 class JigsawMacroTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function jigsaw_macro_function_calls_successfully()
     {
         Jigsaw::macro('getNameMacro', function () {
@@ -18,9 +17,7 @@ class JigsawMacroTest extends TestCase
         $this->assertSame('Reed', Jigsaw::getNameMacro());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function jigsaw_mixin_function_calls_successfully()
     {
         Jigsaw::mixin(new JigsawMixinTestClass);

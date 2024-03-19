@@ -2,11 +2,11 @@
 
 namespace Tests;
 
+use PHPUnit\Framework\Attributes\Test;
+
 class PermalinkTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function markdown_file_with_permalink_is_built_at_permalink_destination_when_pretty_urls_is_off()
     {
         $yaml_header = implode("\n", ['---', 'permalink: permalink.html', 'extends: _layouts.master', 'section: content', '---']);
@@ -22,9 +22,7 @@ class PermalinkTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function markdown_file_with_permalink_is_built_at_permalink_destination_when_pretty_urls_is_on()
     {
         $yaml_header = implode("\n", ['---', 'permalink: permalink.html', 'extends: _layouts.master', 'section: content', '---']);
@@ -40,9 +38,7 @@ class PermalinkTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function markdown_file_with_nested_permalink_is_built_at_permalink_destination()
     {
         $yaml_header = implode("\n", ['---', 'permalink: nested/permalink.html', 'extends: _layouts.master', 'section: content', '---']);
@@ -58,9 +54,7 @@ class PermalinkTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function markdown_file_with_nested_permalink_is_built_at_permalink_destination_when_pretty_urls_is_on()
     {
         $yaml_header = implode("\n", ['---', 'permalink: nested/permalink.html', 'extends: _layouts.master', 'section: content', '---']);
@@ -76,9 +70,7 @@ class PermalinkTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function permalink_can_contain_leading_slash()
     {
         $yaml_header = implode("\n", ['---', 'permalink: /permalink.html', 'extends: _layouts.master', 'section: content', '---']);
@@ -94,9 +86,7 @@ class PermalinkTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function permalink_in_output_paths_contains_leading_slash_if_included_in_permalink()
     {
         $yaml_header = implode("\n", ['---', 'permalink: /permalink.html', 'extends: _layouts.master', 'section: content', '---']);
@@ -109,9 +99,7 @@ class PermalinkTest extends TestCase
         $this->assertEquals('/permalink.html', $jigsaw->getOutputPaths()[0]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function permalink_in_output_paths_contains_leading_slash_if_not_included_in_permalink()
     {
         $yaml_header = implode("\n", ['---', 'permalink: permalink.html', 'extends: _layouts.master', 'section: content', '---']);

@@ -2,13 +2,12 @@
 
 namespace Tests;
 
+use PHPUnit\Framework\Attributes\Test;
 use TightenCo\Jigsaw\Collection\CollectionItem;
 
 class CollectionItemTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function collection_item_contents_are_returned_when_item_is_referenced_as_a_string()
     {
         $config = collect(['collections' => ['collection' => []]]);
@@ -33,9 +32,7 @@ class CollectionItemTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function collection_item_can_be_filtered()
     {
         $config = collect(['collections' => [
@@ -80,9 +77,7 @@ class CollectionItemTest extends TestCase
         $this->assertFileExists($this->tmpPath('build/collection/item.html'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function collection_item_can_be_mapped()
     {
         $config = collect(['collections' => [
@@ -120,9 +115,7 @@ class CollectionItemTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function collection_item_page_metadata_contains_path()
     {
         $config = collect(['collections' => ['collection' => []]]);
@@ -143,9 +136,7 @@ class CollectionItemTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function collection_item_page_metadata_contains_relative_path()
     {
         $config = collect(['collections' => ['collection' => []]]);
@@ -168,9 +159,7 @@ class CollectionItemTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function collection_item_page_metadata_contains_extension()
     {
         $config = collect(['collections' => ['collection' => []]]);
@@ -191,9 +180,7 @@ class CollectionItemTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function collection_item_page_metadata_contains_collection_name()
     {
         $config = collect(['collections' => ['collection' => []]]);
@@ -219,9 +206,7 @@ class CollectionItemTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function collection_item_page_metadata_contains_source_path()
     {
         $config = collect(['collections' => ['collection' => []]]);
@@ -242,9 +227,7 @@ class CollectionItemTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function collection_item_page_metadata_contains_modified_time()
     {
         $config = collect(['collections' => ['collection' => []]]);

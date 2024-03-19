@@ -2,11 +2,11 @@
 
 namespace Tests;
 
+use PHPUnit\Framework\Attributes\Test;
+
 class ConfigVariableTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function config_variables_are_replaced_with_values_in_blade_templates()
     {
         $config = collect(['variable' => 'value']);
@@ -22,9 +22,7 @@ class ConfigVariableTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function config_variables_are_overridden_by_local_variables_in_blade_templates()
     {
         $config = collect(['variable' => 'config']);

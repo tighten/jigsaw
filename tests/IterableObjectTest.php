@@ -2,13 +2,12 @@
 
 namespace Tests;
 
+use PHPUnit\Framework\Attributes\Test;
 use TightenCo\Jigsaw\IterableObject;
 
 class IterableObjectTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function item_in_iterable_object_can_be_referenced_as_object_property()
     {
         $iterable_object = new IterableObject([
@@ -20,9 +19,7 @@ class IterableObjectTest extends TestCase
         $this->assertEquals(2, $iterable_object->b);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function item_in_iterable_object_can_be_referenced_as_array_element()
     {
         $iterable_object = new IterableObject([
@@ -34,9 +31,7 @@ class IterableObjectTest extends TestCase
         $this->assertEquals(2, $iterable_object['b']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function item_in_iterable_object_can_be_referenced_as_collection_element()
     {
         $iterable_object = new IterableObject([
@@ -48,9 +43,7 @@ class IterableObjectTest extends TestCase
         $this->assertEquals(2, $iterable_object->get('b'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function iterable_object_can_be_iterated_over_like_a_collection()
     {
         $array = [
@@ -64,9 +57,7 @@ class IterableObjectTest extends TestCase
         });
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function arrays_can_be_made_iterable_objects_when_adding_to_an_iterable_object()
     {
         $iterable_object = new IterableObject([
@@ -79,9 +70,7 @@ class IterableObjectTest extends TestCase
         $this->assertEquals(3, $iterable_object->b->c);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function collections_can_be_made_iterable_objects_when_adding_to_an_iterable_object()
     {
         $iterable_object = new IterableObject([
@@ -94,9 +83,7 @@ class IterableObjectTest extends TestCase
         $this->assertEquals(3, $iterable_object->b->c);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function non_arrayable_items_are_not_changed_when_adding_with_makeIterable()
     {
         $iterable_object = new IterableObject([
@@ -108,9 +95,7 @@ class IterableObjectTest extends TestCase
         $this->assertIsString($iterable_object->b);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function objects_that_extend_IterableObject_are_not_changed_when_adding_with_makeIterable()
     {
         $iterable_object = new IterableObject([
@@ -124,9 +109,7 @@ class IterableObjectTest extends TestCase
         $this->assertTrue($iterable_object->b instanceof IterableObject);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function item_can_be_added_to_iterable_object_with_dot_notation()
     {
         $iterable_object = new IterableObject([
@@ -138,9 +121,7 @@ class IterableObjectTest extends TestCase
         $this->assertEquals(3, $iterable_object->b['c']['d']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function nested_items_added_with_dot_notation_are_themselves_made_iterable()
     {
         $iterable_object = new IterableObject([
@@ -155,9 +136,7 @@ class IterableObjectTest extends TestCase
         $this->assertIsInt($iterable_object->b->c->d);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function intermediate_items_that_extend_IterableObject_are_not_changed_when_adding_new_items_with_dot_notation()
     {
         $iterable_object = new IterableObject([

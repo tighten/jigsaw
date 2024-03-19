@@ -2,11 +2,11 @@
 
 namespace Tests;
 
+use PHPUnit\Framework\Attributes\Test;
+
 class RemoteCollectionsTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function collection_does_not_require_matching_source_directory()
     {
         $config = collect([
@@ -20,9 +20,7 @@ class RemoteCollectionsTest extends TestCase
         $this->assertCount(0, $siteData->collection_without_directory);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function collection_items_are_created_from_files_in_a_collection_directory()
     {
         $config = collect([
@@ -49,7 +47,7 @@ class RemoteCollectionsTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function collection_items_without_matching_handler_are_ignored()
     {
         $config = collect(['collections' => ['collection' => []]]);
@@ -66,9 +64,7 @@ class RemoteCollectionsTest extends TestCase
         $this->assertCount(1, $siteData->collection);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_files_are_built_from_files_in_a_collection_directory()
     {
         $config = collect([
@@ -99,9 +95,7 @@ class RemoteCollectionsTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_files_are_built_from_items_key_in_config()
     {
         $config = collect([
@@ -130,9 +124,7 @@ class RemoteCollectionsTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function output_files_are_built_from_items_key_in_config_and_from_files_in_collection_directory()
     {
         $config = collect([
@@ -170,9 +162,7 @@ class RemoteCollectionsTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function temporary_directory_for_remote_items_is_removed_after_build_is_complete()
     {
         $config = collect([
@@ -197,9 +187,7 @@ class RemoteCollectionsTest extends TestCase
         $this->assertFileMissing($this->tmpPath('source/_test/_tmp'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function temporary_parent_directory_for_remote_items_is_removed_if_empty_after_build_is_complete()
     {
         $config = collect([
@@ -224,9 +212,7 @@ class RemoteCollectionsTest extends TestCase
         $this->assertFileMissing($this->tmpPath('source/_test'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function items_key_in_config_can_return_an_illuminate_collection()
     {
         $config = collect([
@@ -255,9 +241,7 @@ class RemoteCollectionsTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function value_of_content_key_in_item_array_is_parsed_as_markdown()
     {
         $config = collect([
@@ -285,9 +269,7 @@ class RemoteCollectionsTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function page_variables_are_created_from_keys_in_item_array()
     {
         $config = collect([
@@ -316,9 +298,7 @@ class RemoteCollectionsTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function page_variables_are_optional_in_item_array()
     {
         $config = collect([
@@ -346,9 +326,7 @@ class RemoteCollectionsTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function value_of_string_item_is_parsed_as_markdown_content()
     {
         $config = collect([
@@ -372,9 +350,7 @@ class RemoteCollectionsTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function strings_and_arrays_can_be_mixed_in_items_key_in_config()
     {
         $config = collect([
@@ -408,9 +384,7 @@ class RemoteCollectionsTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function filename_for_output_file_is_set_to_collection_name_plus_index_if_not_specified()
     {
         $config = collect([
@@ -439,9 +413,7 @@ class RemoteCollectionsTest extends TestCase
         $this->assertTrue($files->hasChild('build/test/test-2.html'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function filename_for_output_file_is_set_to_collection_name_plus_array_key_if_filename_not_specified_and_key_is_string()
     {
         $config = collect([
@@ -470,9 +442,7 @@ class RemoteCollectionsTest extends TestCase
         $this->assertTrue($files->hasChild('build/test/bar.html'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function filename_for_output_file_is_set_to_filename_key_if_specified()
     {
         $config = collect([
@@ -498,9 +468,7 @@ class RemoteCollectionsTest extends TestCase
         $this->assertTrue($files->hasChild('build/test/custom-filename.html'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function items_key_in_config_can_be_a_function_that_returns_an_array()
     {
         $config = collect([
@@ -533,9 +501,7 @@ class RemoteCollectionsTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function items_function_can_access_other_config_variables()
     {
         $config = collect([
@@ -564,9 +530,7 @@ class RemoteCollectionsTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function items_key_in_config_can_be_a_function_that_returns_a_collection()
     {
         $config = collect([
@@ -599,9 +563,7 @@ class RemoteCollectionsTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function items_key_in_config_can_fetch_content_from_a_remote_api()
     {
         $config = collect([
@@ -632,9 +594,7 @@ class RemoteCollectionsTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function blade_directives_in_remote_content_get_parsed()
     {
         $config = collect([
@@ -658,9 +618,7 @@ class RemoteCollectionsTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function collections_key_in_config_can_be_a_function_that_returns_a_list_of_collections()
     {
         $config = collect([

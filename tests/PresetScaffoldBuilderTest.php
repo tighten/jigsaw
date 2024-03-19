@@ -4,6 +4,8 @@ namespace Tests;
 
 use Exception;
 use Mockery;
+use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
+use PHPUnit\Framework\Attributes\Test;
 use TightenCo\Jigsaw\Scaffold\CustomInstaller;
 use TightenCo\Jigsaw\Scaffold\DefaultInstaller;
 use TightenCo\Jigsaw\Scaffold\PresetPackage;
@@ -12,9 +14,7 @@ use TightenCo\Jigsaw\Scaffold\ProcessRunner;
 
 class PresetScaffoldBuilderTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function named_preset_resolves_to_predefined_package_path()
     {
         $preset = $this->app->make(PresetScaffoldBuilder::class);
@@ -37,9 +37,7 @@ class PresetScaffoldBuilderTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function named_preset_resolves_to_vendor_package_path_if_not_predefined()
     {
         $preset = $this->app->make(PresetScaffoldBuilder::class);
@@ -59,10 +57,8 @@ class PresetScaffoldBuilderTest extends TestCase
         $this->assertEquals($this->tmp . $this->fixDirectorySlashes('/vendor/test/package'), $preset->package->path);
     }
 
-    /**
-     * @test
-     * @doesNotPerformAssertions
-     */
+    #[Test]
+    #[DoesNotPerformAssertions]
     public function package_is_loaded_via_composer_if_not_found_locally()
     {
         $process = Mockery::spy(ProcessRunner::class);
@@ -76,9 +72,7 @@ class PresetScaffoldBuilderTest extends TestCase
         $process->shouldHaveReceived('run')->with('composer require test/other-package');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function exception_is_thrown_if_package_is_missing_a_slash()
     {
         $preset = $this->app->make(PresetScaffoldBuilder::class);
@@ -96,9 +90,7 @@ class PresetScaffoldBuilderTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function exception_is_thrown_if_package_init_file_contains_errors()
     {
         $preset = $this->app->make(PresetScaffoldBuilder::class);
@@ -124,10 +116,8 @@ class PresetScaffoldBuilderTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     * @doesNotPerformAssertions
-     */
+    #[Test]
+    #[DoesNotPerformAssertions]
     public function init_file_of_array_type_is_loaded()
     {
         $default_installer = Mockery::spy(DefaultInstaller::class);
@@ -155,10 +145,8 @@ class PresetScaffoldBuilderTest extends TestCase
             ->with($preset, ['delete' => ['test.json']]);
     }
 
-    /**
-     * @test
-     * @doesNotPerformAssertions
-     */
+    #[Test]
+    #[DoesNotPerformAssertions]
     public function init_file_of_php_type_is_loaded()
     {
         $custom_installer = Mockery::spy(CustomInstaller::class);
@@ -189,10 +177,8 @@ class PresetScaffoldBuilderTest extends TestCase
         $custom_installer->shouldHaveReceived('copy')->with('test');
     }
 
-    /**
-     * @test
-     * @doesNotPerformAssertions
-     */
+    #[Test]
+    #[DoesNotPerformAssertions]
     public function init_file_is_optional()
     {
         $default_installer = Mockery::spy(DefaultInstaller::class);
@@ -214,9 +200,7 @@ class PresetScaffoldBuilderTest extends TestCase
         $default_installer->shouldHaveReceived('install')->with($preset, []);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function jigsaw_package_dependency_is_restored_to_fresh_composer_dot_json_when_archiving_site()
     {
         $old_composer = [
@@ -250,9 +234,7 @@ class PresetScaffoldBuilderTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function jigsaw__package_dependency_is_restored_to_fresh_composer_dot_json_when_deleting_site()
     {
         $old_composer = [

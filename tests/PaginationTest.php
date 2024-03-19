@@ -2,11 +2,11 @@
 
 namespace Tests;
 
+use PHPUnit\Framework\Attributes\Test;
+
 class PaginationTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function blade_template_file_can_be_paginated()
     {
         $config = collect(['collections' => ['posts' => []]]);
@@ -49,9 +49,7 @@ class PaginationTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function blade_markdown_template_file_can_be_paginated()
     {
         $config = collect(['collections' => ['posts' => []]]);
@@ -94,9 +92,7 @@ class PaginationTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function blade_template_file_pagination_perPage_setting_defaults_to_config_global_setting()
     {
         $config = collect(['perPage' => 2, 'collections' => ['posts' => []]]);
@@ -138,9 +134,7 @@ class PaginationTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function blade_template_file_pagination_perPage_setting_defaults_to_config_collection_setting()
     {
         $config = collect(['collections' => ['posts' => ['perPage' => 2]]]);
@@ -182,9 +176,7 @@ class PaginationTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function blade_template_file_pagination_perPage_setting_defaults_to_config_collection_setting_when_config_global_setting_exists()
     {
         $config = collect(['perPage' => 10, 'collections' => ['posts' => ['perPage' => 2]]]);
@@ -226,9 +218,7 @@ class PaginationTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function blade_template_file_pagination_perPage_setting_overrides_config_global_setting()
     {
         $config = collect(['perPage' => 10, 'collections' => ['posts' => []]]);
@@ -271,9 +261,7 @@ class PaginationTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function blade_template_file_pagination_perPage_setting_overrides_config_collection_setting()
     {
         $config = collect(['collections' => ['posts' => ['perPage' => 10]]]);
@@ -316,9 +304,7 @@ class PaginationTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function blade_template_file_pagination_perPage_setting_overrides_config_collection_and_global_settings()
     {
         $config = collect(['perPage' => 20, 'collections' => ['posts' => ['perPage' => 10]]]);
@@ -361,7 +347,7 @@ class PaginationTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function blade_template_file_can_be_paginated_with_prefix()
     {
         $config = collect(['collections' => ['posts' => []]]);
@@ -397,7 +383,7 @@ class PaginationTest extends TestCase
         $this->assertFileMissing($this->tmpPath('build/blog/3/index.html'));
     }
 
-    /** @test */
+    #[Test]
     public function blade_markdown_template_file_can_be_paginated_with_prefix()
     {
         $config = collect(['collections' => ['posts' => []]]);

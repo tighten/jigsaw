@@ -46,7 +46,7 @@ class SnapshotsTest extends PHPUnit
     public function build(string $name)
     {
         // Delete the contents of the output directory in the source to clean up previous builds
-        $this->filesystem->deleteDirectory($this->output($name), true);
+        $this->filesystem->deleteDirectory($this->testOutput($name), true);
 
         $jigsaw = realpath(implode('/', array_filter([__DIR__, '..', 'jigsaw'])));
         $arguments = static::$arguments[$name] ?? [];
@@ -63,19 +63,19 @@ class SnapshotsTest extends PHPUnit
 
     private function assertSnapshotMatches($name)
     {
-        $this->assertDirectoryExists($this->output($name));
+        $this->assertDirectoryExists($this->testOutput($name));
 
         $this->assertSame(
             collect($this->filesystem->allFiles($this->snapshot($name), true))
                 ->map(fn ($file) => Str::after($file->getPathname(), $this->snapshot($name)))
                 ->toArray(),
-            collect($this->filesystem->allFiles($this->output($name), true))
-                ->map(fn ($file) => Str::after($file->getPathname(), $this->output($name)))
+            collect($this->filesystem->allFiles($this->testOutput($name), true))
+                ->map(fn ($file) => Str::after($file->getPathname(), $this->testOutput($name)))
                 ->toArray(),
             "Output file structure does not match snapshot in '{$name}'.",
         );
 
-        collect($this->filesystem->allFiles($this->output($name), true))->map(function (SplFileInfo $file) use ($name) {
+        collect($this->filesystem->allFiles($this->testOutput($name), true))->map(function (SplFileInfo $file) use ($name) {
             $this->assertSame(
                 file_get_contents(implode(DIRECTORY_SEPARATOR, array_filter([$this->snapshot($name), $file->getRelativePathname()]))),
                 $file->getContents(),
@@ -89,7 +89,7 @@ class SnapshotsTest extends PHPUnit
         return implode(DIRECTORY_SEPARATOR, array_filter([__DIR__, 'snapshots', $name]));
     }
 
-    private function output(string $name): string
+    private function testOutput(string $name): string
     {
         $output = $name === 'environment-specific-config-file' ? 'build_staging' : 'build_local';
 

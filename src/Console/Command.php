@@ -12,7 +12,7 @@ abstract class Command extends SymfonyCommand
     protected OutputInterface $output;
     protected $console;
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): int 
     {
         $this->input = $input;
         $this->output = $output;

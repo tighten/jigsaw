@@ -79,12 +79,12 @@ class TestCase extends PHPUnit
             Component::forgetFactory();
         }
 
-        HandleExceptions::forgetApp();
-
-        if (! $this->hasFailed()) {
+        if ($this->status()->isSuccess()) {
             $this->filesystem->deleteDirectories(__DIR__ . '/fixtures/tmp/');
             $this->filesystem->deleteDirectory(app()->cachePath());
         }
+
+        HandleExceptions::flushState();
 
         parent::tearDown();
     }

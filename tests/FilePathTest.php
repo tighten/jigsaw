@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use PHPUnit\Framework\Attributes\Test;
 use TightenCo\Jigsaw\IterableObject;
 use TightenCo\Jigsaw\PageVariable;
 use TightenCo\Jigsaw\PathResolvers\CollectionPathResolver;

@@ -4,6 +4,7 @@ namespace Tests;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use PHPUnit\Framework\Attributes\Test;
 
 trait Haiku
 {

@@ -3,11 +3,12 @@
 namespace Tests;
 
 use League\CommonMark\Extension\DescriptionList\DescriptionListExtension;
+use PHPUnit\Framework\Attributes\Test;
 use TightenCo\Jigsaw\Parsers\MarkdownParserContract;
 
 class CommonMarkTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function enable_commonmark_parser()
     {
         $files = $this->withContent('### Heading {.class}');
@@ -22,7 +23,7 @@ class CommonMarkTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function configure_commonmark_parser()
     {
         $files = $this->withContent('_Em_');
@@ -43,7 +44,7 @@ class CommonMarkTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function replace_commonmark_extensions()
     {
         $files = $this->withContent(<<<MD
@@ -68,7 +69,7 @@ class CommonMarkTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function override_parser_with_custom_class()
     {
         $files = $this->withContent('### Heading {.class}');

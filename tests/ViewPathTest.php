@@ -2,9 +2,11 @@
 
 namespace Tests;
 
+use PHPUnit\Framework\Attributes\Test;
+
 class ViewPathTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function can_load_views_from_custom_path()
     {
         $this->createSource([

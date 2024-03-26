@@ -26,9 +26,9 @@ class TestCase extends PHPUnit
     protected Filesystem $filesystem;
     protected string $tmp;
 
-    public function __construct()
+    public function __construct($name = null, array $data = [], $dataName = '') 
     {
-        parent::__construct();
+        parent::__construct($name, $data, $dataName);
 
         $this->filesystem = new Filesystem;
     }
@@ -79,12 +79,12 @@ class TestCase extends PHPUnit
             Component::forgetFactory();
         }
 
-        HandleExceptions::forgetApp();
-
-        if (! $this->hasFailed()) {
+        if ($this->status()->isSuccess()) {
             $this->filesystem->deleteDirectories(__DIR__ . '/fixtures/tmp/');
             $this->filesystem->deleteDirectory(app()->cachePath());
         }
+
+        HandleExceptions::flushState();
 
         parent::tearDown();
     }

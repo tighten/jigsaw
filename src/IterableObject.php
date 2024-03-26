@@ -2,12 +2,14 @@
 
 namespace TightenCo\Jigsaw;
 
+use AllowDynamicProperties;
 use ArrayAccess;
 use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection as BaseCollection;
 use Illuminate\Support\HigherOrderCollectionProxy;
 
+#[AllowDynamicProperties]
 class IterableObject extends BaseCollection implements ArrayAccess
 {
     public function __get($key)

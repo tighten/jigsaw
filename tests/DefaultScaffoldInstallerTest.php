@@ -4,6 +4,8 @@ namespace Tests;
 
 use Illuminate\Support\Arr;
 use Mockery;
+use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
+use PHPUnit\Framework\Attributes\Test;
 use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\Scaffold\DefaultInstaller;
 use TightenCo\Jigsaw\Scaffold\PresetPackage;
@@ -12,9 +14,7 @@ use TightenCo\Jigsaw\Scaffold\ProcessRunner;
 
 class DefaultScaffoldInstallerTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function installer_installs_basic_scaffold_files()
     {
         $this->createSource([]);
@@ -31,9 +31,7 @@ class DefaultScaffoldInstallerTest extends TestCase
         $this->assertFileExists($this->tmpPath('config.php'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function installer_deletes_single_base_file_specified_in_delete_array()
     {
         $this->createSource([]);
@@ -49,9 +47,7 @@ class DefaultScaffoldInstallerTest extends TestCase
         $this->assertFileExists($this->tmpPath('source'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function installer_deletes_multiple_base_files_specified_in_delete_array()
     {
         $this->createSource([]);
@@ -68,9 +64,7 @@ class DefaultScaffoldInstallerTest extends TestCase
         $this->assertFileExists($this->tmpPath('source'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function installer_deletes_base_directories_specified_in_delete_array()
     {
         $this->createSource([]);
@@ -85,9 +79,7 @@ class DefaultScaffoldInstallerTest extends TestCase
         $this->assertFileMissing($this->tmpPath('source'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function installer_copies_all_preset_files()
     {
         $this->createSource([
@@ -120,9 +112,7 @@ class DefaultScaffoldInstallerTest extends TestCase
         $this->assertFileExists($this->tmpPath('empty'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function installer_preserves_base_files_when_copying_preset_files()
     {
         $this->createSource([
@@ -140,9 +130,7 @@ class DefaultScaffoldInstallerTest extends TestCase
         $this->assertFileExists($this->tmpPath('config.php'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function installer_overwrites_base_files_of_same_name_when_copying_preset_files()
     {
         $this->createSource([
@@ -160,9 +148,7 @@ class DefaultScaffoldInstallerTest extends TestCase
         $this->assertOutputFile('config.php', 'new config file from preset');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function installer_can_ignore_files_and_directories_from_preset_when_copying()
     {
         $this->createSource([
@@ -196,9 +182,7 @@ class DefaultScaffoldInstallerTest extends TestCase
         $this->assertFileMissing($this->tmpPath('ignore-directory'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function installer_can_ignore_files_and_directories_from_preset_using_wildcard_when_copying()
     {
         $this->createSource([
@@ -231,9 +215,7 @@ class DefaultScaffoldInstallerTest extends TestCase
         $this->assertFileMissing($this->tmpPath('ignore-directory'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function installer_ignores_node_modules_directory_from_preset_when_copying()
     {
         $this->createSource([
@@ -251,9 +233,7 @@ class DefaultScaffoldInstallerTest extends TestCase
         $this->assertFileMissing($this->tmpPath('node_modules'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function installer_ignores_vendor_directory_from_preset_when_copying()
     {
         $this->createSource([
@@ -271,9 +251,7 @@ class DefaultScaffoldInstallerTest extends TestCase
         $this->assertFileMissing($this->tmpPath('vendor'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function installer_ignores_init_file_from_preset_when_copying()
     {
         $this->createSource([
@@ -291,9 +269,7 @@ class DefaultScaffoldInstallerTest extends TestCase
         $this->assertFileMissing($this->tmpPath('init.php'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function installer_ignores_build_directories_from_preset_when_copying()
     {
         $this->createSource([
@@ -313,10 +289,8 @@ class DefaultScaffoldInstallerTest extends TestCase
         $this->assertFileMissing($this->tmpPath('build_production'));
     }
 
-    /**
-     * @test
-     * @doesNotPerformAssertions
-     */
+    #[Test]
+    #[DoesNotPerformAssertions]
     public function installer_runs_default_commands_if_none_are_specified_in_init()
     {
         $builder = Mockery::spy(PresetScaffoldBuilder::class);
@@ -332,10 +306,8 @@ class DefaultScaffoldInstallerTest extends TestCase
         $builder->shouldHaveReceived('runCommands')->with($installer::DEFAULT_COMMANDS);
     }
 
-    /**
-     * @test
-     * @doesNotPerformAssertions
-     */
+    #[Test]
+    #[DoesNotPerformAssertions]
     public function installer_runs_no_commands_if_empty_array_is_specified_in_init()
     {
         $builder = Mockery::spy(PresetScaffoldBuilder::class);
@@ -351,10 +323,8 @@ class DefaultScaffoldInstallerTest extends TestCase
         $builder->shouldHaveReceived('runCommands')->with([]);
     }
 
-    /**
-     * @test
-     * @doesNotPerformAssertions
-     */
+    #[Test]
+    #[DoesNotPerformAssertions]
     public function installer_runs_specified_commands_from_init()
     {
         $builder = Mockery::spy(PresetScaffoldBuilder::class);
@@ -370,9 +340,7 @@ class DefaultScaffoldInstallerTest extends TestCase
         $builder->shouldHaveReceived('runCommands')->with(['yarn']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function composer_json_is_restored_if_deleted_after_preset_is_installed()
     {
         $old_composer = [
@@ -398,9 +366,7 @@ class DefaultScaffoldInstallerTest extends TestCase
         $this->assertEquals($old_composer, json_decode(file_get_contents($this->tmpPath('composer.json')), true));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function original_composer_json_is_merged_with_composer_json_installed_by_preset()
     {
         $old_composer = [
@@ -435,9 +401,7 @@ class DefaultScaffoldInstallerTest extends TestCase
         $this->assertEquals('setting', Arr::get($new_composer, 'repository'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function version_constraints_from_original_composer_json_take_precedence_in_merged_composer_json()
     {
         $old_composer = [
@@ -472,9 +436,7 @@ class DefaultScaffoldInstallerTest extends TestCase
         $this->assertEquals('3.0', Arr::get($new_composer, 'require.new-package/test'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function empty_composer_json_is_created_if_it_was_not_present_before_preset_was_installed()
     {
         $this->createSource([

@@ -3,6 +3,8 @@
 namespace Tests;
 
 use Mockery;
+use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
+use PHPUnit\Framework\Attributes\Test;
 use TightenCo\Jigsaw\Console\ConsoleSession;
 use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\Scaffold\CustomInstaller;
@@ -12,9 +14,7 @@ use TightenCo\Jigsaw\Scaffold\ProcessRunner;
 
 class CustomScaffoldInstallerTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function custom_installer_installs_basic_scaffold_files()
     {
         $this->createSource([]);
@@ -32,9 +32,7 @@ class CustomScaffoldInstallerTest extends TestCase
         $this->assertFileExists($this->tmpPath('config.php'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function installer_deletes_single_base_file_specified_in_delete_array()
     {
         $this->createSource([]);
@@ -49,9 +47,7 @@ class CustomScaffoldInstallerTest extends TestCase
         $this->assertFileExists($this->tmpPath('source'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function installer_deletes_multiple_base_files_specified_in_delete_array()
     {
         $this->createSource([]);
@@ -70,9 +66,7 @@ class CustomScaffoldInstallerTest extends TestCase
         $this->assertFileExists($this->tmpPath('source'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function installer_deletes_base_directories_specified_in_delete_array()
     {
         $this->createSource([]);
@@ -88,9 +82,7 @@ class CustomScaffoldInstallerTest extends TestCase
         $this->assertFileMissing($this->tmpPath('source'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function installer_copies_all_preset_files_if_copy_has_no_parameter()
     {
         $this->createSource([
@@ -116,9 +108,7 @@ class CustomScaffoldInstallerTest extends TestCase
         $this->assertFileExists($this->tmpPath('source/source-file.md'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function installer_copies_individual_preset_file_if_copy_parameter_is_string()
     {
         $this->createSource([
@@ -144,9 +134,7 @@ class CustomScaffoldInstallerTest extends TestCase
         $this->assertFileMissing($this->tmpPath('source/source-file.md'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function installer_copies_multiple_preset_files_if_copy_parameter_is_array()
     {
         $this->createSource([
@@ -175,9 +163,7 @@ class CustomScaffoldInstallerTest extends TestCase
         $this->assertFileMissing($this->tmpPath('.dotfile'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function installer_can_copy_files_using_a_wildcard()
     {
         $this->createSource([
@@ -203,9 +189,7 @@ class CustomScaffoldInstallerTest extends TestCase
         $this->assertFileMissing($this->tmpPath('.dotfile'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function installer_can_call_copy_multiple_times()
     {
         $this->createSource([
@@ -232,9 +216,7 @@ class CustomScaffoldInstallerTest extends TestCase
         $this->assertFileMissing($this->tmpPath('preset-file.php'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function installer_copies_from_specified_directory_to_root_if_from_is_specified()
     {
         $this->createSource([
@@ -264,9 +246,7 @@ class CustomScaffoldInstallerTest extends TestCase
         $this->assertOutputFile('config.php', 'config 2');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function installer_can_ignore_preset_files_when_copying()
     {
         $this->createSource([
@@ -293,9 +273,7 @@ class CustomScaffoldInstallerTest extends TestCase
         $this->assertFileMissing($this->tmpPath('.dotfile'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function installer_can_call_ignore_multiple_times()
     {
         $this->createSource([
@@ -323,9 +301,7 @@ class CustomScaffoldInstallerTest extends TestCase
         $this->assertFileMissing($this->tmpPath('.dotfile'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function original_composer_json_is_not_deleted()
     {
         $old_composer = [
@@ -356,9 +332,7 @@ class CustomScaffoldInstallerTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function original_composer_json_is_merged_with_new_composer_json_after_copy()
     {
         $old_composer = [
@@ -398,9 +372,7 @@ class CustomScaffoldInstallerTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function composer_json_files_are_merged_when_copying_multiple_times()
     {
         $old_composer = [
@@ -450,9 +422,7 @@ class CustomScaffoldInstallerTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function empty_composer_json_is_created_if_it_was_not_present_before_preset_was_installed()
     {
         $this->createSource([
@@ -477,10 +447,8 @@ class CustomScaffoldInstallerTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     * @doesNotPerformAssertions
-     */
+    #[Test]
+    #[DoesNotPerformAssertions]
     public function installer_can_ask_for_user_input()
     {
         $console = Mockery::spy(ConsoleSession::class);
@@ -495,10 +463,8 @@ class CustomScaffoldInstallerTest extends TestCase
             ->with('What is your name?', null, null, null);
     }
 
-    /**
-     * @test
-     * @doesNotPerformAssertions
-     */
+    #[Test]
+    #[DoesNotPerformAssertions]
     public function installer_can_ask_for_user_input_with_choices()
     {
         $console = Mockery::spy(ConsoleSession::class);
@@ -522,10 +488,8 @@ class CustomScaffoldInstallerTest extends TestCase
             );
     }
 
-    /**
-     * @test
-     * @doesNotPerformAssertions
-     */
+    #[Test]
+    #[DoesNotPerformAssertions]
     public function installer_can_ask_for_user_confirmation()
     {
         $console = Mockery::spy(ConsoleSession::class);
@@ -540,10 +504,8 @@ class CustomScaffoldInstallerTest extends TestCase
             ->with('Continue?', null);
     }
 
-    /**
-     * @test
-     * @doesNotPerformAssertions
-     */
+    #[Test]
+    #[DoesNotPerformAssertions]
     public function installer_runs_specified_commands_from_init()
     {
         $package = Mockery::mock(PresetPackage::class);

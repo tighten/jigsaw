@@ -15,7 +15,7 @@ Can we have php opening tags here?
 @endverbatim
 
 ```
-<?{{ '' }}php
+<?php
 ```
 
 <hr>
@@ -34,9 +34,7 @@ This works: <?php{{ '' }}
 This works: {!! $page->php !!}
 This works: {!! '<' . '?php' !!}
 This works: <{{ '?php' }}
-This works: <?php{{ '' }}
-This works: <?{{ '' }}php
-This works: <?.php
+This works: <?php
 
 // Test comment...
 

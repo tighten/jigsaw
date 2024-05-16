@@ -28,6 +28,10 @@ class CommonMarkParser implements MarkdownParserContract
             new TableExtension,
         ]))->map(fn ($extension) => $environment->addExtension($extension));
 
+        collect(
+            Arr::get(app('config'), 'commonmark.renderers')
+        )->map(fn ($renderer, $nodeClass) => $environment->addRenderer($nodeClass, $renderer));
+
         $this->converter = new MarkdownConverter($environment);
     }
 

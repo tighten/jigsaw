@@ -32,10 +32,10 @@ class PageVariable extends IterableObject
     public function getPath($key = null)
     {
         if (($key || $this->_meta->extending) && $this->_meta->path instanceof IterableObject) {
-            return $this->_meta->path->get($key ?: $this->getExtending());
+            return enforceTrailingSlash($this->_meta->path->get($key ?: $this->getExtending()));
         }
 
-        return (string) $this->_meta->path;
+        return enforceTrailingSlash((string) $this->_meta->path);
     }
 
     public function getPaths()
@@ -45,15 +45,11 @@ class PageVariable extends IterableObject
 
     public function getUrl($key = null)
     {
-        $wrap = fn ($url) => $url . (
-            ! str_ends_with($url, '/') && app('config')->get('trailing_slash') ? '/' : ''
-        );
-
         if (($key || $this->_meta->extending) && $this->_meta->path instanceof IterableObject) {
-            return $wrap($this->_meta->url->get($key ?: $this->getExtending()));
+            return enforceTrailingSlash($this->_meta->url->get($key ?: $this->getExtending()));
         }
 
-        return $wrap((string) $this->_meta->url);
+        return enforceTrailingSlash((string) $this->_meta->url);
     }
 
     public function getUrls()

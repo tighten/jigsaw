@@ -32,13 +32,6 @@ function trimPath($path)
     return rightTrimPath(leftTrimPath($path));
 }
 
-function enforceTrailingSlash($path)
-{
-    $c = Container::getInstance();
-
-    return Arr::get($c['config'], 'trailing_slash') ? Str::finish($path, '/') : $path;
-}
-
 function resolvePath($path)
 {
     $path = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);

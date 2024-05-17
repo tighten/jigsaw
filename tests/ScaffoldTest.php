@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use PHPUnit\Framework\Attributes\Test;
 use TightenCo\Jigsaw\Scaffold\BasicScaffoldBuilder;
 
 class ScaffoldTest extends TestCase
@@ -19,9 +20,7 @@ class ScaffoldTest extends TestCase
         'yarn.lock' => '',
     ];
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_archive_existing_files_and_directories()
     {
         $this->createSource(array_merge(
@@ -39,9 +38,7 @@ class ScaffoldTest extends TestCase
         });
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function will_create_archived_directory_if_none_exists_when_archiving_site()
     {
         $this->createSource(self::EXISTING_FILES);
@@ -56,9 +53,7 @@ class ScaffoldTest extends TestCase
         });
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function will_erase_contents_of_archived_directory_if_it_already_exists_when_archiving_site()
     {
         $this->createSource(array_merge(
@@ -75,9 +70,7 @@ class ScaffoldTest extends TestCase
         $this->assertFileMissing($this->tmpPath('archived/old-file.md'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function will_ignore_archived_directory_when_archiving_site()
     {
         $this->createSource(array_merge(
@@ -92,9 +85,7 @@ class ScaffoldTest extends TestCase
         $this->assertFileMissing($this->tmpPath('archived/archived'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function will_ignore_vendor_directory_when_archiving_site()
     {
         $this->createSource(array_merge(
@@ -109,9 +100,7 @@ class ScaffoldTest extends TestCase
         $this->assertFileMissing($this->tmpPath('archived/vendor'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function will_ignore_node_modules_directory_when_archiving_site()
     {
         $this->createSource(array_merge(
@@ -126,9 +115,7 @@ class ScaffoldTest extends TestCase
         $this->assertFileMissing($this->tmpPath('archived/node_modules'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_delete_existing_files_and_directories()
     {
         $this->createSource(self::EXISTING_FILES);
@@ -141,9 +128,7 @@ class ScaffoldTest extends TestCase
         });
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function will_ignore_archived_directory_when_deleting_site()
     {
         $this->createSource(array_merge(
@@ -157,9 +142,7 @@ class ScaffoldTest extends TestCase
         $this->assertFileExists($this->tmpPath('archived'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function will_ignore_vendor_directory_when_deleting_site()
     {
         $this->createSource(array_merge(
@@ -173,9 +156,7 @@ class ScaffoldTest extends TestCase
         $this->assertFileExists($this->tmpPath('vendor'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function will_ignore_node_modules_directory_when_deleting_site()
     {
         $this->createSource(array_merge(
@@ -189,9 +170,7 @@ class ScaffoldTest extends TestCase
         $this->assertFileExists($this->tmpPath('node_modules'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function jigsaw_dependency_is_restored_to_fresh_composer_dot_json_when_archiving_site()
     {
         $old_composer = ['require' => ['tightenco/jigsaw' => '^1.2']];
@@ -204,9 +183,7 @@ class ScaffoldTest extends TestCase
         $this->assertEquals($old_composer, json_decode(file_get_contents($this->tmpPath('composer.json')), true));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function composer_dot_json_is_not_restored_if_it_did_not_exist_when_archiving_site()
     {
         $this->createSource(self::EXISTING_FILES);
@@ -217,9 +194,7 @@ class ScaffoldTest extends TestCase
         $this->assertFileMissing($this->tmpPath('composer.json'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function jigsaw_dependency_is_restored_to_fresh_composer_dot_json_when_deleting_site()
     {
         $old_composer = ['require' => ['tightenco/jigsaw' => '^1.2']];
@@ -232,9 +207,7 @@ class ScaffoldTest extends TestCase
         $this->assertEquals($old_composer, json_decode(file_get_contents($this->tmpPath('composer.json')), true));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function composer_dot_json_is_not_restored_if_it_did_not_exist_when_deleting_site()
     {
         $this->createSource(self::EXISTING_FILES);

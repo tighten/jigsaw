@@ -3,6 +3,7 @@
 namespace Tests;
 
 use Mockery;
+use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 use TightenCo\Jigsaw\Console\InitCommand;
@@ -11,9 +12,7 @@ use TightenCo\Jigsaw\Scaffold\PresetScaffoldBuilder;
 
 class InitCommandTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function init_command_with_no_arguments_uses_basic_scaffold_for_site()
     {
         $basic_scaffold = Mockery::spy(BasicScaffoldBuilder::class);
@@ -35,9 +34,7 @@ class InitCommandTest extends TestCase
         $this->assertStringContainsString('initialized', $console->getDisplay());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function init_command_with_argument_uses_preset_scaffold_for_site()
     {
         $preset_scaffold = Mockery::spy(PresetScaffoldBuilder::class);
@@ -60,9 +57,7 @@ class InitCommandTest extends TestCase
         $this->assertStringContainsString('initialized', $console->getDisplay());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function init_command_displays_error_if_preset_name_is_invalid()
     {
         $command = $this->app->make(InitCommand::class);
@@ -73,9 +68,7 @@ class InitCommandTest extends TestCase
         $this->assertStringContainsString("'invalid' is not a valid package name.", $console->getDisplay());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function init_command_displays_warning_if_source_directory_exists()
     {
         $this->createSource(['source' => []]);
@@ -90,9 +83,7 @@ class InitCommandTest extends TestCase
         $this->assertStringContainsString("It looks like you've already run 'jigsaw init' on this project", $console->getDisplay());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function init_command_displays_warning_if_config_dot_php_exists()
     {
         $this->createSource(['config.php' => '']);
@@ -107,9 +98,7 @@ class InitCommandTest extends TestCase
         $this->assertStringContainsString("It looks like you've already run 'jigsaw init' on this project", $console->getDisplay());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function will_not_build_scaffold_if_site_already_initialized_and_user_chooses_cancel()
     {
         $basic_scaffold = Mockery::spy(BasicScaffoldBuilder::class);
@@ -133,9 +122,7 @@ class InitCommandTest extends TestCase
         $this->assertStringNotContainsString('initialized', $console->getDisplay());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function will_archive_existing_site_if_user_chooses_archive_option()
     {
         $basic_scaffold = Mockery::spy(BasicScaffoldBuilder::class);
@@ -158,9 +145,7 @@ class InitCommandTest extends TestCase
         $this->assertStringContainsString('initialized', $console->getDisplay());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function will_build_scaffold_if_site_already_initialized_and_user_chooses_archive()
     {
         $basic_scaffold = Mockery::spy(BasicScaffoldBuilder::class);
@@ -183,9 +168,7 @@ class InitCommandTest extends TestCase
         $this->assertStringContainsString('initialized', $console->getDisplay());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function will_delete_existing_site_if_user_chooses_delete_option()
     {
         $basic_scaffold = Mockery::spy(BasicScaffoldBuilder::class);
@@ -208,9 +191,7 @@ class InitCommandTest extends TestCase
         $this->assertStringContainsString('initialized', $console->getDisplay());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function will_build_scaffold_if_site_already_initialized_and_user_chooses_delete()
     {
         $basic_scaffold = Mockery::spy(BasicScaffoldBuilder::class);

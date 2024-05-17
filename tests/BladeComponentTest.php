@@ -4,12 +4,11 @@ namespace Tests;
 
 use Illuminate\Container\Container;
 use Illuminate\View\Component;
+use PHPUnit\Framework\Attributes\Test;
 
 class BladeComponentTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function can_include_blade_component_with_at_syntax()
     {
         $files = $this->setupSource([
@@ -42,9 +41,7 @@ class BladeComponentTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_include_blade_component_with_x_tag_syntax_using_underscore_components_directory()
     {
         $files = $this->setupSource([
@@ -64,9 +61,7 @@ class BladeComponentTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_include_blade_component_with_x_tag_syntax_using_aliased_component_with_view()
     {
         $this->app['bladeCompiler']->component('alert', AlertComponent::class);
@@ -88,9 +83,7 @@ class BladeComponentTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_include_blade_component_with_x_tag_syntax_using_aliased_component_with_inline_render()
     {
         $this->app['bladeCompiler']->component('inline', InlineAlertComponent::class);
@@ -109,9 +102,7 @@ class BladeComponentTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_include_blade_component_with_x_tag_syntax_using_namespaced_component_with_inline_render()
     {
         class_alias('Tests\InlineAlertComponent', 'Components\InlineClassComponent');
@@ -130,9 +121,7 @@ class BladeComponentTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_include_blade_component_with_x_tag_syntax_using_namespaced_component_with_view()
     {
         class_alias('Tests\\AlertComponent', 'Components\\ClassComponent');

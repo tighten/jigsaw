@@ -2,11 +2,11 @@
 
 namespace Tests;
 
+use PHPUnit\Framework\Attributes\Test;
+
 class AtSymbolInMarkdownTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function mailto_link_in_markdown_is_parsed_and_obfuscated()
     {
         $files = $this->setupSource([
@@ -24,9 +24,7 @@ class AtSymbolInMarkdownTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function mailto_link_in_blade_markdown_is_parsed()
     {
         $files = $this->setupSource([
@@ -44,9 +42,7 @@ class AtSymbolInMarkdownTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function at_symbol_after_closing_bracket_is_unchanged_in_markdown()
     {
         $files = $this->setupSource([
@@ -64,9 +60,7 @@ class AtSymbolInMarkdownTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function double_at_symbol_in_fenced_code_block_is_parsed_to_single_at_symbol_in_blade_markdown()
     {
         $files = $this->setupSource([
@@ -84,9 +78,7 @@ class AtSymbolInMarkdownTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function double_at_symbol_in_inline_code_block_is_parsed_to_single_at_symbol_in_blade_markdown()
     {
         $files = $this->setupSource([

@@ -5,11 +5,12 @@ namespace Tests;
 use Illuminate\Container\Container;
 use Illuminate\Support\Str;
 use Illuminate\View\Component;
+use PHPUnit\Framework\Attributes\Test;
 use TightenCo\Jigsaw\PageData;
 
 class PageDataBindingTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function can_bind_data_for_current_page_into_container()
     {
         class_alias('Tests\TestPageHeaderComponent', 'Components\PageHeader');

@@ -5,13 +5,14 @@ namespace Tests;
 use Illuminate\View\Compilers\BladeCompiler;
 use Illuminate\View\Factory;
 use Mockery;
+use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
+use PHPUnit\Framework\Attributes\Test;
 use TightenCo\Jigsaw\View\ViewRenderer;
 
 class ViewRendererTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
+    #[DoesNotPerformAssertions]
     public function it_registers_view_hint_paths()
     {
         $mock = Mockery::mock(Factory::class);
@@ -29,9 +30,7 @@ class ViewRendererTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_does_not_register_view_hint_paths_if_not_specified_in_config()
     {
         $mock = Mockery::mock(Factory::class);
@@ -45,9 +44,7 @@ class ViewRendererTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_does_not_register_view_hint_paths_if_empty_in_config()
     {
         $mock = Mockery::mock(Factory::class);

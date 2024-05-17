@@ -2,11 +2,11 @@
 
 namespace Tests;
 
+use PHPUnit\Framework\Attributes\Test;
+
 class MarkdownExtraTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function parse_markdown_inside_html_blocks()
     {
         $files = $this->setupSource([
@@ -23,9 +23,7 @@ class MarkdownExtraTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_specify_id_in_markdown()
     {
         $files = $this->setupSource([
@@ -42,9 +40,7 @@ class MarkdownExtraTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_specify_internal_anchor_links_in_markdown()
     {
         $files = $this->setupSource([
@@ -61,9 +57,7 @@ class MarkdownExtraTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_specify_class_name_in_markdown()
     {
         $files = $this->setupSource([
@@ -80,9 +74,7 @@ class MarkdownExtraTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function correctly_parse_single_line_html_markup_in_markdown_file()
     {
         $files = $this->setupSource([

@@ -2,15 +2,14 @@
 
 namespace Tests;
 
+use PHPUnit\Framework\Attributes\Test;
 use TightenCo\Jigsaw\Handlers\MarkdownHandler;
 use TightenCo\Jigsaw\IterableObject;
 use TightenCo\Jigsaw\PageData;
 
 class PhpOpenTagInMarkdownTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function md_files_containing_php_open_tag_are_processed()
     {
         $inputFile = $this->getInputFile('php-tag/php-tag-markdown.md');
@@ -23,9 +22,7 @@ class PhpOpenTagInMarkdownTest extends TestCase
         $this->assertStringContainsString('<code>&lt;?php', $outputFile[0]->contents());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function blade_md_hybrid_files_containing_php_open_tag_are_processed()
     {
         $inputFile = $this->getInputFile('php-tag/php-tag-blade-markdown.blade.md');

@@ -5,6 +5,7 @@ namespace TightenCo\Jigsaw\Bootstrap;
 use ErrorException;
 use Exception;
 use Illuminate\Contracts\Debug\ExceptionHandler;
+use PHPUnit\Runner\ErrorHandler;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\ErrorHandler\Error\FatalError;
 use Throwable;
@@ -17,9 +18,49 @@ class HandleExceptions
 
     protected static ?Container $app;
 
-    public static function forgetApp(): void
+    public static function flushState(): void
     {
+        if (is_null(static::$app)) {
+            return;
+        }
+
+        static::flushHandlersState();
         static::$app = null;
+        static::$reservedMemory = null;
+    }
+
+    public static function flushHandlersState(): void
+    {
+        while (true) {
+            $previousHandler = set_exception_handler(static fn () => null);
+            restore_exception_handler();
+
+            if ($previousHandler === null) {
+                break;
+            }
+
+            restore_exception_handler();
+        }
+
+        while (true) {
+            $previousHandler = set_error_handler(static fn () => null);
+            restore_error_handler();
+
+            if ($previousHandler === null) {
+                break;
+            }
+
+            restore_error_handler();
+        }
+
+        if (class_exists(ErrorHandler::class)) {
+            $instance = ErrorHandler::instance();
+
+            if ((fn () => $this->enabled ?? false)->call($instance)) {
+                $instance->disable();
+                $instance->enable();
+            }
+        }
     }
 
     public function bootstrap(Container $app): void

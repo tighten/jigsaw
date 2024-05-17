@@ -2,9 +2,11 @@
 
 namespace Tests;
 
+use PHPUnit\Framework\Attributes\Test;
+
 class TestCaseTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function create_test_file_structure_from_nested_array()
     {
         $this->createSource([
@@ -41,7 +43,7 @@ class TestCaseTest extends TestCase
         $this->assertStringEqualsFile($this->tmpPath('resources/js/main.js'), 'console.log("Look ma, no file system!");');
     }
 
-    /** @test */
+    #[Test]
     public function create_test_files_with_multiple_extensions()
     {
         $this->createSource([

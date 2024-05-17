@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use PHPUnit\Framework\Attributes\Test;
 use TightenCo\Jigsaw\File\Filesystem;
 
 class FilesystemTest extends TestCase
@@ -22,9 +23,7 @@ class FilesystemTest extends TestCase
         'empty-directory' => [],
     ];
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_return_array_of_all_files_and_directories()
     {
         $filesystem = $this->app->make(Filesystem::class);
@@ -35,9 +34,7 @@ class FilesystemTest extends TestCase
         $this->assertCount(11, $files);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function DS_Store_is_always_ignored_when_retrieving_all_files_and_directories()
     {
         $this->createSource([
@@ -59,9 +56,7 @@ class FilesystemTest extends TestCase
         $this->assertCount(2, $files);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_ignore_a_file_when_retrieving_all_files_and_directories()
     {
         $files = $this->getFilesExcept('file-1.md');
@@ -70,9 +65,7 @@ class FilesystemTest extends TestCase
         $this->assertCount(10, $files);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_ignore_multiple_files_when_retrieving_all_files_and_directories()
     {
         $files = $this->getFilesExcept([
@@ -85,9 +78,7 @@ class FilesystemTest extends TestCase
         $this->assertCount(9, $files);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_use_wildcard_to_ignore_files_when_retrieving_all_files_and_directories()
     {
         $files = $this->getFilesExcept([
@@ -99,9 +90,7 @@ class FilesystemTest extends TestCase
         $this->assertCount(9, $files);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_use_wildcard_in_middle_of_filename_to_ignore_files_when_retrieving_all_files_and_directories()
     {
         $files = $this->getFilesExcept([
@@ -113,9 +102,7 @@ class FilesystemTest extends TestCase
         $this->assertCount(9, $files);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_use_wildcard_at_beginning_of_filename_to_ignore_files_when_retrieving_all_files_and_directories()
     {
         $files = $this->getFilesExcept([
@@ -127,9 +114,7 @@ class FilesystemTest extends TestCase
         $this->assertCount(9, $files);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_ignore_directories_when_retrieving_all_files_and_directories()
     {
         $files = $this->getFilesExcept([
@@ -140,9 +125,7 @@ class FilesystemTest extends TestCase
         $this->assertCount(4, $files);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function directory_slash_is_ignored_when_retrieving_all_files_and_directories()
     {
         $files = $this->getFilesExcept([
@@ -153,9 +136,7 @@ class FilesystemTest extends TestCase
         $this->assertCount(4, $files);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_ignore_nested_directories_when_retrieving_all_files_and_directories()
     {
         $files = $this->getFilesExcept([
@@ -166,9 +147,7 @@ class FilesystemTest extends TestCase
         $this->assertCount(8, $files);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_use_wildcard_to_ignore_nested_files_when_retrieving_all_files_and_directories()
     {
         $files = $this->getFilesExcept([
@@ -180,9 +159,7 @@ class FilesystemTest extends TestCase
         $this->assertCount(9, $files);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_use_multiple_wildcards_to_ignore_files_when_retrieving_all_files_and_directories()
     {
         $files = $this->getFilesExcept([
@@ -194,9 +171,7 @@ class FilesystemTest extends TestCase
         $this->assertCount(9, $files);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_return_array_of_files_and_directories_matching_a_string()
     {
         $filesystem = $this->app->make(Filesystem::class);
@@ -208,9 +183,7 @@ class FilesystemTest extends TestCase
         $this->assertEquals('file-1.md', $files[0]->getFileName());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_return_array_of_files_and_directories_matching_an_array()
     {
         $files = $this->getFilesMatching([
@@ -221,9 +194,7 @@ class FilesystemTest extends TestCase
         $this->assertEqualsCanonicalizing(['file-1.md', 'file-2.md'], $files->all());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_return_array_of_files_and_directories_matching_a_wildcard()
     {
         $files = $this->getFilesMatching([
@@ -233,9 +204,7 @@ class FilesystemTest extends TestCase
         $this->assertEqualsCanonicalizing(['file-1.md', 'file-2.md'], $files->all());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_return_array_of_files_and_directories_matching_a_directory()
     {
         $files = $this->getFilesMatching([

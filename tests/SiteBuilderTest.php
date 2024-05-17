@@ -2,11 +2,11 @@
 
 namespace Tests;
 
+use PHPUnit\Framework\Attributes\Test;
+
 class SiteBuilderTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function destination_directory_is_deleted_when_building_site()
     {
         $this->createSource([
@@ -23,9 +23,7 @@ class SiteBuilderTest extends TestCase
         $this->assertCount(1, app('files')->filesAndDirectories($this->tmpPath('build')));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function existing_files_in_destination_directory_are_replaced_when_building_site()
     {
         $this->createSource([
@@ -43,9 +41,7 @@ class SiteBuilderTest extends TestCase
         $this->assertOutputFile('build/test.html', 'New file');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function page_metadata_contains_path()
     {
         $files = $this->setupSource(['nested' => ['page.blade.php' => '{{ $page->getPath() }}']]);
@@ -57,9 +53,7 @@ class SiteBuilderTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function page_metadata_contains_relative_path()
     {
         $files = $this->setupSource(['nested' => ['page.blade.php' => '{{ $page->getRelativePath() }}']]);
@@ -71,9 +65,7 @@ class SiteBuilderTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function page_metadata_contains_url()
     {
         $config = collect(['baseUrl' => 'foo.com']);
@@ -87,9 +79,7 @@ class SiteBuilderTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function page_metadata_contains_source_file_name()
     {
         $files = $this->setupSource(['page.blade.php' => '{{ $page->getFilename() }}']);
@@ -101,9 +91,7 @@ class SiteBuilderTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function page_metadata_contains_source_file_extension()
     {
         $files = $this->setupSource(['page.blade.php' => '{{ $page->getExtension() }}']);
@@ -115,9 +103,7 @@ class SiteBuilderTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function page_metadata_contains_source_file_modified_time()
     {
         $files = $this->setupSource(['page.blade.php' => '{{ $page->getModifiedTime() }}']);
@@ -129,9 +115,7 @@ class SiteBuilderTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_get_output_paths_after_building_site()
     {
         $files = $this->setupSource([
@@ -151,9 +135,7 @@ class SiteBuilderTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_get_collection_of_page_info_after_building_site()
     {
         $files = $this->setupSource([

@@ -8,9 +8,11 @@ use TightenCo\Jigsaw\PageData;
 class InputFile
 {
     protected $file;
+
     protected $extraBladeExtensions = [
         'js', 'json', 'xml', 'yaml', 'yml', 'rss', 'atom', 'txt', 'text', 'html',
     ];
+
     protected $pageData;
 
     public function __construct($file)

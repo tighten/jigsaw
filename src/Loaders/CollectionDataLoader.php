@@ -16,11 +16,17 @@ use TightenCo\Jigsaw\PageVariable;
 class CollectionDataLoader
 {
     private $filesystem;
+
     private $consoleOutput;
+
     private $pathResolver;
+
     private $handlers;
+
     private $source;
+
     private $pageSettings;
+
     private $collectionSettings;
 
     public function __construct(Filesystem $filesystem, ConsoleOutput $consoleOutput, $pathResolver, $handlers = [])

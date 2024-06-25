@@ -13,14 +13,23 @@ class Jigsaw
     use Macroable;
 
     public $app;
+
     protected $env;
+
     protected $pageInfo;
+
     protected $outputPaths;
+
     protected $siteData;
+
     protected $dataLoader;
+
     protected $remoteItemLoader;
+
     protected $siteBuilder;
+
     protected $verbose;
+
     protected static $commands = [];
 
     public function __construct(

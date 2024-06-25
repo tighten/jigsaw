@@ -20,18 +20,18 @@ class BladeComponentTest extends TestCase
             ]),
             '_components' => [
                 'alert.blade.php' => implode("\n", [
-                '<div>',
-                '<h3>This is the component</h3>',
-                '<h4>Named title slot: {{ $title }}</h4>',
-                '{{ $slot }}',
-                '</div>',
+                    '<div>',
+                    '<h3>This is the component</h3>',
+                    '<h4>Named title slot: {{ $title }}</h4>',
+                    '{{ $slot }}',
+                    '</div>',
                 ]),
             ],
         ]);
 
         $this->buildSite($files, []);
 
-        $this->assertOutputFile('build/page.html', <<<HTML
+        $this->assertOutputFile('build/page.html', <<<'HTML'
             <div>
             <h3>This is the component</h3>
             <h4>Named title slot: Title test</h4>
@@ -147,6 +147,7 @@ class BladeComponentTest extends TestCase
 class AlertComponent extends Component
 {
     public $type;
+
     public $message;
 
     public function __construct($type, $message)
@@ -164,6 +165,7 @@ class AlertComponent extends Component
 class InlineAlertComponent extends Component
 {
     public $type;
+
     public $message;
 
     public function __construct($type, $message)

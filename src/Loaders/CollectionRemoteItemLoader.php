@@ -9,7 +9,9 @@ use TightenCo\Jigsaw\File\Filesystem;
 class CollectionRemoteItemLoader
 {
     private $config;
+
     private $files;
+
     private $tempDirectories;
 
     public function __construct(Collection $config, Filesystem $files)

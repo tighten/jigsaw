@@ -12,7 +12,9 @@ use Symfony\Component\Console\Question\Question;
 class ConsoleSession
 {
     protected $input;
+
     protected $output;
+
     protected $question;
 
     public function __construct(InputInterface $input, OutputInterface $output, QuestionHelper $question)

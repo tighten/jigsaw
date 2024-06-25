@@ -12,14 +12,19 @@ class DefaultInstaller
         'node_modules',
         'vendor',
     ];
+
     public const DEFAULT_COMMANDS = [
         'composer install',
         'npm install',
         'npm run dev',
     ];
+
     protected $commands;
+
     protected $delete;
+
     protected $ignore;
+
     protected $builder;
 
     public function install(ScaffoldBuilder $builder, $settings = [])

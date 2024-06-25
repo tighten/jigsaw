@@ -12,8 +12,11 @@ use TightenCo\Jigsaw\View\ViewRenderer;
 class BladeHandler
 {
     private $temporaryFilesystem;
+
     private $parser;
+
     private $view;
+
     private $hasFrontMatter;
 
     public function __construct(TemporaryFilesystem $temporaryFilesystem, FrontMatterParser $parser, ViewRenderer $viewRenderer)

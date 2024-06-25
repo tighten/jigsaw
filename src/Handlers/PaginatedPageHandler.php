@@ -13,8 +13,11 @@ use TightenCo\Jigsaw\View\ViewRenderer;
 class PaginatedPageHandler
 {
     private $paginator;
+
     private $parser;
+
     private $temporaryFilesystem;
+
     private $view;
 
     public function __construct(

@@ -7,6 +7,7 @@ use Illuminate\View\Compilers\BladeCompiler;
 class BladeDirectivesFile
 {
     protected $bladeCompiler;
+
     protected $directives;
 
     public function __construct($file_path, BladeCompiler $bladeCompiler)

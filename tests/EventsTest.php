@@ -51,7 +51,8 @@ class EventsTest extends TestCase
     #[Test]
     public function it_can_handle_invokable_listeners()
     {
-        $this->app['events']->beforeBuild(new class {
+        $this->app['events']->beforeBuild(new class
+        {
             private $object;
 
             public function __construct()

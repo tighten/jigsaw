@@ -16,16 +16,27 @@ class PresetPackage
     ];
 
     public $constraint;
+
     public $name;
+
     public $shortName;
+
     public $path;
+
     public $preset;
+
     public $suffix;
+
     public $vendor;
+
     protected $builder;
+
     protected $customInstaller;
+
     protected $defaultInstaller;
+
     protected $files;
+
     protected $process;
 
     public function __construct(DefaultInstaller $default, CustomInstaller $custom, ProcessRunner $process)

@@ -10,6 +10,7 @@ use TightenCo\Jigsaw\File\OutputFile;
 class CollectionItemHandler
 {
     private $config;
+
     private $handlers;
 
     public function __construct(Collection $config, $handlers)

@@ -39,7 +39,7 @@
         "vlucas/phpdotenv": "^5.6"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.51",
+        "laravel/pint": "^1.16",
         "mockery/mockery": "^1.6",
         "phpunit/phpunit": "^11.0.6"
     },
@@ -59,9 +59,6 @@
     "bin": [
         "jigsaw"
     ],
-    "scripts": {
-        "format": "php-cs-fixer fix --verbose"
-    },
     "config": {
         "sort-packages": true,
         "optimize-autoloader": true

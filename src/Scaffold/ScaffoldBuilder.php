@@ -13,9 +13,13 @@ abstract class ScaffoldBuilder
     ];
 
     public $base;
+
     protected $console;
+
     protected $files;
+
     protected $process;
+
     protected $composerCache = [];
 
     public function __construct(Filesystem $files)

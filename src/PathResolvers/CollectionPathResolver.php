@@ -8,6 +8,7 @@ use TightenCo\Jigsaw\IterableObject;
 class CollectionPathResolver
 {
     private $outputPathResolver;
+
     private $view;
 
     public function __construct($outputPathResolver, $viewRenderer)
@@ -86,7 +87,7 @@ class CollectionPathResolver
 
     private function getParameterValue($param, $data)
     {
-        list($param, $dateFormat) = explode('|', trim($param, '{}') . '|');
+        [$param, $dateFormat] = explode('|', trim($param, '{}') . '|');
         $slugSeparator = ctype_alpha($param[0]) ? null : $param[0];
 
         if ($slugSeparator) {
@@ -162,9 +163,8 @@ class CollectionPathResolver
     /**
      * Transliterate a UTF-8 value to ASCII.
      *
-     * @param string $value
-     * @param string $language
-     *
+     * @param  string  $value
+     * @param  string  $language
      * @return string
      */
     private static function ascii($value, $language = 'en')
@@ -323,8 +323,7 @@ class CollectionPathResolver
      *
      * @see https://github.com/danielstjules/Stringy/blob/3.1.0/LICENSE.txt
      *
-     * @param string $language
-     *
+     * @param  string  $language
      * @return array|null
      */
     private static function languageSpecificCharsArray($language)

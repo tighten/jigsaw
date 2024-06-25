@@ -36,14 +36,13 @@ class CollectionItemTest extends TestCase
     public function collection_item_can_be_filtered()
     {
         $config = collect(['collections' => [
-                'collection' => [
-                    'path' => 'collection/{filename}',
-                    'filter' => function ($item) {
-                        return $item->published;
-                    },
-                ],
+            'collection' => [
+                'path' => 'collection/{filename}',
+                'filter' => function ($item) {
+                    return $item->published;
+                },
             ],
-        ]);
+        ]]);
         $builtHeader = implode("\n", [
             '---',
             'extends: _layouts.collection_item',
@@ -81,14 +80,13 @@ class CollectionItemTest extends TestCase
     public function collection_item_can_be_mapped()
     {
         $config = collect(['collections' => [
-                'collection' => [
-                    'path' => 'collection/{filename}',
-                    'map' => function ($item) {
-                        return MappedItem::fromItem($item);
-                    },
-                ],
+            'collection' => [
+                'path' => 'collection/{filename}',
+                'map' => function ($item) {
+                    return MappedItem::fromItem($item);
+                },
             ],
-        ]);
+        ]]);
         $itemHeader = implode("\n", [
             '---',
             'number: 111',

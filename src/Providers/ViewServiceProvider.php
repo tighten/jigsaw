@@ -2,7 +2,6 @@
 
 namespace TightenCo\Jigsaw\Providers;
 
-use Illuminate\View\DynamicComponent;
 use Illuminate\View\Engines\CompilerEngine;
 use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Engines\FileEngine;
@@ -16,6 +15,7 @@ use TightenCo\Jigsaw\Parsers\FrontMatterParser;
 use TightenCo\Jigsaw\Support\ServiceProvider;
 use TightenCo\Jigsaw\View\BladeCompiler;
 use TightenCo\Jigsaw\View\BladeMarkdownEngine;
+use TightenCo\Jigsaw\View\DynamicComponent;
 use TightenCo\Jigsaw\View\MarkdownEngine;
 use TightenCo\Jigsaw\View\ViewRenderer;
 

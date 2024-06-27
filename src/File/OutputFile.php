@@ -7,12 +7,19 @@ use TightenCo\Jigsaw\PageData;
 class OutputFile
 {
     private $inputFile;
+
     private $path;
+
     private $name;
+
     private $extension;
+
     private $contents;
+
     private $data;
+
     private $page;
+
     private $prefix;
 
     public function __construct(InputFile $inputFile, $path, $name, $extension, $contents, $data, $page = 1, $prefix = '')

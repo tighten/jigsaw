@@ -17,6 +17,7 @@ use TightenCo\Jigsaw\PathResolvers\PrettyOutputPathResolver;
 class BuildCommand extends Command
 {
     private $app;
+
     private $consoleOutput;
 
     public function __construct(Container $app)

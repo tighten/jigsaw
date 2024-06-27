@@ -147,7 +147,7 @@ class Container extends Illuminate
         while ($index < count($callbacks)) {
             $callbacks[$index]($this);
 
-            ++$index;
+            $index++;
         }
     }
 

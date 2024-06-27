@@ -8,7 +8,9 @@ use Symfony\Component\Yaml\Yaml;
 class CollectionRemoteItem
 {
     private $item;
+
     private $index;
+
     private $collectionName;
 
     public function __construct($item, $index = 0, $collectionName = null)

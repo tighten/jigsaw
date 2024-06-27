@@ -7,6 +7,7 @@ use Symfony\Component\Console\Output\ConsoleOutput as SymfonyConsoleOutput;
 class ConsoleOutput extends SymfonyConsoleOutput
 {
     protected $progressBars;
+
     protected $sections;
 
     public function setup($verbosity)

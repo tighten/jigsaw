@@ -8,6 +8,7 @@ use Symfony\Component\Finder\SplFileInfo;
 class TemporaryFilesystem
 {
     private $tempPath;
+
     private $filesystem;
 
     public function __construct($tempPath, $filesystem = null)

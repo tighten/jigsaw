@@ -5,9 +5,13 @@ namespace TightenCo\Jigsaw\Scaffold;
 class CustomInstaller
 {
     public $ignore = ['init.php'];
+
     protected $from;
+
     protected $builder;
+
     protected $console;
+
     protected $question;
 
     public function setConsole($console)

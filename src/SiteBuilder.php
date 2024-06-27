@@ -10,10 +10,15 @@ use TightenCo\Jigsaw\File\InputFile;
 class SiteBuilder
 {
     private $cachePath;
+
     private $files;
+
     private $handlers;
+
     private $outputPathResolver;
+
     private $consoleOutput;
+
     private $useCache;
 
     public function __construct(

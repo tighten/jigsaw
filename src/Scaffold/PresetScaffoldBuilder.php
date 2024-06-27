@@ -8,9 +8,13 @@ use TightenCo\Jigsaw\File\Filesystem;
 class PresetScaffoldBuilder extends ScaffoldBuilder
 {
     public $package;
+
     protected $files;
+
     protected $process;
+
     protected $question;
+
     protected $composerDependencies;
 
     public function __construct(Filesystem $files, PresetPackage $package, ProcessRunner $process)

@@ -20,13 +20,16 @@ class TestCase extends PHPUnit
     use Haiku;
 
     public $sourcePath = __DIR__ . '/snapshots/default/source';
+
     public $destinationPath = __DIR__ . '/snapshots/default/build_local';
 
     protected Container $app;
+
     protected Filesystem $filesystem;
+
     protected string $tmp;
 
-    public function __construct($name = null, array $data = [], $dataName = '') 
+    public function __construct($name = null, array $data = [], $dataName = '')
     {
         parent::__construct($name, $data, $dataName);
 
@@ -110,7 +113,8 @@ class TestCase extends PHPUnit
     {
         $this->createSource(['source' => $source]);
 
-        return new class($this->tmpPath('')) {
+        return new class($this->tmpPath(''))
+        {
             public function __construct(
                 protected string $tmp,
             ) {}
@@ -122,7 +126,8 @@ class TestCase extends PHPUnit
 
             public function getChild($path)
             {
-                return new class($this->tmp, $path) {
+                return new class($this->tmp, $path)
+                {
                     public function __construct(
                         protected string $tmp,
                         protected string $path,
@@ -209,7 +214,7 @@ class TestCase extends PHPUnit
         return str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
     }
 
-    protected function assertOutputFile(string $path, string $contents, string $message = null): void
+    protected function assertOutputFile(string $path, string $contents, ?string $message = null): void
     {
         static::assertStringEqualsFile(
             $this->tmpPath($path),

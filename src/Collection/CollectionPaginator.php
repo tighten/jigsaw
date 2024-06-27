@@ -7,6 +7,7 @@ use TightenCo\Jigsaw\IterableObject;
 class CollectionPaginator
 {
     private $outputPathResolver;
+
     private $prefix;
 
     public function __construct($outputPathResolver)

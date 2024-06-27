@@ -12,8 +12,11 @@ use TightenCo\Jigsaw\Scaffold\PresetScaffoldBuilder;
 class InitCommand extends Command
 {
     private $base;
+
     private $basicScaffold;
+
     private $files;
+
     private $presetScaffold;
 
     public function __construct(Filesystem $files, BasicScaffoldBuilder $basicScaffold, PresetScaffoldBuilder $presetScaffold)

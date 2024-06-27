@@ -32,8 +32,5 @@ class BladeCollectionItemHandler
         );
     }
 
-    public function getItemContent($file)
-    {
-        return;
-    }
+    public function getItemContent($file) {}
 }

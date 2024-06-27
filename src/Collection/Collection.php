@@ -10,6 +10,7 @@ use TightenCo\Jigsaw\IterableObject;
 class Collection extends BaseCollection
 {
     public $settings;
+
     public $name;
 
     public static function withSettings(IterableObject $settings, $name)

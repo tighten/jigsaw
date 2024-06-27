@@ -10,7 +10,9 @@ use Throwable;
 class MarkdownEngine implements EngineInterface
 {
     private $parser;
+
     private $file;
+
     private $sourcePath;
 
     public function __construct($parser, $filesystem, $sourcePath)

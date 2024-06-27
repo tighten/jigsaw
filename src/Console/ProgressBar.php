@@ -7,7 +7,9 @@ use Symfony\Component\Console\Helper\ProgressBar as SymfonyProgressBar;
 class ProgressBar
 {
     protected $consoleOutput;
+
     protected $progressBar;
+
     protected $message;
 
     public function __construct(ConsoleOutput $consoleOutput, $message = null, $section = null)

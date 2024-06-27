@@ -10,6 +10,7 @@ use Throwable;
 class BladeMarkdownEngine implements EngineInterface
 {
     private $blade;
+
     private $markdown;
 
     public function __construct($compilerEngine, $markdown)

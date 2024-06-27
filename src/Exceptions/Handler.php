@@ -40,7 +40,7 @@ class Handler implements ExceptionHandler
     }
 
     /**
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param  \Symfony\Component\Console\Output\OutputInterface  $output
      */
     public function renderForConsole($output, Throwable $e): void
     {

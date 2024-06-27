@@ -11,7 +11,7 @@ class ViewPathTest extends TestCase
     {
         $this->createSource([
             'source' => [
-                'page.md' => <<<MD
+                'page.md' => <<<'MD'
                 ---
                 extends: main
                 ---
@@ -19,7 +19,7 @@ class ViewPathTest extends TestCase
                 MD,
             ],
             'views' => [
-                'main.blade.php' => <<<BLADE
+                'main.blade.php' => <<<'BLADE'
                 <body>
                     @yield('content')
                 </body>
@@ -29,7 +29,7 @@ class ViewPathTest extends TestCase
 
         $this->buildSite(null, [], false, '/views');
 
-        $this->assertOutputFile('build/page.html', <<<HTML
+        $this->assertOutputFile('build/page.html', <<<'HTML'
             <body>
                 <h1>Hello world!</h1>
             </body>

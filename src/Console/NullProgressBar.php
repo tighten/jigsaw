@@ -5,6 +5,7 @@ namespace TightenCo\Jigsaw\Console;
 class NullProgressBar
 {
     protected $consoleOutput;
+
     protected $message;
 
     public function __construct(ConsoleOutput $consoleOutput, $message = null, $section = null)

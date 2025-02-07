@@ -80,7 +80,7 @@ return [
             },
             'author' => 'Default Author',
             'date_formatted' => function ($post) {
-                list($year, $month, $day) = parseDate($post['date']);
+                [$year, $month, $day] = parseDate($post['date']);
 
                 return sprintf('%s/%s/%s', $month, $day, $year);
             },

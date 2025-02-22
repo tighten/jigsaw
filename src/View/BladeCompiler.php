@@ -22,4 +22,14 @@ class BladeCompiler extends BaseBladeCompiler
             $this->classComponentAliases, $this->classComponentNamespaces, $this,
         ))->compile($value);
     }
+
+    /**
+     * Compile the "viteRefresh" statements into valid PHP.
+     *
+     * @return ?string
+     */
+    protected function compileViteRefresh()
+    {
+        return '<?php echo vite_refresh(); ?>';
+    }
 }

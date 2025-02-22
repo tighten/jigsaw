@@ -13,6 +13,7 @@ use TightenCo\Jigsaw\File\BladeDirectivesFile;
 use TightenCo\Jigsaw\File\TemporaryFilesystem;
 use TightenCo\Jigsaw\Parsers\FrontMatterParser;
 use TightenCo\Jigsaw\Support\ServiceProvider;
+use TightenCo\Jigsaw\Support\Vite;
 use TightenCo\Jigsaw\View\BladeCompiler;
 use TightenCo\Jigsaw\View\BladeMarkdownEngine;
 use TightenCo\Jigsaw\View\DynamicComponent;
@@ -31,6 +32,7 @@ class ViewServiceProvider extends ServiceProvider
         (new BladeDirectivesFile($this->app->path('blade.php'), $this->app['blade.compiler']))->register();
         $this->app->bind(ViewRenderer::class, fn () => new ViewRenderer);
         $this->app->bind(TemporaryFilesystem::class, fn (Container $app) => new TemporaryFilesystem($app->cachePath()));
+        $this->app->bind(Vite::class, fn () => new Vite);
 
         // TODO
         // $this->registerExtensionEngines();

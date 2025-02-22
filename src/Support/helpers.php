@@ -5,8 +5,18 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use Symfony\Component\VarDumper\VarDumper;
+use TightenCo\Jigsaw\Support\Vite;
 
 if (! function_exists('app')) {
+    /**
+     * Get the available container instance.
+     *
+     * @template TClass of object
+     *
+     * @param  string|class-string<TClass>|null  $abstract
+     * @param  array  $parameters
+     * @return ($abstract is class-string<TClass> ? TClass : ($abstract is null ? \TightenCo\Jigsaw\Container : mixed))
+     */
     function app(?string $abstract = null, array $parameters = []): mixed
     {
         if (is_null($abstract)) {
@@ -57,6 +67,17 @@ function public_path($path = '')
 {
     $c = Container::getInstance();
     $source = Arr::get($c['config'], 'build.source', 'source');
+
+    return $source . ($path ? '/' . ltrim($path, '/') : $path);
+}
+
+/**
+ * Get the full path to the source folder.
+ */
+function source_path($path = '')
+{
+    $c = Container::getInstance();
+    $source = Arr::get($c['buildPath'], 'source', 'source');
 
     return $source . ($path ? '/' . ltrim($path, '/') : $path);
 }
@@ -151,4 +172,18 @@ function inline($assetPath)
     $pathParts = explode('?', $assetPath);
 
     return new HtmlString(file_get_contents("source{$pathParts[0]}"));
+}
+
+if (! function_exists('vite_refresh')) {
+    function vite_refresh()
+    {
+        return app(Vite::class)->devServer();
+    }
+}
+
+if (! function_exists('vite')) {
+    function vite(string $asset, string $assetPath = '/assets/build'): string
+    {
+        return app(Vite::class)->url($asset, $assetPath);
+    }
 }

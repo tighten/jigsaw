@@ -90,7 +90,7 @@ class SnapshotsTest extends PHPUnit
         return implode(DIRECTORY_SEPARATOR, array_filter([__DIR__, 'snapshots', $name]));
     }
 
-    private function test_output(string $name): string
+    private function testOutput(string $name): string
     {
         $output = $name === 'environment-specific-config-file' ? 'build_staging' : 'build_local';
 

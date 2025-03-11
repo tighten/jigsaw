@@ -1,5 +1,5 @@
-import { defineConfig } from 'vite';
 import jigsaw from '@tighten/jigsaw-vite-plugin';
+import { defineConfig } from 'vite';
 
 export default defineConfig({
     plugins: [

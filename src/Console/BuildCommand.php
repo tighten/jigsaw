@@ -115,19 +115,24 @@ class BuildCommand extends Command
         while (true) {
             try {
                 $currentTimestamps = $scanFiles($sourcePath);
+                $affectedFiles = 0;
 
                 foreach ($currentTimestamps as $file => $mtime) {
                     if (!isset($fileTimestamps[$file]) || $fileTimestamps[$file] !== $mtime) {
-                        $this->build();
-                        break;
+                        $affectedFiles++;
+                        $this->consoleOutput->writeln('<info>File changed: ' . $file . '</info>');
                     }
                 }
 
                 foreach ($fileTimestamps as $file => $mtime) {
                     if (!isset($currentTimestamps[$file])) {
-                        $this->build();
-                        break;
+                        $affectedFiles++;
+                        $this->consoleOutput->writeln('<info>File deleted: ' . $file . '</info>');
                     }
+                }
+
+                if ($affectedFiles > 0) {
+                    $this->build();
                 }
 
                 $fileTimestamps = $currentTimestamps;

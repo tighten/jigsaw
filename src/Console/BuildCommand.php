@@ -33,10 +33,20 @@ class BuildCommand extends Command
             ->setDescription('Build your site.')
             ->addArgument('env', InputArgument::OPTIONAL, 'What environment should we use to build?', 'local')
             ->addOption('pretty', null, InputOption::VALUE_REQUIRED, 'Should the site use pretty URLs?', 'true')
-            ->addOption('cache', 'c', InputOption::VALUE_OPTIONAL, 'Should a cache be used when building the site?', 'false');
+            ->addOption('cache', 'c', InputOption::VALUE_OPTIONAL, 'Should a cache be used when building the site?', 'false')
+            ->addOption('watch', 'w', InputOption::VALUE_NONE, 'Should watch for file changes and rebuild?');
     }
 
     protected function fire()
+    {
+        if ($this->input->getOption('watch')) {
+            return $this->watch();
+        }
+        
+        return $this->build();
+    }
+
+    private function build()
     {
         $startTime = microtime(true);
         $env = $this->input->getArgument('env');
@@ -72,6 +82,55 @@ class BuildCommand extends Command
             $this->consoleOutput
                 ->writeTime(round(microtime(true) - $startTime, 2), $this->useCache(), $cacheExists)
                 ->writeConclusion();
+        }
+    }
+
+    private function watch()
+    {
+        $sourcePath = $this->app->buildPath['source'];
+        $fileTimestamps = [];
+
+        $scanFiles = function ($dir, &$files = []) use (&$scanFiles) {
+            foreach (scandir($dir) as $file) {
+                if ($file === '.' || $file === '..') {
+                    continue;
+                }
+                $path = $dir . '/' . $file;
+                if (is_dir($path)) {
+                    $scanFiles($path, $files);
+                } elseif (is_file($path)) {
+                    $files[$path] = filemtime($path);
+                }
+            }
+            return $files;
+        };
+
+        $fileTimestamps = $scanFiles($sourcePath);
+        $this->consoleOutput->writeln('<info>Watching for changes in ' . $sourcePath . '</info>');
+
+        while (true) {
+            $currentTimestamps = $scanFiles($sourcePath);
+
+            foreach ($currentTimestamps as $file => $mtime) {
+                if (!isset($fileTimestamps[$file]) || $fileTimestamps[$file] !== $mtime) {
+                    $this->build();
+                    gc_collect_cycles();
+                    break;
+                }
+            }
+
+            foreach ($fileTimestamps as $file => $mtime) {
+                if (!isset($currentTimestamps[$file])) {
+                    $this->build();
+                    gc_collect_cycles();
+                    break;
+                }
+            }
+
+            $fileTimestamps = $currentTimestamps;
+            unset($currentTimestamps);
+            clearstatcache();
+            usleep(1000000);
         }
     }
 
@@ -128,12 +187,13 @@ class BuildCommand extends Command
 
     private function confirmDestination()
     {
-        if (! $this->input->getOption('quiet')) {
-            $customPath = Arr::get($this->app->config, 'build.destination');
-
-            if ($customPath && strpos($customPath, 'build_') !== 0 && file_exists($customPath)) {
-                return $this->console->confirm('Overwrite "' . $this->app->buildPath['destination'] . '"? ');
-            }
+        if ($this->input->getOption('quiet') || $this->input->getOption('watch')) {
+            return true;
+        }
+        
+        $customPath = Arr::get($this->app->config, 'build.destination');
+        if ($customPath && strpos($customPath, 'build_') !== 0 && file_exists($customPath)) {
+            return $this->console->confirm('Overwrite "' . $this->app->buildPath['destination'] . '"? ');
         }
 
         return true;

@@ -33,8 +33,8 @@ class BuildCommand extends Command
             ->setDescription('Build your site.')
             ->addArgument('env', InputArgument::OPTIONAL, 'What environment should we use to build?', 'local')
             ->addOption('pretty', null, InputOption::VALUE_REQUIRED, 'Should the site use pretty URLs?', 'true')
-            ->addOption('cache', 'c', InputOption::VALUE_OPTIONAL, 'Should a cache be used when building the site?', 'false')
-            ->addOption('watch', 'w', InputOption::VALUE_NONE, 'Should watch for file changes and rebuild?');
+            ->addOption('watch', 'w', InputOption::VALUE_NONE, 'Should watch for file changes and rebuild?')
+            ->addOption('cache', 'c', InputOption::VALUE_OPTIONAL, 'Should a cache be used when building the site?', 'false');
     }
 
     protected function fire()

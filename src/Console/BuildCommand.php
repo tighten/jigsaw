@@ -102,8 +102,11 @@ class BuildCommand extends Command
                         $files[$file->getPathname()] = $file->getMTime();
                     }
                 }
-            } catch (Exception $e) {
-                $this->consoleOutput->writeln('<error>Error scanning directory: ' . $e->getMessage() . '</error>');
+            } catch (Throwable $e) {
+                $this->app->make(ExceptionHandler::class)->report($e);
+                $this->app->make(ExceptionHandler::class)->renderForConsole($this->consoleOutput, $e);
+
+                return static::FAILURE;
             }
             return $files;
         };

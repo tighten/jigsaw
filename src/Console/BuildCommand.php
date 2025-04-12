@@ -90,17 +90,20 @@ class BuildCommand extends Command
         $sourcePath = $this->app->buildPath['source'];
         $fileTimestamps = [];
 
-        $scanFiles = function ($dir, &$files = []) use (&$scanFiles) {
-            foreach (scandir($dir) as $file) {
-                if ($file === '.' || $file === '..') {
-                    continue;
+        $scanFiles = function ($dir) {
+            $files = [];
+            try {
+                $iterator = new \RecursiveIteratorIterator(
+                    new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS),
+                    \RecursiveIteratorIterator::SELF_FIRST
+                );
+                foreach ($iterator as $file) {
+                    if ($file->isFile()) {
+                        $files[$file->getPathname()] = $file->getMTime();
+                    }
                 }
-                $path = $dir . '/' . $file;
-                if (is_dir($path)) {
-                    $scanFiles($path, $files);
-                } elseif (is_file($path)) {
-                    $files[$path] = filemtime($path);
-                }
+            } catch (Exception $e) {
+                $this->consoleOutput->writeln('<error>Error scanning directory: ' . $e->getMessage() . '</error>');
             }
             return $files;
         };
@@ -108,29 +111,44 @@ class BuildCommand extends Command
         $fileTimestamps = $scanFiles($sourcePath);
         $this->consoleOutput->writeln('<info>Watching for changes in ' . $sourcePath . '</info>');
 
+        $iterationCount = 0;
         while (true) {
-            $currentTimestamps = $scanFiles($sourcePath);
+            try {
+                $currentTimestamps = $scanFiles($sourcePath);
 
-            foreach ($currentTimestamps as $file => $mtime) {
-                if (!isset($fileTimestamps[$file]) || $fileTimestamps[$file] !== $mtime) {
-                    $this->build();
-                    gc_collect_cycles();
-                    break;
+                foreach ($currentTimestamps as $file => $mtime) {
+                    if (!isset($fileTimestamps[$file]) || $fileTimestamps[$file] !== $mtime) {
+                        $this->build();
+                        break;
+                    }
                 }
+
+                foreach ($fileTimestamps as $file => $mtime) {
+                    if (!isset($currentTimestamps[$file])) {
+                        $this->build();
+                        break;
+                    }
+                }
+
+                $fileTimestamps = $currentTimestamps;
+                unset($currentTimestamps);
+                clearstatcache();
+                if (++$iterationCount % 10 === 0) {
+                    gc_collect_cycles();
+                }
+                usleep(1000000);
+
+            } catch (Throwable $e) {
+                $this->app->make(ExceptionHandler::class)->report($e);
+                $this->app->make(ExceptionHandler::class)->renderForConsole($this->consoleOutput, $e);
+
+                return static::FAILURE;
             }
 
-            foreach ($fileTimestamps as $file => $mtime) {
-                if (!isset($currentTimestamps[$file])) {
-                    $this->build();
-                    gc_collect_cycles();
-                    break;
-                }
+            if (file_exists($sourcePath . '/.stopwatch')) {
+                $this->consoleOutput->writeln('<info>Stopping watcher...</info>');
+                break;
             }
-
-            $fileTimestamps = $currentTimestamps;
-            unset($currentTimestamps);
-            clearstatcache();
-            usleep(1000000);
         }
     }
 

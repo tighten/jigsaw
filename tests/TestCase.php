@@ -58,6 +58,8 @@ class TestCase extends PHPUnit
             'views' => $this->sourcePath,
             'destination' => $this->destinationPath,
         ];
+
+        $this->app['env'] = 'test';
     }
 
     protected function createTmp(): void

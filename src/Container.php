@@ -88,17 +88,11 @@ class Container extends Illuminate
      */
     public function environment(...$environments): bool|string
     {
-        $env = $this->get('config')->get('production')
-            ? 'production'
-            : 'development';
-
-        if (empty($environments)) {
-            return $env;
+        if (count($environments) > 0) {
+            $patterns = is_array($environments[0]) ? $environments[0] : $environments;
+            return Str::is($patterns, $this['env']);
         }
-
-        $patterns = is_array($environments[0]) ? $environments[0] : $environments;
-
-        return Str::is($patterns, $env);
+        return $this['env'];
     }
 
     private function loadEnvironmentVariables(): void

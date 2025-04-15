@@ -39,7 +39,7 @@ class BuildCommand extends Command
     protected function fire()
     {
         $startTime = microtime(true);
-        $env = $this->input->getArgument('env');
+        $env = $this->app['env'] = $this->input->getArgument('env');
         $this->includeEnvironmentConfig($env);
         $this->updateBuildPaths($env);
         $cacheExists = $this->app[TemporaryFilesystem::class]->hasTempDirectory();

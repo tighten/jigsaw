@@ -9,22 +9,24 @@ class BladeDirectivesTest extends TestCase
 {
     #[Test]
     #[DataProvider('environmentDirectivesData')]
-    public function render_environment_directives($config, $expected)
+    public function render_environment_directives(string $environment, string $expected)
     {
+        $this->app['env'] = $environment;
+
         $files = $this->setupSource([
             'page.blade.php' => implode("\n", [
                 '<div>',
                 '@production',
                 'Confirmed in production',
                 '@endproduction',
-                "@env('development')",
+                "@env('local')",
                 'Confirmed in development',
                 '@endenv',
                 '</div>',
             ]),
         ]);
 
-        $this->buildSite($files, $config);
+        $this->buildSite($files);
 
         $this->assertOutputFile('build/page.html', $expected);
     }
@@ -33,21 +35,24 @@ class BladeDirectivesTest extends TestCase
     {
         return [
             [
-                ['production' => true], <<<'HTML'
+                'production',
+                <<<'HTML'
                 <div>
                 Confirmed in production
                 </div>
                 HTML,
             ],
             [
-                ['production' => false], <<<'HTML'
+                'local',
+                <<<'HTML'
                 <div>
                 Confirmed in development
                 </div>
                 HTML,
             ],
             [
-                [], <<<'HTML'
+                'local',
+                <<<'HTML'
                 <div>
                 Confirmed in development
                 </div>

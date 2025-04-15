@@ -14,8 +14,6 @@ class Jigsaw
 
     public $app;
 
-    protected $env;
-
     protected $pageInfo;
 
     protected $outputPaths;
@@ -44,9 +42,8 @@ class Jigsaw
         $this->siteBuilder = $siteBuilder;
     }
 
-    public function build($env, $useCache = false)
+    public function build($useCache = false)
     {
-        $this->env = $env;
         $this->siteData = $this->dataLoader->loadSiteData($this->app->config);
 
         return $this->fireEvent('beforeBuild')
@@ -113,7 +110,7 @@ class Jigsaw
 
     public function getEnvironment()
     {
-        return $this->env;
+        return $this->app['env'];
     }
 
     public function getCollection($collection)

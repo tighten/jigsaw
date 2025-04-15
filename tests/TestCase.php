@@ -203,7 +203,7 @@ class TestCase extends PHPUnit
 
         return $this->app
             ->make(Jigsaw::class)
-            ->build('test');
+            ->build();
     }
 
     public function clean($output)

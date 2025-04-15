@@ -90,8 +90,10 @@ class Container extends Illuminate
     {
         if (count($environments) > 0) {
             $patterns = is_array($environments[0]) ? $environments[0] : $environments;
+
             return Str::is($patterns, $this['env']);
         }
+
         return $this['env'];
     }
 

@@ -35,7 +35,7 @@ class FilesystemTest extends TestCase
     }
 
     #[Test]
-    public function DS_Store_is_always_ignored_when_retrieving_all_files_and_directories()
+    public function ds_store_is_always_ignored_when_retrieving_all_files_and_directories()
     {
         $this->createSource([
             'test-file.md' => '',

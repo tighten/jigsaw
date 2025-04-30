@@ -25,7 +25,7 @@ class HelpersTest extends TestCase
     }
 
     #[Test]
-    public function leftTrimPath_leaves_leading_periods()
+    public function left_trim_path_leaves_leading_periods()
     {
         $this->assertEquals('.well-known', leftTrimPath('.well-known'));
     }

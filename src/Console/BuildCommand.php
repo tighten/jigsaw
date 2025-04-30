@@ -39,7 +39,7 @@ class BuildCommand extends Command
     protected function fire()
     {
         $startTime = microtime(true);
-        $env = $this->input->getArgument('env');
+        $env = $this->app['env'] = $this->input->getArgument('env');
         $this->includeEnvironmentConfig($env);
         $this->updateBuildPaths($env);
         $cacheExists = $this->app[TemporaryFilesystem::class]->hasTempDirectory();
@@ -61,7 +61,7 @@ class BuildCommand extends Command
 
         if ($this->confirmDestination()) {
             try {
-                $this->app->make(Jigsaw::class)->build($env, $this->useCache());
+                $this->app->make(Jigsaw::class)->build($this->useCache());
             } catch (Throwable $e) {
                 $this->app->make(ExceptionHandler::class)->report($e);
                 $this->app->make(ExceptionHandler::class)->renderForConsole($this->consoleOutput, $e);

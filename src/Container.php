@@ -6,6 +6,7 @@ use Dotenv\Dotenv;
 use Dotenv\Exception\InvalidFileException;
 use Illuminate\Container\Container as Illuminate;
 use Illuminate\Support\Env;
+use Illuminate\Support\Str;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 class Container extends Illuminate
@@ -77,6 +78,23 @@ class Container extends Illuminate
         if ($this->isBooted()) {
             $callback($this);
         }
+    }
+
+    /**
+     * Get or check the current site environment.
+     * Equivalent to Laravel's `app()->environment()`.
+     *
+     * @param  string|array  ...$environments
+     */
+    public function environment(...$environments): bool|string
+    {
+        if (count($environments) > 0) {
+            $patterns = is_array($environments[0]) ? $environments[0] : $environments;
+
+            return Str::is($patterns, $this['env']);
+        }
+
+        return $this['env'];
     }
 
     private function loadEnvironmentVariables(): void

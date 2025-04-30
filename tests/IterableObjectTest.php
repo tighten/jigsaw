@@ -84,7 +84,7 @@ class IterableObjectTest extends TestCase
     }
 
     #[Test]
-    public function non_arrayable_items_are_not_changed_when_adding_with_makeIterable()
+    public function non_arrayable_items_are_not_changed_when_adding_with_make_iterable()
     {
         $iterable_object = new IterableObject([
             'a' => 1,
@@ -96,7 +96,7 @@ class IterableObjectTest extends TestCase
     }
 
     #[Test]
-    public function objects_that_extend_IterableObject_are_not_changed_when_adding_with_makeIterable()
+    public function objects_that_extend_iterable_object_are_not_changed_when_adding_with_make_iterable()
     {
         $iterable_object = new IterableObject([
             'a' => 1,
@@ -137,7 +137,7 @@ class IterableObjectTest extends TestCase
     }
 
     #[Test]
-    public function intermediate_items_that_extend_IterableObject_are_not_changed_when_adding_new_items_with_dot_notation()
+    public function intermediate_items_that_extend_iterable_object_are_not_changed_when_adding_new_items_with_dot_notation()
     {
         $iterable_object = new IterableObject([
             'a' => 1,

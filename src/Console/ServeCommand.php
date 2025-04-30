@@ -52,7 +52,7 @@ class ServeCommand extends Command
 
     protected function fire()
     {
-        $env = $this->input->getArgument('environment');
+        $env = $this->app['env'] = $this->input->getArgument('environment');
         $host = $this->input->getOption('host');
         $port = $this->input->getOption('port');
 

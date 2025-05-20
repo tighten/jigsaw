@@ -42,7 +42,8 @@ class HelpersTest extends TestCase
     public function resolve_path_does_not_strip_0s()
     {
         $path = 'path/to/assets/0/0/0.png';
+        $normalizedOutput = str_replace(['/', '\\'], '/', resolvePath($path));
 
-        $this->assertSame($path, resolvePath($path));
+        $this->assertSame($path, $normalizedOutput);
     }
 }

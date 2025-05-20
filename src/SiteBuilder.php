@@ -140,8 +140,9 @@ class SiteBuilder
     {
         $filename = $file->getFilenameWithoutExtension();
         $extension = $file->getFullExtension();
-        $path = rightTrimPath($this->outputPathResolver->link($file->getRelativePath(), $filename, $file->getExtraBladeExtension() ?: 'html'));
-        $relativePath = $file->getRelativePath();
+        $normalizedRelativePath = str_replace('\\', '/', $file->getRelativePath());
+        $path = rightTrimPath($this->outputPathResolver->link($normalizedRelativePath, $filename, $file->getExtraBladeExtension() ?: 'html'));
+        $relativePath = $normalizedRelativePath;
         $url = rightTrimPath($baseUrl) . '/' . trimPath($path);
         $modifiedTime = $file->getLastModifiedTime();
 

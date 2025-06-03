@@ -11,6 +11,6 @@
         "postcss": "^8.5.3",
         "postcss-import": "^14.0.0",
         "tailwindcss": "^3.4.17",
-        "vite": "^6.2.1"
+        "vite": "^6.3.5"
     }
 }

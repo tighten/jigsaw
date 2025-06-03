@@ -27,7 +27,7 @@ class DefaultScaffoldInstallerTest extends TestCase
 
         $this->assertFileExists($this->tmpPath('source'));
         $this->assertFileExists($this->tmpPath('package.json'));
-        $this->assertFileExists($this->tmpPath('webpack.mix.js'));
+        $this->assertFileExists($this->tmpPath('vite.config.js'));
         $this->assertFileExists($this->tmpPath('config.php'));
     }
 

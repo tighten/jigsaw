@@ -6,7 +6,7 @@
         "build": "vite build"
     },
     "devDependencies": {
-        "@tighten/jigsaw-vite-plugin": "^1.0.0",
+        "@tighten/jigsaw-vite-plugin": "^1.0.1",
         "autoprefixer": "^10.4.21",
         "postcss": "^8.5.3",
         "postcss-import": "^14.0.0",

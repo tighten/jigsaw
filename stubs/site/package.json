@@ -8,9 +8,7 @@
     "devDependencies": {
         "@tighten/jigsaw-vite-plugin": "^1.0.1",
         "tailwindcss": "^4.1.0",
-        "vite": "^6.3.5"
-    },
-    "dependencies": {
+        "vite": "^6.3.5",
         "@tailwindcss/vite": "^4.1.8"
     }
 }

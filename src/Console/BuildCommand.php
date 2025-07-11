@@ -33,10 +33,20 @@ class BuildCommand extends Command
             ->setDescription('Build your site.')
             ->addArgument('env', InputArgument::OPTIONAL, 'What environment should we use to build?', 'local')
             ->addOption('pretty', null, InputOption::VALUE_REQUIRED, 'Should the site use pretty URLs?', 'true')
+            ->addOption('watch', 'w', InputOption::VALUE_NONE, 'Should watch for file changes and rebuild?')
             ->addOption('cache', 'c', InputOption::VALUE_OPTIONAL, 'Should a cache be used when building the site?', 'false');
     }
 
     protected function fire()
+    {
+        if ($this->input->getOption('watch')) {
+            return $this->watch();
+        }
+        
+        return $this->build();
+    }
+
+    private function build()
     {
         $startTime = microtime(true);
         $env = $this->input->getArgument('env');
@@ -72,6 +82,86 @@ class BuildCommand extends Command
             $this->consoleOutput
                 ->writeTime(round(microtime(true) - $startTime, 2), $this->useCache(), $cacheExists)
                 ->writeConclusion();
+        }
+    }
+
+    private function watch()
+    {
+        $sourcePath = $this->app->buildPath['source'];
+        $fileTimestamps = [];
+
+        $scanFiles = function ($dir) {
+            $files = [];
+
+            try {
+                $iterator = new \RecursiveIteratorIterator(
+                    new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS),
+                    \RecursiveIteratorIterator::SELF_FIRST
+                );
+
+                foreach ($iterator as $file) {
+                    if ($file->isFile()) {
+                        $files[$file->getPathname()] = $file->getMTime();
+                    }
+                }
+            } catch (Throwable $e) {
+                $this->app->make(ExceptionHandler::class)->report($e);
+                $this->app->make(ExceptionHandler::class)->renderForConsole($this->consoleOutput, $e);
+
+                return static::FAILURE;
+            }
+
+            return $files;
+        };
+
+        $fileTimestamps = $scanFiles($sourcePath);
+        $this->consoleOutput->writeln('<info>Watching for changes in ' . $sourcePath . '</info>');
+        $iterationCount = 0;
+
+        while (true) {
+            try {
+                $currentTimestamps = $scanFiles($sourcePath);
+                $affectedFiles = 0;
+
+                foreach ($currentTimestamps as $file => $mtime) {
+                    if (!isset($fileTimestamps[$file]) || $fileTimestamps[$file] !== $mtime) {
+                        $affectedFiles++;
+                        $this->consoleOutput->writeln('<info>File changed: ' . $file . '</info>');
+                    }
+                }
+
+                foreach ($fileTimestamps as $file => $mtime) {
+                    if (!isset($currentTimestamps[$file])) {
+                        $affectedFiles++;
+                        $this->consoleOutput->writeln('<info>File deleted: ' . $file . '</info>');
+                    }
+                }
+
+                if ($affectedFiles > 0) {
+                    $this->build();
+                }
+
+                $fileTimestamps = $currentTimestamps;
+                unset($currentTimestamps);
+                clearstatcache();
+
+                if (++$iterationCount % 10 === 0) {
+                    gc_collect_cycles();
+                }
+
+                usleep(1000000);
+
+            } catch (Throwable $e) {
+                $this->app->make(ExceptionHandler::class)->report($e);
+                $this->app->make(ExceptionHandler::class)->renderForConsole($this->consoleOutput, $e);
+
+                return static::FAILURE;
+            }
+
+            if (file_exists($sourcePath . '/.stopwatch')) {
+                $this->consoleOutput->writeln('<info>Stopping watcher...</info>');
+                break;
+            }
         }
     }
 
@@ -128,12 +218,14 @@ class BuildCommand extends Command
 
     private function confirmDestination()
     {
-        if (! $this->input->getOption('quiet')) {
-            $customPath = Arr::get($this->app->config, 'build.destination');
+        if ($this->input->getOption('quiet') || $this->input->getOption('watch')) {
+            return true;
+        }
+        
+        $customPath = Arr::get($this->app->config, 'build.destination');
 
-            if ($customPath && strpos($customPath, 'build_') !== 0 && file_exists($customPath)) {
-                return $this->console->confirm('Overwrite "' . $this->app->buildPath['destination'] . '"? ');
-            }
+        if ($customPath && strpos($customPath, 'build_') !== 0 && file_exists($customPath)) {
+            return $this->console->confirm('Overwrite "' . $this->app->buildPath['destination'] . '"? ');
         }
 
         return true;

@@ -92,11 +92,13 @@ class BuildCommand extends Command
 
         $scanFiles = function ($dir) {
             $files = [];
+
             try {
                 $iterator = new \RecursiveIteratorIterator(
                     new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS),
                     \RecursiveIteratorIterator::SELF_FIRST
                 );
+
                 foreach ($iterator as $file) {
                     if ($file->isFile()) {
                         $files[$file->getPathname()] = $file->getMTime();
@@ -108,13 +110,14 @@ class BuildCommand extends Command
 
                 return static::FAILURE;
             }
+
             return $files;
         };
 
         $fileTimestamps = $scanFiles($sourcePath);
         $this->consoleOutput->writeln('<info>Watching for changes in ' . $sourcePath . '</info>');
-
         $iterationCount = 0;
+
         while (true) {
             try {
                 $currentTimestamps = $scanFiles($sourcePath);
@@ -141,9 +144,11 @@ class BuildCommand extends Command
                 $fileTimestamps = $currentTimestamps;
                 unset($currentTimestamps);
                 clearstatcache();
+
                 if (++$iterationCount % 10 === 0) {
                     gc_collect_cycles();
                 }
+
                 usleep(1000000);
 
             } catch (Throwable $e) {
@@ -218,6 +223,7 @@ class BuildCommand extends Command
         }
         
         $customPath = Arr::get($this->app->config, 'build.destination');
+
         if ($customPath && strpos($customPath, 'build_') !== 0 && file_exists($customPath)) {
             return $this->console->confirm('Overwrite "' . $this->app->buildPath['destination'] . '"? ');
         }

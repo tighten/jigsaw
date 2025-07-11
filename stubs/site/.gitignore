@@ -5,6 +5,7 @@
 /.idea/
 /.vscode/
 npm-debug.log
+hot
 
 # Optional ignores
 # /build_staging/

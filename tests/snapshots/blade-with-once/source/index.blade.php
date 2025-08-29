@@ -1,14 +1,5 @@
 @extends('_layouts.main')
 
-@section('structured-markup')
-    <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "BlogPosting",
-        }
-    </script>
-@endsection
-
 @section('body')
 Hello world!
 

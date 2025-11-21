@@ -42,7 +42,7 @@ class BuildCommand extends Command
         if ($this->input->getOption('watch')) {
             return $this->watch();
         }
-        
+
         return $this->build();
     }
 
@@ -124,14 +124,14 @@ class BuildCommand extends Command
                 $affectedFiles = 0;
 
                 foreach ($currentTimestamps as $file => $mtime) {
-                    if (!isset($fileTimestamps[$file]) || $fileTimestamps[$file] !== $mtime) {
+                    if (! isset($fileTimestamps[$file]) || $fileTimestamps[$file] !== $mtime) {
                         $affectedFiles++;
                         $this->consoleOutput->writeln('<info>File changed: ' . $file . '</info>');
                     }
                 }
 
                 foreach ($fileTimestamps as $file => $mtime) {
-                    if (!isset($currentTimestamps[$file])) {
+                    if (! isset($currentTimestamps[$file])) {
                         $affectedFiles++;
                         $this->consoleOutput->writeln('<info>File deleted: ' . $file . '</info>');
                     }
@@ -221,7 +221,7 @@ class BuildCommand extends Command
         if ($this->input->getOption('quiet') || $this->input->getOption('watch')) {
             return true;
         }
-        
+
         $customPath = Arr::get($this->app->config, 'build.destination');
 
         if ($customPath && strpos($customPath, 'build_') !== 0 && file_exists($customPath)) {

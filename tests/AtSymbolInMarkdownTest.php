@@ -96,6 +96,24 @@ class AtSymbolInMarkdownTest extends TestCase
         );
     }
 
+    #[Test]
+    public function inheritdoc_annotation_in_code_block_is_preserved_in_markdown()
+    {
+        $files = $this->setupSource([
+            '_layouts' => [
+                'master.blade.php' => "<div>@yield('content')</div>",
+            ],
+            'test.md' => $this->getYamlHeader() .
+                "```php\n{@inheritDoc}\n```",
+        ]);
+        $this->buildSite($files);
+
+        $this->assertEquals(
+            '<div><pre><code class="language-php">{@inheritDoc}</code></pre></div>',
+            $this->clean($files->getChild('build/test.html')->getContent()),
+        );
+    }
+
     public function getYamlHeader()
     {
         return implode("\n", ['---', 'extends: _layouts.master', 'section: content', '---', '']);

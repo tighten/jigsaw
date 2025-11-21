@@ -155,6 +155,7 @@ class MarkdownHandler
         if (in_array($file->getFullExtension(), ['markdown', 'md', 'mdown'])) {
             $replacements = array_merge([
                 '@' => "{{'@'}}",
+                '{@' => '{@',  // Preserve {@ to avoid {{{'@'}} which is invalid Blade (e.g. {@inheritDoc})
                 '{{' => '@{{',
                 '{!!' => '@{!!',
             ], $replacements);

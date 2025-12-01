@@ -62,7 +62,7 @@ class Jigsaw
     public static function addUserCommands($app, $container)
     {
         foreach (self::$commands as $command) {
-            $app->add(new $command($container));
+            $app->addCommand(new $command($container));
         }
     }
 

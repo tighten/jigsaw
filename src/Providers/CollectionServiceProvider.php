@@ -55,7 +55,7 @@ class CollectionServiceProvider extends ServiceProvider
             return new CollectionItemHandler($app['config'], [
                 $app[MarkdownHandler::class],
                 $app[BladeHandler::class],
-            ]);
+            ], $app[FrontMatterParser::class]);
         });
     }
 

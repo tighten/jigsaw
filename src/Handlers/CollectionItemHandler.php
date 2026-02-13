@@ -6,6 +6,8 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use TightenCo\Jigsaw\File\OutputFile;
+use TightenCo\Jigsaw\Handlers\MarkdownHandler;
+use TightenCo\Jigsaw\Parsers\FrontMatterParser;
 
 class CollectionItemHandler
 {
@@ -13,10 +15,13 @@ class CollectionItemHandler
 
     private $handlers;
 
-    public function __construct(Collection $config, $handlers)
+    private $parser;
+
+    public function __construct(Collection $config, $handlers, FrontMatterParser $parser)
     {
         $this->config = $config;
         $this->handlers = collect($handlers);
+        $this->parser = $parser;
     }
 
     public function shouldHandle($file)
@@ -47,13 +52,14 @@ class CollectionItemHandler
         $handler = $this->handlers->first(function ($handler) use ($file) {
             return $handler->shouldHandle($file);
         });
-        $pageData->setPageVariableToCollectionItem($this->getCollectionName($file), $file->getFilenameWithoutExtension());
+        $collectionName = $this->getCollectionName($file);
+        $pageData->setPageVariableToCollectionItem($collectionName, $file->getFilenameWithoutExtension());
 
         if ($pageData->page === null) {
             return null;
         }
 
-        return $handler->handleCollectionItem($file, $pageData)
+        $outputFiles = $handler->handleCollectionItem($file, $pageData)
             ->map(function ($outputFile, $templateToExtend) use ($file) {
                 if ($templateToExtend) {
                     $outputFile->data()->setExtending($templateToExtend);
@@ -70,5 +76,33 @@ class CollectionItemHandler
                     $outputFile->data(),
                 ) : null;
             })->filter()->values();
+
+        if (Arr::get($this->config, "collections.{$collectionName}.output_markdown") && $handler instanceof MarkdownHandler) {
+            if ($markdownOutput = $this->buildMarkdownOutput($file, $pageData)) {
+                $outputFiles->push($markdownOutput);
+            }
+        }
+
+        return $outputFiles;
+    }
+
+    private function buildMarkdownOutput($file, $pageData)
+    {
+        $path = rtrim($pageData->page->getPath(), '/');
+
+        if (! $path) {
+            return null;
+        }
+
+        $pathInfo = pathinfo($path);
+
+        return new OutputFile(
+            $file,
+            $pathInfo['dirname'],
+            $pathInfo['filename'],
+            'md',
+            $this->parser->extractContent($file->getContents()),
+            $pageData,
+        );
     }
 }

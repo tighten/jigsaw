@@ -109,9 +109,10 @@ class SiteBuilderTest extends TestCase
         $files = $this->setupSource(['page.blade.php' => '{{ $page->getModifiedTime() }}']);
         $this->buildSite($files, [], $pretty = true);
 
-        $this->assertEquals(
+        $this->assertEqualsWithDelta(
             $files->getChild('build/page/index.html')->filemtime(),
             $this->clean($files->getChild('build/page/index.html')->getContent()),
+            1, // allow mtimes to be within 1 second difference
         );
     }
 

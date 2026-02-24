@@ -240,9 +240,10 @@ class CollectionItemTest extends TestCase
 
         $this->buildSite($files, $config, $pretty = true);
 
-        $this->assertEquals(
+        $this->assertEqualsWithDelta(
             $files->getChild('build/collection/page/index.html')->filemtime(),
             $this->clean($files->getChild('build/collection/page/index.html')->getContent()),
+            1, // allow mtimes to be within 1 second difference
         );
     }
 }

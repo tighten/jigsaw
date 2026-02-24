@@ -23,9 +23,11 @@ $app->bootstrapWith([
 ]);
 
 $application = new Symfony\Component\Console\Application('Jigsaw', '1.8.3');
-$application->add($app[TightenCo\Jigsaw\Console\InitCommand::class]);
-$application->add(new TightenCo\Jigsaw\Console\BuildCommand($app));
-$application->add(new TightenCo\Jigsaw\Console\ServeCommand($app));
+$application->addCommands([
+    $app[TightenCo\Jigsaw\Console\InitCommand::class],
+    new TightenCo\Jigsaw\Console\BuildCommand($app),
+    new TightenCo\Jigsaw\Console\ServeCommand($app),
+]);
 $application->setCatchExceptions(false);
 
 TightenCo\Jigsaw\Jigsaw::addUserCommands($application, $app);

@@ -30,12 +30,7 @@ class Vite
         }
 
         $manifestPath = source_path($assetPath . '/manifest.json');
-
-        if (! file_exists($manifestPath)) {
-            throw new Exception('The Vite manifest does not exist. Please run `npm run build` first or start the dev server.');
-        }
-
-        $manifest = json_decode(file_get_contents($manifestPath), true);
+        $manifest = $this->loadManifest($manifestPath);
 
         if (! isset($manifest[$asset])) {
             throw new Exception('Main entry point not found in Vite manifest.');
@@ -61,5 +56,21 @@ class Vite
         }
 
         return new HtmlString(sprintf('<script type="module" src="%s"></script>', "{$devServerUrl}/@vite/client"));
+    }
+
+    private function loadManifest($manifestPath)
+    {
+        static $manifests = [];
+
+        return $manifests[$manifestPath] ??= $this->uncachedManifest($manifestPath);
+    }
+
+    private function uncachedManifest($manifestPath)
+    {
+        if (! file_exists($manifestPath)) {
+            throw new Exception('The Vite manifest does not exist. Please run `npm run build` first or start the dev server.');
+        }
+
+        return json_decode(file_get_contents($manifestPath), true);
     }
 }

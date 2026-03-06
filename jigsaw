@@ -22,7 +22,7 @@ $app->bootstrapWith([
     TightenCo\Jigsaw\Bootstrap\HandleExceptions::class,
 ]);
 
-$application = new Symfony\Component\Console\Application('Jigsaw', '1.8.3');
+$application = new Symfony\Component\Console\Application('Jigsaw', '1.8.4');
 $application->addCommands([
     $app[TightenCo\Jigsaw\Console\InitCommand::class],
     new TightenCo\Jigsaw\Console\BuildCommand($app),

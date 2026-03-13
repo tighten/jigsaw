@@ -7,6 +7,8 @@ use Dotenv\Exception\InvalidFileException;
 use Illuminate\Container\Container as Illuminate;
 use Illuminate\Support\Env;
 use Illuminate\Support\Str;
+use Illuminate\View\Factory;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 class Container extends Illuminate
@@ -200,8 +202,8 @@ class Container extends Illuminate
     private function registerCoreAliases(): void
     {
         foreach ([
-            'app' => [self::class, \Illuminate\Contracts\Container\Container::class, \Psr\Container\ContainerInterface::class],
-            'view' => [\Illuminate\View\Factory::class, \Illuminate\Contracts\View\Factory::class],
+            'app' => [self::class, \Illuminate\Contracts\Container\Container::class, ContainerInterface::class],
+            'view' => [Factory::class, \Illuminate\Contracts\View\Factory::class],
         ] as $key => $aliases) {
             foreach ($aliases as $alias) {
                 $this->alias($key, $alias);

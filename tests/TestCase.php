@@ -3,12 +3,14 @@
 namespace Tests;
 
 use Closure;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Str;
 use Illuminate\View\Component;
 use Mockery;
 use PHPUnit\Framework\TestCase as PHPUnit;
 use TightenCo\Jigsaw\Bootstrap\HandleExceptions;
 use TightenCo\Jigsaw\Container;
+use TightenCo\Jigsaw\Exceptions\Handler;
 use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\File\InputFile;
 use TightenCo\Jigsaw\Jigsaw;
@@ -46,11 +48,11 @@ class TestCase extends PHPUnit
         /* @internal The '__testing' binding is for Jigsaw development only and may be removed. */
         $this->app->instance('__testing', true);
         $this->app->singleton(
-            \Illuminate\Contracts\Debug\ExceptionHandler::class,
-            \TightenCo\Jigsaw\Exceptions\Handler::class,
+            ExceptionHandler::class,
+            Handler::class,
         );
         $this->app->bootstrapWith([
-            \TightenCo\Jigsaw\Bootstrap\HandleExceptions::class,
+            HandleExceptions::class,
         ]);
 
         $this->app->buildPath = [

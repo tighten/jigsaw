@@ -2,6 +2,7 @@
 
 namespace TightenCo\Jigsaw\Providers;
 
+use TightenCo\Jigsaw\Builders\PlainMarkdownBuilder;
 use TightenCo\Jigsaw\Collection\CollectionPaginator;
 use TightenCo\Jigsaw\CollectionItemHandlers\BladeCollectionItemHandler;
 use TightenCo\Jigsaw\CollectionItemHandlers\MarkdownCollectionItemHandler;
@@ -18,7 +19,6 @@ use TightenCo\Jigsaw\Loaders\CollectionDataLoader;
 use TightenCo\Jigsaw\Loaders\CollectionRemoteItemLoader;
 use TightenCo\Jigsaw\Loaders\DataLoader;
 use TightenCo\Jigsaw\Parsers\FrontMatterParser;
-use TightenCo\Jigsaw\Builders\PlainMarkdownBuilder;
 use TightenCo\Jigsaw\PathResolvers\BasicOutputPathResolver;
 use TightenCo\Jigsaw\PathResolvers\CollectionPathResolver;
 use TightenCo\Jigsaw\SiteBuilder;

@@ -1,3 +1,8 @@
+# The Flux Capacitor
+
+- [How the Flux Capacitor Works](#how-the-flux-capacitor-works)
+
+<a name="how-the-flux-capacitor-works"></a>
 ### How the Flux Capacitor Works
 
 This is what makes time travel possible. The **flux capacitor**!

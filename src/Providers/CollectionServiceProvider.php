@@ -18,6 +18,7 @@ use TightenCo\Jigsaw\Loaders\CollectionDataLoader;
 use TightenCo\Jigsaw\Loaders\CollectionRemoteItemLoader;
 use TightenCo\Jigsaw\Loaders\DataLoader;
 use TightenCo\Jigsaw\Parsers\FrontMatterParser;
+use TightenCo\Jigsaw\Builders\PlainMarkdownBuilder;
 use TightenCo\Jigsaw\PathResolvers\BasicOutputPathResolver;
 use TightenCo\Jigsaw\PathResolvers\CollectionPathResolver;
 use TightenCo\Jigsaw\SiteBuilder;
@@ -55,7 +56,7 @@ class CollectionServiceProvider extends ServiceProvider
             return new CollectionItemHandler($app['config'], [
                 $app[MarkdownHandler::class],
                 $app[BladeHandler::class],
-            ], $app[FrontMatterParser::class]);
+            ], $app[FrontMatterParser::class], new PlainMarkdownBuilder);
         });
     }
 

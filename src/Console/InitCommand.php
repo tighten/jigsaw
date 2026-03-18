@@ -35,7 +35,7 @@ class InitCommand extends Command
         return $this;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('init')
             ->setDescription('Scaffold a new Jigsaw project.')

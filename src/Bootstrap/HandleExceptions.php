@@ -108,7 +108,7 @@ class HandleExceptions
     /**
      * Handle a deprecation.
      *
-     * @throws \TightenCo\Jigsaw\Exceptions\DeprecationException
+     * @throws DeprecationException
      */
     private function handleDeprecation(Throwable $e): void
     {

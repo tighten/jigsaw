@@ -2,6 +2,7 @@
 
 namespace TightenCo\Jigsaw\Providers;
 
+use TightenCo\Jigsaw\Builders\PlainMarkdownBuilder;
 use TightenCo\Jigsaw\Collection\CollectionPaginator;
 use TightenCo\Jigsaw\CollectionItemHandlers\BladeCollectionItemHandler;
 use TightenCo\Jigsaw\CollectionItemHandlers\MarkdownCollectionItemHandler;
@@ -55,7 +56,7 @@ class CollectionServiceProvider extends ServiceProvider
             return new CollectionItemHandler($app['config'], [
                 $app[MarkdownHandler::class],
                 $app[BladeHandler::class],
-            ]);
+            ], $app[FrontMatterParser::class], new PlainMarkdownBuilder);
         });
     }
 

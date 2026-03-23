@@ -14,15 +14,15 @@ if (! function_exists('app')) {
      * @template TClass of object
      *
      * @param  string|class-string<TClass>|null  $abstract
-     * @return ($abstract is class-string<TClass> ? TClass : ($abstract is null ? \TightenCo\Jigsaw\Container : mixed))
+     * @return ($abstract is class-string<TClass> ? TClass : ($abstract is null ? TightenCo\Jigsaw\Container : mixed))
      */
     function app(?string $abstract = null, array $parameters = []): mixed
     {
         if (is_null($abstract)) {
-            return \TightenCo\Jigsaw\Container::getInstance();
+            return TightenCo\Jigsaw\Container::getInstance();
         }
 
-        return \TightenCo\Jigsaw\Container::getInstance()->make($abstract, $parameters);
+        return TightenCo\Jigsaw\Container::getInstance()->make($abstract, $parameters);
     }
 }
 

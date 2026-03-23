@@ -15,6 +15,7 @@ use NunoMaduro\Collision\Provider;
 use Symfony\Component\Console\Application as ConsoleApplication;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
 use Symfony\Component\Console\Exception\ExceptionInterface as SymfonyConsoleExceptionInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
 
 class Handler implements ExceptionHandler
@@ -40,7 +41,7 @@ class Handler implements ExceptionHandler
     }
 
     /**
-     * @param  \Symfony\Component\Console\Output\OutputInterface  $output
+     * @param  OutputInterface  $output
      */
     public function renderForConsole($output, Throwable $e): void
     {
@@ -79,7 +80,7 @@ class Handler implements ExceptionHandler
 
         $e = $this->mapException($e);
 
-        /** @var \NunoMaduro\Collision\Provider $provider */
+        /** @var Provider $provider */
         $provider = app(Provider::class);
 
         $handler = $provider->register()->getHandler()->setOutput($output);

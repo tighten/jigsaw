@@ -246,6 +246,248 @@ class CollectionItemTest extends TestCase
             1, // allow mtimes to be within 1 second difference
         );
     }
+
+    #[Test]
+    public function collection_item_outputs_both_html_and_raw_markdown_when_output_markdown_is_enabled()
+    {
+        $config = collect(['collections' => [
+            'collection' => [
+                'path' => 'collection/{filename}',
+                'output_markdown' => true,
+            ],
+        ]]);
+
+        $yaml_header = implode("\n", ['---', 'extends: _layouts.collection_item', 'section: content', 'title: My Item', '---']);
+
+        $files = $this->setupSource([
+            '_layouts' => [
+                'collection_item.blade.php' => '@yield(\'content\')',
+            ],
+            '_collection' => [
+                'item.md' => $yaml_header . "\n## Introduction\n\nSome **bold** text.\n\n## Details\n\nMore content.",
+            ],
+        ]);
+
+        $this->buildSite($files, $config);
+
+        $this->assertFileExists($this->tmpPath('build/collection/item.md'));
+
+        $expected = implode("\n", [
+            '# My Item',
+            '',
+            '- [Introduction](#introduction)',
+            '- [Details](#details)',
+            '',
+            '<a name="introduction"></a>',
+            '## Introduction',
+            '',
+            'Some **bold** text.',
+            '',
+            '<a name="details"></a>',
+            '## Details',
+            '',
+            'More content.',
+            '',
+        ]);
+
+        $this->assertEquals(
+            $expected,
+            $files->getChild('build/collection/item.md')->getContent(),
+        );
+
+        $this->assertFileExists($this->tmpPath('build/collection/item.html'));
+    }
+
+    #[Test]
+    public function collection_item_outputs_markdown_with_pretty_urls()
+    {
+        $config = collect(['collections' => [
+            'collection' => [
+                'path' => 'collection/{filename}',
+                'output_markdown' => true,
+            ],
+        ]]);
+
+        $yaml_header = implode("\n", ['---', 'extends: _layouts.collection_item', 'section: content', 'title: Pretty', '---']);
+
+        $files = $this->setupSource([
+            '_layouts' => [
+                'collection_item.blade.php' => '@yield(\'content\')',
+            ],
+            '_collection' => [
+                'item.md' => $yaml_header . "\n## Pretty URL Content",
+            ],
+        ]);
+
+        $this->buildSite($files, $config, $pretty = true);
+
+        $this->assertFileExists($this->tmpPath('build/collection/item.md'));
+
+        $expected = implode("\n", [
+            '# Pretty',
+            '',
+            '- [Pretty URL Content](#pretty-url-content)',
+            '',
+            '<a name="pretty-url-content"></a>',
+            '## Pretty URL Content',
+            '',
+        ]);
+
+        $this->assertEquals(
+            $expected,
+            $files->getChild('build/collection/item.md')->getContent(),
+        );
+
+        $this->assertFileExists($this->tmpPath('build/collection/item/index.html'));
+    }
+
+    #[Test]
+    public function collection_item_outputs_markdown_without_title_when_title_as_h1_is_false()
+    {
+        $config = collect(['collections' => [
+            'collection' => [
+                'path' => 'collection/{filename}',
+                'output_markdown' => [
+                    'title_as_h1' => false,
+                    'table_of_contents' => true,
+                ],
+            ],
+        ]]);
+
+        $yaml_header = implode("\n", ['---', 'extends: _layouts.collection_item', 'section: content', 'title: My Item', '---']);
+
+        $files = $this->setupSource([
+            '_layouts' => [
+                'collection_item.blade.php' => '@yield(\'content\')',
+            ],
+            '_collection' => [
+                'item.md' => $yaml_header . "\n## Introduction\n\nSome text.",
+            ],
+        ]);
+
+        $this->buildSite($files, $config);
+
+        $expected = implode("\n", [
+            '- [Introduction](#introduction)',
+            '',
+            '<a name="introduction"></a>',
+            '## Introduction',
+            '',
+            'Some text.',
+            '',
+        ]);
+
+        $this->assertEquals(
+            $expected,
+            $files->getChild('build/collection/item.md')->getContent(),
+        );
+    }
+
+    #[Test]
+    public function collection_item_outputs_markdown_without_toc_when_table_of_contents_is_false()
+    {
+        $config = collect(['collections' => [
+            'collection' => [
+                'path' => 'collection/{filename}',
+                'output_markdown' => [
+                    'title_as_h1' => true,
+                    'table_of_contents' => false,
+                ],
+            ],
+        ]]);
+
+        $yaml_header = implode("\n", ['---', 'extends: _layouts.collection_item', 'section: content', 'title: My Item', '---']);
+
+        $files = $this->setupSource([
+            '_layouts' => [
+                'collection_item.blade.php' => '@yield(\'content\')',
+            ],
+            '_collection' => [
+                'item.md' => $yaml_header . "\n## Introduction\n\nSome text.",
+            ],
+        ]);
+
+        $this->buildSite($files, $config);
+
+        $expected = implode("\n", [
+            '# My Item',
+            '',
+            '## Introduction',
+            '',
+            'Some text.',
+            '',
+        ]);
+
+        $this->assertEquals(
+            $expected,
+            $files->getChild('build/collection/item.md')->getContent(),
+        );
+    }
+
+    #[Test]
+    public function collection_item_outputs_raw_markdown_when_both_options_are_false()
+    {
+        $config = collect(['collections' => [
+            'collection' => [
+                'path' => 'collection/{filename}',
+                'output_markdown' => [
+                    'title_as_h1' => false,
+                    'table_of_contents' => false,
+                ],
+            ],
+        ]]);
+
+        $yaml_header = implode("\n", ['---', 'extends: _layouts.collection_item', 'section: content', 'title: My Item', '---']);
+
+        $files = $this->setupSource([
+            '_layouts' => [
+                'collection_item.blade.php' => '@yield(\'content\')',
+            ],
+            '_collection' => [
+                'item.md' => $yaml_header . "\n## Introduction\n\nSome text.",
+            ],
+        ]);
+
+        $this->buildSite($files, $config);
+
+        $expected = implode("\n", [
+            '## Introduction',
+            '',
+            'Some text.',
+            '',
+        ]);
+
+        $this->assertEquals(
+            $expected,
+            $files->getChild('build/collection/item.md')->getContent(),
+        );
+    }
+
+    #[Test]
+    public function collection_item_does_not_output_markdown_when_output_markdown_is_not_enabled()
+    {
+        $config = collect(['collections' => [
+            'collection' => [
+                'path' => 'collection/{filename}',
+            ],
+        ]]);
+
+        $yaml_header = implode("\n", ['---', 'extends: _layouts.collection_item', 'section: content', '---']);
+
+        $files = $this->setupSource([
+            '_layouts' => [
+                'collection_item.blade.php' => '@yield(\'content\')',
+            ],
+            '_collection' => [
+                'item.md' => $yaml_header . "\n### Collection Item Content",
+            ],
+        ]);
+
+        $this->buildSite($files, $config);
+
+        $this->assertFileExists($this->tmpPath('build/collection/item.html'));
+        $this->assertFileMissing($this->tmpPath('build/collection/item.md'));
+    }
 }
 
 class MappedItem extends CollectionItem

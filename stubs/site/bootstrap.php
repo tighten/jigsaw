@@ -1,9 +1,11 @@
 <?php
 
+use Illuminate\Container\Container;
+use TightenCo\Jigsaw\Events\EventBus;
 use TightenCo\Jigsaw\Jigsaw;
 
-/** @var \Illuminate\Container\Container $container */
-/** @var \TightenCo\Jigsaw\Events\EventBus $events */
+/** @var Container $container */
+/** @var EventBus $events */
 
 /*
  * You can run custom code at different stages of the build process by

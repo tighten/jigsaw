@@ -18,7 +18,7 @@ class ServeCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('serve')
             ->setDescription('Serve local site with php built-in server.')

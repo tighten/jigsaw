@@ -7,8 +7,6 @@ use Illuminate\Support\HtmlString;
 
 class Vite
 {
-    private array $manifests = [];
-
     private function hotFilePath()
     {
         return source_path('hot');
@@ -32,7 +30,12 @@ class Vite
         }
 
         $manifestPath = source_path($assetPath . '/manifest.json');
-        $manifest = $this->manifests[$manifestPath] ??= $this->readManifest($manifestPath);
+
+        if (! file_exists($manifestPath)) {
+            throw new Exception('The Vite manifest does not exist. Please run `npm run build` first or start the dev server.');
+        }
+
+        $manifest = json_decode(file_get_contents($manifestPath), true);
 
         if (! isset($manifest[$asset])) {
             throw new Exception('Main entry point not found in Vite manifest.');
@@ -58,14 +61,5 @@ class Vite
         }
 
         return new HtmlString(sprintf('<script type="module" src="%s"></script>', "{$devServerUrl}/@vite/client"));
-    }
-
-    private function readManifest(string $manifestPath): array
-    {
-        if (! file_exists($manifestPath)) {
-            throw new Exception('The Vite manifest does not exist. Please run `npm run build` first or start the dev server.');
-        }
-
-        return json_decode(file_get_contents($manifestPath), true);
     }
 }

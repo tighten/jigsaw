@@ -7,6 +7,8 @@ use Illuminate\Support\HtmlString;
 
 class Vite
 {
+    private array $manifests = [];
+
     private function hotFilePath()
     {
         return source_path('hot');
@@ -58,14 +60,12 @@ class Vite
         return new HtmlString(sprintf('<script type="module" src="%s"></script>', "{$devServerUrl}/@vite/client"));
     }
 
-    private function loadManifest($manifestPath)
+    private function loadManifest(string $manifestPath): array
     {
-        static $manifests = [];
-
-        return $manifests[$manifestPath] ??= $this->uncachedManifest($manifestPath);
+        return $this->manifests[$manifestPath] ??= $this->readManifest($manifestPath);
     }
 
-    private function uncachedManifest($manifestPath)
+    private function readManifest(string $manifestPath): array
     {
         if (! file_exists($manifestPath)) {
             throw new Exception('The Vite manifest does not exist. Please run `npm run build` first or start the dev server.');

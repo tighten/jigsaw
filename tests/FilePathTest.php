@@ -175,6 +175,30 @@ class FilePathTest extends TestCase
         $this->assertEquals('/اختبار_مسار_الملف', $outputPath[0]);
     }
 
+    public function test_index_file_at_root_has_leading_slash()
+    {
+        $resolver = new PrettyOutputPathResolver;
+        $this->assertEquals('/', $resolver->link('', 'index', 'html'));
+    }
+
+    public function test_index_file_in_subdirectory_has_leading_slash()
+    {
+        $resolver = new PrettyOutputPathResolver;
+        $this->assertEquals('/blog/', $resolver->link('blog', 'index', 'html'));
+    }
+
+    public function test_index_file_in_nested_subdirectory_has_leading_slash()
+    {
+        $resolver = new PrettyOutputPathResolver;
+        $this->assertEquals('/blog/posts/', $resolver->link('blog/posts', 'index', 'html'));
+    }
+
+    public function test_paginated_index_file_in_subdirectory_has_leading_slash()
+    {
+        $resolver = new PrettyOutputPathResolver;
+        $this->assertEquals('/blog/2/', $resolver->link('blog', 'index', 'html', 2));
+    }
+
     protected function getPageVariableDummy($filename)
     {
         return new PageVariable([

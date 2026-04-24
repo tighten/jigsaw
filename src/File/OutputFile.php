@@ -22,9 +22,11 @@ class OutputFile
 
     private $prefix;
 
-    public function __construct(InputFile $inputFile, $path, $name, $extension, $contents, $data, $page = 1, $prefix = '')
+    public function __construct(?InputFile $inputFile, $path, $name, $extension, $contents, $data, $page = 1, $prefix = '')
     {
-        $this->setInputFile($inputFile, $data);
+        if ($inputFile !== null) {
+            $this->setInputFile($inputFile, $data);
+        }
         $this->path = $path;
         $this->name = $name;
         $this->extension = $extension;

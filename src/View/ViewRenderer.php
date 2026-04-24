@@ -25,6 +25,11 @@ class ViewRenderer
         return app('view')->file($path, $data->all())->render();
     }
 
+    public function renderView(string $view, $data): string
+    {
+        return app('view')->make($view, $data->all())->render();
+    }
+
     public function renderString($string)
     {
         return app('blade.compiler')->compileString($string);

@@ -49,9 +49,11 @@ class DynamicCollectionPaginationTest extends TestCase
         $phpPage2 = $this->clean($files->getChild('build/tags/php/2/index.html')->getContent());
         $laravelPage1 = $this->clean($files->getChild('build/tags/laravel/index.html')->getContent());
 
-        $this->assertStringContainsString('post', $phpPage1);
-        $this->assertStringContainsString('post', $phpPage2);
-        $this->assertStringContainsString('post', $laravelPage1);
+        $this->assertStringContainsString('post1', $phpPage1);
+        $this->assertStringNotContainsString('post1', $laravelPage1);
+        $this->assertStringContainsString('post4', $laravelPage1);
+        $this->assertStringNotContainsString('post4', $phpPage1);
+        $this->assertStringNotContainsString('post4', $phpPage2);
         $this->assertFileMissing($this->tmpPath('build/tags/php/3/index.html'));
         $this->assertFileMissing($this->tmpPath('build/tags/laravel/2/index.html'));
     }

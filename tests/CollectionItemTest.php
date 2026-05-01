@@ -158,6 +158,50 @@ class CollectionItemTest extends TestCase
     }
 
     #[Test]
+    public function collection_item_page_metadata_contains_view_path_for_nested_items()
+    {
+        $config = collect(['collections' => ['collection' => []]]);
+        $files = $this->setupSource([
+            '_layouts' => [
+                'item.blade.php' => '@section(\'content\') @endsection',
+            ],
+            '_collection' => [
+                'nested' => [
+                    'page.blade.php' => "@extends('_layouts.item')\n" . '{{ $page->getViewPath() }}',
+                ],
+            ],
+        ]);
+
+        $this->buildSite($files, $config, $pretty = true);
+
+        $this->assertEquals(
+            'nested.page',
+            $this->clean($files->getChild('build/collection/page/index.html')->getContent()),
+        );
+    }
+
+    #[Test]
+    public function collection_item_view_path_for_flat_items_equals_filename()
+    {
+        $config = collect(['collections' => ['collection' => []]]);
+        $files = $this->setupSource([
+            '_layouts' => [
+                'item.blade.php' => '@section(\'content\') @endsection',
+            ],
+            '_collection' => [
+                'page.blade.php' => "@extends('_layouts.item')\n" . '{{ $page->getViewPath() }}',
+            ],
+        ]);
+
+        $this->buildSite($files, $config, $pretty = true);
+
+        $this->assertEquals(
+            'page',
+            $this->clean($files->getChild('build/collection/page/index.html')->getContent()),
+        );
+    }
+
+    #[Test]
     public function collection_item_page_metadata_contains_extension()
     {
         $config = collect(['collections' => ['collection' => []]]);

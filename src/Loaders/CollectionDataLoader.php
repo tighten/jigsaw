@@ -123,13 +123,16 @@ class CollectionDataLoader
         $filename = $file->getFilenameWithoutExtension();
         $baseUrl = $data->baseUrl;
         $relativePath = $file->getRelativePath();
+        $viewPath = $relativePath
+            ? str_replace(['/', '\\'], '.', $relativePath) . '.' . $filename
+            : $filename;
         $extension = $file->getFullExtension();
         $collectionName = $collection->name;
         $collection = $collectionName;
         $source = $file->getPath();
         $modifiedTime = $file->getLastModifiedTime();
 
-        return compact('filename', 'baseUrl', 'relativePath', 'extension', 'collection', 'collectionName', 'source', 'modifiedTime');
+        return compact('filename', 'baseUrl', 'relativePath', 'viewPath', 'extension', 'collection', 'collectionName', 'source', 'modifiedTime');
     }
 
     private function buildUrls($paths)

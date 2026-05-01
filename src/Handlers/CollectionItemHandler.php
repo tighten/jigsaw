@@ -6,6 +6,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use TightenCo\Jigsaw\Builders\PlainMarkdownBuilder;
+use TightenCo\Jigsaw\Collection\Collection as JigsawCollection;
 use TightenCo\Jigsaw\File\OutputFile;
 use TightenCo\Jigsaw\Parsers\FrontMatterParser;
 
@@ -56,7 +57,10 @@ class CollectionItemHandler
             return $handler->shouldHandle($file);
         });
         $collectionName = $this->getCollectionName($file);
-        $pageData->setPageVariableToCollectionItem($collectionName, $file->getFilenameWithoutExtension());
+        $pageData->setPageVariableToCollectionItem(
+            $collectionName,
+            JigsawCollection::itemKey($file->getRelativePathBelowTopLevel(), $file->getFilenameWithoutExtension()),
+        );
 
         if ($pageData->page === null) {
             return null;

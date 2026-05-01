@@ -47,6 +47,12 @@ class ServeCommand extends Command
                 null,
                 InputOption::VALUE_NONE,
                 'Skip build before serving?',
+            )
+            ->addOption(
+                'router',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Path to a custom PHP router script.',
             );
     }
 
@@ -68,7 +74,13 @@ class ServeCommand extends Command
 
         $this->console->info("Server started on http://{$host}:{$port}");
 
-        passthru("php -S {$host}:{$port} -t " . escapeshellarg($this->getBuildPath($env)));
+        $command = "php -S {$host}:{$port} -t " . escapeshellarg($this->getBuildPath($env));
+
+        if ($router = $this->input->getOption('router')) {
+            $command .= ' ' . escapeshellarg($router);
+        }
+
+        passthru($command);
     }
 
     private function getBuildPath($env)

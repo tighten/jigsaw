@@ -6,6 +6,7 @@ use Illuminate\Container\Container;
 use TightenCo\Jigsaw\Console\ConsoleOutput;
 use TightenCo\Jigsaw\File\Filesystem;
 use TightenCo\Jigsaw\File\InputFile;
+use TightenCo\Jigsaw\Handlers\PaginatedPageHandler;
 
 class SiteBuilder
 {
@@ -42,10 +43,11 @@ class SiteBuilder
         return $this;
     }
 
-    public function build($source, $destination, $siteData)
+    public function build($source, $destination, $siteData, $pendingPages = [])
     {
         $this->prepareDirectory($this->cachePath, ! $this->useCache);
-        $generatedFiles = $this->generateFiles($source, $siteData);
+        $generatedFiles = $this->generateFiles($source, $siteData)
+            ->merge($this->generatePaginatedPages($pendingPages, $siteData));
         $this->prepareDirectory($destination, true);
         $outputFiles = $this->writeFiles($generatedFiles, $destination);
         $this->cleanup();
@@ -99,6 +101,34 @@ class SiteBuilder
         return $files;
     }
 
+    private function generatePaginatedPages($pendingPages, $siteData)
+    {
+        if (empty($pendingPages)) {
+            return collect();
+        }
+
+        $handler = collect($this->handlers)->first(fn ($h) => $h instanceof PaginatedPageHandler);
+
+        return collect($pendingPages)->flatMap(function ($def) use ($handler, $siteData) {
+            $relativePath = ltrim(dirname($def['path']), '.');
+            $filename = basename($def['path']);
+            $meta = $this->getMetaDataForPath($relativePath, $filename, $siteData->page->baseUrl);
+
+            $pageData = PageData::withPageMetaData($siteData, $meta);
+            Container::getInstance()->instance('pageData', $pageData);
+            $pageData->page->addVariables($def['variables']);
+
+            return $handler->handleDefinition(
+                $relativePath,
+                $filename,
+                $def['template'],
+                $siteData->get($def['collection']),
+                $def['perPage'],
+                $pageData,
+            );
+        });
+    }
+
     private function writeFiles($files, $destination)
     {
         $this->consoleOutput->writeWritingFiles();
@@ -106,7 +136,7 @@ class SiteBuilder
         return $files->mapWithKeys(function ($file) use ($destination) {
             $outputLink = $this->writeFile($file, $destination);
 
-            return [$outputLink => $file->inputFile()->getPageData()];
+            return [$outputLink => $file->inputFile()?->getPageData()];
         });
     }
 
@@ -134,6 +164,16 @@ class SiteBuilder
         return collect($this->handlers)->first(function ($handler) use ($file) {
             return $handler->shouldHandle($file);
         });
+    }
+
+    private function getMetaDataForPath(string $relativePath, string $filename, ?string $baseUrl): array
+    {
+        $path = rightTrimPath($this->outputPathResolver->link($relativePath, $filename, 'html'));
+        $url = rightTrimPath($baseUrl ?? '') . '/' . trimPath($path);
+        $extension = 'html';
+        $modifiedTime = time();
+
+        return compact('filename', 'baseUrl', 'path', 'relativePath', 'extension', 'url', 'modifiedTime');
     }
 
     private function getMetaData($file, $baseUrl)

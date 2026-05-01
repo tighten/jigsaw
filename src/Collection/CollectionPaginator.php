@@ -15,27 +15,27 @@ class CollectionPaginator
         $this->outputPathResolver = $outputPathResolver;
     }
 
-    public function paginate($file, $items, $perPage, $prefix)
+    public function paginate(string $relativePath, string $filename, $items, $perPage, string $prefix = '')
     {
         $chunked = collect($items)->chunk($perPage);
         $totalPages = $chunked->count();
         $this->prefix = $prefix;
-        $numberedPageLinks = $chunked->map(function ($_, $i) use ($file) {
+        $numberedPageLinks = $chunked->map(function ($_, $i) use ($relativePath, $filename) {
             $page = $i + 1;
 
-            return ['number' => $page, 'path' => $this->getPageLink($file, $page)];
+            return ['number' => $page, 'path' => $this->getPageLink($relativePath, $filename, $page)];
         })->pluck('path', 'number');
 
-        return $chunked->map(function ($items, $i) use ($file, $totalPages, $numberedPageLinks) {
+        return $chunked->map(function ($items, $i) use ($relativePath, $filename, $totalPages, $numberedPageLinks) {
             $currentPage = $i + 1;
 
             return new IterableObject([
                 'items' => $items,
-                'previous' => $currentPage > 1 ? $this->getPageLink($file, $currentPage - 1) : null,
-                'current' => $this->getPageLink($file, $currentPage),
-                'next' => $currentPage < $totalPages ? $this->getPageLink($file, $currentPage + 1) : null,
-                'first' => $this->getPageLink($file, 1),
-                'last' => $this->getPageLink($file, $totalPages),
+                'previous' => $currentPage > 1 ? $this->getPageLink($relativePath, $filename, $currentPage - 1) : null,
+                'current' => $this->getPageLink($relativePath, $filename, $currentPage),
+                'next' => $currentPage < $totalPages ? $this->getPageLink($relativePath, $filename, $currentPage + 1) : null,
+                'first' => $this->getPageLink($relativePath, $filename, 1),
+                'last' => $this->getPageLink($relativePath, $filename, $totalPages),
                 'currentPage' => $currentPage,
                 'totalPages' => $totalPages,
                 'pages' => $numberedPageLinks,
@@ -43,11 +43,11 @@ class CollectionPaginator
         });
     }
 
-    private function getPageLink($file, $pageNumber)
+    private function getPageLink(string $relativePath, string $filename, int $pageNumber): string
     {
         $link = $this->outputPathResolver->link(
-            $file->getRelativePath(),
-            $file->getFilenameWithoutExtension(),
+            $relativePath,
+            $filename,
             'html',
             $pageNumber,
             $this->prefix,

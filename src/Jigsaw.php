@@ -28,6 +28,8 @@ class Jigsaw
 
     protected $verbose;
 
+    protected $pendingPages = [];
+
     protected static $commands = [];
 
     public function __construct(
@@ -64,6 +66,15 @@ class Jigsaw
         $app->addCommands(array_map(fn ($command) => new $command($container), self::$commands));
     }
 
+    public function paginateCollection(string $path, string $collection, string $template, int $perPage = 10, array $variables = []): self
+    {
+        $this->setConfig("collections.{$collection}", []);
+
+        $this->pendingPages[] = compact('path', 'collection', 'template', 'perPage', 'variables');
+
+        return $this;
+    }
+
     protected function buildCollections()
     {
         $this->remoteItemLoader->write($this->siteData->collections, $this->getSourcePath());
@@ -81,6 +92,7 @@ class Jigsaw
                 $this->getSourcePath(),
                 $this->getDestinationPath(),
                 $this->siteData,
+                $this->pendingPages,
             );
         $this->outputPaths = $this->pageInfo->keys();
 

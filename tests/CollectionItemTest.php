@@ -202,6 +202,32 @@ class CollectionItemTest extends TestCase
     }
 
     #[Test]
+    public function collection_items_with_same_basename_in_different_directories_do_not_collide()
+    {
+        $config = collect(['collections' => [
+            'collection' => [
+                'path' => 'collection/{relativePath}/{filename}',
+            ],
+        ]]);
+        $files = $this->setupSource([
+            '_layouts' => [
+                'item.blade.php' => '@section(\'content\') @endsection',
+            ],
+            '_collection' => [
+                'page.blade.php' => "@extends('_layouts.item')\nROOT",
+                'nested' => [
+                    'page.blade.php' => "@extends('_layouts.item')\nNESTED",
+                ],
+            ],
+        ]);
+
+        $this->buildSite($files, $config);
+
+        $this->assertEquals('ROOT', trim($files->getChild('build/collection/page.html')->getContent()));
+        $this->assertEquals('NESTED', trim($files->getChild('build/collection/nested/page.html')->getContent()));
+    }
+
+    #[Test]
     public function collection_item_page_metadata_contains_extension()
     {
         $config = collect(['collections' => ['collection' => []]]);

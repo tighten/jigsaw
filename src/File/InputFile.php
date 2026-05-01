@@ -42,6 +42,13 @@ class InputFile
         return count($parts) == 1 ? '' : $parts[0];
     }
 
+    public function getRelativePathBelowTopLevel()
+    {
+        $relativePath = str_replace('\\', '/', $this->file->getRelativePath());
+
+        return ltrim((string) Str::after($relativePath, $this->topLevelDirectory()), '/');
+    }
+
     public function getFilenameWithoutExtension()
     {
         return $this->getBasename('.' . $this->getFullExtension());

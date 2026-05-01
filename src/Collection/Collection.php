@@ -5,6 +5,7 @@ namespace TightenCo\Jigsaw\Collection;
 use Closure;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection as BaseCollection;
+use Illuminate\Support\Str;
 use TightenCo\Jigsaw\IterableObject;
 
 class Collection extends BaseCollection
@@ -29,10 +30,17 @@ class Collection extends BaseCollection
             ->map($this->getMap())
             ->filter($this->getFilter())
             ->keyBy(function ($item) {
-                return $item->getFilename();
+                return self::itemKey($item->getRelativePath(), $item->getFilename());
             });
 
         return $this->updateItems($this->addAdjacentItems($sortedItems));
+    }
+
+    public static function itemKey($relativePath, $filename)
+    {
+        return $relativePath && ! Str::startsWith($relativePath, '_')
+            ? $relativePath . '/' . $filename
+            : $filename;
     }
 
     public function updateItems(BaseCollection $items)
@@ -46,7 +54,7 @@ class Collection extends BaseCollection
     {
         $count = $items->count();
         $adjacentItems = $items->map(function ($item) {
-            return $item->getFilename();
+            return self::itemKey($item->getRelativePath(), $item->getFilename());
         });
         $previousItems = $adjacentItems->prepend(null)->take($count);
         $nextItems = $adjacentItems->push(null)->take(-$count);
